@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { elevation } from "../../styles/mixin";
 
 const Login = () => {
   return (
@@ -14,6 +15,7 @@ const Login = () => {
 
 const Wrapper = styled.div`
   display: flex;
+  ${elevation.shadow16};
 `;
 const LeftBox = styled.div`
   width: calc(50% + 10px);
