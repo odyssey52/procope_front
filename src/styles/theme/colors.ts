@@ -104,7 +104,7 @@ export const sementicColors = {
     brand: primitiveColors.blue[500],
     brand_hover_pressed: primitiveColors.blue[700],
     primary: primitiveColors.gray[700],
-    primary_hober_pressed: primitiveColors.gray[800],
+    primary_hover_pressed: primitiveColors.gray[800],
     secondary_hover_pressed: primitiveColors.navy[700],
     tertiary: primitiveColors.gray[50],
     tertiary_hover_pressed: primitiveColors.gray[100],
