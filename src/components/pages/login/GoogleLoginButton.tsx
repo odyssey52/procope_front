@@ -1,4 +1,4 @@
-import Button from "components/common/ui/button/Button";
+import Button from "@/components/common/ui/button/Button";
 
 const GoogleLoginButton = () => {
   return (
