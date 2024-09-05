@@ -1,7 +1,7 @@
 import styled from "styled-components";
-import Logo from "../../common/Logo";
 import GoogleLoginButton from "./GoogleLoginButton";
 import NaverLoginButton from "./NaverLoginButton";
+import Logo from "@/components/common/Logo";
 
 const LoginSection = () => {
   return (
