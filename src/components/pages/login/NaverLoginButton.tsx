@@ -1,4 +1,4 @@
-import Button from "@/components/common/ui/button/Button";
+import Button from '@/components/common/ui/button/Button';
 
 const NaverLoginButton = () => {
   const CLIENT_ID = process.env.REACT_APP_NAVER_CLIENT_ID;
@@ -11,7 +11,7 @@ const NaverLoginButton = () => {
 
   const handleNaverLogin = () => {
     const STATE = generateRandomState();
-    sessionStorage.setItem("naver_state", STATE);
+    sessionStorage.setItem('naver_state', STATE);
 
     const naverLoginUrl = `https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URI}&state=${STATE}`;
 
@@ -19,17 +19,12 @@ const NaverLoginButton = () => {
   };
 
   return (
-    <Button
-      $type="outline"
-      $size="48"
-      $leftIcon="/assets/icons/line/naver.svg"
-      onClick={handleNaverLogin}
-    >
+    <Button $type="outline" $size="48" $leftIcon="/assets/icons/line/naver.svg" onClick={handleNaverLogin}>
       네이버로 계속하기
     </Button>
   );
 };
 
-NaverLoginButton.displayName = "NaverLoginButton";
+NaverLoginButton.displayName = 'NaverLoginButton';
 
 export default NaverLoginButton;

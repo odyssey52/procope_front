@@ -1,7 +1,7 @@
-import styled from "styled-components";
-import GoogleLoginButton from "./GoogleLoginButton";
-import NaverLoginButton from "./NaverLoginButton";
-import Logo from "@/components/common/Logo";
+import styled from 'styled-components';
+import GoogleLoginButton from './GoogleLoginButton';
+import NaverLoginButton from './NaverLoginButton';
+import Logo from '@/components/common/Logo';
 
 const LoginSection = () => {
   return (
@@ -62,6 +62,6 @@ const ButtonBox = styled.div`
     width: 100%;
   }
 `;
-LoginSection.displayName = "LoginSection";
+LoginSection.displayName = 'LoginSection';
 
 export default LoginSection;
