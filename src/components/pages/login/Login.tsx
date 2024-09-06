@@ -3,11 +3,12 @@ import styled from 'styled-components';
 import HeroSection from './HeroSection';
 import LoginSection from './LoginSection';
 import { useEffect } from 'react';
+import Icon from '@/components/common/ui/icon/Icon';
 
 const Login = () => {
   const handleClick = () => {
     confirmModalActions.open({
-      icon: <img src="/assets/icons/graphic/glass/userbook.svg" alt="" />,
+      icon: <Icon src="/assets/icons/graphic/glass/userbook.svg" />,
       title: '추가정보 입력이 필요합니다.',
       description: '작성 중이신 회원가입 페이지로 이동합니다.',
       confirmLabel: '반가워요',
