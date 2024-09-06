@@ -11,8 +11,10 @@ const Login = () => {
       icon: <Icon src="/assets/icons/graphic/glass/userbook.svg" />,
       title: '추가정보 입력이 필요합니다.',
       description: '작성 중이신 회원가입 페이지로 이동합니다.',
-      confirmLabel: '반가워요',
-      onConfirm: () => console.log('hello world'),
+      cancelLabel: '취소',
+      onCancel: () => console.log('처음부터 다시 시작'),
+      confirmLabel: '확인',
+      onConfirm: () => console.log('작성 중이던 스테퍼로 이동'),
     });
   };
   useEffect(() => {
