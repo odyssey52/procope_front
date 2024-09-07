@@ -4,6 +4,7 @@ import { elevation, zIndex } from '@/styles/mixin';
 import Modal from './common/Modal';
 import Button from '../button/Button';
 import Icon from '../icon/Icon';
+import Text from '../Text';
 
 const ConfirmDialog = () => {
   const state = useConfirmModalStore();
@@ -17,8 +18,8 @@ const ConfirmDialog = () => {
         <Content>
           {state.type === 'error' ? <Icon src={errorIcon} width={80} /> : state.icon}
           <TextBox>
-            <Title>{state.title}</Title>
-            <Description>{state.description}</Description>
+            <Text variant="heading_20">{state.title}</Text>
+            <Text variant="body_14_medium">{state.description}</Text>
           </TextBox>
         </Content>
         <ButtonBox>
@@ -61,14 +62,7 @@ const TextBox = styled.div`
   flex-direction: column;
   gap: 4px;
 `;
-const Title = styled.h2`
-  ${({ theme }) => theme.fontStyle.heading_20};
-  color: ${({ theme }) => theme.sementicColors.text.primary};
-`;
-const Description = styled.p`
-  ${({ theme }) => theme.fontStyle.body_14_medium};
-  color: ${({ theme }) => theme.sementicColors.text.secondary};
-`;
+
 const ButtonBox = styled.div`
   position: relative;
   display: flex;
