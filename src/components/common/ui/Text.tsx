@@ -17,7 +17,7 @@ const Text = ({ variant, color, children, className }: PropsWithChildren<Props>)
 
 const Wrapper = styled.div<Props>`
   ${({ theme, variant }) => theme.fontStyle[variant]}
-  color:${({ theme, color }) => color || theme.sementicColors.text.primary};
+  color:${({ theme, color }) => (color ? theme.sementicColors.text[color] : theme.sementicColors.text.primary)};
   white-space: pre-wrap;
 `;
 export default Text;

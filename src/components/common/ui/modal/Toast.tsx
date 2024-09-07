@@ -4,9 +4,19 @@ import { useEffect } from 'react';
 import { toastActions, useToastStore } from '@/store/modal/toast';
 import Portal from './common/Portal';
 import Text from '../Text';
+import Icon from '../icon/Icon';
+import { zIndex } from '@/styles/mixin';
+
+const ICON_URL = {
+  success: '/assets/icons/graphic/fill/check.svg',
+  error: '/assets/icons/graphic/fill/error.svg',
+  default: '/assets/icons/graphic/fill/help.svg',
+  info: '/assets/icons/graphic/fill/information.svg',
+  warning: '/assets/icons/graphic/fill/warning.svg',
+};
 
 const Toast = () => {
-  const { title, description, isOpen, autoHideDuration } = useToastStore((state) => state);
+  const { title, description, isOpen, autoHideDuration, state } = useToastStore((state) => state);
   const handleClose = () => {
     toastActions.close();
   };
@@ -34,6 +44,7 @@ const Toast = () => {
       <AnimatePresence>
         {isOpen && (
           <ToastBox
+            $isOneLine={!description}
             variants={toastVariants}
             initial="hidden" // 컴포넌트가 시작할 위치와 투명도
             animate="visible" // 컴포넌트가 도달할 위치와 투명도
@@ -46,14 +57,20 @@ const Toast = () => {
             //   ease: 'easeOut',
             // }}
           >
+            <Icon src={ICON_URL[state]} width={24} height={24} />
             <TextBox>
               <Text variant="body_14_medium">{title}</Text>
-              <Text variant="caption_12_regular" color="secondary">
-                {description}
-              </Text>
+              {description && (
+                <Text variant="caption_12_regular" color="secondary">
+                  {description}
+                </Text>
+              )}
             </TextBox>
-            {/* <Text variant="label_2" color="cool_gray_200" weight="regular" className="message">
-            </Text> */}
+            {description && (
+              <Close onClick={handleClose}>
+                <Icon src="/assets/icons/line/remove.svg" width={20} height={20} />
+              </Close>
+            )}
           </ToastBox>
         )}
       </AnimatePresence>
@@ -61,20 +78,18 @@ const Toast = () => {
   );
 };
 
-const ToastBox = styled(motion.div)`
-  z-index: 9999;
+const ToastBox = styled(motion.div)<{ $isOneLine: boolean }>`
+  ${zIndex.layer3};
   position: fixed;
+  display: flex;
+  align-items: start;
   top: 24px;
   right: 24px;
   max-width: 343px;
   width: 100%;
   gap: 16px;
-  padding: 16px;
-  .message {
-    flex: 1;
-    white-space: pre-wrap;
-  }
-  border-radius: 12px;
+  padding: ${({ $isOneLine }) => ($isOneLine ? '12px 16px' : '16px')};
+  border-radius: ${({ $isOneLine }) => ($isOneLine ? '48px' : '12px')};
   border: 1px solid #f2f2f2;
   background: linear-gradient(180deg, rgba(249, 250, 251, 0.5) 0%, rgba(229, 234, 239, 0.5) 100%);
 
@@ -86,6 +101,12 @@ const TextBox = styled.div`
   position: relative;
   display: flex;
   flex-direction: column;
+  align-self: center;
   gap: 4px;
+  flex-grow: 1;
+`;
+const Close = styled.button`
+  font-size: 0;
+  cursor: pointer;
 `;
 export default Toast;

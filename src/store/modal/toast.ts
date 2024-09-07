@@ -4,29 +4,29 @@ export type ToastState = {
   isOpen: boolean;
   autoHideDuration: number;
   title: string;
-  type?: 'default' | 'success' | 'error' | 'warning' | 'info';
+  state: 'default' | 'success' | 'error' | 'warning' | 'info';
   description?: string;
 };
 
 const initialState: ToastState = {
   isOpen: false,
-  autoHideDuration: 50000,
-  type: 'default',
+  autoHideDuration: 4000,
+  state: 'default',
   title: '',
 };
 type ToastOpen = {
   title: string;
   autoHideDuration?: number;
   description?: string;
-  type?: 'default' | 'success' | 'error' | 'warning' | 'info';
+  state?: 'default' | 'success' | 'error' | 'warning' | 'info';
 };
 
-const open = ({ title, autoHideDuration, description, type }: ToastOpen) => {
+const open = ({ title, autoHideDuration, description, state }: ToastOpen) => {
   const status = get();
   if (autoHideDuration) {
-    set({ ...status, isOpen: true, title, description, type, autoHideDuration });
+    set({ ...status, isOpen: true, title, description, state: state ?? 'default', autoHideDuration });
   } else {
-    set({ ...status, isOpen: true, title });
+    set({ ...status, isOpen: true, title, description, state: state ?? 'default' });
   }
 };
 
