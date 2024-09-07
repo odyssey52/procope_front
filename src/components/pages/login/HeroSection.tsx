@@ -1,5 +1,6 @@
-import TrafficLightCard from "@/components/common/ui/card/TrafficLightCard";
-import styled from "styled-components";
+import TrafficLightCard from '@/components/common/ui/card/TrafficLightCard';
+import Text from '@/components/common/ui/Text';
+import styled from 'styled-components';
 
 const HeroSection = () => {
   return (
@@ -9,12 +10,14 @@ const HeroSection = () => {
         <TrafficLightCard />
       </ImageBox>
       <TextBox>
-        <Title>애자일 팀 원픽 회고 관리 서비스</Title>
-        <Description>
+        <Text variant="heading_24" color="invers">
+          애자일 팀 원픽 회고 관리 서비스
+        </Text>
+        <Text variant="body_16_medium" color="invers">
           목표관리와 회고를 수치화하여 관리할 수 있게 도와드립니다.
           <br />
           회고 진행사항을 한눈에 확인해 보세요.
-        </Description>
+        </Text>
       </TextBox>
     </Wrapper>
   );
@@ -54,15 +57,7 @@ const TextBox = styled.div`
   align-items: center;
   flex-direction: column;
 `;
-const Title = styled.h1`
-  color: ${({ theme }) => theme.sementicColors.text.invers};
-  ${({ theme }) => theme.fontStyle.heading_24};
-`;
-const Description = styled.p`
-  text-align: center;
-  color: ${({ theme }) => theme.sementicColors.text.invers};
-  ${({ theme }) => theme.fontStyle.body_16_medium};
-`;
-HeroSection.displayName = "HeroSection";
+
+HeroSection.displayName = 'HeroSection';
 
 export default HeroSection;

@@ -1,13 +1,13 @@
 import styled, { css } from "styled-components";
 
 interface ButtonProps {
-  type?: "secondary" | "outline" | "error" | "tertiary"; // default : primary
-  size?: "36" | "48"; // default : 40
-  leftIcon?: string;
-  rightIcon?: string;
+  $type?: "secondary" | "outline" | "error" | "tertiary"; // default : primary
+  $size?: "36" | "48"; // default : 40
+  $leftIcon?: string;
+  $rightIcon?: string;
 }
 
-const getButtonTypeStyles = (type: ButtonProps["type"]) => {
+const getButtonTypeStyles = (type: ButtonProps["$type"]) => {
   switch (type) {
     case "secondary":
       return css`
@@ -94,7 +94,7 @@ const getButtonTypeStyles = (type: ButtonProps["type"]) => {
   }
 };
 
-const getButtonSizeStyles = (size: ButtonProps["size"]) => {
+const getButtonSizeStyles = (size: ButtonProps["$size"]) => {
   switch (size) {
     case "36":
       return css`
@@ -131,20 +131,20 @@ const Button = styled.button<ButtonProps>`
       box-shadow: none;
     }
   }
-  ${({ leftIcon }) =>
-    leftIcon &&
+  ${({ $leftIcon }) =>
+    $leftIcon &&
     css`
       &::before {
         content: "";
         position: relative;
         width: 20px;
         height: 20px;
-        background-image: url(${leftIcon});
+        background-image: url(${$leftIcon});
         background-size: cover;
       }
     `};
-  ${({ type }) => getButtonTypeStyles(type)}
-  ${({ size }) => getButtonSizeStyles(size)}
+  ${({ $type: type }) => getButtonTypeStyles(type)}
+  ${({ $size: size }) => getButtonSizeStyles(size)}
 `;
 
 export default Button;

@@ -1,7 +1,8 @@
-import styled from "styled-components";
-import GoogleLoginButton from "./GoogleLoginButton";
-import NaverLoginButton from "./NaverLoginButton";
-import Logo from "@/components/common/Logo";
+import styled from 'styled-components';
+import GoogleLoginButton from './GoogleLoginButton';
+import NaverLoginButton from './NaverLoginButton';
+import Logo from '@/components/common/Logo';
+import Text from '@/components/common/ui/Text';
 
 const LoginSection = () => {
   return (
@@ -9,8 +10,10 @@ const LoginSection = () => {
       <Content>
         <Logo type="iconText" size={147} />
         <TitleBox>
-          <Title>소셜 계정으로 로그인해 주세요.</Title>
-          <Description>로그인 후 서비스를 이용할 수 있습니다.</Description>
+          <Text variant="heading_24">소셜 계정으로 로그인해 주세요.</Text>
+          <Text variant="body_16_semibold" color="tertiary">
+            로그인 후 서비스를 이용할 수 있습니다.
+          </Text>
         </TitleBox>
         <ButtonBox>
           <GoogleLoginButton />
@@ -44,14 +47,7 @@ const TitleBox = styled.div`
   margin-top: 32px;
   margin-bottom: 40px;
 `;
-const Title = styled.h1`
-  ${({ theme }) => theme.fontStyle.heading_24};
-  color: ${({ theme }) => theme.sementicColors.text.primary};
-`;
-const Description = styled.p`
-  ${({ theme }) => theme.fontStyle.body_16_semibold};
-  color: ${({ theme }) => theme.sementicColors.text.tertiary};
-`;
+
 const ButtonBox = styled.div`
   position: relative;
   width: 100%;
@@ -62,6 +58,6 @@ const ButtonBox = styled.div`
     width: 100%;
   }
 `;
-LoginSection.displayName = "LoginSection";
+LoginSection.displayName = 'LoginSection';
 
 export default LoginSection;
