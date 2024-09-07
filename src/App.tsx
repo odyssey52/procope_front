@@ -5,11 +5,13 @@ import { ThemeProvider } from 'styled-components';
 import GlobalStyles from './styles/GlobalStyles';
 import NaverCallback from './components/pages/login/NaverCallback';
 import ConfirmDialog from './components/common/ui/modal/ConfirmModal';
+import Toast from './components/common/ui/modal/Toast';
 
 function App() {
   return (
     <ThemeProvider theme={theme}>
       <GlobalStyles />
+      <Toast />
       <ConfirmDialog />
       <Routes>
         <Route path="/login" element={<Login />} />

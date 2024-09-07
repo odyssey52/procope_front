@@ -3,6 +3,7 @@ import { create } from 'zustand';
 export type ConfirmModalState = {
   isOpen: boolean;
   title: string | React.ReactNode;
+  type?: 'error';
   icon?: React.ReactNode;
   description?: string;
   confirmLabel?: string;
@@ -25,6 +26,7 @@ const open = (options: Omit<ConfirmModalState, 'isOpen'>) => {
   return new Promise<boolean>((resolve) => {
     set({
       isOpen: true,
+      type: options.type,
       icon: options.icon,
       title: options.title,
       description: options.description,

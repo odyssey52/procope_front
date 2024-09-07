@@ -3,9 +3,11 @@ import styled from 'styled-components';
 import { elevation, zIndex } from '@/styles/mixin';
 import Modal from './common/Modal';
 import Button from '../button/Button';
+import Icon from '../icon/Icon';
 
 const ConfirmDialog = () => {
   const state = useConfirmModalStore();
+  const errorIcon = '/assets/icons/graphic/fill/error.svg';
   if (!state.isOpen) {
     return null;
   }
@@ -13,17 +15,17 @@ const ConfirmDialog = () => {
     <Modal portalId="confirm-dialog">
       <Wrapper>
         <Content>
-          {state.icon}
+          {state.type === 'error' ? <Icon src={errorIcon} width={80} /> : state.icon}
           <TextBox>
             <Title>{state.title}</Title>
             <Description>{state.description}</Description>
           </TextBox>
         </Content>
         <ButtonBox>
-          <Button $type="tertiary" $size="48" onClick={state.onConfirm}>
+          <Button $type="tertiary" $size="48" onClick={state.onCancel}>
             {state.cancelLabel}
           </Button>
-          <Button $size="48" onClick={state.onCancel}>
+          <Button $size="48" onClick={state.onConfirm} $type={state.type}>
             {state.confirmLabel}
           </Button>
         </ButtonBox>
@@ -51,6 +53,7 @@ const Content = styled.div`
   flex-direction: column;
   align-items: center;
   gap: 16px;
+  padding: 8px 0;
 `;
 const TextBox = styled.div`
   position: relative;

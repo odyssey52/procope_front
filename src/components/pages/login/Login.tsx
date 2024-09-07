@@ -1,9 +1,10 @@
+import Icon from '@/components/common/ui/icon/Icon';
 import { confirmModalActions } from '@/store/modal/confirmModal';
 import styled from 'styled-components';
 import HeroSection from './HeroSection';
 import LoginSection from './LoginSection';
 import { useEffect } from 'react';
-import Icon from '@/components/common/ui/icon/Icon';
+import { toastActions } from '@/store/modal/toast';
 
 const Login = () => {
   const handleClick = () => {
@@ -17,8 +18,14 @@ const Login = () => {
       onConfirm: () => console.log('작성 중이던 스테퍼로 이동'),
     });
   };
+  const handleToast = () => {
+    toastActions.open({
+      title: '로그인 실패.',
+      description: '잠시 후 다시 시도해주세요.',
+    });
+  };
   useEffect(() => {
-    handleClick();
+    handleToast();
   }, []);
   return (
     <Wrapper>
