@@ -1,5 +1,6 @@
 import JobMainCard from '@/components/common/ui/card/JobMainCard';
 import JobSubCard from '@/components/common/ui/card/JobSubCard';
+import ProgressBar from '@/components/common/ui/progress/ProgressBar';
 import Radio from '@/components/common/ui/radio/Radio';
 import styled from 'styled-components';
 
@@ -11,6 +12,7 @@ const Onboarding = () => {
       <Radio id="c" name="a" $size="sm" />
       <Radio id="b" name="a" />
       <Radio id="a" name="a" $size="lg" />
+      <ProgressBar rate={100} />
       <JobMainCard text="개발" icon="/assets/icons/graphic/glass/laptop-on.svg" />
       <JobMainCard text="개발" icon="/assets/icons/graphic/glass/laptop-on.svg" state="selected" />
       <JobMainCard text="개발" icon="/assets/icons/graphic/glass/laptop-on.svg" state="disabled" />
