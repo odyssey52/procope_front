@@ -7,6 +7,7 @@ import NaverCallback from './components/pages/login/NaverCallback';
 import ConfirmDialog from './components/common/ui/modal/ConfirmModal';
 import Toast from './components/common/ui/modal/Toast';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import Onboarding from './components/pages/onboarding/Onboarding';
 
 const queryClient = new QueryClient();
 
@@ -20,6 +21,7 @@ function App() {
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route path="/login/naver/callback" element={<NaverCallback />} />
+          <Route path="/onboarding" element={<Onboarding />} />
         </Routes>
       </ThemeProvider>
     </QueryClientProvider>
