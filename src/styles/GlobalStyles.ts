@@ -10,7 +10,7 @@ const GlobalStyles = createGlobalStyle`
     }
     input {
       &[type="radio"] {
-margin: 0;
+        margin: 0;
       }
     }
     body, button {

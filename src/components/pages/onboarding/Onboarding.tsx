@@ -4,7 +4,7 @@ import styled from 'styled-components';
 const Onboarding = () => {
   return (
     <Wrapper>
-      <Radio id="a" name="a" />
+      <Radio id="a" name="a" $size="lg" />
       <Radio id="a" name="a" />
     </Wrapper>
   );
