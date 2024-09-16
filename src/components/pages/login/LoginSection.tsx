@@ -3,8 +3,11 @@ import GoogleLoginButton from './GoogleLoginButton';
 import NaverLoginButton from './NaverLoginButton';
 import Logo from '@/components/common/Logo';
 import Text from '@/components/common/ui/Text';
+import { GoogleOAuthProvider } from '@react-oauth/google';
 
 const LoginSection = () => {
+  const GOOGLE_CLIENT_ID = process.env.REACT_APP_GOOGLE_CLIENT_ID!;
+
   return (
     <Wrapper>
       <Content>
@@ -16,7 +19,9 @@ const LoginSection = () => {
           </Text>
         </TitleBox>
         <ButtonBox>
-          <GoogleLoginButton />
+          <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
+            <GoogleLoginButton />
+          </GoogleOAuthProvider>
           <NaverLoginButton />
         </ButtonBox>
       </Content>
