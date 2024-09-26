@@ -4,7 +4,7 @@ import TextButton from '../button/TextButton';
 import styled from 'styled-components';
 
 interface BreadcrumbProps {
-  paths: { [key: string]: string }; // key는 경로 이름, value는 URL
+  paths: { [key: string]: string }; // key는 경로 이름 (ex. 팀 목록), value는 (ex. /team)
 }
 
 const Breadcrumbs: React.FC<BreadcrumbProps> = ({ paths }) => {
@@ -17,7 +17,7 @@ const Breadcrumbs: React.FC<BreadcrumbProps> = ({ paths }) => {
           <Breadcrumb key={index}>
             <Link to={path}>
               <TextButton
-                $type="24"
+                $type="16"
                 disabled={index < pathEntries.length - 1}
                 $rightIcon={index < pathEntries.length - 1 ? '/assets/icons/line/direction-right.svg' : undefined} // 마지막 항목일 경우 rightIcon 없음
               >

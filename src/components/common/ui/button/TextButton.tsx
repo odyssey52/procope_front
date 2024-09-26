@@ -1,14 +1,14 @@
 import styled, { css } from 'styled-components';
 
 interface TextButtonProps {
-  $type?: '14' | '20_underline' | '24'; // default : 12
+  $type?: '16' | '20_underline' | '24'; // default : 12
   $leftIcon?: string;
   $rightIcon?: string;
 }
 
 const getButtonTypeStyles = (type: TextButtonProps['$type']) => {
   switch (type) {
-    case '14':
+    case '16':
       return css`
         ${({ theme }) => theme.fontStyle.body_14_medium};
       `;
