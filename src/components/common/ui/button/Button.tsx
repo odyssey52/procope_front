@@ -28,7 +28,8 @@ const getButtonTypeStyles = (type: ButtonProps['$type']) => {
         background-color: ${({ theme }) => theme.sementicColors.bg.invers};
         border: 1px solid ${({ theme }) => theme.sementicColors.border.primary};
         color: ${({ theme }) => theme.sementicColors.text.primary};
-        &::before {
+        &::before,
+        &::after {
           background-color: ${({ theme }) => theme.sementicColors.icon.primary};
         }
         &:hover,
@@ -116,13 +117,9 @@ const Button = styled.button<ButtonProps>`
   justify-content: center;
   gap: 8px;
   padding: 8px 12px;
-  border-radius: 4px;
   border: none;
   cursor: pointer;
   color: ${({ theme }) => theme.sementicColors.text.invers};
-  > svg {
-    stroke: ${({ theme }) => theme.sementicColors.text.primary};
-  }
   ${({ theme }) => theme.fontStyle.body_14_medium};
   border-radius: 12px;
   &:disabled {
@@ -141,6 +138,22 @@ const Button = styled.button<ButtonProps>`
         height: 20px;
         background-size: cover;
         mask-image: url(${$leftIcon});
+        mask-size: cover;
+        background-color: ${({ theme }) => theme.sementicColors.icon.invers};
+        background-image: none;
+      }
+    `};
+
+  ${({ $rightIcon }) =>
+    $rightIcon &&
+    css`
+      &::after {
+        content: '';
+        position: relative;
+        width: 20px;
+        height: 20px;
+        background-size: cover;
+        mask-image: url(${$rightIcon});
         mask-size: cover;
         background-color: ${({ theme }) => theme.sementicColors.icon.invers};
         background-image: none;

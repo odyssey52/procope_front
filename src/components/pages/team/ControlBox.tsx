@@ -1,6 +1,5 @@
 import Button from '@/components/common/ui/button/Button';
 import TextButton from '@/components/common/ui/button/TextButton';
-import Icon from '@/components/common/ui/icon/Icon';
 import styled from 'styled-components';
 
 const ControlBox = () => {
@@ -19,7 +18,6 @@ const Wrapper = styled.div`
   display: flex;
   gap: 12px;
 `;
-const Search = styled(Icon)``;
 
 ControlBox.displayName = 'ControlBox';
 

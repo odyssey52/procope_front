@@ -4,6 +4,7 @@ import PageTitle from '@/components/common/ui/title/PageTitle';
 import HeaderLayout from '@/components/layout/HeaderLayout';
 import styled from 'styled-components';
 import ControlBox from './ControlBox';
+import Tag from '@/components/common/ui/tag/Tag';
 
 const Team = () => {
   const paths = {
@@ -22,6 +23,14 @@ const Team = () => {
             </PageSubTitle>
           </TitleBox>
         </Head>
+        <Tag
+          $style="transparent"
+          $size="large"
+          $leftIcon="/assets/icons/line/plus.svg"
+          $rightIcon="/assets/icons/line/plus.svg"
+        >
+          tag
+        </Tag>
       </Content>
     </HeaderLayout>
   );
