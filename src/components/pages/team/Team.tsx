@@ -5,6 +5,7 @@ import HeaderLayout from '@/components/layout/HeaderLayout';
 import styled from 'styled-components';
 import ControlBox from './ControlBox';
 import Tag from '@/components/common/ui/tag/Tag';
+import Avatar from '@/components/common/ui/avatar/Avatar';
 
 const Team = () => {
   const paths = {
@@ -31,6 +32,7 @@ const Team = () => {
         >
           tag
         </Tag>
+        <Avatar nickname="B" size={84} type="profile" image="/assets/icons/graphic/profile/photo03.svg" />
       </Content>
     </HeaderLayout>
   );
