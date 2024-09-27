@@ -2,14 +2,14 @@ import styled, { css } from 'styled-components';
 
 interface AvatarProps {
   type?: 'initial' | 'profile';
-  size?: number; // default 36
+  size?: number; // default 32
   nickname?: string;
   image?: string;
 }
 
 interface AvatarStyledProps {
   $type?: 'initial' | 'profile';
-  $size?: number; // default 36
+  $size?: number; // default 32
   $nickname?: string;
   $image?: string;
 }
@@ -63,7 +63,7 @@ const Wrapper = styled.div<AvatarStyledProps>`
   display: flex;
   justify-content: center;
   align-items: center;
-  width: ${({ $size }) => $size ?? 36}px;
+  width: ${({ $size }) => $size ?? 32}px;
   aspect-ratio: 1/1;
   border-radius: 50%;
   color: ${({ theme }) => theme.sementicColors.text.invers};
@@ -86,7 +86,6 @@ const Wrapper = styled.div<AvatarStyledProps>`
     $image &&
     $type !== 'initial' &&
     css`
-      border: none;
       background-color: transparent;
       background-image: url(${$image});
     `};
@@ -96,7 +95,6 @@ const Wrapper = styled.div<AvatarStyledProps>`
     $type !== 'initial' &&
     css`
       background-color: transparent;
-      border: none;
       background-image: url('/assets/icons/graphic/profile/empty.svg');
     `};
 `;
