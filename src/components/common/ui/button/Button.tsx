@@ -1,21 +1,22 @@
-import styled, { css } from "styled-components";
+import { Colors } from '@/styles/theme';
+import styled, { css } from 'styled-components';
 
 interface ButtonProps {
-  $type?: "secondary" | "outline" | "error" | "tertiary"; // default : primary
-  $size?: "36" | "48"; // default : 40
+  $type?: 'secondary' | 'outline' | 'error' | 'tertiary'; // default : primary
+  $size?: '36' | '48'; // default : 40
   $leftIcon?: string;
   $rightIcon?: string;
+  $iconColor?: keyof Colors['icon'];
 }
 
-const getButtonTypeStyles = (type: ButtonProps["$type"]) => {
+const getButtonTypeStyles = (type: ButtonProps['$type']) => {
   switch (type) {
-    case "secondary":
+    case 'secondary':
       return css`
         background-color: ${({ theme }) => theme.sementicColors.bg.primary};
         &:hover,
         &:active {
-          background-color: ${({ theme }) =>
-            theme.sementicColors.bg.primary_hover_pressed};
+          background-color: ${({ theme }) => theme.sementicColors.bg.primary_hover_pressed};
           box-shadow: 0px 0px 0px 2px rgba(47, 78, 118, 0.3);
         }
         &:disabled {
@@ -24,17 +25,17 @@ const getButtonTypeStyles = (type: ButtonProps["$type"]) => {
           box-shadow: none;
         }
       `;
-    case "outline":
+    case 'outline':
       return css`
         background-color: ${({ theme }) => theme.sementicColors.bg.invers};
         border: 1px solid ${({ theme }) => theme.sementicColors.border.primary};
         color: ${({ theme }) => theme.sementicColors.text.primary};
+
         &:hover,
         &:active {
           background-color: ${({ theme }) => theme.sementicColors.bg.tertiary};
           box-shadow: 0px 0px 0px 2px rgba(47, 78, 118, 0.3);
-          color: ${({ theme }) =>
-            theme.sementicColors.text.primary_hover_pressed};
+          color: ${({ theme }) => theme.sementicColors.text.primary_hover_pressed};
         }
         &:disabled {
           background-color: ${({ theme }) => theme.sementicColors.bg.invers};
@@ -42,13 +43,12 @@ const getButtonTypeStyles = (type: ButtonProps["$type"]) => {
           box-shadow: none;
         }
       `;
-    case "error":
+    case 'error':
       return css`
         background-color: ${({ theme }) => theme.sementicColors.bg.danger};
         &:hover,
         &:active {
-          background-color: ${({ theme }) =>
-            theme.sementicColors.bg.danger_hover_pressed};
+          background-color: ${({ theme }) => theme.sementicColors.bg.danger_hover_pressed};
           box-shadow: 0px 0px 0px 2px rgba(248, 113, 113, 0.4);
         }
         &:disabled {
@@ -57,17 +57,15 @@ const getButtonTypeStyles = (type: ButtonProps["$type"]) => {
           box-shadow: none;
         }
       `;
-    case "tertiary":
+    case 'tertiary':
       return css`
         background-color: ${({ theme }) => theme.sementicColors.bg.tertiary};
         color: ${({ theme }) => theme.sementicColors.text.primary};
         &:hover,
         &:active {
-          background-color: ${({ theme }) =>
-            theme.sementicColors.bg.tertiary_hover_pressed};
+          background-color: ${({ theme }) => theme.sementicColors.bg.tertiary_hover_pressed};
           box-shadow: 0px 0px 0px 2px rgba(47, 78, 118, 0.3);
-          color: ${({ theme }) =>
-            theme.sementicColors.text.primary_hover_pressed};
+          color: ${({ theme }) => theme.sementicColors.text.primary_hover_pressed};
         }
         &:disabled {
           background-color: ${({ theme }) => theme.sementicColors.bg.tertiary};
@@ -81,8 +79,7 @@ const getButtonTypeStyles = (type: ButtonProps["$type"]) => {
         background-color: ${({ theme }) => theme.sementicColors.bg.brand};
         &:hover,
         &:active {
-          background-color: ${({ theme }) =>
-            theme.sementicColors.bg.brand_hover_pressed};
+          background-color: ${({ theme }) => theme.sementicColors.bg.brand_hover_pressed};
           box-shadow: 0px 0px 0px 2px rgba(94, 164, 255, 0.4);
         }
         &:disabled {
@@ -94,13 +91,13 @@ const getButtonTypeStyles = (type: ButtonProps["$type"]) => {
   }
 };
 
-const getButtonSizeStyles = (size: ButtonProps["$size"]) => {
+const getButtonSizeStyles = (size: ButtonProps['$size']) => {
   switch (size) {
-    case "36":
+    case '36':
       return css`
         height: 36px;
       `;
-    case "48":
+    case '48':
       return css`
         height: 48px;
         ${({ theme }) => theme.fontStyle.body_16_medium};
@@ -119,7 +116,6 @@ const Button = styled.button<ButtonProps>`
   justify-content: center;
   gap: 8px;
   padding: 8px 12px;
-  border-radius: 4px;
   border: none;
   cursor: pointer;
   color: ${({ theme }) => theme.sementicColors.text.invers};
@@ -131,20 +127,49 @@ const Button = styled.button<ButtonProps>`
       box-shadow: none;
     }
   }
-  ${({ $leftIcon }) =>
+  ${({ $leftIcon, $iconColor }) =>
     $leftIcon &&
     css`
       &::before {
-        content: "";
+        content: '';
         position: relative;
         width: 20px;
         height: 20px;
-        background-image: url(${$leftIcon});
         background-size: cover;
+        background-image: url(${$leftIcon});
+
+        ${$iconColor &&
+        css`
+          mask-image: url(${$leftIcon});
+          mask-size: cover;
+          background-color: ${({ theme }) => theme.sementicColors.icon[$iconColor]};
+          background-image: none;
+        `}
       }
     `};
-  ${({ $type: type }) => getButtonTypeStyles(type)}
-  ${({ $size: size }) => getButtonSizeStyles(size)}
+
+  ${({ $rightIcon, $iconColor }) =>
+    $rightIcon &&
+    css`
+      &::after {
+        content: '';
+        position: relative;
+        width: 20px;
+        height: 20px;
+        background-size: cover;
+        background-image: url(${$rightIcon});
+
+        ${$iconColor &&
+        css`
+          mask-image: url(${$rightIcon});
+          mask-size: cover;
+          background-color: ${({ theme }) => theme.sementicColors.icon[$iconColor]};
+          background-image: none;
+        `}
+      }
+    `};
+  ${({ $type }) => getButtonTypeStyles($type)}
+  ${({ $size }) => getButtonSizeStyles($size)}
 `;
 
 export default Button;
