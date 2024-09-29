@@ -4,14 +4,154 @@ import PageTitle from '@/components/common/ui/title/PageTitle';
 import HeaderLayout from '@/components/layout/HeaderLayout';
 import styled from 'styled-components';
 import ControlBox from './ControlBox';
-import Tag from '@/components/common/ui/tag/Tag';
-import Avatar from '@/components/common/ui/avatar/Avatar';
-import AvatarGroup from '@/components/common/ui/avatar/AvatarGroup';
+import TeamCardList, { TeamCardListProps } from './TeamCardList';
+
+const MOCK_TEAM_LIST: TeamCardListProps['teamList'] = [
+  {
+    tag: 'SQUAD',
+    name: 'Squad 1',
+    description: 'Squad 1 Description',
+    members: [
+      {
+        nickname: '김코딩',
+        image: 'https://avatars.githubusercontent.com/u/59657431?v=4',
+      },
+      {
+        nickname: '박디자인',
+        image: 'https://avatars.githubusercontent.com/u/59657431?v=4',
+      },
+      {
+        nickname: '이프로덕트',
+        image: 'https://avatars.githubusercontent.com/u/59657431?v=4',
+      },
+      {
+        nickname: '최매니저',
+        image: 'https://avatars.githubusercontent.com/u/59657431?v=4',
+      },
+      {
+        nickname: '정마케터',
+        image: 'https://avatars.githubusercontent.com/u/59657431?v=4',
+      },
+      {
+        nickname: '홍개발',
+        image: 'https://avatars.githubusercontent.com/u/59657431?v=4',
+      },
+      {
+        nickname: '김디자인',
+        image: 'https://avatars.githubusercontent.com/u/59657431?v=4',
+      },
+      {
+        nickname: '박프로덕트',
+        image: 'https://avatars.githubusercontent.com/u/59657431?v=4',
+      },
+      {
+        nickname: '이매니저',
+        image: 'https://avatars.githubusercontent.com/u/59657431?v=4',
+      },
+      {
+        nickname: '최마케터',
+        image: 'https://avatars.githubusercontent.com/u/59657431?v=4',
+      },
+      {
+        nickname: '정개발',
+        image: 'https://avatars.githubusercontent.com/u/59657431?v=4',
+      },
+      {
+        nickname: '홍디자인',
+        image: 'https://avatars.githubusercontent.com/u/59657431?v=4',
+      },
+      {
+        nickname: '김프로덕트',
+        image: 'https://avatars.githubusercontent.com/u/59657431?v=4',
+      },
+      {
+        nickname: '박매니저',
+        image: 'https://avatars.githubusercontent.com/u/59657431?v=4',
+      },
+      {
+        nickname: '이마케터',
+        image: 'https://avatars.githubusercontent.com/u/59657431?v=4',
+      },
+      {
+        nickname: '최개발',
+        image: 'https://avatars.githubusercontent.com/u/59657431?v=4',
+      },
+    ],
+  },
+  {
+    tag: 'FEATURE',
+    name: 'Feature 1',
+    description: 'Feature 1 Description',
+    members: [
+      {
+        nickname: '김코딩',
+        image: 'https://avatars.githubusercontent.com/u/59657431?v=4',
+      },
+      {
+        nickname: '박디자인',
+        image: 'https://avatars.githubusercontent.com/u/59657431?v=4',
+      },
+      {
+        nickname: '이프로덕트',
+        image: 'https://avatars.githubusercontent.com/u/59657431?v=4',
+      },
+      {
+        nickname: '최매니저',
+        image: 'https://avatars.githubusercontent.com/u/59657431?v=4',
+      },
+      {
+        nickname: '정마케터',
+        image: 'https://avatars.githubusercontent.com/u/59657431?v=4',
+      },
+    ],
+  },
+  {
+    tag: 'SQUAD',
+    name: 'Squad 2',
+    description: 'Squad 2 Description',
+    members: [
+      {
+        nickname: '김코딩',
+        image: 'https://avatars.githubusercontent.com/u/59657431?v=4',
+      },
+      {
+        nickname: '박디자인',
+        image: 'https://avatars.githubusercontent.com/u/59657431?v=4',
+      },
+      {
+        nickname: '이프로덕트',
+        image: 'https://avatars.githubusercontent.com/u/59657431?v=4',
+      },
+      {
+        nickname: '최매니저',
+        image: 'https://avatars.githubusercontent.com/u/59657431?v=4',
+      },
+      {
+        nickname: '정마케터',
+        image: 'https://avatars.githubusercontent.com/u/59657431?v=4',
+      },
+    ],
+  },
+  {
+    tag: 'FEATURE',
+    name: 'Feature 2',
+    description: 'Feature 2 Description',
+    members: [
+      {
+        nickname: '김코딩',
+        image: 'https://avatars.githubusercontent.com/u/59657431?v=4',
+      },
+      {
+        nickname: '박디자인',
+        image: 'https://avatars.githubusercontent.com/u/59657431?v=4',
+      },
+    ],
+  },
+];
 
 const Team = () => {
   const paths = {
     '팀 목록': '/team',
-    '팀 생성': '/team/create',
   };
   return (
     <HeaderLayout>
@@ -25,30 +165,7 @@ const Team = () => {
             </PageSubTitle>
           </TitleBox>
         </Head>
-        <Tag
-          $style="transparent"
-          $size="large"
-          $leftIcon="/assets/icons/line/plus.svg"
-          $rightIcon="/assets/icons/line/plus.svg"
-        >
-          tag
-        </Tag>
-        <AvatarGroup
-          profileList={[
-            { nickname: 'A', image: '/assets/icons/graphic/profile/photo01.svg' },
-            { nickname: 'B', image: '/assets/icons/graphic/profile/photo02.svg' },
-            { nickname: '김김김' },
-            { nickname: '이이이' },
-            { nickname: '' },
-            { nickname: '' },
-            { nickname: '' },
-            { nickname: 'E', image: '/assets/icons/graphic/profile/photo05.svg' },
-            { nickname: 'G', image: '/assets/icons/graphic/profile/photo07.svg' },
-            { nickname: 'H', image: '/assets/icons/graphic/profile/photo08.svg' },
-            { nickname: 'I', image: '/assets/icons/graphic/profile/photo09.svg' },
-          ]}
-        />
-        <Avatar nickname="B" size={84} type="profile" image="/assets/icons/graphic/profile/photo03.svg" />
+        <TeamCardList teamList={MOCK_TEAM_LIST} />
       </Content>
     </HeaderLayout>
   );

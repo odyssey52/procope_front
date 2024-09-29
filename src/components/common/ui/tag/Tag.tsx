@@ -186,7 +186,6 @@ const Tag = styled.span<TagProps>`
   position: relative;
   display: flex;
   align-items: center;
-  align-self: center;
   justify-content: center;
   gap: 2px;
   padding: 0px 4px;
