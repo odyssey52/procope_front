@@ -1,14 +1,20 @@
-import styled from 'styled-components';
+import Breadcrumbs from '@/components/common/ui/breadcrumbs/Breadcrumbs';
+import Container from '@/components/common/ui/Container';
+import HeaderLayout from '@/components/layout/HeaderLayout';
 
 const TeamCreate = () => {
   const paths = {
     '팀 목록': '/team',
     '팀 생성': '/team/create',
   };
-  return <Wrapper></Wrapper>;
+  return (
+    <HeaderLayout>
+      <Container>
+        <Breadcrumbs paths={paths} />
+      </Container>
+    </HeaderLayout>
+  );
 };
-
-const Wrapper = styled.div``;
 
 TeamCreate.displayName = 'TeamCreate';
 

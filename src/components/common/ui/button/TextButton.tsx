@@ -4,6 +4,7 @@ interface TextButtonProps {
   $type?: '16' | '20_underline' | '24'; // default : 12
   $leftIcon?: string;
   $rightIcon?: string;
+  $style?: 'disabled'; // 기존 disabled 속성은 이벤트를 차단시킴으로 스타일을 위한 disabled 속성 추가
 }
 
 const getButtonTypeStyles = (type: TextButtonProps['$type']) => {
@@ -47,13 +48,16 @@ const TextButton = styled.button<TextButtonProps>`
   &:hover {
     background-color: ${({ theme }) => theme.sementicColors.bg.tertiary_hover_pressed};
   }
-  &:disabled {
-    opacity: 0.4;
-    &:hover,
-    &:active {
-      background-color: transparent;
-    }
-  }
+  ${({ $style }) =>
+    $style === 'disabled' &&
+    css`
+      opacity: 0.4;
+      &:hover,
+      &:active {
+        background-color: transparent;
+      }
+    `}
+
   ${({ $leftIcon }) =>
     $leftIcon &&
     css`

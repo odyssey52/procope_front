@@ -26,7 +26,6 @@ const TeamCardList = ({ teamList }: TeamCardListProps) => {
 const Wrapper = styled.div`
   position: relative;
   display: grid;
-  margin-top: 40px;
   grid-template-columns: repeat(3, 1fr);
   gap: 24px;
 `;

@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 import Tag from '../tag/Tag';
 import AvatarGroup from '../avatar/AvatarGroup';
+import Text from '../Text';
 
 export interface TagList {
   SQUAD: {
@@ -44,8 +45,12 @@ const TeamCard = ({ tag, name, description, members, selected }: TeamCardProps) 
           {TAG_LIST[tag].label}
         </Tag>
         <TextBox>
-          <TeamName>{name}</TeamName>
-          <Description>{description}</Description>
+          <TeamName variant="heading_18" color="primary">
+            {name}
+          </TeamName>
+          <Description variant="body_14_regular" color="secondary">
+            {description}
+          </Description>
         </TextBox>
       </TeamInfo>
       <AvatarGroup profileList={members} />
@@ -94,9 +99,7 @@ const TextBox = styled.div`
   flex-direction: column;
   gap: 8px;
 `;
-const TeamName = styled.h3`
-  ${({ theme }) => theme.fontStyle.heading_18};
-  color: ${({ theme }) => theme.sementicColors.text.primary};
+const TeamName = styled(Text)`
   display: -webkit-box;
 
   -webkit-line-clamp: 1;
@@ -107,9 +110,7 @@ const TeamName = styled.h3`
   word-break: break-all;
   overflow: hidden;
 `;
-const Description = styled.p`
-  ${({ theme }) => theme.fontStyle.body_14_regular};
-  color: ${({ theme }) => theme.sementicColors.text.secondary};
+const Description = styled(Text)`
   display: -webkit-box;
   overflow: hidden;
 

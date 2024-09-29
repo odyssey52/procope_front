@@ -1,5 +1,6 @@
 import Button from '@/components/common/ui/button/Button';
 import TextButton from '@/components/common/ui/button/TextButton';
+import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
 const ControlBox = () => {
@@ -8,7 +9,11 @@ const ControlBox = () => {
       <TextButton $rightIcon="/assets/icons/line/direction-down.svg" $type="16">
         최신순
       </TextButton>
-      <Button $leftIcon="/assets/icons/line/plus.svg">팀 생성</Button>
+      <Link to="/team/create">
+        <Button $leftIcon="/assets/icons/line/plus.svg" $iconColor="invers">
+          팀 생성
+        </Button>
+      </Link>
     </Wrapper>
   );
 };

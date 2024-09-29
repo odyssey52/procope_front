@@ -1,3 +1,4 @@
+import { Colors } from '@/styles/theme';
 import styled, { css } from 'styled-components';
 
 interface ButtonProps {
@@ -5,6 +6,7 @@ interface ButtonProps {
   $size?: '36' | '48'; // default : 40
   $leftIcon?: string;
   $rightIcon?: string;
+  $iconColor?: keyof Colors['icon'];
 }
 
 const getButtonTypeStyles = (type: ButtonProps['$type']) => {
@@ -28,10 +30,7 @@ const getButtonTypeStyles = (type: ButtonProps['$type']) => {
         background-color: ${({ theme }) => theme.sementicColors.bg.invers};
         border: 1px solid ${({ theme }) => theme.sementicColors.border.primary};
         color: ${({ theme }) => theme.sementicColors.text.primary};
-        &::before,
-        &::after {
-          background-color: ${({ theme }) => theme.sementicColors.icon.primary};
-        }
+
         &:hover,
         &:active {
           background-color: ${({ theme }) => theme.sementicColors.bg.tertiary};
@@ -128,7 +127,7 @@ const Button = styled.button<ButtonProps>`
       box-shadow: none;
     }
   }
-  ${({ $leftIcon }) =>
+  ${({ $leftIcon, $iconColor }) =>
     $leftIcon &&
     css`
       &::before {
@@ -137,14 +136,19 @@ const Button = styled.button<ButtonProps>`
         width: 20px;
         height: 20px;
         background-size: cover;
-        mask-image: url(${$leftIcon});
-        mask-size: cover;
-        background-color: ${({ theme }) => theme.sementicColors.icon.invers};
-        background-image: none;
+        background-image: url(${$leftIcon});
+
+        ${$iconColor &&
+        css`
+          mask-image: url(${$leftIcon});
+          mask-size: cover;
+          background-color: ${({ theme }) => theme.sementicColors.icon[$iconColor]};
+          background-image: none;
+        `}
       }
     `};
 
-  ${({ $rightIcon }) =>
+  ${({ $rightIcon, $iconColor }) =>
     $rightIcon &&
     css`
       &::after {
@@ -153,14 +157,19 @@ const Button = styled.button<ButtonProps>`
         width: 20px;
         height: 20px;
         background-size: cover;
-        mask-image: url(${$rightIcon});
-        mask-size: cover;
-        background-color: ${({ theme }) => theme.sementicColors.icon.invers};
-        background-image: none;
+        background-image: url(${$rightIcon});
+
+        ${$iconColor &&
+        css`
+          mask-image: url(${$rightIcon});
+          mask-size: cover;
+          background-color: ${({ theme }) => theme.sementicColors.icon[$iconColor]};
+          background-image: none;
+        `}
       }
     `};
-  ${({ $type: type }) => getButtonTypeStyles(type)}
-  ${({ $size: size }) => getButtonSizeStyles(size)}
+  ${({ $type }) => getButtonTypeStyles($type)}
+  ${({ $size }) => getButtonSizeStyles($size)}
 `;
 
 export default Button;

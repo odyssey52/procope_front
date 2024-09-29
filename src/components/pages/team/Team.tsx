@@ -5,6 +5,9 @@ import HeaderLayout from '@/components/layout/HeaderLayout';
 import styled from 'styled-components';
 import ControlBox from './ControlBox';
 import TeamCardList, { TeamCardListProps } from './TeamCardList';
+import Empty from '@/components/common/ui/empty/Empty';
+import { useNavigate } from 'react-router-dom';
+import Container from '@/components/common/ui/Container';
 
 const MOCK_TEAM_LIST: TeamCardListProps['teamList'] = [
   {
@@ -148,46 +151,70 @@ const MOCK_TEAM_LIST: TeamCardListProps['teamList'] = [
     ],
   },
 ];
+const EMPTY_LIST: TeamCardListProps['teamList'] = [];
+
+const EMPTY_TITLE = '참여 중인 팀이 없습니다.';
+const EMPTY_DESCRIPTION = '팀을 생성하거나 다른 생성자에게 초대받으세요';
 
 const Team = () => {
+  const navigate = useNavigate();
   const paths = {
     '팀 목록': '/team',
   };
   return (
     <HeaderLayout>
-      <Content>
-        <Head>
-          <TitleBox>
-            <Breadcrumbs paths={paths} />
-            <PageTitle title="Team" />
-            <PageSubTitle first="총" point="5" last="개">
-              <ControlBox />
-            </PageSubTitle>
-          </TitleBox>
-        </Head>
-        <TeamCardList teamList={MOCK_TEAM_LIST} />
-      </Content>
+      <TeamContainer>
+        <Content>
+          <Head>
+            <TitleBox>
+              <Breadcrumbs paths={paths} />
+              <PageTitle title="Team" />
+              <PageSubTitle first="총" point={`${EMPTY_LIST.length}`} last="개">
+                <ControlBox />
+              </PageSubTitle>
+            </TitleBox>
+          </Head>
+          {EMPTY_LIST.length === 0 && (
+            <EmptyBox>
+              <Empty title={EMPTY_TITLE} description={EMPTY_DESCRIPTION} onClick={() => navigate('/team/create')} />
+            </EmptyBox>
+          )}
+          {EMPTY_LIST.length > 0 && <TeamCardList teamList={EMPTY_LIST} />}
+        </Content>
+      </TeamContainer>
     </HeaderLayout>
   );
 };
 
+const TeamContainer = styled(Container)`
+  flex-grow: 1;
+`;
 const Content = styled.div`
   position: relative;
   display: flex;
   align-self: center;
   flex-direction: column;
   margin-top: 24px;
+  width: 100%;
+  max-width: 924px;
 `;
 const Head = styled.div`
   position: relative;
   display: flex;
   flex-direction: column;
   gap: 8px;
+  margin-bottom: 40px;
 `;
 const TitleBox = styled.div`
   display: flex;
   flex-direction: column;
   gap: 16px;
+`;
+const EmptyBox = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 50vh;
 `;
 Team.displayName = 'Team';
 

@@ -9,6 +9,7 @@ import Toast from './components/common/ui/modal/Toast';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import Onboarding from './components/pages/onboarding/Onboarding';
 import Team from './components/pages/team/Team';
+import TeamCreate from './components/pages/team/create/TeamCreate';
 
 const queryClient = new QueryClient();
 
@@ -24,6 +25,7 @@ function App() {
           <Route path="/login/naver/callback" element={<NaverCallback />} />
           <Route path="/onboarding" element={<Onboarding />} />
           <Route path="/team" element={<Team />} />
+          <Route path="/team/create" element={<TeamCreate />} />
         </Routes>
       </ThemeProvider>
     </QueryClientProvider>

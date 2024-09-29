@@ -9,16 +9,15 @@ interface BreadcrumbProps {
 
 const Breadcrumbs: React.FC<BreadcrumbProps> = ({ paths }) => {
   const pathEntries = Object.entries(paths); // 객체를 배열로 변환
-
   return (
     <Wrapper aria-label="breadcrumb">
       <ol>
         {pathEntries.map(([name, path], index) => (
           <Breadcrumb key={index}>
-            <Link to={path}>
+            <Link to={path} onClick={() => console.log('1')}>
               <TextButton
                 $type="16"
-                disabled={index < pathEntries.length - 1}
+                $style={index < pathEntries.length - 1 ? 'disabled' : undefined}
                 $rightIcon={index < pathEntries.length - 1 ? '/assets/icons/line/direction-right.svg' : undefined} // 마지막 항목일 경우 rightIcon 없음
               >
                 {name}

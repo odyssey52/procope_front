@@ -2,7 +2,7 @@ import styled from 'styled-components';
 import Header from '../common/Header';
 
 interface HeaderLayoutProps {
-  children: React.ReactNode;
+  children?: React.ReactNode;
 }
 
 const HeaderLayout = ({ children }: HeaderLayoutProps) => {
@@ -18,6 +18,7 @@ const Wrapper = styled.div`
   position: relative;
   display: flex;
   flex-direction: column;
+  min-height: 100vh;
   padding-top: 24px;
 `;
 
