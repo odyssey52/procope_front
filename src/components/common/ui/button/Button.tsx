@@ -95,6 +95,7 @@ const getButtonSizeStyles = (size: ButtonProps['$size']) => {
   switch (size) {
     case '36':
       return css`
+        padding: 8px 12px;
         height: 36px;
       `;
     case '48':
@@ -115,7 +116,7 @@ const Button = styled.button<ButtonProps>`
   align-items: center;
   justify-content: center;
   gap: 8px;
-  padding: 8px 12px;
+  padding: 12px 16px;
   border: none;
   cursor: pointer;
   color: ${({ theme }) => theme.sementicColors.text.invers};
