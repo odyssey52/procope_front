@@ -13,7 +13,7 @@ const ProgressBar = ({ rate }: ProgressBarProps) => {
 const Wrapper = styled.div`
   position: relative;
   display: block;
-  width: 100%;
+  width: 90%;
   border-radius: 4px;
   overflow: hidden;
   background: ${({ theme }) => theme.sementicColors.bg.tertiary_hover_pressed};
