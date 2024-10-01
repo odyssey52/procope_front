@@ -20,7 +20,7 @@ const TeamCreate = () => {
 
   const navigate = useNavigate();
 
-  const [step, setStep] = useState<number>(2);
+  const [step, setStep] = useState<number>(1);
   const [teamType, setTeamType] = useState<number>(0);
   const [teamName, setTeamName] = useState<string>('');
   const [teamDescription, setTeamDescription] = useState<string>('');
@@ -36,6 +36,7 @@ const TeamCreate = () => {
     }
     return false;
   };
+
   const onClickNext = () => {
     if (step === 1 && teamType !== 0) {
       return setStep(step + 1);
