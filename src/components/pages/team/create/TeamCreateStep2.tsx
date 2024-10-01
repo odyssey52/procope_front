@@ -33,9 +33,10 @@ const TeamCreateStep2 = ({
           value={teamName}
           valueHandler={teamNameHandler}
           placeholder="팀 이름을 입력해 주세요. (최대 20자)"
+          errorDescription="팀 이름은 20글자 이하로 알파벳과 한글만 조합할 수 있습니다."
           maxLength={20}
           validation={teamName.length > 0 ? valid : undefined}
-          disabled
+          label="팀 이름"
         />
       </TeamInfoInputBox>
     </Wrapper>

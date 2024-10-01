@@ -1,6 +1,8 @@
-import { ChangeEvent, ChangeEventHandler } from 'react';
+import { ChangeEvent } from 'react';
 import styled, { css } from 'styled-components';
 import Icon from '../icon/Icon';
+import Description from '../description/Description';
+import Label from '../label/Label';
 
 interface PlaceholderProps {
   value: string;
@@ -11,6 +13,9 @@ interface PlaceholderProps {
   rightIcon?: string;
   validation?: boolean;
   disabled?: boolean;
+  label?: string;
+  description?: string;
+  errorDescription?: string;
 }
 
 const Placeholder = ({
@@ -22,21 +27,35 @@ const Placeholder = ({
   rightIcon,
   validation,
   disabled,
+  description,
+  errorDescription,
+  label,
 }: PlaceholderProps) => {
   const onChange = (_value: ChangeEvent<HTMLInputElement>) => {
     valueHandler(_value.target.value);
   };
 
   return (
-    <Wrapper $isValid={validation} $disabled={disabled}>
-      {leftIcon && <Icon src={leftIcon} width={20} />}
-      <Input value={value} onChange={onChange} placeholder={placeholder} maxLength={maxLength} disabled={disabled} />
-      {rightIcon && <Icon src={rightIcon} width={20} />}
+    <Wrapper>
+      {label && <Label isRequired>{label}</Label>}
+      <InputWrapper $isValid={validation} $disabled={disabled}>
+        {leftIcon && <Icon src={leftIcon} width={20} />}
+        <Input value={value} onChange={onChange} placeholder={placeholder} maxLength={maxLength} disabled={disabled} />
+        {rightIcon && <Icon src={rightIcon} width={20} />}
+      </InputWrapper>
+      {!!description && !errorDescription && <Description>{description}</Description>}
+      {!!errorDescription && validation === false && <Description type="error">{errorDescription}</Description>}
     </Wrapper>
   );
 };
 
-const Wrapper = styled.div<{ $isValid?: boolean; $disabled?: boolean }>`
+const Wrapper = styled.div`
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+`;
+const InputWrapper = styled.div<{ $isValid?: boolean; $disabled?: boolean }>`
   position: relative;
   display: flex;
   padding: 8px 12px;
