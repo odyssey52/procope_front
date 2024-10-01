@@ -5,6 +5,7 @@ interface JobMainCardProps {
   text: string;
   icon: string;
   state?: 'selected' | 'disabled';
+  onClick?: () => void;
 }
 
 const getStateStyle = (state?: 'selected' | 'disabled') => {
@@ -40,9 +41,9 @@ const getStateStyle = (state?: 'selected' | 'disabled') => {
       `;
   }
 };
-const JobMainCard = ({ text, icon, state }: JobMainCardProps) => {
+const JobMainCard = ({ text, icon, state, onClick }: JobMainCardProps) => {
   return (
-    <Wrapper $state={state}>
+    <Wrapper $state={state} onClick={onClick}>
       <Text variant="heading_20" color={state === 'disabled' ? 'disabled' : 'primary'}>
         {text}
       </Text>
