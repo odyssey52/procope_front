@@ -1,29 +1,45 @@
-import JobMainCard from '@/components/common/ui/card/JobMainCard';
-import JobSubCard from '@/components/common/ui/card/JobSubCard';
-import ProgressBar from '@/components/common/ui/progress/ProgressBar';
-import Radio from '@/components/common/ui/radio/Radio';
 import styled from 'styled-components';
+import FirstStep from './FirstStep';
+import SecondStep from './SecondStep';
+import ThirdStep from './ThirdStep';
+import CheckStep from './CheckStep';
+import Navbar from '@/components/common/Navbar';
 
 const Onboarding = () => {
+  const pageMove = () => {
+    const url = window.location.pathname;
+
+    if (url === '/onboarding/first') return <FirstStep />;
+    else if (url === '/onboarding/second') return <SecondStep />;
+    else if (url === '/onboarding/third') return <ThirdStep />;
+    else if (url === '/onboarding/check') return <CheckStep />;
+    else return null;
+  };
+
   return (
     <Wrapper>
-      <Radio id="a" name="a" $size="lg" />
-      <Radio id="b" name="a" />
-      <Radio id="c" name="a" $size="sm" />
-      <Radio id="b" name="a" />
-      <Radio id="a" name="a" $size="lg" />
-      <ProgressBar rate={100} />
-      <JobMainCard text="개발" icon="/assets/icons/graphic/glass/laptop-on.svg" />
-      <JobMainCard text="개발" icon="/assets/icons/graphic/glass/laptop-on.svg" state="selected" />
-      <JobMainCard text="개발" icon="/assets/icons/graphic/glass/laptop-on.svg" state="disabled" />
-      <JobSubCard text="개발" />
-      <JobSubCard text="개발" state="selected" />
-      <JobSubCard text="개발" state="disabled" />
+      <Navbar />
+      <Content>{pageMove()}</Content>
     </Wrapper>
   );
 };
 
-const Wrapper = styled.div``;
+const Wrapper = styled.div`
+  min-width: 100vw;
+  min-height: 100vh;
+  padding-top: 24px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+`;
+const Content = styled.div`
+  width: 100vw;
+  height: 100vh;
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
 
 Onboarding.displayName = 'Onboarding';
 
