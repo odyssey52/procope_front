@@ -1,9 +1,13 @@
 import styled, { css } from 'styled-components';
 import Text from '../Text';
 import Icon from '../icon/Icon';
+
 interface JobMainCardProps {
   text: string;
+  subText?: string;
+  icon?: string;
   state?: 'selected' | 'disabled';
+  onClick?: () => void;
 }
 
 const getStateStyle = (state?: 'selected' | 'disabled') => {
@@ -40,25 +44,40 @@ const getStateStyle = (state?: 'selected' | 'disabled') => {
   }
 };
 
-const JobSubCard = ({ text, state }: JobMainCardProps) => {
+const JobSubCard = ({ text, subText, icon, state, onClick }: JobMainCardProps) => {
   return (
-    <Wrapper $state={state}>
-      <Text variant="heading_20" color={state === 'disabled' ? 'disabled' : 'primary'}>
-        {text}
-      </Text>
+    <Wrapper $state={state} onClick={onClick}>
+      {icon && <CardIcon src={icon} width={80} />}
+      <TextBox>
+        <Text variant="heading_20" color={state === 'disabled' ? 'disabled' : 'primary'}>
+          {text}
+        </Text>
+        {subText && (
+          <Text variant="body_14_regular" color={state === 'disabled' ? 'disabled' : 'secondary'}>
+            {subText}
+          </Text>
+        )}
+      </TextBox>
     </Wrapper>
   );
 };
 
 const Wrapper = styled.div<{ $state?: 'selected' | 'disabled' }>`
-  position: relative;
-  display: flex;
-  justify-content: center;
-  max-width: 292px;
+  width: 292px;
+  max-height: 240px;
   padding: 36px 20px;
   border-radius: 16px;
+  text-align: center;
   cursor: pointer;
   ${({ $state }) => getStateStyle($state)}
+`;
+const TextBox = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+`;
+const CardIcon = styled(Icon)`
+  margin-bottom: 12px;
 `;
 
 JobSubCard.displayName = 'JobSubCard';
