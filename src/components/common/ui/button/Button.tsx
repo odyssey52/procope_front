@@ -59,7 +59,7 @@ const getButtonTypeStyles = (type: ButtonProps['$type']) => {
       `;
     case 'tertiary':
       return css`
-        background-color: ${({ theme }) => theme.sementicColors.bg.tertiary};
+        background-color: ${({ theme }) => theme.sementicColors.bg.tertiary_hover_pressed};
         color: ${({ theme }) => theme.sementicColors.text.primary};
         &:hover,
         &:active {
@@ -68,7 +68,7 @@ const getButtonTypeStyles = (type: ButtonProps['$type']) => {
           color: ${({ theme }) => theme.sementicColors.text.primary_hover_pressed};
         }
         &:disabled {
-          background-color: ${({ theme }) => theme.sementicColors.bg.tertiary};
+          background-color: ${({ theme }) => theme.sementicColors.bg.tertiary_hover_pressed};
           color: ${({ theme }) => theme.sementicColors.text.primary};
           opacity: 0.4;
           box-shadow: none;
@@ -95,6 +95,7 @@ const getButtonSizeStyles = (size: ButtonProps['$size']) => {
   switch (size) {
     case '36':
       return css`
+        padding: 8px 12px;
         height: 36px;
       `;
     case '48':
@@ -115,7 +116,7 @@ const Button = styled.button<ButtonProps>`
   align-items: center;
   justify-content: center;
   gap: 8px;
-  padding: 8px 12px;
+  padding: 12px 16px;
   border: none;
   cursor: pointer;
   color: ${({ theme }) => theme.sementicColors.text.invers};

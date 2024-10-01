@@ -1,8 +1,6 @@
 import styled from 'styled-components';
 import HeroSection from './HeroSection';
 import LoginSection from './LoginSection';
-import { useEffect } from 'react';
-import { toastActions } from '@/store/modal/toast';
 
 const Login = () => {
   // 모달 및 토스트 사용 예시
@@ -18,15 +16,13 @@ const Login = () => {
   //   });
   // };
 
-  const handleToast = () => {
-    toastActions.open({
-      state: 'warning',
-      title: '로그인 실패',
-    });
-  };
-  useEffect(() => {
-    handleToast();
-  }, []);
+  // const handleToast = () => {
+  //   toastActions.open({
+  //     state: 'warning',
+  //     title: '로그인 실패',
+  //   });
+  // };
+
   return (
     <Wrapper>
       <Content>
