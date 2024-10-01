@@ -4,7 +4,7 @@ import styled, { css } from 'styled-components';
 interface LabelProps {
   icon?: string;
   size?: 12 | 16; // default 14
-  isRequired?: boolean;
+  required?: boolean; // 필수 입력 여부 표시 ( * )
 }
 const LABEL_STYLE_LIST = {
   12: {
@@ -37,8 +37,8 @@ const Label = styled.span<LabelProps>`
         background-size: cover;
       }
     `}
-  ${({ isRequired, theme }) =>
-    isRequired &&
+  ${({ required, theme }) =>
+    required &&
     css`
       &::after {
         content: '*';

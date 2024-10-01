@@ -8,6 +8,7 @@ import { useState } from 'react';
 import styled from 'styled-components';
 import TeamCreateStep1 from './TeamCreateStep1';
 import TeamCreateStep2 from './TeamCreateStep2';
+import { useNavigate } from 'react-router-dom';
 
 const PATH = {
   '팀 목록': '/team',
@@ -15,20 +16,33 @@ const PATH = {
 };
 
 const TeamCreate = () => {
+  const TOTAL_STEP = 2;
+
+  const navigate = useNavigate();
+
   const [step, setStep] = useState<number>(2);
   const [teamType, setTeamType] = useState<number>(0);
   const [teamName, setTeamName] = useState<string>('');
   const [teamDescription, setTeamDescription] = useState<string>('');
+
+  const teamNameValid = teamName.length <= 20 && /^[a-zA-Z0-9가-힣]*$/.test(teamName);
+  const teamDescriptionValid = teamName.length <= 200 && /^[a-zA-Z0-9가-힣]*$/.test(teamDescription);
+
   const stepValidation = () => {
     if (step === 1 && teamType !== 0) {
+      return true;
+    } else if (step === 2 && teamName.length > 0 && teamNameValid && teamDescriptionValid) {
       return true;
     }
     return false;
   };
   const onClickNext = () => {
-    if (step === 1) {
-      setStep(step + 1);
+    if (step === 1 && teamType !== 0) {
+      return setStep(step + 1);
+    } else if (step === 2 && teamName.length > 0 && teamNameValid && teamDescriptionValid) {
+      return navigate('/team/create/done');
     }
+    return console.log('입력값을 확인해주세요.');
   };
   const onClickPrev = () => {
     if (step === 2) {
@@ -55,9 +69,9 @@ const TeamCreate = () => {
           <Head>
             <Breadcrumbs paths={PATH} />
             <ProgressBox>
-              <ProgressBar rate={100 * (step / 2)} />
+              <ProgressBar rate={100 * (step / TOTAL_STEP)} />
               <Stepper>
-                {step}/{2}단계
+                {step}/{TOTAL_STEP}단계
               </Stepper>
             </ProgressBox>
           </Head>
@@ -68,6 +82,8 @@ const TeamCreate = () => {
               teamNameHandler={teamNameHandler}
               teamDescription={teamDescription}
               teamDescriptionHandler={teamDescriptionHandler}
+              teamNameValid={teamNameValid}
+              teamDescriptionValid={teamDescriptionValid}
             />
           )}
           <ControlBox>

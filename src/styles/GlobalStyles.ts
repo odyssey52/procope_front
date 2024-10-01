@@ -25,6 +25,7 @@ const GlobalStyles = createGlobalStyle`
       -webkit-user-select: auto;
       -ms-user-select: auto;
       user-select: auto;
+      padding: 0;
     }
     input:focus {
       outline: none;

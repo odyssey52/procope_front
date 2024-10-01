@@ -1,16 +1,14 @@
 import { ChangeEvent, useRef } from 'react';
 import styled, { css } from 'styled-components';
-import Icon from '../icon/Icon';
 import Description from '../description/Description';
 import Label from '../label/Label';
+import Text from '../Text';
 
-interface PlaceholderProps {
+interface TextAreaProps {
   value: string;
-  valueHandler?: (value: string) => void;
+  valueHandler: (value: string) => void;
   placeholder?: string;
   maxLength?: number;
-  leftIcon?: string;
-  rightIcon?: string;
   validation?: boolean;
   disabled?: boolean;
   label?: {
@@ -21,32 +19,33 @@ interface PlaceholderProps {
   errorDescription?: string;
 }
 
-const Placeholder = ({
+const TextArea = ({
   value,
   valueHandler,
   placeholder,
   maxLength,
-  leftIcon,
-  rightIcon,
   validation,
   disabled,
   description,
   errorDescription,
   label,
-}: PlaceholderProps) => {
-  const inputRef = useRef<HTMLInputElement>(null);
+}: TextAreaProps) => {
+  const inputRef = useRef<HTMLTextAreaElement>(null);
 
-  const onChange = (_value: ChangeEvent<HTMLInputElement>) => {
-    valueHandler && valueHandler(_value.target.value);
+  const charCount = value.length.toString().padStart(3, '0');
+
+  const onChange = (_value: ChangeEvent<HTMLTextAreaElement>) => {
+    valueHandler(_value.target.value);
   };
+
   const handleWrapperClick = () => {
     inputRef.current?.focus();
   };
+
   return (
     <Wrapper onClick={handleWrapperClick}>
       {label && <Label required={label.required}>{label.text}</Label>}
       <InputWrapper $isValid={validation} $disabled={disabled}>
-        {leftIcon && <Icon src={leftIcon} width={20} />}
         <Input
           ref={inputRef}
           value={value}
@@ -55,7 +54,7 @@ const Placeholder = ({
           maxLength={maxLength}
           disabled={disabled}
         />
-        {rightIcon && <Icon src={rightIcon} width={20} />}
+        {maxLength && <Text variant="caption_12_regular" color="tertiary">{`${charCount}/${maxLength}`}</Text>}
       </InputWrapper>
       {!!description && !errorDescription && <Description>{description}</Description>}
       {!!errorDescription && validation === false && <Description type="error">{errorDescription}</Description>}
@@ -72,10 +71,11 @@ const Wrapper = styled.div`
 const InputWrapper = styled.div<{ $isValid?: boolean; $disabled?: boolean }>`
   position: relative;
   display: flex;
-  padding: 8px 12px;
-  align-items: center;
-  justify-content: space-between;
-  height: 40px;
+  flex-direction: column;
+  align-items: end;
+  padding: 12px;
+  min-height: 118px;
+  height: 100%;
   gap: 8px;
   border-radius: 8px;
   border: 1px solid ${({ theme }) => theme.sementicColors.border.primary};
@@ -109,11 +109,14 @@ const InputWrapper = styled.div<{ $isValid?: boolean; $disabled?: boolean }>`
       cursor: not-allowed;
     `}
 `;
-const Input = styled.input`
+const Input = styled.textarea`
   position: relative;
   display: flex;
   flex-grow: 1;
+  width: 100%;
+  resize: none;
   border: none;
+  outline: none;
   ${({ theme }) => theme.fontStyle.body_14_regular};
   color: ${({ theme }) => theme.sementicColors.text.primary};
   &::placeholder {
@@ -124,6 +127,6 @@ const Input = styled.input`
     cursor: not-allowed;
   }
 `;
-Placeholder.displayName = 'Placeholder';
+TextArea.displayName = 'Placeholder';
 
-export default Placeholder;
+export default TextArea;
