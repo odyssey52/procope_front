@@ -1,8 +1,12 @@
 import Button from '@/components/common/ui/button/Button';
+import TextButton from '@/components/common/ui/button/TextButton';
 import Text from '@/components/common/ui/Text';
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
 const CheckStep = () => {
+  const navigate = useNavigate();
+
   return (
     <Wrapper>
       <Text variant="heading_32">
@@ -39,9 +43,20 @@ const CheckStep = () => {
         </Text>
         해
       </Text>
-      <ButtonBox>
-        <Button>다음</Button>
-      </ButtonBox>
+      <ButtonContainer>
+        <ButtonBox>
+          <TextButton
+            $type="16"
+            $leftIcon="/assets/icons/line/direction-left.svg"
+            onClick={() => {
+              navigate('/onboarding/third');
+            }}
+          >
+            이전
+          </TextButton>
+          <Button>다음</Button>
+        </ButtonBox>
+      </ButtonContainer>
     </Wrapper>
   );
 };
@@ -50,10 +65,15 @@ const Wrapper = styled.div`
   width: 608px;
   height: 424px;
 `;
-const ButtonBox = styled.div`
-  margin-top: 48px;
+const ButtonContainer = styled.div`
   display: flex;
   justify-content: flex-end;
+  margin-top: 48px;
+`;
+const ButtonBox = styled.div`
+  width: 120px;
+  display: flex;
+  justify-content: space-between;
 `;
 
 export default CheckStep;
