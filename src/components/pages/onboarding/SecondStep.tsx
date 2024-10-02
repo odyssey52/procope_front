@@ -1,4 +1,5 @@
 import Button from '@/components/common/ui/button/Button';
+import TextButton from '@/components/common/ui/button/TextButton';
 // import JobSubCard from '@/compkonents/common/ui/card/JobSubCard';
 import ProgressBar from '@/components/common/ui/progress/ProgressBar';
 import Text from '@/components/common/ui/Text';
@@ -32,16 +33,27 @@ const SecondStep = () => {
           // <JobSubCard></JobSubCard>
         }
       </JobCardBox>
-      <ButtonBox>
-        <Button
-          // disabled
-          onClick={() => {
-            navigate('/onboarding/third');
-          }}
-        >
-          다음
-        </Button>
-      </ButtonBox>
+      <ButtonContainer>
+        <ButtonBox>
+          <TextButton
+            $type="16"
+            $leftIcon="/assets/icons/line/direction-left.svg"
+            onClick={() => {
+              navigate('/onboarding/first');
+            }}
+          >
+            이전
+          </TextButton>
+          <Button
+            // disabled
+            onClick={() => {
+              navigate('/onboarding/third');
+            }}
+          >
+            다음
+          </Button>
+        </ButtonBox>
+      </ButtonContainer>
     </Wrapper>
   );
 };
@@ -62,10 +74,15 @@ const JobCardBox = styled.div`
   flex-wrap: wrap;
   gap: 24px;
 `;
-const ButtonBox = styled.div`
-  margin-top: 48px;
+const ButtonContainer = styled.div`
   display: flex;
   justify-content: flex-end;
+  margin-top: 48px;
+`;
+const ButtonBox = styled.div`
+  width: 120px;
+  display: flex;
+  justify-content: space-between;
 `;
 
 export default SecondStep;

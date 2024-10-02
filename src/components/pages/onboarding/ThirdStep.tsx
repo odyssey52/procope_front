@@ -1,4 +1,5 @@
 import Button from '@/components/common/ui/button/Button';
+import TextButton from '@/components/common/ui/button/TextButton';
 import ProgressBar from '@/components/common/ui/progress/ProgressBar';
 import Radio from '@/components/common/ui/radio/Radio';
 import Text from '@/components/common/ui/Text';
@@ -49,16 +50,27 @@ const ThirdStep = () => {
           </div>
         );
       })}
-      <ButtonBox>
-        <Button
-          // disabled
-          onClick={() => {
-            navigate('/onboarding/check');
-          }}
-        >
-          다음
-        </Button>
-      </ButtonBox>
+      <ButtonContainer>
+        <ButtonBox>
+          <TextButton
+            $type="16"
+            $leftIcon="/assets/icons/line/direction-left.svg"
+            onClick={() => {
+              navigate('/onboarding/second');
+            }}
+          >
+            이전
+          </TextButton>
+          <Button
+            // disabled
+            onClick={() => {
+              navigate('/onboarding/check');
+            }}
+          >
+            다음
+          </Button>
+        </ButtonBox>
+      </ButtonContainer>
     </Wrapper>
   );
 };
@@ -87,10 +99,15 @@ const RadioBox = styled.div`
   align-items: center;
   justify-content: space-between;
 `;
-const ButtonBox = styled.div`
-  margin-top: 48px;
+const ButtonContainer = styled.div`
   display: flex;
   justify-content: flex-end;
+  margin-top: 48px;
+`;
+const ButtonBox = styled.div`
+  width: 120px;
+  display: flex;
+  justify-content: space-between;
 `;
 
 export default ThirdStep;

@@ -36,8 +36,8 @@ const FirstStep = () => {
               key={index}
               text={title}
               icon={img}
-              state={select === index ? 'selected' : undefined}
-              onClick={() => cardHandler(index)}
+              state={select === index + 1 ? 'selected' : undefined}
+              onClick={() => cardHandler(index + 1)}
             />
           );
         })}
