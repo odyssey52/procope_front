@@ -3,12 +3,14 @@ import TextButton from '@/components/common/ui/button/TextButton';
 // import JobSubCard from '@/compkonents/common/ui/card/JobSubCard';
 import ProgressBar from '@/components/common/ui/progress/ProgressBar';
 import Text from '@/components/common/ui/Text';
-import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
-const SecondStep = () => {
-  const navigate = useNavigate();
+interface Props {
+  onBefore: () => void;
+  onNext: () => void;
+}
 
+const SecondStep = ({ onBefore, onNext }: Props) => {
   return (
     <Wrapper>
       <Percent>
@@ -35,20 +37,12 @@ const SecondStep = () => {
       </JobCardBox>
       <ButtonContainer>
         <ButtonBox>
-          <TextButton
-            $type="16"
-            $leftIcon="/assets/icons/line/direction-left.svg"
-            onClick={() => {
-              navigate('/onboarding/first');
-            }}
-          >
+          <TextButton $type="16" $leftIcon="/assets/icons/line/direction-left.svg" onClick={onBefore}>
             이전
           </TextButton>
           <Button
             // disabled
-            onClick={() => {
-              navigate('/onboarding/third');
-            }}
+            onClick={onNext}
           >
             다음
           </Button>

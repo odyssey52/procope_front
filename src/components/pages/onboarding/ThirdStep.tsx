@@ -4,12 +4,14 @@ import ProgressBar from '@/components/common/ui/progress/ProgressBar';
 import Radio from '@/components/common/ui/radio/Radio';
 import Text from '@/components/common/ui/Text';
 import { tendencyTitle } from '@/constants/stepper';
-import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
-const ThirdStep = () => {
-  const navigate = useNavigate();
+interface Props {
+  onBefore: () => void;
+  onNext: () => void;
+}
 
+const ThirdStep = ({ onBefore, onNext }: Props) => {
   return (
     <Wrapper>
       <Percent>
@@ -52,20 +54,12 @@ const ThirdStep = () => {
       })}
       <ButtonContainer>
         <ButtonBox>
-          <TextButton
-            $type="16"
-            $leftIcon="/assets/icons/line/direction-left.svg"
-            onClick={() => {
-              navigate('/onboarding/second');
-            }}
-          >
+          <TextButton $type="16" $leftIcon="/assets/icons/line/direction-left.svg" onClick={onBefore}>
             이전
           </TextButton>
           <Button
             // disabled
-            onClick={() => {
-              navigate('/onboarding/check');
-            }}
+            onClick={onNext}
           >
             다음
           </Button>
