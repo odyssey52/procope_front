@@ -37,7 +37,7 @@ const TeamCreateDone = () => {
             </Text>
           </TitleBox>
           <ShareBox>
-            <Placeholder value={MOCK_URL} />
+            <Placeholder value={MOCK_URL} disabled />
             <Button $leftIcon="/assets/icons/line/link.svg" $type="tertiary" onClick={() => copyToClipboard(MOCK_URL)}>
               초대 링크 복사
             </Button>
