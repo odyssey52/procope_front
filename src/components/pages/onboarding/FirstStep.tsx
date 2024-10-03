@@ -4,11 +4,13 @@ import ProgressBar from '@/components/common/ui/progress/ProgressBar';
 import Text from '@/components/common/ui/Text';
 import { jobSelect } from '@/constants/stepper';
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
-const FirstStep = () => {
-  const navigate = useNavigate();
+interface Props {
+  onNext: () => void;
+}
+
+const FirstStep = ({ onNext }: Props) => {
   const [select, setSelect] = useState<number>();
   const cardHandler = (index: number) => {
     if (select === index) setSelect(undefined);
@@ -43,13 +45,7 @@ const FirstStep = () => {
         })}
       </JobCardBox>
       <ButtonBox>
-        <Button
-          disabled={!select}
-          onClick={() => {
-            // api 연결 전이라 지금은 그냥 이동만 되도록 해놓음
-            navigate('/onboarding/second');
-          }}
-        >
+        <Button disabled={!select} onClick={onNext}>
           다음
         </Button>
       </ButtonBox>

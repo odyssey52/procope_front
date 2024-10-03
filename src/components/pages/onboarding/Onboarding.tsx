@@ -1,19 +1,28 @@
 import Container from '@/components/common/ui/Container';
 import HeaderLayout from '@/components/layout/HeaderLayout';
 import styled from 'styled-components';
-import CheckStep from './CheckStep';
 import FirstStep from './FirstStep';
 import SecondStep from './SecondStep';
 import ThirdStep from './ThirdStep';
+import CheckStep from './CheckStep';
+import { useState } from 'react';
 
 const Onboarding = () => {
-  const pageMove = () => {
-    const url = window.location.pathname;
+  const [step, setStep] = useState('first');
 
-    if (url === '/onboarding/first') return <FirstStep />;
-    else if (url === '/onboarding/second') return <SecondStep />;
-    else if (url === '/onboarding/third') return <ThirdStep />;
-    else if (url === '/onboarding/check') return <CheckStep />;
+  const pageMove = () => {
+    if (step === 'first') return <FirstStep onNext={() => setStep('second')} />;
+    else if (step === 'second')
+      return (
+        <SecondStep
+          onBefore={() => setStep('first')}
+          onNext={() => {
+            setStep('third');
+          }}
+        />
+      );
+    else if (step === 'third') return <ThirdStep onBefore={() => setStep('second')} onNext={() => setStep('check')} />;
+    else if (step === 'check') return <CheckStep onBefore={() => setStep('third')} onNext={() => {}} />;
     else return null;
   };
 

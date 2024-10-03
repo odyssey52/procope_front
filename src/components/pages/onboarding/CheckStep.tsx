@@ -1,12 +1,14 @@
 import Button from '@/components/common/ui/button/Button';
 import TextButton from '@/components/common/ui/button/TextButton';
 import Text from '@/components/common/ui/Text';
-import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
-const CheckStep = () => {
-  const navigate = useNavigate();
+interface Props {
+  onBefore: () => void;
+  onNext: () => void;
+}
 
+const CheckStep = ({ onBefore, onNext }: Props) => {
   return (
     <Wrapper>
       <Text variant="heading_32">
@@ -45,16 +47,10 @@ const CheckStep = () => {
       </Text>
       <ButtonContainer>
         <ButtonBox>
-          <TextButton
-            $type="16"
-            $leftIcon="/assets/icons/line/direction-left.svg"
-            onClick={() => {
-              navigate('/onboarding/third');
-            }}
-          >
+          <TextButton $type="16" $leftIcon="/assets/icons/line/direction-left.svg" onClick={onBefore}>
             이전
           </TextButton>
-          <Button>다음</Button>
+          <Button onClick={onNext}>다음</Button>
         </ButtonBox>
       </ButtonContainer>
     </Wrapper>
