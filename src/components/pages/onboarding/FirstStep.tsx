@@ -54,8 +54,9 @@ const FirstStep = ({ onNext }: Props) => {
 };
 
 const Wrapper = styled.div`
-  width: 608px;
-  height: 684px;
+  position: relative;
+  max-width: 608px;
+  width: 100%;
 `;
 const Percent = styled.div`
   display: flex;

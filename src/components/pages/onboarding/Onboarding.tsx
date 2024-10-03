@@ -1,9 +1,10 @@
+import Container from '@/components/common/ui/Container';
+import HeaderLayout from '@/components/layout/HeaderLayout';
 import styled from 'styled-components';
 import FirstStep from './FirstStep';
 import SecondStep from './SecondStep';
 import ThirdStep from './ThirdStep';
 import CheckStep from './CheckStep';
-import Navbar from '@/components/common/Navbar';
 import { useState } from 'react';
 
 const Onboarding = () => {
@@ -26,26 +27,18 @@ const Onboarding = () => {
   };
 
   return (
-    <Wrapper>
-      <Navbar />
-      <Content>{pageMove()}</Content>
-    </Wrapper>
+    <HeaderLayout>
+      <Container>
+        <Content>{pageMove()}</Content>
+      </Container>
+    </HeaderLayout>
   );
 };
 
-const Wrapper = styled.div`
-  min-width: 100vw;
-  min-height: 100vh;
-  padding-top: 24px;
-  box-sizing: border-box;
-  display: flex;
-  flex-direction: column;
-`;
 const Content = styled.div`
-  width: 100vw;
-  height: 100vh;
-  flex: 1;
+  position: relative;
   display: flex;
+  flex: 1;
   justify-content: center;
   align-items: center;
 `;
