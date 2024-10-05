@@ -1,24 +1,21 @@
 import Button from '@/components/common/ui/button/Button';
 import TextButton from '@/components/common/ui/button/TextButton';
-// import JobSubCard from '@/compkonents/common/ui/card/JobSubCard';
-import ProgressBar from '@/components/common/ui/progress/ProgressBar';
+import JobSubCard from '@/components/common/ui/card/JobSubCard';
 import Text from '@/components/common/ui/Text';
+import { JOB_SUB_LIST, JobMainCategory } from '@/constants/stepper';
 import styled from 'styled-components';
 
 interface Props {
+  jobMain: JobMainCategory;
+  jobSub: string[];
+  jobSubHandler: (jobSub: string) => void;
   onBefore: () => void;
   onNext: () => void;
 }
 
-const SecondStep = ({ onBefore, onNext }: Props) => {
+const SecondStep = ({ jobMain, jobSub, jobSubHandler, onBefore, onNext }: Props) => {
   return (
     <Wrapper>
-      <Percent>
-        <ProgressBar rate={50} />
-        <Text variant="caption_12_regular" color="secondary">
-          2/3단계
-        </Text>
-      </Percent>
       <TextBox>
         <Text variant="heading_32">
           담당하고 계신 업무 분야를
@@ -30,20 +27,26 @@ const SecondStep = ({ onBefore, onNext }: Props) => {
         </Text>
       </TextBox>
       <JobCardBox>
-        {
-          // first에서 선택한 값을 백엔드에서 받아서 해당 값에 맞는 값을 띄워주기
-          // <JobSubCard></JobSubCard>
-        }
+        {JOB_SUB_LIST[jobMain].map((job: string) => {
+          const isDisabled = jobSub.length === 3 && !jobSub.includes(job);
+          const state = jobSub.includes(job) ? 'selected' : isDisabled ? 'disabled' : undefined;
+          return (
+            <JobSubCard
+              key={`JobSubCard-` + job}
+              text={job}
+              state={state}
+              onClick={() => jobSubHandler(job)}
+              disabled={isDisabled}
+            />
+          );
+        })}
       </JobCardBox>
       <ButtonContainer>
         <ButtonBox>
           <TextButton $type="16" $leftIcon="/assets/icons/line/direction-left.svg" onClick={onBefore}>
             이전
           </TextButton>
-          <Button
-            // disabled
-            onClick={onNext}
-          >
+          <Button disabled={jobSub.length === 0} onClick={onNext}>
             다음
           </Button>
         </ButtonBox>
@@ -54,11 +57,6 @@ const SecondStep = ({ onBefore, onNext }: Props) => {
 
 const Wrapper = styled.div`
   width: 608px;
-`;
-const Percent = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
 `;
 const TextBox = styled.div`
   margin: 40px 0px 36px 0px;

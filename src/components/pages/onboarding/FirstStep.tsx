@@ -1,30 +1,18 @@
 import Button from '@/components/common/ui/button/Button';
 import JobMainCard from '@/components/common/ui/card/JobMainCard';
-import ProgressBar from '@/components/common/ui/progress/ProgressBar';
 import Text from '@/components/common/ui/Text';
-import { jobSelect } from '@/constants/stepper';
-import { useState } from 'react';
+import { JOB_MAIN_LIST, JobMainCategory } from '@/constants/stepper';
 import styled from 'styled-components';
 
 interface Props {
+  jobMain: JobMainCategory | null;
+  jobMainHandler: (jobMain: JobMainCategory) => void;
   onNext: () => void;
 }
 
-const FirstStep = ({ onNext }: Props) => {
-  const [select, setSelect] = useState<number>();
-  const cardHandler = (index: number) => {
-    if (select === index) setSelect(undefined);
-    else setSelect(index);
-  };
-
+const FirstStep = ({ jobMain, jobMainHandler, onNext }: Props) => {
   return (
     <Wrapper>
-      <Percent>
-        <ProgressBar rate={25} />
-        <Text variant="caption_12_regular" color="secondary">
-          1/3단계
-        </Text>
-      </Percent>
       <TextBox>
         <Text variant="heading_32">주로 어떤 직무를 맡고 계신가요?</Text>
         <Text variant="body_16_medium" color="secondary">
@@ -32,20 +20,18 @@ const FirstStep = ({ onNext }: Props) => {
         </Text>
       </TextBox>
       <JobCardBox>
-        {Object.values(jobSelect).map(({ title, img }, index) => {
-          return (
-            <JobMainCard
-              key={index}
-              text={title}
-              icon={img}
-              state={select === index + 1 ? 'selected' : undefined}
-              onClick={() => cardHandler(index + 1)}
-            />
-          );
-        })}
+        {Object.entries(JOB_MAIN_LIST).map(([key, { title, img }]) => (
+          <JobMainCard
+            key={`JobMainCard-` + key}
+            text={title}
+            icon={img}
+            state={jobMain === key ? 'selected' : undefined}
+            onClick={() => jobMainHandler(key as JobMainCategory)}
+          />
+        ))}
       </JobCardBox>
       <ButtonBox>
-        <Button disabled={!select} onClick={onNext}>
+        <Button disabled={!jobMain} onClick={onNext}>
           다음
         </Button>
       </ButtonBox>
@@ -58,11 +44,7 @@ const Wrapper = styled.div`
   max-width: 608px;
   width: 100%;
 `;
-const Percent = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-`;
+
 const TextBox = styled.div`
   margin: 40px 0px 36px 0px;
 `;

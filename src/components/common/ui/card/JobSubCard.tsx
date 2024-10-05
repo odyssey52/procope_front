@@ -8,6 +8,7 @@ interface JobMainCardProps {
   icon?: string;
   state?: 'selected' | 'disabled';
   onClick?: () => void;
+  disabled?: boolean;
 }
 
 const getStateStyle = (state?: 'selected' | 'disabled') => {
@@ -44,9 +45,9 @@ const getStateStyle = (state?: 'selected' | 'disabled') => {
   }
 };
 
-const JobSubCard = ({ text, subText, icon, state, onClick }: JobMainCardProps) => {
+const JobSubCard = ({ text, subText, icon, state, onClick, disabled }: JobMainCardProps) => {
   return (
-    <Wrapper $state={state} onClick={onClick}>
+    <Wrapper $state={state} onClick={onClick} disabled={disabled}>
       {icon && <CardIcon src={icon} width={80} />}
       <TextBox>
         <Text variant="heading_20" color={state === 'disabled' ? 'disabled' : 'primary'}>
@@ -62,7 +63,7 @@ const JobSubCard = ({ text, subText, icon, state, onClick }: JobMainCardProps) =
   );
 };
 
-const Wrapper = styled.div<{ $state?: 'selected' | 'disabled' }>`
+const Wrapper = styled.button<{ $state?: 'selected' | 'disabled' }>`
   width: 292px;
   max-height: 240px;
   padding: 36px 20px;
