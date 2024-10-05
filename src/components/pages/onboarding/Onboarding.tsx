@@ -37,7 +37,16 @@ const Onboarding = () => {
           onNext={() => setStep(4)}
         />
       );
-    else if (step === 4) return <CheckStep onBefore={() => setStep(3)} onNext={() => {}} />;
+    else if (step === 4 && jobMain)
+      return (
+        <CheckStep
+          jobMain={jobMain}
+          jobSub={jobSub}
+          tendency={tendency}
+          onBefore={() => setStep(3)}
+          onNext={() => {}}
+        />
+      );
     else return null;
   };
 
@@ -86,6 +95,7 @@ const Onboarding = () => {
 };
 
 const OnBoardingContainer = styled(Container)`
+  position: relative;
   display: flex;
   flex: 1;
   height: 100%;
@@ -95,7 +105,8 @@ const OnBoardingContainer = styled(Container)`
 const Content = styled.div`
   position: relative;
   display: flex;
-  flex: 1;
+  max-width: 608px;
+  width: 100%;
   flex-direction: column;
   justify-content: center;
 `;

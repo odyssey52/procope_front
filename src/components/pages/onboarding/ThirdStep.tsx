@@ -2,7 +2,7 @@ import Button from '@/components/common/ui/button/Button';
 import TextButton from '@/components/common/ui/button/TextButton';
 import Radio from '@/components/common/ui/radio/Radio';
 import Text from '@/components/common/ui/Text';
-import { tendencyTitle } from '@/constants/stepper';
+import { TENDENCY_TITLE_LIST } from '@/constants/stepper';
 import styled from 'styled-components';
 
 interface Props {
@@ -25,7 +25,7 @@ const ThirdStep = ({ tendency, tendencyHandler, onBefore, onNext }: Props) => {
           답변에 따라 맞춤화된 회고 서비스를 제공해 드려요!
         </Text>
       </TextBox>
-      {tendencyTitle.map((title, index) => {
+      {TENDENCY_TITLE_LIST.map((title, index) => {
         return (
           <div key={index}>
             <Text variant="body_14_semibold">{title}</Text>

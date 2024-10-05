@@ -1,7 +1,7 @@
 import Button from '@/components/common/ui/button/Button';
 import JobMainCard from '@/components/common/ui/card/JobMainCard';
 import Text from '@/components/common/ui/Text';
-import { JOB_MAIN, JobMainCategory } from '@/constants/stepper';
+import { JOB_MAIN_LIST, JobMainCategory } from '@/constants/stepper';
 import styled from 'styled-components';
 
 interface Props {
@@ -20,7 +20,7 @@ const FirstStep = ({ jobMain, jobMainHandler, onNext }: Props) => {
         </Text>
       </TextBox>
       <JobCardBox>
-        {Object.entries(JOB_MAIN).map(([key, { title, img }]) => (
+        {Object.entries(JOB_MAIN_LIST).map(([key, { title, img }]) => (
           <JobMainCard
             key={`JobMainCard-` + key}
             text={title}

@@ -1,50 +1,46 @@
 import Button from '@/components/common/ui/button/Button';
 import TextButton from '@/components/common/ui/button/TextButton';
-import Text from '@/components/common/ui/Text';
+import { JOB_MAIN_LIST, JobMainCategory, PREFERENCE_LIST } from '@/constants/stepper';
 import styled from 'styled-components';
 
 interface Props {
+  jobMain: JobMainCategory;
+  jobSub: string[];
+  tendency: number[];
   onBefore: () => void;
   onNext: () => void;
 }
 
-const CheckStep = ({ onBefore, onNext }: Props) => {
+const CheckStep = ({ jobMain, jobSub, tendency, onBefore, onNext }: Props) => {
+  const jobMainTitle = JOB_MAIN_LIST[jobMain].title + JOB_MAIN_LIST[jobMain].icon;
+
   return (
     <Wrapper>
-      <Text variant="heading_32">
-        나는
-        <Text variant="heading_32" color="brand">
-          {}
+      <TextBox>
+        <Text>
+          나는 <b>{jobMainTitle}</b> 직무를 맡고 있으며
         </Text>
-        직무를 맡고 있으며
-        <br />
-        <Text variant="heading_32" color="brand">
-          {}
+        <Text>
+          {jobSub.map((sub) => (
+            <>
+              <b>{sub}</b>,{' '}
+            </>
+          ))}
+          업무를 담당하고 있어
         </Text>
-        업무를 담당하고 있어
-        <br />
-        피드백 받는 것을{' '}
-        <Text variant="heading_32" color="brand">
-          {}
+        <Text>
+          피드백 받는 것을 <b>{PREFERENCE_LIST[tendency[0] - 1]}</b> 하고
         </Text>
-        하고
-        <br />
-        구체적인 피드백을{' '}
-        <Text variant="heading_32" color="brand">
-          {}
+        <Text>
+          구체적인 피드백을 <b>{PREFERENCE_LIST[tendency[1] - 1]}</b> 해
         </Text>
-        해<br />또 칭찬을 자주받는 것을{' '}
-        <Text variant="heading_32" color="brand">
-          {}
+        <Text>
+          또 칭찬을 자주받는 것을 <b>{PREFERENCE_LIST[tendency[2] - 1]}</b> 하고
         </Text>
-        하고
-        <br />
-        구체적인 칭찬을{' '}
-        <Text variant="heading_32" color="brand">
-          {}
+        <Text>
+          구체적인 칭찬을 <b>{PREFERENCE_LIST[tendency[3] - 1]}</b> 해
         </Text>
-        해
-      </Text>
+      </TextBox>
       <ButtonContainer>
         <ButtonBox>
           <TextButton $type="16" $leftIcon="/assets/icons/line/direction-left.svg" onClick={onBefore}>
@@ -58,7 +54,21 @@ const CheckStep = ({ onBefore, onNext }: Props) => {
 };
 
 const Wrapper = styled.div`
-  width: 608px;
+  position: relative;
+`;
+
+const TextBox = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+`;
+const Text = styled.p`
+  word-break: keep-all;
+  ${({ theme }) => theme.fontStyle.heading_32};
+  color: ${({ theme }) => theme.sementicColors.text.primary};
+  > b {
+    color: ${({ theme }) => theme.sementicColors.text.brand};
+  }
 `;
 const ButtonContainer = styled.div`
   display: flex;

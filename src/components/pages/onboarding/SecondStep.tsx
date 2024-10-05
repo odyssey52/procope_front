@@ -2,7 +2,7 @@ import Button from '@/components/common/ui/button/Button';
 import TextButton from '@/components/common/ui/button/TextButton';
 import JobSubCard from '@/components/common/ui/card/JobSubCard';
 import Text from '@/components/common/ui/Text';
-import { JOB_SUB, JobMainCategory } from '@/constants/stepper';
+import { JOB_SUB_LIST, JobMainCategory } from '@/constants/stepper';
 import styled from 'styled-components';
 
 interface Props {
@@ -27,7 +27,7 @@ const SecondStep = ({ jobMain, jobSub, jobSubHandler, onBefore, onNext }: Props)
         </Text>
       </TextBox>
       <JobCardBox>
-        {JOB_SUB[jobMain].map((job: string) => {
+        {JOB_SUB_LIST[jobMain].map((job: string) => {
           const isDisabled = jobSub.length === 3 && !jobSub.includes(job);
           const state = jobSub.includes(job) ? 'selected' : isDisabled ? 'disabled' : undefined;
           return (
