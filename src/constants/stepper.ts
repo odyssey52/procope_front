@@ -1,4 +1,6 @@
-export const jobSelect = {
+export type JobMainCategory = keyof typeof JOB_MAIN;
+
+export const JOB_MAIN = {
   plan: {
     title: '기획',
     img: '/assets/icons/graphic/glass/file-on.png',
@@ -29,7 +31,7 @@ export const jobSelect = {
   },
 };
 
-export const fieldSelect = {
+export const JOB_SUB = {
   plan: ['사업', '전략', '서비스', 'R&D', '상품'],
   development: [
     '프론트엔드',

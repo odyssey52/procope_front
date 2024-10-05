@@ -59,7 +59,6 @@ const CheckStep = ({ onBefore, onNext }: Props) => {
 
 const Wrapper = styled.div`
   width: 608px;
-  height: 424px;
 `;
 const ButtonContainer = styled.div`
   display: flex;

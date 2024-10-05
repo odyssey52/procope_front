@@ -1,25 +1,20 @@
 import Button from '@/components/common/ui/button/Button';
 import TextButton from '@/components/common/ui/button/TextButton';
-import ProgressBar from '@/components/common/ui/progress/ProgressBar';
 import Radio from '@/components/common/ui/radio/Radio';
 import Text from '@/components/common/ui/Text';
 import { tendencyTitle } from '@/constants/stepper';
 import styled from 'styled-components';
 
 interface Props {
+  tendency: number[];
+  tendencyHandler: (index: number, tendency: number) => void;
   onBefore: () => void;
   onNext: () => void;
 }
 
-const ThirdStep = ({ onBefore, onNext }: Props) => {
+const ThirdStep = ({ tendency, tendencyHandler, onBefore, onNext }: Props) => {
   return (
     <Wrapper>
-      <Percent>
-        <ProgressBar rate={100} />
-        <Text variant="caption_12_regular" color="secondary">
-          3/3단계
-        </Text>
-      </Percent>
       <TextBox>
         <Text variant="heading_32">
           마지막이에요!
@@ -39,11 +34,39 @@ const ThirdStep = ({ onBefore, onNext }: Props) => {
                 그렇다
               </Text>
               <RadioBox>
-                <Radio id={`${index}-very_agree`} name={`${index}`} $size="lg" />
-                <Radio id={`${index}-agree`} name={`${index}`} />
-                <Radio id={`${index}-soso`} name={`${index}`} $size="sm" />
-                <Radio id={`${index}-disagree`} name={`${index}`} />
-                <Radio id={`${index}-very_disagree`} name={`${index}`} $size="lg" />
+                <Radio
+                  id={`${index}-very_agree`}
+                  name={`${index}`}
+                  $size="lg"
+                  onClick={() => tendencyHandler(index, 5)}
+                  defaultChecked={tendency[index] === 5}
+                />
+                <Radio
+                  id={`${index}-agree`}
+                  name={`${index}`}
+                  onClick={() => tendencyHandler(index, 4)}
+                  defaultChecked={tendency[index] === 4}
+                />
+                <Radio
+                  id={`${index}-soso`}
+                  name={`${index}`}
+                  $size="sm"
+                  onClick={() => tendencyHandler(index, 3)}
+                  defaultChecked={tendency[index] === 3}
+                />
+                <Radio
+                  id={`${index}-disagree`}
+                  name={`${index}`}
+                  onClick={() => tendencyHandler(index, 2)}
+                  defaultChecked={tendency[index] === 2}
+                />
+                <Radio
+                  id={`${index}-very_disagree`}
+                  name={`${index}`}
+                  $size="lg"
+                  onClick={() => tendencyHandler(index, 1)}
+                  defaultChecked={tendency[index] === 1}
+                />
               </RadioBox>
               <Text variant="heading_18" color="tertiary">
                 그렇지 않다
