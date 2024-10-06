@@ -3,7 +3,7 @@ import Text from '@/components/common/ui/Text';
 import ProgressBar from '@/components/common/ui/progress/ProgressBar';
 import HeaderLayout from '@/components/layout/HeaderLayout';
 import { JobMainCategory } from '@/constants/stepper';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import CheckStep from './CheckStep';
 import FirstStep from './FirstStep';
@@ -15,7 +15,10 @@ const Onboarding = () => {
   const [jobMain, setJobMain] = useState<JobMainCategory | null>(null);
   const [jobSub, setJobSub] = useState<string[]>([]);
   const [tendency, setTendency] = useState<number[]>([]);
-
+  // 로컬 스토리지에 step 저장
+  useEffect(() => {
+    localStorage.setItem('step', 'localstep');
+  }, []);
   const pageMove = () => {
     if (step === 1) return <FirstStep jobMain={jobMain} jobMainHandler={jobMainHandler} onNext={() => setStep(2)} />;
     else if (step === 2 && jobMain)
@@ -99,6 +102,8 @@ const OnBoardingContainer = styled(Container)`
   display: flex;
   flex: 1;
   height: 100%;
+  margin-top: 44px;
+  margin-bottom: 92px;
   justify-content: center;
   align-items: center;
 `;
