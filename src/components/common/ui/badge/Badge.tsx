@@ -34,7 +34,7 @@ const Wrapper = styled.span<BadgeProps>`
   background-color: ${({ status, theme }) => badgeBackgroundColor(status)(theme)};
   color: ${({ status, theme }) =>
     status === 'warning' ? theme.sementicColors.text.primary : theme.sementicColors.text.invers};
-  padding: ${({ size, text }) => (!text ? '' : size === 'small' ? '2px 4px' : '2px 8px')};
+  padding: ${({ size, text }) => text && (size === 'small' ? '2px 4px' : '2px 8px')};
   border-radius: 9999px;
   ${({ size, theme }) => (size === 'small' ? theme.fontStyle.caption_10_regular : theme.fontStyle.caption_12_medium)}
 `;
