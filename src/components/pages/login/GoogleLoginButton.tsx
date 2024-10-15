@@ -3,23 +3,17 @@ import { useGoogleLogin } from '@react-oauth/google';
 import axios from 'axios';
 
 const GoogleLoginButton = () => {
-  const handlerGoogleLogin = useGoogleLogin({
-    onSuccess: async (res) => {
-      console.log(res.access_token);
-      await axios({
-        method: 'post',
-        url: '',
-        data: { access_token: res.access_token },
-      })
-        .then((res) => {
-          console.log(res);
-        })
-        .catch((err) => console.log(err));
-    },
-  });
+  const handlerGoogleLogin = () => {
+    const GOOGLE_CLIENT_ID = process.env.REACT_APP_GOOGLE_CLIENT_ID;
+    const REDIRECT_URI = process.env.REACT_APP_GOOGLE_REDIRECT_URI;
+    
+    const googleLoginUrl = `https://accounts.google.com/o/oauth2/auth?client_id=${GOOGLE_CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=code&scope=https://www.googleapis.com/auth/userinfo.email%20https://www.googleapis.com/auth/userinfo.profile`;
+  
+    window.location.href = googleLoginUrl;
+  }
 
   return (
-    <Button $type="outline" $size="48" $leftIcon="/assets/icons/line/google.svg" onClick={() => handlerGoogleLogin()}>
+    <Button $type="outline" $size="48" $leftIcon="/assets/icons/line/google.svg" onClick={handlerGoogleLogin}>
       구글로 계속하기
     </Button>
   );
