@@ -1,14 +1,12 @@
-import { useNavigate } from 'react-router-dom';
+import { useRouter } from 'next/navigation';
 import styled from 'styled-components';
 import Icon from './ui/icon/Icon';
 
 const Back = () => {
-  const navigate = useNavigate();
-  const onClick = () => {
-    navigate(-1);
-  };
+  const router = useRouter();
+
   return (
-    <Wrapper onClick={onClick}>
+    <Wrapper onClick={() => router.back()}>
       <Icon src="/assets/icons/line/direction-left.svg" width="36" />
     </Wrapper>
   );

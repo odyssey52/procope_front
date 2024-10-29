@@ -4,11 +4,11 @@ import TextButton from '@/components/common/ui/button/TextButton';
 import Container from '@/components/common/ui/Container';
 import ProgressBar from '@/components/common/ui/progress/ProgressBar';
 import HeaderLayout from '@/components/layout/HeaderLayout';
+import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import styled from 'styled-components';
 import TeamCreateStep1 from './TeamCreateStep1';
 import TeamCreateStep2 from './TeamCreateStep2';
-import { useNavigate } from 'react-router-dom';
 
 const PATH = {
   '팀 목록': '/team',
@@ -18,7 +18,7 @@ const PATH = {
 const TeamCreate = () => {
   const TOTAL_STEP = 2;
 
-  const navigate = useNavigate();
+  const router = useRouter();
 
   const [step, setStep] = useState<number>(1);
   const [teamType, setTeamType] = useState<number>(0);
@@ -41,7 +41,7 @@ const TeamCreate = () => {
     if (step === 1 && teamType !== 0) {
       return setStep(step + 1);
     } else if (step === 2 && teamName.length > 0 && teamNameValid && teamDescriptionValid) {
-      return navigate('/team/create/done');
+      return router.push('/team/create/done');
     }
     return console.log('입력값을 확인해주세요.');
   };

@@ -1,8 +1,9 @@
+'use client';
 import Button from '@/components/common/ui/button/Button';
 
 const NaverLoginButton = () => {
-  const CLIENT_ID = process.env.REACT_APP_NAVER_CLIENT_ID;
-  const REDIRECT_URI = process.env.REACT_APP_NAVER_REDIRECT_URI;
+  const CLIENT_ID = process.env.NEXT_PUBLIC_NAVER_CLIENT_ID;
+  const REDIRECT_URI = process.env.NEXT_PUBLIC_NAVER_REDIRECT_URI;
   const generateRandomState = (): string => {
     const array = new Uint32Array(1);
     window.crypto.getRandomValues(array);

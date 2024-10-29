@@ -2,11 +2,11 @@ import axios from 'axios';
 
 import type { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
 
-const BASE_URL = process.env.REACT_APP_API_HOST;
+const BASE_URL = process.env.NEXT_PUBLIC_API_HOST;
 const TIMEOUT = 10 * 1000;
 
 const PRIVATE_HEADER = {
-  Authorization: process.env.REACT_APP_DEV_API_TOKEN,
+  Authorization: process.env.NEXT_PUBLIC_DEV_API_TOKEN,
   'Content-Type': 'application/json',
 };
 const PUBLIC_HEADER = {

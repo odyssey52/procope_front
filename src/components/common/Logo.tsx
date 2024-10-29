@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router-dom';
+import { useRouter } from 'next/navigation';
 import styled from 'styled-components';
 
 interface LogoProps {
@@ -8,10 +8,10 @@ interface LogoProps {
 }
 
 const Logo = ({ type, size, onClick }: LogoProps) => {
-  const navigate = useNavigate();
+  const router = useRouter();
 
   // If no onClick prop is passed, default to navigating to '/'
-  const handleClick = onClick || (() => navigate('/'));
+  const handleClick = onClick || (() => router.push('/'));
 
   return <Image src={`/assets/icons/graphic/logo/${type ?? 'icon'}.svg`} width={size} onClick={handleClick} />;
 };

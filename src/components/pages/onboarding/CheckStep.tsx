@@ -21,10 +21,10 @@ const CheckStep = ({ jobMain, jobSub, tendency, onBefore, onNext }: Props) => {
           나는 <b>{jobMainTitle}</b> 직무를 맡고 있으며
         </Text>
         <Text>
-          {jobSub.map((sub) => (
-            <>
+          {jobSub.map((sub, i) => (
+            <InlineText key={`jobSub` + i}>
               <b>{sub}</b>,{' '}
-            </>
+            </InlineText>
           ))}
           업무를 담당하고 있어
         </Text>
@@ -80,5 +80,6 @@ const ButtonBox = styled.div`
   display: flex;
   justify-content: space-between;
 `;
+const InlineText = styled.span``;
 
 export default CheckStep;

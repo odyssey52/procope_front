@@ -1,3 +1,4 @@
+'use client';
 import TrafficLightCard from '@/components/common/ui/card/TrafficLightCard';
 import Text from '@/components/common/ui/Text';
 import styled from 'styled-components';
