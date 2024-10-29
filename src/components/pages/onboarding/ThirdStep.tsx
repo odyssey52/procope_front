@@ -96,11 +96,6 @@ const Wrapper = styled.div`
   width: 608px;
   height: 794px;
 `;
-const Percent = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-`;
 const TextBox = styled.div`
   margin: 40px 0px 36px 0px;
 `;
