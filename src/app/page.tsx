@@ -1,7 +1,6 @@
 'use client';
-import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import styled from 'styled-components';
+import { useEffect } from 'react';
 
 const Page = () => {
   const router = useRouter();
@@ -11,10 +10,8 @@ const Page = () => {
     router.push('/login');
   }, [router]);
 
-  return <Wrapper></Wrapper>;
+  return <></>;
 };
-
-const Wrapper = styled.div``;
 
 Page.displayName = 'Page';
 

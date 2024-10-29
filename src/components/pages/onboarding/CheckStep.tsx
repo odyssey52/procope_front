@@ -18,27 +18,28 @@ const CheckStep = ({ jobMain, jobSub, tendency, onBefore, onNext }: Props) => {
     <Wrapper>
       <TextBox>
         <Text>
-          나는 <b>{jobMainTitle}</b> 직무를 맡고 있으며
+          나는 <BrandText>{jobMainTitle}</BrandText> 직무를 맡고 있으며
         </Text>
         <Text>
           {jobSub.map((sub, i) => (
             <InlineText key={`jobSub` + i}>
-              <b>{sub}</b>,{' '}
+              <BrandText>{sub}</BrandText>
+              {jobSub.length !== i + 1 && ','}{' '}
             </InlineText>
           ))}
           업무를 담당하고 있어
         </Text>
         <Text>
-          피드백 받는 것을 <b>{PREFERENCE_LIST[tendency[0] - 1]}</b> 하고
+          피드백 받는 것을 <BrandText>{PREFERENCE_LIST[tendency[0] - 1]}</BrandText> 하고
         </Text>
         <Text>
-          구체적인 피드백을 <b>{PREFERENCE_LIST[tendency[1] - 1]}</b> 해
+          구체적인 피드백을 <BrandText>{PREFERENCE_LIST[tendency[1] - 1]}</BrandText> 해
         </Text>
         <Text>
-          또 칭찬을 자주받는 것을 <b>{PREFERENCE_LIST[tendency[2] - 1]}</b> 하고
+          또 칭찬을 자주받는 것을 <BrandText>{PREFERENCE_LIST[tendency[2] - 1]}</BrandText> 하고
         </Text>
         <Text>
-          구체적인 칭찬을 <b>{PREFERENCE_LIST[tendency[3] - 1]}</b> 해
+          구체적인 칭찬을 <BrandText>{PREFERENCE_LIST[tendency[3] - 1]}</BrandText> 해
         </Text>
       </TextBox>
       <ButtonContainer>
@@ -66,9 +67,9 @@ const Text = styled.p`
   word-break: keep-all;
   ${({ theme }) => theme.fontStyle.heading_32};
   color: ${({ theme }) => theme.sementicColors.text.primary};
-  > b {
-    color: ${({ theme }) => theme.sementicColors.text.brand};
-  }
+`;
+const BrandText = styled.b`
+  color: ${({ theme }) => theme.sementicColors.text.brand};
 `;
 const ButtonContainer = styled.div`
   display: flex;
