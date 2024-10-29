@@ -1,7 +1,0 @@
-{
-  "/page": "app/page.js",
-  "/team/create/done/page": "app/team/create/done/page.js",
-  "/team/create/page": "app/team/create/page.js",
-  "/login/page": "app/login/page.js",
-  "/onboarding/page": "app/onboarding/page.js"
-}
