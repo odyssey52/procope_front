@@ -36,12 +36,16 @@
 
 ```css
 src
+ ├── app
+ │     ├── login
+ │     ├── ...
  ├── components
  │     ├── common
  │     ├── layout
  │     └── pages
  ├── constants
  ├── hooks
+ ├── lib
  ├── query
  │     ├── auth
  ├── services
