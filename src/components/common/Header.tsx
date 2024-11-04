@@ -26,7 +26,7 @@ const Header = ({ teamList, profile, nickname }: HeaderProps) => {
         <Logo type="icon" size={36} />
         {teamList && <SelectOption teamList={teamList} />}
       </LeftSection>
-      <RightSection>{!profile && <Avatar type="initial" size={36} nickname={nickname} />} </RightSection>
+      <RightSection>{profile && <Avatar type="initial" size={36} nickname={nickname} />} </RightSection>
     </Wrapper>
   );
 };
