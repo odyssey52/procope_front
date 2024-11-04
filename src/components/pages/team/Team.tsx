@@ -162,7 +162,7 @@ const Team = () => {
     '팀 목록': '/team',
   };
   return (
-    <HeaderLayout>
+    <HeaderLayout teamList={EMPTY_LIST}>
       <TeamContainer>
         <Content>
           <Head>
