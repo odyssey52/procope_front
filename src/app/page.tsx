@@ -6,13 +6,12 @@ const Page = () => {
   const router = useRouter();
 
   useEffect(() => {
-    // 홈 페이지에 진입할 때 로그인 페이지로 리다이렉트
-    router.push('/login');
+    if (typeof window !== 'undefined') {
+      router.push('/login');
+    }
   }, [router]);
 
-  return <></>;
+  return null;
 };
-
-Page.displayName = 'Page';
 
 export default Page;
