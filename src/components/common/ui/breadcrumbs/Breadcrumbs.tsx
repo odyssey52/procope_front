@@ -1,8 +1,7 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
-import TextButton from '../button/TextButton';
-import styled from 'styled-components';
 import { useRouter } from 'next/navigation';
+import React from 'react';
+import styled from 'styled-components';
+import TextButton from '../button/TextButton';
 
 interface BreadcrumbProps {
   paths: { [key: string]: string }; // key는 경로 이름 (ex. 팀 목록), value는 (ex. /team)
