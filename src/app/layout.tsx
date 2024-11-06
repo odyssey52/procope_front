@@ -1,39 +1,25 @@
-'use client';
-import ConfirmDialog from '@/components/common/ui/modal/ConfirmModal';
-import Toast from '@/components/common/ui/modal/Toast';
-import StyledComponentsRegistry from '@/lib/registry';
-import GlobalStyles from '@/styles/GlobalStyles';
-import { theme } from '@/styles/theme';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { ThemeProvider } from 'styled-components';
+import Provider from '@/components/common/Provider';
+import { Metadata } from 'next';
 
-export const queryClient = new QueryClient();
-
-queryClient.setDefaultOptions({
-  queries: {
-    retry: 2,
-    retryDelay: 0,
-  },
-  mutations: {
-    retry: 2,
-    retryDelay: 0,
-  },
-});
+export const metadata: Metadata = {
+  title: '프로코프',
+  description: '애자일 팀 원픽 회고 관리 서비스',
+  // 아래 두 항목은 default 로 세팅되어 있음.
+  //   <meta charset="utf-8" />
+  // <meta name="viewport" content="width=device-width, initial-scale=1" />
+};
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html>
+    <html lang="ko">
+      <head>
+        <link
+          rel="preconnect"
+          href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css"
+        />
+      </head>
       <body>
-        <QueryClientProvider client={queryClient}>
-          <StyledComponentsRegistry>
-            <ThemeProvider theme={theme}>
-              <GlobalStyles />
-              <Toast />
-              <ConfirmDialog />
-              {children}
-            </ThemeProvider>
-          </StyledComponentsRegistry>
-        </QueryClientProvider>
+        <Provider>{children}</Provider>
       </body>
     </html>
   );
