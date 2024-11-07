@@ -30,7 +30,7 @@ const NaverCallback = () => {
     requeseAccessToken(code);
   }, [router]);
 
-  return <></>;
+  return null;
 };
 
 export default NaverCallback;

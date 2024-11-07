@@ -1,10 +1,11 @@
 'use client';
-import styled from 'styled-components';
-import GoogleLoginButton from './GoogleLoginButton';
-import NaverLoginButton from './NaverLoginButton';
+
 import Logo from '@/components/common/Logo';
 import Text from '@/components/common/ui/Text';
 import { GoogleOAuthProvider } from '@react-oauth/google';
+import styled from 'styled-components';
+import GoogleLoginButton from './GoogleLoginButton';
+import NaverLoginButton from './NaverLoginButton';
 
 const LoginSection = () => {
   const GOOGLE_CLIENT_ID = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID!;

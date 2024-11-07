@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled from 'styled-components';
 
 interface TrafficLightCardProps {
   src?: string;
@@ -52,6 +52,6 @@ const TrafficLightBox = styled.div`
   }
 `;
 
-TrafficLightCard.displayName = "TrafficLightCard";
+TrafficLightCard.displayName = 'TrafficLightCard';
 
 export default TrafficLightCard;

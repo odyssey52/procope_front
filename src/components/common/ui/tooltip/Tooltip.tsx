@@ -1,5 +1,4 @@
-import styled from 'styled-components';
-import { DefaultTheme } from 'styled-components/dist/types';
+import styled, { DefaultTheme } from 'styled-components';
 
 interface TooltipProps {
   text: string;
@@ -21,7 +20,8 @@ const tooltipPoint = (direction: 'left' | 'right' | 'center') => (location?: 'to
       border-color: transparent transparent black transparent;
     }
   `;
-  } else if (location === 'bottom') {
+  }
+  if (location === 'bottom') {
     return `
     &::before {
       content: '';
@@ -45,7 +45,7 @@ const Tooltip = ({ text, direction, location, icon }: TooltipProps) => {
     <>
       <Wrapper>
         {text}
-        <img src={icon} />
+        <img src={icon} alt="툴팁이미지" />
       </Wrapper>
       <Point text={text} direction={direction} location={location} />
     </>

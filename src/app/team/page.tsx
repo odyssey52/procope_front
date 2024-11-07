@@ -1,4 +1,5 @@
 'use client';
+
 import Team from '@/components/pages/team/Team';
 
 const page = () => <Team />;

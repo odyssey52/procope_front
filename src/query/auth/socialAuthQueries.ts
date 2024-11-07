@@ -1,7 +1,7 @@
-import { useMutation } from '@tanstack/react-query';
-import AUTH_QUERY_KEY from './queryKey';
 import SocialAuthService from '@/services/auth/socialAuthService';
 import * as types from '@/services/auth/socialAuthService.type';
+import { useMutation } from '@tanstack/react-query';
+import AUTH_QUERY_KEY from './queryKey';
 
 const socialAuthService = new SocialAuthService({ isPublic: false });
 

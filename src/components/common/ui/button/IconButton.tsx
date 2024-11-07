@@ -21,7 +21,7 @@ const buttonStatusStyle = (status?: 'secondary' | 'outline' | 'tertiary') => (th
         opacity: 0.4;
       }
     `;
-  else if (status === 'outline')
+  if (status === 'outline')
     return css`
       background-color: ${theme.sementicColors.bg.invers};
       border: 1px solid ${theme.sementicColors.border.primary};
@@ -37,7 +37,7 @@ const buttonStatusStyle = (status?: 'secondary' | 'outline' | 'tertiary') => (th
         opacity: 0.4;
       }
     `;
-  else if (status === 'tertiary')
+  if (status === 'tertiary')
     return css`
       background-color: ${theme.sementicColors.bg.tertiary_hover_pressed};
       &:hover,
@@ -50,19 +50,18 @@ const buttonStatusStyle = (status?: 'secondary' | 'outline' | 'tertiary') => (th
         opacity: 0.4;
       }
     `;
-  else
-    return css`
-      background-color: ${theme.sementicColors.bg.brand};
-      &:hover,
-      &:active {
-        background-color: ${theme.sementicColors.bg.brand_hover_pressed};
-        box-shadow: 0px 0px 0px 2px rgba(94, 164, 255, 0.4);
-      }
-      &:disabled {
-        background: ${theme.sementicColors.bg.brand};
-        opacity: 0.4;
-      }
-    `;
+  return css`
+    background-color: ${theme.sementicColors.bg.brand};
+    &:hover,
+    &:active {
+      background-color: ${theme.sementicColors.bg.brand_hover_pressed};
+      box-shadow: 0px 0px 0px 2px rgba(94, 164, 255, 0.4);
+    }
+    &:disabled {
+      background: ${theme.sementicColors.bg.brand};
+      opacity: 0.4;
+    }
+  `;
 };
 
 const IconButton = ({ size, status, leftIcon, rightIcon }: IconButtonProps) => {

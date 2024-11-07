@@ -1,4 +1,5 @@
 'use client';
+
 import { HeroSection, LoginSection } from '@/components/pages/login';
 import styled from 'styled-components';
 
