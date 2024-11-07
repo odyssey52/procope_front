@@ -32,7 +32,7 @@ const SecondStep = ({ jobMain, jobSub, jobSubHandler, onBefore, onNext }: Props)
           const state = jobSub.includes(job) ? 'selected' : isDisabled ? 'disabled' : undefined;
           return (
             <JobSubCard
-              key={`JobSubCard-` + job}
+              key={`JobSubCard-${job}`}
               text={job}
               state={state}
               onClick={() => jobSubHandler(job)}

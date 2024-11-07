@@ -1,6 +1,7 @@
 import styled, { css } from 'styled-components';
 import Text from '../Text';
 import Icon from '../icon/Icon';
+
 interface JobMainCardProps {
   text: string;
   icon: string;

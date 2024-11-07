@@ -1,4 +1,5 @@
 'use client';
+
 import Container from '@/components/common/ui/Container';
 import Text from '@/components/common/ui/Text';
 import ProgressBar from '@/components/common/ui/progress/ProgressBar';
@@ -19,7 +20,7 @@ const Onboarding = () => {
   }, []);
   const pageMove = () => {
     if (step === 1) return <FirstStep jobMain={jobMain} jobMainHandler={jobMainHandler} onNext={() => setStep(2)} />;
-    else if (step === 2 && jobMain)
+    if (step === 2 && jobMain)
       return (
         <SecondStep
           jobMain={jobMain}
@@ -29,7 +30,7 @@ const Onboarding = () => {
           onNext={() => setStep(3)}
         />
       );
-    else if (step === 3)
+    if (step === 3)
       return (
         <ThirdStep
           tendency={tendency}
@@ -38,7 +39,7 @@ const Onboarding = () => {
           onNext={() => setStep(4)}
         />
       );
-    else if (step === 4 && jobMain)
+    if (step === 4 && jobMain)
       return (
         <CheckStep
           jobMain={jobMain}
@@ -48,7 +49,7 @@ const Onboarding = () => {
           onNext={() => {}}
         />
       );
-    else return null;
+    return null;
   };
 
   const jobMainHandler = (jobMain: JobMainCategory) => {

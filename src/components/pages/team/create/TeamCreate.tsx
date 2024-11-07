@@ -31,7 +31,8 @@ const TeamCreate = () => {
   const stepValidation = () => {
     if (step === 1 && teamType !== 0) {
       return true;
-    } else if (step === 2 && teamName.length > 0 && teamNameValid && teamDescriptionValid) {
+    }
+    if (step === 2 && teamName.length > 0 && teamNameValid && teamDescriptionValid) {
       return true;
     }
     return false;
@@ -40,7 +41,8 @@ const TeamCreate = () => {
   const onClickNext = () => {
     if (step === 1 && teamType !== 0) {
       return setStep(step + 1);
-    } else if (step === 2 && teamName.length > 0 && teamNameValid && teamDescriptionValid) {
+    }
+    if (step === 2 && teamName.length > 0 && teamNameValid && teamDescriptionValid) {
       return router.push('/team/create/done');
     }
     return console.log('입력값을 확인해주세요.');

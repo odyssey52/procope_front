@@ -22,7 +22,7 @@ const FirstStep = ({ jobMain, jobMainHandler, onNext }: Props) => {
       <JobCardBox>
         {Object.entries(JOB_MAIN_LIST).map(([key, { title, img }]) => (
           <JobMainCard
-            key={`JobMainCard-` + key}
+            key={`JobMainCard-${key}`}
             text={title}
             icon={img}
             state={jobMain === key ? 'selected' : undefined}

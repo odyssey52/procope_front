@@ -37,7 +37,7 @@ const Placeholder = ({
   const inputRef = useRef<HTMLInputElement>(null);
 
   const onChange = (_value: ChangeEvent<HTMLInputElement>) => {
-    valueHandler && valueHandler(_value.target.value);
+    if (valueHandler) valueHandler(_value.target.value);
   };
   const handleWrapperClick = () => {
     inputRef.current?.focus();
@@ -89,7 +89,9 @@ const InputWrapper = styled.div<{ $isValid?: boolean; $disabled?: boolean }>`
       &:active {
         border-radius: 8px;
         border: 1px solid ${theme.sementicColors.border.primary_hover_pressed};
-        box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.16), 0px 0px 1px 0px rgba(0, 0, 0, 0.12);
+        box-shadow:
+          0px 1px 2px 0px rgba(0, 0, 0, 0.16),
+          0px 0px 1px 0px rgba(0, 0, 0, 0.12);
       }
     `}
 

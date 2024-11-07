@@ -1,4 +1,5 @@
 'use client';
+
 import ConfirmDialog from '@/components/common/ui/modal/ConfirmModal';
 import Toast from '@/components/common/ui/modal/Toast';
 import StyledComponentsRegistry from '@/lib/registry';
