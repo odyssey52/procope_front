@@ -1,5 +1,6 @@
 import styled, { css } from 'styled-components';
 import Avatar from './Avatar';
+
 interface AvatarGroupProps {
   profileList: {
     nickname?: string;
@@ -16,7 +17,7 @@ const AvatarGroup = ({ profileList, size }: AvatarGroupProps) => {
   return (
     <Wrapper>
       {visibleAvatars.map((profile, index) => (
-        <AvatarWrapper key={index} $size={size} $index={index}>
+        <AvatarWrapper key={`visibleAvatars${index}`} $size={size} $index={index}>
           <Avatar nickname={profile.nickname} image={profile.image} size={size ?? 32} />
         </AvatarWrapper>
       ))}

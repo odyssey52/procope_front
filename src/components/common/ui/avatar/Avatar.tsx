@@ -20,32 +20,40 @@ const getInitialFontSize = (size: AvatarProps['size']) => {
       return css`
         ${({ theme }) => theme.fontStyle.caption_12_medium};
       `;
-    } else if (size <= 24) {
+    }
+    if (size <= 24) {
       return css`
         ${({ theme }) => theme.fontStyle.body_14_medium};
       `;
-    } else if (size <= 32) {
+    }
+    if (size <= 32) {
       return css`
         ${({ theme }) => theme.fontStyle.body_16_medium};
       `;
-    } else if (size <= 36) {
+    }
+    if (size <= 36) {
       return css`
         ${({ theme }) => theme.fontStyle.heading_18};
       `;
-    } else if (size <= 48) {
+    }
+    if (size <= 48) {
       return css`
         ${({ theme }) => theme.fontStyle.heading_20};
       `;
-    } else if (size <= 64) {
+    }
+    if (size <= 64) {
       return css`
         ${({ theme }) => theme.fontStyle.heading_24};
       `;
-    } else if (size <= 84) {
+    }
+    if (size <= 84) {
       return css`
         ${({ theme }) => theme.fontStyle.heading_32};
       `;
     }
+    return null;
   }
+  return null;
 };
 
 const Avatar = ({ type, size, nickname, image }: AvatarProps) => {

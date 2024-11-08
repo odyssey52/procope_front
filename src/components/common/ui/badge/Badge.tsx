@@ -8,17 +8,18 @@ interface BadgeProps {
 
 const badgeSizeStyle = (size: 'small' | 'large') => (text?: string) => {
   if (size === 'small' && text) return 'height: 16px';
-  else if (size === 'small' && !text) return 'width: 4px; height: 4px';
-  else if (size === 'large' && text) return 'height: 20px';
-  else if (size === 'large' && !text) return 'width: 8px; height: 8px';
+  if (size === 'small' && !text) return 'width: 4px; height: 4px';
+  if (size === 'large' && text) return 'height: 20px';
+  if (size === 'large' && !text) return 'width: 8px; height: 8px';
+  return null;
 };
 
 const badgeBackgroundColor = (status?: 'success' | 'warning' | 'error' | 'info') => (theme: DefaultTheme) => {
   if (status === 'success') return theme.sementicColors.bg.success_bold;
-  else if (status === 'warning') return theme.sementicColors.bg.warning_bold;
-  else if (status === 'error') return theme.sementicColors.bg.danger;
-  else if (status === 'info') return theme.sementicColors.bg.info_bold;
-  else return theme.sementicColors.bg.primary;
+  if (status === 'warning') return theme.sementicColors.bg.warning_bold;
+  if (status === 'error') return theme.sementicColors.bg.danger;
+  if (status === 'info') return theme.sementicColors.bg.info_bold;
+  return theme.sementicColors.bg.primary;
 };
 
 const Badge = ({ size, text, status }: BadgeProps) => {

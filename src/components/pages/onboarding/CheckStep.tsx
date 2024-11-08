@@ -22,7 +22,7 @@ const CheckStep = ({ jobMain, jobSub, tendency, onBefore, onNext }: Props) => {
         </Text>
         <Text>
           {jobSub.map((sub, i) => (
-            <InlineText key={`jobSub` + i}>
+            <InlineText key={`jobSub${i}`}>
               <BrandText>{sub}</BrandText>
               {jobSub.length !== i + 1 && ','}{' '}
             </InlineText>

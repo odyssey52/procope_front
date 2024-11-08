@@ -1,12 +1,13 @@
 'use client';
-import styled from 'styled-components';
+
+import { toastActions, useToastStore } from '@/store/modal/toast';
+import { zIndex } from '@/styles/mixin';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useEffect } from 'react';
-import { toastActions, useToastStore } from '@/store/modal/toast';
-import Portal from './common/Portal';
+import styled from 'styled-components';
 import Text from '../Text';
 import Icon from '../icon/Icon';
-import { zIndex } from '@/styles/mixin';
+import Portal from './common/Portal';
 
 const ICON_URL = {
   success: '/assets/icons/graphic/fill/check.svg',
