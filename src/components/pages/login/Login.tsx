@@ -1,5 +1,6 @@
 'use client';
 
+import Divider from '@/components/common/ui/line/Divider';
 import { HeroSection, LoginSection } from '@/components/pages/login';
 import styled from 'styled-components';
 
@@ -27,6 +28,7 @@ const Login = () => {
   return (
     <Wrapper>
       <Content>
+        <Divider width={4} />
         <HeroSection />
         <LoginSection />
       </Content>

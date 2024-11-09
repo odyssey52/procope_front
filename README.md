@@ -1,17 +1,27 @@
 # 프로코프(procope)
 
 애자일 팀 원픽 회고 관리 서비스 **프로코프**의 프론트엔드 코드 저장소입니다.
+<br/>
+<br/>
+<br/>
+<br/>
 
 ## notice
 
-[2024-10-29]
+<br/>
 
-- React.js -> Next.js 로 마이그레이션됩니다. 15.0.1v을 채용하고 사유는 아래와 같습니다.
-  1.  Next.js + styled-components 조합에서 빈번하게 발생하는 hydration error 에 대한 개선이 이루어졌습니다.
-  2.  React 19의 도입으로 memo 에 대한 접근성이 높아질 것으로 예상됩니다.
-- 기존 env 파일의 prefix 를 next 표준에 따라 변경하세요.
+### [2024-10-29] React.js -> Next.js 로 마이그레이션됩니다.
+
+15.0.1v을 채용하였습니다.
+Next.js + styled-components 조합에서 빈번하게 발생하는 hydration error 에 대한 개선이 이루어졌습니다.
+기존 env 파일의 prefix가 next 표준에 따라 변경이 필요할 수 있습니다.
+
+<br/>
+<br/>
 
 ## getting started
+
+<br/>
 
 - 사전 준비
 
@@ -24,7 +34,12 @@
 - `npm install`
 - `npm run dev`
 
+<br/>
+<br/>
+
 ## tech stack
+
+<br/>
 
 - Next.js
 - TypeScript
@@ -32,7 +47,12 @@
 - Tanstack-query
 - Zustand
 
+<br/>
+<br/>
+
 ## directory structure
+
+<br/>
 
 ```css
 src
