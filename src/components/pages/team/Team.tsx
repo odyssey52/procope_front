@@ -1,6 +1,7 @@
 import Breadcrumbs from '@/components/common/ui/breadcrumbs/Breadcrumbs';
 import Container from '@/components/common/ui/Container';
 import Empty from '@/components/common/ui/empty/Empty';
+import Tab from '@/components/common/ui/tab/Tab';
 import PageSubTitle from '@/components/common/ui/title/PageSubTitle';
 import PageTitle from '@/components/common/ui/title/PageTitle';
 import HeaderLayout from '@/components/layout/HeaderLayout';
@@ -180,6 +181,7 @@ const Team = () => {
             </EmptyBox>
           )}
           {EMPTY_LIST.length > 0 && <TeamCardList teamList={EMPTY_LIST} />}
+          <Tab selected leftIcon="/assets/icons/line/direction-left.svg" text="홈" />
         </Content>
       </TeamContainer>
     </HeaderLayout>
