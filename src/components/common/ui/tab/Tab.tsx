@@ -32,6 +32,7 @@ const Wrapper = styled.div`
   gap: 12px;
   padding: 16px 0;
   color: ${({ theme }) => theme.sementicColors.text.disabled};
+  cursor: pointer;
   > .tab-text {
     flex-grow: 1;
   }
