@@ -1,3 +1,4 @@
+import { IconHome } from '@/assets/icons/line';
 import Breadcrumbs from '@/components/common/ui/breadcrumbs/Breadcrumbs';
 import Container from '@/components/common/ui/Container';
 import Empty from '@/components/common/ui/empty/Empty';
@@ -5,6 +6,7 @@ import Tab from '@/components/common/ui/tab/Tab';
 import PageSubTitle from '@/components/common/ui/title/PageSubTitle';
 import PageTitle from '@/components/common/ui/title/PageTitle';
 import HeaderLayout from '@/components/layout/HeaderLayout';
+import { theme } from '@/styles/theme';
 import { useRouter } from 'next/navigation';
 import styled from 'styled-components';
 import ControlBox from './ControlBox';
@@ -181,7 +183,7 @@ const Team = () => {
             </EmptyBox>
           )}
           {EMPTY_LIST.length > 0 && <TeamCardList teamList={EMPTY_LIST} />}
-          <Tab selected leftIcon="/assets/icons/line/direction-left.svg" text="홈" />
+          <Tab selected leftIcon={<IconHome color={theme.sementicColors.text.brand} />} text="홈" />
         </Content>
       </TeamContainer>
     </HeaderLayout>

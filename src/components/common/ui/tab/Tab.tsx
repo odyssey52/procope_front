@@ -1,11 +1,12 @@
 'use client';
 
 import Image from 'next/image';
+import { ReactNode } from 'react';
 import styled from 'styled-components';
 import Text from '../Text';
 
 interface TabProps {
-  leftIcon: string;
+  leftIcon: ReactNode;
   text: string;
   rightIcon?: string;
   selected?: boolean;
@@ -13,7 +14,7 @@ interface TabProps {
 const Tab = ({ leftIcon, text, rightIcon, selected }: TabProps) => {
   return (
     <Wrapper>
-      <Image src={leftIcon} width={24} height={24} alt="좌측 탭 아이콘이미지" color="white" />
+      {leftIcon}
       <Text
         className="tab-text"
         color={selected ? 'invers' : 'disabled'}

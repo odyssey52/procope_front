@@ -1,4 +1,9 @@
 module.exports = {
+  env: {
+    browser: true,
+    es2021: true,
+  },
+
   extends: ['airbnb'],
   parserOptions: {
     ecmaVersion: 2021,
@@ -16,6 +21,8 @@ module.exports = {
   parser: '@typescript-eslint/parser',
   plugins: ['@typescript-eslint', 'react'],
   rules: {
+    'import/newline-after-import': 'off', // import 후 개행 강제 규칙 off. svgr/cli 에 개행처리가 당장 불가하여 off 처리
+    'react/jsx-props-no-spreading': 'off', // props 스프레드 사용에 대한 규칙 (...props) svg 컴포넌트 사용 시 필요하므로 off 설정
     'import/no-unresolved': 'off', // import 시 경로를 찾지 못할 때 경고 off. svg 컴포넌트 import 시 확장자로 인해 에러 발생
     '@typescript-eslint/no-empty-object-type': 'off', // 빈 객체 타입에 대한 규칙. 작업 전 미리 정의할 수 있는 경우가 있어 off
     'import/prefer-default-export': 'off', // 단일 export 에 대한 export default 를 권장하는 규칙. 추가적인 export 를 위해 미리 처리하는 경우가 있어 off
