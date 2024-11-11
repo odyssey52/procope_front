@@ -1,7 +1,7 @@
 import * as React from 'react';
 import type { SVGProps } from 'react';
 import { Ref, forwardRef } from 'react';
-const SvgCast = (
+const Cast = (
   {
     size = 24,
     ...props
@@ -31,5 +31,5 @@ const SvgCast = (
     />
   </svg>
 );
-const ForwardRef = forwardRef(SvgCast);
+const ForwardRef = forwardRef(Cast);
 export default ForwardRef;

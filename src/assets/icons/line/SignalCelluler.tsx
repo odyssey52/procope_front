@@ -1,7 +1,7 @@
 import * as React from 'react';
 import type { SVGProps } from 'react';
 import { Ref, forwardRef } from 'react';
-const SvgSignalCelluler = (
+const SignalCelluler = (
   {
     size = 24,
     ...props
@@ -19,5 +19,5 @@ const SvgSignalCelluler = (
     />
   </svg>
 );
-const ForwardRef = forwardRef(SvgSignalCelluler);
+const ForwardRef = forwardRef(SignalCelluler);
 export default ForwardRef;

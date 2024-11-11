@@ -1,7 +1,7 @@
 import * as React from 'react';
 import type { SVGProps } from 'react';
 import { Ref, forwardRef } from 'react';
-const SvgBank = (
+const Bank = (
   {
     size = 24,
     ...props
@@ -31,5 +31,5 @@ const SvgBank = (
     />
   </svg>
 );
-const ForwardRef = forwardRef(SvgBank);
+const ForwardRef = forwardRef(Bank);
 export default ForwardRef;

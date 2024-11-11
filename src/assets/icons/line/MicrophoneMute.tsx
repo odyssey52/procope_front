@@ -1,7 +1,7 @@
 import * as React from 'react';
 import type { SVGProps } from 'react';
 import { Ref, forwardRef } from 'react';
-const SvgMicrophoneMute = (
+const MicrophoneMute = (
   {
     size = 24,
     ...props
@@ -19,5 +19,5 @@ const SvgMicrophoneMute = (
     />
   </svg>
 );
-const ForwardRef = forwardRef(SvgMicrophoneMute);
+const ForwardRef = forwardRef(MicrophoneMute);
 export default ForwardRef;

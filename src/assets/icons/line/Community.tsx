@@ -1,7 +1,7 @@
 import * as React from 'react';
 import type { SVGProps } from 'react';
 import { Ref, forwardRef } from 'react';
-const SvgCommunity = (
+const Community = (
   {
     size = 24,
     ...props
@@ -31,5 +31,5 @@ const SvgCommunity = (
     />
   </svg>
 );
-const ForwardRef = forwardRef(SvgCommunity);
+const ForwardRef = forwardRef(Community);
 export default ForwardRef;

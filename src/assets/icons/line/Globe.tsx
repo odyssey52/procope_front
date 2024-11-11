@@ -1,7 +1,7 @@
 import * as React from 'react';
 import type { SVGProps } from 'react';
 import { Ref, forwardRef } from 'react';
-const SvgGlobe = (
+const Globe = (
   {
     size = 24,
     ...props
@@ -19,5 +19,5 @@ const SvgGlobe = (
     />
   </svg>
 );
-const ForwardRef = forwardRef(SvgGlobe);
+const ForwardRef = forwardRef(Globe);
 export default ForwardRef;

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import type { SVGProps } from 'react';
 import { Ref, forwardRef } from 'react';
-const SvgMenuCircleVertical01 = (
+const MenuCircleVertical01 = (
   {
     size = 24,
     ...props
@@ -17,5 +17,5 @@ const SvgMenuCircleVertical01 = (
     />
   </svg>
 );
-const ForwardRef = forwardRef(SvgMenuCircleVertical01);
+const ForwardRef = forwardRef(MenuCircleVertical01);
 export default ForwardRef;

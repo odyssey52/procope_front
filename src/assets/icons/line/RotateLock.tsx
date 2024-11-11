@@ -1,7 +1,7 @@
 import * as React from 'react';
 import type { SVGProps } from 'react';
 import { Ref, forwardRef } from 'react';
-const SvgRotateLock = (
+const RotateLock = (
   {
     size = 24,
     ...props
@@ -37,5 +37,5 @@ const SvgRotateLock = (
     />
   </svg>
 );
-const ForwardRef = forwardRef(SvgRotateLock);
+const ForwardRef = forwardRef(RotateLock);
 export default ForwardRef;

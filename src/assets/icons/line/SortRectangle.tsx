@@ -1,7 +1,7 @@
 import * as React from 'react';
 import type { SVGProps } from 'react';
 import { Ref, forwardRef } from 'react';
-const SvgSortRectangle = (
+const SortRectangle = (
   {
     size = 24,
     ...props
@@ -19,5 +19,5 @@ const SvgSortRectangle = (
     />
   </svg>
 );
-const ForwardRef = forwardRef(SvgSortRectangle);
+const ForwardRef = forwardRef(SortRectangle);
 export default ForwardRef;

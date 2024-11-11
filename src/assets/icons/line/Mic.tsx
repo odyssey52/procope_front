@@ -1,7 +1,7 @@
 import * as React from 'react';
 import type { SVGProps } from 'react';
 import { Ref, forwardRef } from 'react';
-const SvgMic = (
+const Mic = (
   {
     size = 24,
     ...props
@@ -19,5 +19,5 @@ const SvgMic = (
     />
   </svg>
 );
-const ForwardRef = forwardRef(SvgMic);
+const ForwardRef = forwardRef(Mic);
 export default ForwardRef;

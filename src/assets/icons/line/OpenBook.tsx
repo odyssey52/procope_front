@@ -1,7 +1,7 @@
 import * as React from 'react';
 import type { SVGProps } from 'react';
 import { Ref, forwardRef } from 'react';
-const SvgOpenBook = (
+const OpenBook = (
   {
     size = 24,
     ...props
@@ -19,5 +19,5 @@ const SvgOpenBook = (
     />
   </svg>
 );
-const ForwardRef = forwardRef(SvgOpenBook);
+const ForwardRef = forwardRef(OpenBook);
 export default ForwardRef;

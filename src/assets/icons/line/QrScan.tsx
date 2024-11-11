@@ -1,7 +1,7 @@
 import * as React from 'react';
 import type { SVGProps } from 'react';
 import { Ref, forwardRef } from 'react';
-const SvgQrScan = (
+const QrScan = (
   {
     size = 24,
     ...props
@@ -19,5 +19,5 @@ const SvgQrScan = (
     />
   </svg>
 );
-const ForwardRef = forwardRef(SvgQrScan);
+const ForwardRef = forwardRef(QrScan);
 export default ForwardRef;

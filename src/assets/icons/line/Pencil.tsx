@@ -1,7 +1,7 @@
 import * as React from 'react';
 import type { SVGProps } from 'react';
 import { Ref, forwardRef } from 'react';
-const SvgPencil = (
+const Pencil = (
   {
     size = 24,
     ...props
@@ -19,5 +19,5 @@ const SvgPencil = (
     />
   </svg>
 );
-const ForwardRef = forwardRef(SvgPencil);
+const ForwardRef = forwardRef(Pencil);
 export default ForwardRef;

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import type { SVGProps } from 'react';
 import { Ref, forwardRef } from 'react';
-const SvgArrowDownCircle = (
+const ArrowDownCircle = (
   {
     size = 24,
     ...props
@@ -25,5 +25,5 @@ const SvgArrowDownCircle = (
     />
   </svg>
 );
-const ForwardRef = forwardRef(SvgArrowDownCircle);
+const ForwardRef = forwardRef(ArrowDownCircle);
 export default ForwardRef;

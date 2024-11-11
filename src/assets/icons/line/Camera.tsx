@@ -1,7 +1,7 @@
 import * as React from 'react';
 import type { SVGProps } from 'react';
 import { Ref, forwardRef } from 'react';
-const SvgCamera = (
+const Camera = (
   {
     size = 24,
     ...props
@@ -20,5 +20,5 @@ const SvgCamera = (
     <path fill="currentColor" d="M13 6a1 1 0 1 1-2 0 1 1 0 0 1 2 0" />
   </svg>
 );
-const ForwardRef = forwardRef(SvgCamera);
+const ForwardRef = forwardRef(Camera);
 export default ForwardRef;

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import type { SVGProps } from 'react';
 import { Ref, forwardRef } from 'react';
-const SvgDirectionRight = (
+const DirectionRight = (
   {
     size = 24,
     ...props
@@ -19,5 +19,5 @@ const SvgDirectionRight = (
     />
   </svg>
 );
-const ForwardRef = forwardRef(SvgDirectionRight);
+const ForwardRef = forwardRef(DirectionRight);
 export default ForwardRef;

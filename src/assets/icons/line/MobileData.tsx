@@ -1,7 +1,7 @@
 import * as React from 'react';
 import type { SVGProps } from 'react';
 import { Ref, forwardRef } from 'react';
-const SvgMobileData = (
+const MobileData = (
   {
     size = 24,
     ...props
@@ -19,5 +19,5 @@ const SvgMobileData = (
     />
   </svg>
 );
-const ForwardRef = forwardRef(SvgMobileData);
+const ForwardRef = forwardRef(MobileData);
 export default ForwardRef;

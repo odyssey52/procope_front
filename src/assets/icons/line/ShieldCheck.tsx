@@ -1,7 +1,7 @@
 import * as React from 'react';
 import type { SVGProps } from 'react';
 import { Ref, forwardRef } from 'react';
-const SvgShieldCheck = (
+const ShieldCheck = (
   {
     size = 24,
     ...props
@@ -19,5 +19,5 @@ const SvgShieldCheck = (
     />
   </svg>
 );
-const ForwardRef = forwardRef(SvgShieldCheck);
+const ForwardRef = forwardRef(ShieldCheck);
 export default ForwardRef;

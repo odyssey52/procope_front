@@ -1,7 +1,7 @@
 import * as React from 'react';
 import type { SVGProps } from 'react';
 import { Ref, forwardRef } from 'react';
-const SvgNaver = (
+const Naver = (
   {
     size = 24,
     ...props
@@ -25,5 +25,5 @@ const SvgNaver = (
     </defs>
   </svg>
 );
-const ForwardRef = forwardRef(SvgNaver);
+const ForwardRef = forwardRef(Naver);
 export default ForwardRef;

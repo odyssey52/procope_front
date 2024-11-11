@@ -1,7 +1,7 @@
 import * as React from 'react';
 import type { SVGProps } from 'react';
 import { Ref, forwardRef } from 'react';
-const SvgBookmark = (
+const Bookmark = (
   {
     size = 24,
     ...props
@@ -19,5 +19,5 @@ const SvgBookmark = (
     />
   </svg>
 );
-const ForwardRef = forwardRef(SvgBookmark);
+const ForwardRef = forwardRef(Bookmark);
 export default ForwardRef;

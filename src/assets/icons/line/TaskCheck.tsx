@@ -1,7 +1,7 @@
 import * as React from 'react';
 import type { SVGProps } from 'react';
 import { Ref, forwardRef } from 'react';
-const SvgTaskCheck = (
+const TaskCheck = (
   {
     size = 24,
     ...props
@@ -25,5 +25,5 @@ const SvgTaskCheck = (
     />
   </svg>
 );
-const ForwardRef = forwardRef(SvgTaskCheck);
+const ForwardRef = forwardRef(TaskCheck);
 export default ForwardRef;

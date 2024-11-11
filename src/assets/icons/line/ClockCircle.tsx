@@ -1,7 +1,7 @@
 import * as React from 'react';
 import type { SVGProps } from 'react';
 import { Ref, forwardRef } from 'react';
-const SvgClockCircle = (
+const ClockCircle = (
   {
     size = 24,
     ...props
@@ -19,5 +19,5 @@ const SvgClockCircle = (
     />
   </svg>
 );
-const ForwardRef = forwardRef(SvgClockCircle);
+const ForwardRef = forwardRef(ClockCircle);
 export default ForwardRef;

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import type { SVGProps } from 'react';
 import { Ref, forwardRef } from 'react';
-const SvgCpu = (
+const Cpu = (
   {
     size = 24,
     ...props
@@ -19,5 +19,5 @@ const SvgCpu = (
     />
   </svg>
 );
-const ForwardRef = forwardRef(SvgCpu);
+const ForwardRef = forwardRef(Cpu);
 export default ForwardRef;

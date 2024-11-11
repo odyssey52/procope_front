@@ -1,7 +1,7 @@
 import * as React from 'react';
 import type { SVGProps } from 'react';
 import { Ref, forwardRef } from 'react';
-const SvgCalendarDelete = (
+const CalendarDelete = (
   {
     size = 24,
     ...props
@@ -37,5 +37,5 @@ const SvgCalendarDelete = (
     />
   </svg>
 );
-const ForwardRef = forwardRef(SvgCalendarDelete);
+const ForwardRef = forwardRef(CalendarDelete);
 export default ForwardRef;

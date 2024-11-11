@@ -1,7 +1,7 @@
 import * as React from 'react';
 import type { SVGProps } from 'react';
 import { Ref, forwardRef } from 'react';
-const SvgPaintBoard = (
+const PaintBoard = (
   {
     size = 24,
     ...props
@@ -19,5 +19,5 @@ const SvgPaintBoard = (
     />
   </svg>
 );
-const ForwardRef = forwardRef(SvgPaintBoard);
+const ForwardRef = forwardRef(PaintBoard);
 export default ForwardRef;

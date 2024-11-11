@@ -1,7 +1,7 @@
 import * as React from 'react';
 import type { SVGProps } from 'react';
 import { Ref, forwardRef } from 'react';
-const SvgPieChart = (
+const PieChart = (
   {
     size = 24,
     ...props
@@ -25,5 +25,5 @@ const SvgPieChart = (
     />
   </svg>
 );
-const ForwardRef = forwardRef(SvgPieChart);
+const ForwardRef = forwardRef(PieChart);
 export default ForwardRef;

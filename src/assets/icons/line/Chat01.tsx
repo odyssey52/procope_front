@@ -1,7 +1,7 @@
 import * as React from 'react';
 import type { SVGProps } from 'react';
 import { Ref, forwardRef } from 'react';
-const SvgChat01 = (
+const Chat01 = (
   {
     size = 24,
     ...props
@@ -23,5 +23,5 @@ const SvgChat01 = (
     />
   </svg>
 );
-const ForwardRef = forwardRef(SvgChat01);
+const ForwardRef = forwardRef(Chat01);
 export default ForwardRef;

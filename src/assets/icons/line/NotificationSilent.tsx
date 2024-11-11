@@ -1,7 +1,7 @@
 import * as React from 'react';
 import type { SVGProps } from 'react';
 import { Ref, forwardRef } from 'react';
-const SvgNotificationSilent = (
+const NotificationSilent = (
   {
     size = 24,
     ...props
@@ -19,5 +19,5 @@ const SvgNotificationSilent = (
     />
   </svg>
 );
-const ForwardRef = forwardRef(SvgNotificationSilent);
+const ForwardRef = forwardRef(NotificationSilent);
 export default ForwardRef;

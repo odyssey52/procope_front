@@ -1,7 +1,7 @@
 import * as React from 'react';
 import type { SVGProps } from 'react';
 import { Ref, forwardRef } from 'react';
-const SvgFileDownload01 = (
+const FileDownload01 = (
   {
     size = 24,
     ...props
@@ -19,5 +19,5 @@ const SvgFileDownload01 = (
     />
   </svg>
 );
-const ForwardRef = forwardRef(SvgFileDownload01);
+const ForwardRef = forwardRef(FileDownload01);
 export default ForwardRef;

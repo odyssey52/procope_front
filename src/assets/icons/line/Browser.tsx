@@ -1,7 +1,7 @@
 import * as React from 'react';
 import type { SVGProps } from 'react';
 import { Ref, forwardRef } from 'react';
-const SvgBrowser = (
+const Browser = (
   {
     size = 24,
     ...props
@@ -20,5 +20,5 @@ const SvgBrowser = (
     <path fill="currentColor" d="M19 5a1 1 0 1 1-2 0 1 1 0 0 1 2 0M15 5a1 1 0 1 1-2 0 1 1 0 0 1 2 0" />
   </svg>
 );
-const ForwardRef = forwardRef(SvgBrowser);
+const ForwardRef = forwardRef(Browser);
 export default ForwardRef;

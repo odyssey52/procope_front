@@ -1,7 +1,7 @@
 import * as React from 'react';
 import type { SVGProps } from 'react';
 import { Ref, forwardRef } from 'react';
-const SvgPin = (
+const Pin = (
   {
     size = 24,
     ...props
@@ -19,5 +19,5 @@ const SvgPin = (
     />
   </svg>
 );
-const ForwardRef = forwardRef(SvgPin);
+const ForwardRef = forwardRef(Pin);
 export default ForwardRef;

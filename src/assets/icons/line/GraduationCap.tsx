@@ -1,7 +1,7 @@
 import * as React from 'react';
 import type { SVGProps } from 'react';
 import { Ref, forwardRef } from 'react';
-const SvgGraduationCap = (
+const GraduationCap = (
   {
     size = 24,
     ...props
@@ -25,5 +25,5 @@ const SvgGraduationCap = (
     />
   </svg>
 );
-const ForwardRef = forwardRef(SvgGraduationCap);
+const ForwardRef = forwardRef(GraduationCap);
 export default ForwardRef;

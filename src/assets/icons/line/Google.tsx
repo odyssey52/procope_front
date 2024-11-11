@@ -1,7 +1,7 @@
 import * as React from 'react';
 import type { SVGProps } from 'react';
 import { Ref, forwardRef } from 'react';
-const SvgGoogle = (
+const Google = (
   {
     size = 24,
     ...props
@@ -37,5 +37,5 @@ const SvgGoogle = (
     />
   </svg>
 );
-const ForwardRef = forwardRef(SvgGoogle);
+const ForwardRef = forwardRef(Google);
 export default ForwardRef;

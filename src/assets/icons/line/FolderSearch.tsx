@@ -1,7 +1,7 @@
 import * as React from 'react';
 import type { SVGProps } from 'react';
 import { Ref, forwardRef } from 'react';
-const SvgFolderSearch = (
+const FolderSearch = (
   {
     size = 24,
     ...props
@@ -19,5 +19,5 @@ const SvgFolderSearch = (
     />
   </svg>
 );
-const ForwardRef = forwardRef(SvgFolderSearch);
+const ForwardRef = forwardRef(FolderSearch);
 export default ForwardRef;

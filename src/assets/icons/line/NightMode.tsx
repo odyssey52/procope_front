@@ -1,7 +1,7 @@
 import * as React from 'react';
 import type { SVGProps } from 'react';
 import { Ref, forwardRef } from 'react';
-const SvgNightMode = (
+const NightMode = (
   {
     size = 24,
     ...props
@@ -19,5 +19,5 @@ const SvgNightMode = (
     />
   </svg>
 );
-const ForwardRef = forwardRef(SvgNightMode);
+const ForwardRef = forwardRef(NightMode);
 export default ForwardRef;

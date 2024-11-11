@@ -1,7 +1,7 @@
 import * as React from 'react';
 import type { SVGProps } from 'react';
 import { Ref, forwardRef } from 'react';
-const SvgCalendar = (
+const Calendar = (
   {
     size = 24,
     ...props
@@ -31,5 +31,5 @@ const SvgCalendar = (
     />
   </svg>
 );
-const ForwardRef = forwardRef(SvgCalendar);
+const ForwardRef = forwardRef(Calendar);
 export default ForwardRef;

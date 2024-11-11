@@ -1,7 +1,7 @@
 import * as React from 'react';
 import type { SVGProps } from 'react';
 import { Ref, forwardRef } from 'react';
-const SvgYen = (
+const Yen = (
   {
     size = 24,
     ...props
@@ -31,5 +31,5 @@ const SvgYen = (
     />
   </svg>
 );
-const ForwardRef = forwardRef(SvgYen);
+const ForwardRef = forwardRef(Yen);
 export default ForwardRef;

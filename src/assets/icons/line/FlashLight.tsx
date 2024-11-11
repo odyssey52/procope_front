@@ -1,7 +1,7 @@
 import * as React from 'react';
 import type { SVGProps } from 'react';
 import { Ref, forwardRef } from 'react';
-const SvgFlashLight = (
+const FlashLight = (
   {
     size = 24,
     ...props
@@ -25,5 +25,5 @@ const SvgFlashLight = (
     />
   </svg>
 );
-const ForwardRef = forwardRef(SvgFlashLight);
+const ForwardRef = forwardRef(FlashLight);
 export default ForwardRef;

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import type { SVGProps } from 'react';
 import { Ref, forwardRef } from 'react';
-const SvgRuler = (
+const Ruler = (
   {
     size = 24,
     ...props
@@ -19,5 +19,5 @@ const SvgRuler = (
     />
   </svg>
 );
-const ForwardRef = forwardRef(SvgRuler);
+const ForwardRef = forwardRef(Ruler);
 export default ForwardRef;

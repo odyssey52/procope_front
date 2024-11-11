@@ -1,7 +1,7 @@
 import * as React from 'react';
 import type { SVGProps } from 'react';
 import { Ref, forwardRef } from 'react';
-const SvgAppsRemove = (
+const AppsRemove = (
   {
     size = 24,
     ...props
@@ -19,5 +19,5 @@ const SvgAppsRemove = (
     />
   </svg>
 );
-const ForwardRef = forwardRef(SvgAppsRemove);
+const ForwardRef = forwardRef(AppsRemove);
 export default ForwardRef;

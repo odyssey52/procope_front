@@ -1,7 +1,7 @@
 import * as React from 'react';
 import type { SVGProps } from 'react';
 import { Ref, forwardRef } from 'react';
-const SvgLock = (
+const Lock = (
   {
     size = 24,
     ...props
@@ -19,5 +19,5 @@ const SvgLock = (
     />
   </svg>
 );
-const ForwardRef = forwardRef(SvgLock);
+const ForwardRef = forwardRef(Lock);
 export default ForwardRef;

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import type { SVGProps } from 'react';
 import { Ref, forwardRef } from 'react';
-const SvgZoomOut = (
+const ZoomOut = (
   {
     size = 24,
     ...props
@@ -19,5 +19,5 @@ const SvgZoomOut = (
     />
   </svg>
 );
-const ForwardRef = forwardRef(SvgZoomOut);
+const ForwardRef = forwardRef(ZoomOut);
 export default ForwardRef;

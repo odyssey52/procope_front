@@ -1,7 +1,7 @@
 import * as React from 'react';
 import type { SVGProps } from 'react';
 import { Ref, forwardRef } from 'react';
-const SvgBriefcase01 = (
+const Briefcase01 = (
   {
     size = 24,
     ...props
@@ -26,5 +26,5 @@ const SvgBriefcase01 = (
     <path fill="currentColor" d="M14 15a2 2 0 1 1-4 0 2 2 0 0 1 4 0" />
   </svg>
 );
-const ForwardRef = forwardRef(SvgBriefcase01);
+const ForwardRef = forwardRef(Briefcase01);
 export default ForwardRef;

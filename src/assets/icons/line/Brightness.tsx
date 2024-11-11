@@ -1,7 +1,7 @@
 import * as React from 'react';
 import type { SVGProps } from 'react';
 import { Ref, forwardRef } from 'react';
-const SvgBrightness = (
+const Brightness = (
   {
     size = 24,
     ...props
@@ -19,5 +19,5 @@ const SvgBrightness = (
     />
   </svg>
 );
-const ForwardRef = forwardRef(SvgBrightness);
+const ForwardRef = forwardRef(Brightness);
 export default ForwardRef;

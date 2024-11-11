@@ -1,7 +1,7 @@
 import * as React from 'react';
 import type { SVGProps } from 'react';
 import { Ref, forwardRef } from 'react';
-const SvgBroadcast = (
+const Broadcast = (
   {
     size = 24,
     ...props
@@ -19,5 +19,5 @@ const SvgBroadcast = (
     />
   </svg>
 );
-const ForwardRef = forwardRef(SvgBroadcast);
+const ForwardRef = forwardRef(Broadcast);
 export default ForwardRef;

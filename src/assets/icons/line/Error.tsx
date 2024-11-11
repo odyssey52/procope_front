@@ -1,7 +1,7 @@
 import * as React from 'react';
 import type { SVGProps } from 'react';
 import { Ref, forwardRef } from 'react';
-const SvgError = (
+const Error = (
   {
     size = 24,
     ...props
@@ -20,5 +20,5 @@ const SvgError = (
     />
   </svg>
 );
-const ForwardRef = forwardRef(SvgError);
+const ForwardRef = forwardRef(Error);
 export default ForwardRef;

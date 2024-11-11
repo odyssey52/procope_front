@@ -1,7 +1,7 @@
 import * as React from 'react';
 import type { SVGProps } from 'react';
 import { Ref, forwardRef } from 'react';
-const SvgCheckMarkRectangle = (
+const CheckMarkRectangle = (
   {
     size = 24,
     ...props
@@ -19,5 +19,5 @@ const SvgCheckMarkRectangle = (
     />
   </svg>
 );
-const ForwardRef = forwardRef(SvgCheckMarkRectangle);
+const ForwardRef = forwardRef(CheckMarkRectangle);
 export default ForwardRef;

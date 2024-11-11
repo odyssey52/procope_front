@@ -1,7 +1,7 @@
 import * as React from 'react';
 import type { SVGProps } from 'react';
 import { Ref, forwardRef } from 'react';
-const SvgMouse = (
+const Mouse = (
   {
     size = 24,
     ...props
@@ -19,5 +19,5 @@ const SvgMouse = (
     />
   </svg>
 );
-const ForwardRef = forwardRef(SvgMouse);
+const ForwardRef = forwardRef(Mouse);
 export default ForwardRef;

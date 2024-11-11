@@ -1,7 +1,7 @@
 import * as React from 'react';
 import type { SVGProps } from 'react';
 import { Ref, forwardRef } from 'react';
-const SvgFolderRemove = (
+const FolderRemove = (
   {
     size = 24,
     ...props
@@ -19,5 +19,5 @@ const SvgFolderRemove = (
     />
   </svg>
 );
-const ForwardRef = forwardRef(SvgFolderRemove);
+const ForwardRef = forwardRef(FolderRemove);
 export default ForwardRef;

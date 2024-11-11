@@ -1,7 +1,7 @@
 import * as React from 'react';
 import type { SVGProps } from 'react';
 import { Ref, forwardRef } from 'react';
-const SvgDisk = (
+const Disk = (
   {
     size = 24,
     ...props
@@ -19,5 +19,5 @@ const SvgDisk = (
     />
   </svg>
 );
-const ForwardRef = forwardRef(SvgDisk);
+const ForwardRef = forwardRef(Disk);
 export default ForwardRef;

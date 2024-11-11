@@ -1,7 +1,7 @@
 import * as React from 'react';
 import type { SVGProps } from 'react';
 import { Ref, forwardRef } from 'react';
-const SvgListViewRectangle = (
+const ListViewRectangle = (
   {
     size = 24,
     ...props
@@ -19,5 +19,5 @@ const SvgListViewRectangle = (
     />
   </svg>
 );
-const ForwardRef = forwardRef(SvgListViewRectangle);
+const ForwardRef = forwardRef(ListViewRectangle);
 export default ForwardRef;

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import type { SVGProps } from 'react';
 import { Ref, forwardRef } from 'react';
-const SvgRepeat = (
+const Repeat = (
   {
     size = 24,
     ...props
@@ -19,5 +19,5 @@ const SvgRepeat = (
     />
   </svg>
 );
-const ForwardRef = forwardRef(SvgRepeat);
+const ForwardRef = forwardRef(Repeat);
 export default ForwardRef;

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import type { SVGProps } from 'react';
 import { Ref, forwardRef } from 'react';
-const SvgEyeDisable = (
+const EyeDisable = (
   {
     size = 24,
     ...props
@@ -19,5 +19,5 @@ const SvgEyeDisable = (
     />
   </svg>
 );
-const ForwardRef = forwardRef(SvgEyeDisable);
+const ForwardRef = forwardRef(EyeDisable);
 export default ForwardRef;

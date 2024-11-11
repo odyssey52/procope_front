@@ -1,7 +1,7 @@
 import * as React from 'react';
 import type { SVGProps } from 'react';
 import { Ref, forwardRef } from 'react';
-const SvgFilter = (
+const Filter = (
   {
     size = 24,
     ...props
@@ -19,5 +19,5 @@ const SvgFilter = (
     />
   </svg>
 );
-const ForwardRef = forwardRef(SvgFilter);
+const ForwardRef = forwardRef(Filter);
 export default ForwardRef;

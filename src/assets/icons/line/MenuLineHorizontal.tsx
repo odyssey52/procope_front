@@ -1,7 +1,7 @@
 import * as React from 'react';
 import type { SVGProps } from 'react';
 import { Ref, forwardRef } from 'react';
-const SvgMenuLineHorizontal = (
+const MenuLineHorizontal = (
   {
     size = 24,
     ...props
@@ -19,5 +19,5 @@ const SvgMenuLineHorizontal = (
     />
   </svg>
 );
-const ForwardRef = forwardRef(SvgMenuLineHorizontal);
+const ForwardRef = forwardRef(MenuLineHorizontal);
 export default ForwardRef;

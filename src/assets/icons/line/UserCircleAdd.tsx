@@ -1,7 +1,7 @@
 import * as React from 'react';
 import type { SVGProps } from 'react';
 import { Ref, forwardRef } from 'react';
-const SvgUserCircleAdd = (
+const UserCircleAdd = (
   {
     size = 24,
     ...props
@@ -37,5 +37,5 @@ const SvgUserCircleAdd = (
     />
   </svg>
 );
-const ForwardRef = forwardRef(SvgUserCircleAdd);
+const ForwardRef = forwardRef(UserCircleAdd);
 export default ForwardRef;

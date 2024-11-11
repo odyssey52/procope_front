@@ -1,7 +1,7 @@
 import * as React from 'react';
 import type { SVGProps } from 'react';
 import { Ref, forwardRef } from 'react';
-const SvgSearchMinus = (
+const SearchMinus = (
   {
     size = 24,
     ...props
@@ -19,5 +19,5 @@ const SvgSearchMinus = (
     />
   </svg>
 );
-const ForwardRef = forwardRef(SvgSearchMinus);
+const ForwardRef = forwardRef(SearchMinus);
 export default ForwardRef;

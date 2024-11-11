@@ -1,7 +1,7 @@
 import * as React from 'react';
 import type { SVGProps } from 'react';
 import { Ref, forwardRef } from 'react';
-const SvgMicMute = (
+const MicMute = (
   {
     size = 24,
     ...props
@@ -19,5 +19,5 @@ const SvgMicMute = (
     />
   </svg>
 );
-const ForwardRef = forwardRef(SvgMicMute);
+const ForwardRef = forwardRef(MicMute);
 export default ForwardRef;

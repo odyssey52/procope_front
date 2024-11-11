@@ -1,7 +1,7 @@
 import * as React from 'react';
 import type { SVGProps } from 'react';
 import { Ref, forwardRef } from 'react';
-const SvgEqualityCircle = (
+const EqualityCircle = (
   {
     size = 24,
     ...props
@@ -19,5 +19,5 @@ const SvgEqualityCircle = (
     />
   </svg>
 );
-const ForwardRef = forwardRef(SvgEqualityCircle);
+const ForwardRef = forwardRef(EqualityCircle);
 export default ForwardRef;
