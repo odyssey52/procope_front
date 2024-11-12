@@ -1,12 +1,12 @@
 import { Colors } from '@/styles/theme';
+import React, { ReactNode } from 'react';
 import styled, { css } from 'styled-components';
 
 interface ButtonProps {
   $type?: 'secondary' | 'outline' | 'error' | 'tertiary'; // default : primary
-  $size?: '36' | '48'; // default : 40
-  $leftIcon?: string;
-  $rightIcon?: string;
-  $iconColor?: keyof Colors['icon'];
+  size?: '36' | '48'; // default : 40
+  leftIcon?: ReactNode;
+  rightIcon?: ReactNode;
 }
 
 const getButtonTypeStyles = (type: ButtonProps['$type']) => {
@@ -91,7 +91,7 @@ const getButtonTypeStyles = (type: ButtonProps['$type']) => {
   }
 };
 
-const getButtonSizeStyles = (size: ButtonProps['$size']) => {
+const getButtonSizeStyles = (size: ButtonProps['size']) => {
   switch (size) {
     case '36':
       return css`
@@ -102,6 +102,10 @@ const getButtonSizeStyles = (size: ButtonProps['$size']) => {
       return css`
         height: 48px;
         ${({ theme }) => theme.fontStyle.body_16_medium};
+        svg {
+          width: 24px;
+          height: 24px;
+        }
       `;
     default:
       return css`
@@ -110,7 +114,29 @@ const getButtonSizeStyles = (size: ButtonProps['$size']) => {
   }
 };
 
-const Button = styled.button<ButtonProps>`
+const Button = ({
+  $type,
+  size,
+  leftIcon,
+  rightIcon,
+  children,
+  ...props
+}: React.ButtonHTMLAttributes<HTMLButtonElement> & ButtonProps) => {
+  return (
+    <StyledButton $type={$type} size={size} {...props}>
+      {leftIcon && leftIcon}
+      {children}
+      {rightIcon && rightIcon}
+    </StyledButton>
+  );
+};
+
+interface StyledButtonProps {
+  $type?: ButtonProps['$type'];
+  size?: ButtonProps['size'];
+}
+
+const StyledButton = styled.button<StyledButtonProps>`
   position: relative;
   display: flex;
   align-items: center;
@@ -128,49 +154,14 @@ const Button = styled.button<ButtonProps>`
       box-shadow: none;
     }
   }
-  ${({ $leftIcon, $iconColor }) =>
-    $leftIcon &&
-    css`
-      &::before {
-        content: '';
-        position: relative;
-        width: 20px;
-        height: 20px;
-        background-size: cover;
-        background-image: url(${$leftIcon});
-
-        ${$iconColor &&
-        css`
-          mask-image: url(${$leftIcon});
-          mask-size: cover;
-          background-color: ${({ theme }) => theme.sementicColors.icon[$iconColor]};
-          background-image: none;
-        `}
-      }
-    `};
-
-  ${({ $rightIcon, $iconColor }) =>
-    $rightIcon &&
-    css`
-      &::after {
-        content: '';
-        position: relative;
-        width: 20px;
-        height: 20px;
-        background-size: cover;
-        background-image: url(${$rightIcon});
-
-        ${$iconColor &&
-        css`
-          mask-image: url(${$rightIcon});
-          mask-size: cover;
-          background-color: ${({ theme }) => theme.sementicColors.icon[$iconColor]};
-          background-image: none;
-        `}
-      }
-    `};
+  svg {
+    width: 20px;
+    height: 20px;
+  }
   ${({ $type }) => getButtonTypeStyles($type)}
-  ${({ $size }) => getButtonSizeStyles($size)}
+  ${({ size }) => getButtonSizeStyles(size)}
 `;
+
+Button.displayName = 'Button';
 
 export default Button;

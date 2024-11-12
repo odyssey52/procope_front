@@ -1,5 +1,5 @@
+import Image from 'next/image';
 import styled from 'styled-components';
-import Icon from '../icon/Icon';
 import Text from '../Text';
 
 interface EmptyProps {
@@ -11,7 +11,13 @@ interface EmptyProps {
 const Empty = ({ title, description, onClick }: EmptyProps) => {
   return (
     <Wrapper>
-      <AddIcon src="/assets/icons/graphic/glass/add.png" width={120} onClick={onClick} />
+      <Image
+        src="/assets/icons/graphic/glass/add.png"
+        width={120}
+        height={120}
+        onClick={onClick}
+        alt="추가 아이콘 이미지"
+      />
       <TextBox>
         <Text variant="heading_18" color="primary">
           {title}
@@ -32,9 +38,7 @@ const Wrapper = styled.div`
   gap: 12px;
   padding: 10px;
 `;
-const AddIcon = styled(Icon)`
-  cursor: pointer;
-`;
+
 const TextBox = styled.div`
   display: flex;
   flex-direction: column;

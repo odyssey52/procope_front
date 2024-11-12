@@ -1,3 +1,4 @@
+import { IconGoogle } from '@/assets/icons/line';
 import Button from '@/components/common/ui/button/Button';
 
 const GoogleLoginButton = () => {
@@ -11,7 +12,7 @@ const GoogleLoginButton = () => {
   };
 
   return (
-    <Button $type="outline" $size="48" $leftIcon="/assets/icons/line/google.svg" onClick={handlerGoogleLogin}>
+    <Button $type="outline" size="48" leftIcon={<IconGoogle />} onClick={handlerGoogleLogin}>
       구글로 계속하기
     </Button>
   );

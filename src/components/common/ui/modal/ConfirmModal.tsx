@@ -1,10 +1,10 @@
 import { useConfirmModalStore } from '@/store/modal/confirmModal';
-import styled from 'styled-components';
 import { elevation, zIndex } from '@/styles/mixin';
-import Modal from './common/Modal';
+import Image from 'next/image';
+import styled from 'styled-components';
 import Button from '../button/Button';
-import Icon from '../icon/Icon';
 import Text from '../Text';
+import Modal from './common/Modal';
 
 const ConfirmDialog = () => {
   const state = useConfirmModalStore();
@@ -16,17 +16,21 @@ const ConfirmDialog = () => {
     <Modal portalId="confirm-dialog">
       <Wrapper>
         <Content>
-          {state.type === 'error' ? <Icon src={errorIcon} width={80} /> : state.icon}
+          {state.type === 'error' ? (
+            <Image src={errorIcon} width={80} height={80} alt="에러 아이콘 이미지" />
+          ) : (
+            state.icon
+          )}
           <TextBox>
             <Text variant="heading_20">{state.title}</Text>
             <Text variant="body_14_medium">{state.description}</Text>
           </TextBox>
         </Content>
         <ButtonBox>
-          <Button $type="tertiary" $size="48" onClick={state.onCancel}>
+          <Button $type="tertiary" size="48" onClick={state.onCancel}>
             {state.cancelLabel}
           </Button>
-          <Button $size="48" onClick={state.onConfirm} $type={state.type}>
+          <Button size="48" onClick={state.onConfirm} $type={state.type}>
             {state.confirmLabel}
           </Button>
         </ButtonBox>

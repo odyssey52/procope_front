@@ -1,3 +1,4 @@
+import { IconDirectionLeft } from '@/assets/icons/line';
 import Button from '@/components/common/ui/button/Button';
 import TextButton from '@/components/common/ui/button/TextButton';
 import { JOB_MAIN_LIST, JobMainCategory, PREFERENCE_LIST } from '@/constants/stepper';
@@ -44,7 +45,7 @@ const CheckStep = ({ jobMain, jobSub, tendency, onBefore, onNext }: Props) => {
       </TextBox>
       <ButtonContainer>
         <ButtonBox>
-          <TextButton $type="16" $leftIcon="/assets/icons/line/direction-left.svg" onClick={onBefore}>
+          <TextButton $type="16" leftIcon={<IconDirectionLeft />} onClick={onBefore}>
             이전
           </TextButton>
           <Button onClick={onNext}>다음</Button>

@@ -1,6 +1,6 @@
+import Image from 'next/image';
 import styled, { css } from 'styled-components';
 import Text from '../Text';
-import Icon from '../icon/Icon';
 
 interface JobMainCardProps {
   text: string;
@@ -48,7 +48,9 @@ const JobMainCard = ({ text, icon, state, onClick }: JobMainCardProps) => {
       <Text variant="heading_20" color={state === 'disabled' ? 'disabled' : 'primary'}>
         {text}
       </Text>
-      <CardIcon src={icon} width={80} />
+      <IconBox>
+        <Image src={icon} width={80} height={80} alt="직무아이콘이미지" />
+      </IconBox>
     </Wrapper>
   );
 };
@@ -64,7 +66,7 @@ const Wrapper = styled.div<{ $state?: 'selected' | 'disabled' }>`
   cursor: pointer;
   ${({ $state }) => getStateStyle($state)}
 `;
-const CardIcon = styled(Icon)`
+const IconBox = styled.div`
   position: absolute;
   right: 10px;
   bottom: 10px;
