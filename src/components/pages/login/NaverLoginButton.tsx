@@ -1,5 +1,6 @@
 'use client';
 
+import { IconNaver } from '@/assets/icons/line';
 import Button from '@/components/common/ui/button/Button';
 
 const NaverLoginButton = () => {
@@ -21,7 +22,7 @@ const NaverLoginButton = () => {
   };
 
   return (
-    <Button $type="outline" $size="48" $leftIcon="/assets/icons/line/naver.svg" onClick={handleNaverLogin}>
+    <Button $type="outline" size="48" leftIcon={<IconNaver />} onClick={handleNaverLogin}>
       네이버로 계속하기
     </Button>
   );

@@ -1,3 +1,4 @@
+import React from 'react';
 import styled from 'styled-components';
 import Back from '../../Back';
 import Text from '../Text';

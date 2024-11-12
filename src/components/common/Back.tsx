@@ -1,13 +1,13 @@
+import { IconDirectionLeft } from '@/assets/icons/line';
 import { useRouter } from 'next/navigation';
 import styled from 'styled-components';
-import Icon from './ui/icon/Icon';
 
 const Back = () => {
   const router = useRouter();
 
   return (
     <Wrapper onClick={() => router.back()}>
-      <Icon src="/assets/icons/line/direction-left.svg" width="36" />
+      <IconDirectionLeft width="36" />
     </Wrapper>
   );
 };

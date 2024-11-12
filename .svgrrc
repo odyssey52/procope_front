@@ -1,0 +1,26 @@
+{
+  "icon": true,
+  "svgo": false,
+  "typescript": true,
+  "dimensions": false,
+  "ref": true,
+  "replaceAttrValues": {
+    "#030712": "currentColor"
+  },
+  "svgProps": {
+    "width": "{size}",
+    "height": "{size}"
+  },
+  "jsxRuntime": "classic",
+  "plugins": [
+    "@svgr/plugin-svgo",
+    "@svgr/plugin-jsx",
+    "@svgr/plugin-prettier"
+  ],
+  "prettierConfig": {
+    "tabWidth": 2,
+    "useTabs": false,
+    "singleQuote": true,
+    "semi": true
+  }
+}

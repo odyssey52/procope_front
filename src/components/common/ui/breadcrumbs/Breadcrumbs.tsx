@@ -1,3 +1,4 @@
+import { IconDirectionRight } from '@/assets/icons/line';
 import { useRouter } from 'next/navigation';
 import React from 'react';
 import styled from 'styled-components';
@@ -17,8 +18,8 @@ const Breadcrumbs: React.FC<BreadcrumbProps> = ({ paths }) => {
           <Breadcrumb key={index}>
             <TextButton
               $type="16"
-              $style={index < pathEntries.length - 1 ? 'disabled' : undefined}
-              $rightIcon={index < pathEntries.length - 1 ? '/assets/icons/line/direction-right.svg' : undefined} // 마지막 항목일 경우 rightIcon 없음
+              $disabled={index < pathEntries.length - 1}
+              rightIcon={index < pathEntries.length - 1 ? <IconDirectionRight /> : undefined} // 마지막 항목일 경우 rightIcon 없음
               onClick={() => router.push(path)}
             >
               {name}

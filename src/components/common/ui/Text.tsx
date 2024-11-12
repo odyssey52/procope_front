@@ -9,15 +9,21 @@ interface Props {
 }
 const Text = ({ variant, color, children, className }: PropsWithChildren<Props>) => {
   return (
-    <Wrapper variant={variant} color={color} className={className}>
+    <Wrapper $variant={variant} $color={color} $className={className}>
       {children}
     </Wrapper>
   );
 };
 
-const Wrapper = styled.div<Props>`
-  ${({ theme, variant }) => theme.fontStyle[variant]}
-  color:${({ theme, color }) => (color ? theme.sementicColors.text[color] : theme.sementicColors.text.primary)};
+interface TextStyledProps {
+  $variant: keyof FontStyle;
+  $color?: keyof Colors['text'];
+  $className?: string;
+}
+
+const Wrapper = styled.div<TextStyledProps>`
+  ${({ theme, $variant }) => theme.fontStyle[$variant]}
+  color:${({ theme, $color }) => ($color ? theme.sementicColors.text[$color] : theme.sementicColors.text.primary)};
   white-space: pre-wrap;
 `;
 export default Text;

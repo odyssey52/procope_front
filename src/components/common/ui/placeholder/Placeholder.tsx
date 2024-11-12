@@ -1,6 +1,5 @@
-import { ChangeEvent, useRef } from 'react';
+import { ChangeEvent, ReactNode, useRef } from 'react';
 import styled, { css } from 'styled-components';
-import Icon from '../icon/Icon';
 import Description from '../description/Description';
 import Label from '../label/Label';
 
@@ -9,8 +8,8 @@ interface PlaceholderProps {
   valueHandler?: (value: string) => void;
   placeholder?: string;
   maxLength?: number;
-  leftIcon?: string;
-  rightIcon?: string;
+  leftIcon?: ReactNode;
+  rightIcon?: ReactNode;
   validation?: boolean;
   disabled?: boolean;
   label?: {
@@ -46,7 +45,7 @@ const Placeholder = ({
     <Wrapper onClick={handleWrapperClick}>
       {label && <Label required={label.required}>{label.text}</Label>}
       <InputWrapper $isValid={validation} $disabled={disabled}>
-        {leftIcon && <Icon src={leftIcon} width={20} />}
+        {leftIcon && leftIcon}
         <Input
           ref={inputRef}
           value={value}
@@ -55,7 +54,7 @@ const Placeholder = ({
           maxLength={maxLength}
           disabled={disabled}
         />
-        {rightIcon && <Icon src={rightIcon} width={20} />}
+        {rightIcon && rightIcon}
       </InputWrapper>
       {!!description && !errorDescription && <Description>{description}</Description>}
       {!!errorDescription && validation === false && <Description type="error">{errorDescription}</Description>}

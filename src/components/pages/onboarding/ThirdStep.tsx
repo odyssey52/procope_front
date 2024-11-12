@@ -1,3 +1,4 @@
+import { IconDirectionLeft } from '@/assets/icons/line';
 import Button from '@/components/common/ui/button/Button';
 import TextButton from '@/components/common/ui/button/TextButton';
 import Radio from '@/components/common/ui/radio/Radio';
@@ -77,7 +78,7 @@ const ThirdStep = ({ tendency, tendencyHandler, onBefore, onNext }: Props) => {
       })}
       <ButtonContainer>
         <ButtonBox>
-          <TextButton $type="16" $leftIcon="/assets/icons/line/direction-left.svg" onClick={onBefore}>
+          <TextButton $type="16" leftIcon={<IconDirectionLeft />} onClick={onBefore}>
             이전
           </TextButton>
           <Button

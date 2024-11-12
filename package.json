@@ -4,6 +4,8 @@
   "private": true,
   "dependencies": {
     "@react-oauth/google": "^0.12.1",
+    "@svgr/core": "^8.1.0",
+    "@svgr/plugin-jsx": "^8.1.0",
     "@tanstack/react-query": "^5.52.2",
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
@@ -12,8 +14,6 @@
     "@types/node": "^16.18.106",
     "@types/react": "^18.0.28",
     "@types/react-dom": "^18.0.11",
-    "@typescript-eslint/eslint-plugin": "^8.13.0",
-    "@typescript-eslint/parser": "^8.13.0",
     "axios": "^1.7.7",
     "core-js": "^3.39.0",
     "framer-motion": "^11.5.4",
@@ -33,7 +33,8 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "icon": "npx @svgr/cli --out-dir src/assets/icons/line --index-template svgr-index-template.js --template svgr-template.js  public/assets/icons/line"
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx}": [
@@ -46,19 +47,28 @@
     "@types/react-dom": "^18.0.11"
   },
   "devDependencies": {
+    "@babel/core": "^7.26.0",
+    "@babel/preset-env": "^7.26.0",
+    "@babel/preset-react": "^7.25.9",
     "@eslint/js": "^9.14.0",
-    "eslint": "^9.14.0",
-    "eslint-config-airbnb": "^19.0.4",
+    "@svgr/babel-plugin-transform-svg-component": "^8.0.0",
+    "@svgr/cli": "^8.1.0",
+    "@svgr/webpack": "^8.1.0",
+    "@typescript-eslint/eslint-plugin": "^8.13.0",
+    "@typescript-eslint/parser": "^8.13.0",
+    "eslint": "^8.57.1",
+    "eslint-config-airbnb": "19.0.4",
     "eslint-config-standard": "^17.1.0",
     "eslint-import-resolver-alias": "^1.1.2",
-    "eslint-plugin-import": "^2.31.0",
-    "eslint-plugin-jsx-a11y": "^6.10.2",
-    "eslint-plugin-react": "^7.37.2",
-    "eslint-plugin-react-hooks": "^4.6.2",
+    "eslint-plugin-import": "^2.25.3",
+    "eslint-plugin-jsx-a11y": "^6.5.1",
+    "eslint-plugin-react": "^7.28.0",
+    "eslint-plugin-react-hooks": "^4.3.0",
     "globals": "^15.12.0",
     "husky": "^9.1.6",
     "lint-staged": "^15.2.10",
     "prettier": "^3.3.3",
+    "svgo": "^3.3.2",
     "typescript-eslint": "^8.13.0"
   }
 }

@@ -1,3 +1,4 @@
+import { IconLink } from '@/assets/icons/line';
 import Button from '@/components/common/ui/button/Button';
 import Container from '@/components/common/ui/Container';
 import Placeholder from '@/components/common/ui/placeholder/Placeholder';
@@ -38,7 +39,7 @@ const TeamCreateDone = () => {
           </TitleBox>
           <ShareBox>
             <Placeholder value={MOCK_URL} disabled />
-            <Button $leftIcon="/assets/icons/line/link.svg" $type="tertiary" onClick={() => copyToClipboard(MOCK_URL)}>
+            <Button leftIcon={<IconLink />} $type="tertiary" onClick={() => copyToClipboard(MOCK_URL)}>
               초대 링크 복사
             </Button>
           </ShareBox>
