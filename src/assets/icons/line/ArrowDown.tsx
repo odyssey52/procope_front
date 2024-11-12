@@ -10,12 +10,20 @@ const ArrowDown = (
   },
   ref: Ref<SVGSVGElement>,
 ) => (
-  <svg xmlns="http://www.w3.org/2000/svg" fill="none" width={size} height={size} ref={ref} {...props}>
+  <svg
+    viewBox="0 0 24 24"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    width={size}
+    height={size}
+    ref={ref}
+    {...props}
+  >
     <path
-      fill="currentColor"
       fillRule="evenodd"
-      d="M11.47 18.53a.75.75 0 0 0 1.06 0l4-4a.75.75 0 1 0-1.06-1.06l-2.72 2.72V6a.75.75 0 0 0-1.5 0v10.19l-2.72-2.72a.75.75 0 0 0-1.06 1.06z"
       clipRule="evenodd"
+      d="M11.4697 18.5303C11.7626 18.8232 12.2374 18.8232 12.5303 18.5303L16.5303 14.5303C16.8232 14.2374 16.8232 13.7626 16.5303 13.4697C16.2374 13.1768 15.7626 13.1768 15.4697 13.4697L12.75 16.1893V6C12.75 5.58579 12.4142 5.25 12 5.25C11.5858 5.25 11.25 5.58579 11.25 6V16.1893L8.53033 13.4697C8.23744 13.1768 7.76256 13.1768 7.46967 13.4697C7.17678 13.7626 7.17678 14.2374 7.46967 14.5303L11.4697 18.5303Z"
+      fill="currentColor"
     />
   </svg>
 );

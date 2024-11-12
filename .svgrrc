@@ -1,6 +1,6 @@
 {
   "icon": true,
-  "svgo": true,
+  "svgo": false,
   "typescript": true,
   "dimensions": false,
   "ref": true,

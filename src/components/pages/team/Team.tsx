@@ -183,7 +183,7 @@ const Team = () => {
             </EmptyBox>
           )}
           {EMPTY_LIST.length > 0 && <TeamCardList teamList={EMPTY_LIST} />}
-          <Tab selected leftIcon={<IconHome color={theme.sementicColors.text.brand} />} text="홈" />
+          <Tab selected leftIcon={<IconHome size={30} color={theme.sementicColors.text.brand} />} text="홈" />
         </Content>
       </TeamContainer>
     </HeaderLayout>

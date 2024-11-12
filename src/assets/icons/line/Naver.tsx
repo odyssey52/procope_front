@@ -10,17 +10,28 @@ const Naver = (
   },
   ref: Ref<SVGSVGElement>,
 ) => (
-  <svg xmlns="http://www.w3.org/2000/svg" fill="none" width={size} height={size} ref={ref} {...props}>
-    <g clipPath="url(#a)">
+  <svg
+    viewBox="0 0 24 24"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    width={size}
+    height={size}
+    ref={ref}
+    {...props}
+  >
+    <g clipPath="url(#clip0_233_1366)">
       <path
+        d="M12.3817 23.993C19.0057 23.7825 24.205 18.242 23.9945 11.6179C23.784 4.99387 18.2435 -0.20537 11.6194 0.00511467C4.99536 0.215599 -0.20388 5.7561 0.00660408 12.3802C0.217089 19.0043 5.75759 24.2035 12.3817 23.993Z"
         fill="#03CF5D"
-        d="M12.382 23.993c6.624-.21 11.823-5.751 11.612-12.375C23.784 4.994 18.245-.205 11.62.005 4.995.215-.204 5.756.007 12.38c.21 6.624 5.75 11.823 12.375 11.613"
       />
-      <path fill="#fff" d="M13.931 12.38 9.91 6.601H6.575V17.4h3.494v-5.78l4.022 5.78h3.334V6.6h-3.494z" />
+      <path
+        d="M13.9311 12.3803L9.90958 6.6012H6.5752V17.3987H10.0685V11.6196L14.091 17.3987H17.4253V6.6012H13.9311V12.3803Z"
+        fill="white"
+      />
     </g>
     <defs>
-      <clipPath id="a">
-        <path fill="#fff" d="M0 0h24.001v24H0z" />
+      <clipPath id="clip0_233_1366">
+        <rect width={24.001} height={24} fill="white" />
       </clipPath>
     </defs>
   </svg>

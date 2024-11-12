@@ -10,12 +10,20 @@ const Chat = (
   },
   ref: Ref<SVGSVGElement>,
 ) => (
-  <svg xmlns="http://www.w3.org/2000/svg" fill="none" width={size} height={size} ref={ref} {...props}>
+  <svg
+    viewBox="0 0 24 24"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    width={size}
+    height={size}
+    ref={ref}
+    {...props}
+  >
     <path
-      fill="currentColor"
       fillRule="evenodd"
-      d="M1.25 12c0-5.385 4.365-9.75 9.75-9.75h2c5.385 0 9.75 4.365 9.75 9.75s-4.365 9.75-9.75 9.75H6A4.75 4.75 0 0 1 1.25 17zM11 3.75A8.25 8.25 0 0 0 2.75 12v5A3.25 3.25 0 0 0 6 20.25h7a8.25 8.25 0 1 0 0-16.5z"
       clipRule="evenodd"
+      d="M1.25 12C1.25 6.61522 5.61522 2.25 11 2.25H13C18.3848 2.25 22.75 6.61522 22.75 12C22.75 17.3848 18.3848 21.75 13 21.75H6C3.37665 21.75 1.25 19.6234 1.25 17V12ZM11 3.75C6.44365 3.75 2.75 7.44365 2.75 12V17C2.75 18.7949 4.20507 20.25 6 20.25H13C17.5564 20.25 21.25 16.5563 21.25 12C21.25 7.44365 17.5564 3.75 13 3.75H11Z"
+      fill="currentColor"
     />
   </svg>
 );
