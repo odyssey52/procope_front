@@ -1,4 +1,4 @@
-import { IconHome } from '@/assets/icons/line';
+import { IconAddCircle, IconHome } from '@/assets/icons/line';
 import Breadcrumbs from '@/components/common/ui/breadcrumbs/Breadcrumbs';
 import Container from '@/components/common/ui/Container';
 import Empty from '@/components/common/ui/empty/Empty';
@@ -183,7 +183,7 @@ const Team = () => {
             </EmptyBox>
           )}
           {EMPTY_LIST.length > 0 && <TeamCardList teamList={EMPTY_LIST} />}
-          <Tab selected leftIcon={<IconHome size={30} color={theme.sementicColors.text.brand} />} text="홈" />
+          <Tab leftIcon={<IconHome />} text="홈" />
         </Content>
       </TeamContainer>
     </HeaderLayout>
