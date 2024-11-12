@@ -1,3 +1,4 @@
+import { IconDirectionDown, IconPlus } from '@/assets/icons/line';
 import Button from '@/components/common/ui/button/Button';
 import TextButton from '@/components/common/ui/button/TextButton';
 import { useRouter } from 'next/navigation';
@@ -7,10 +8,10 @@ const ControlBox = () => {
   const router = useRouter();
   return (
     <Wrapper>
-      <TextButton $rightIcon="/assets/icons/line/direction-down.svg" $type="16">
+      <TextButton leftIcon={<IconDirectionDown />} $type="16">
         최신순
       </TextButton>
-      <Button $leftIcon="/assets/icons/line/plus.svg" $iconColor="invers" onClick={() => router.push('/team/create')}>
+      <Button leftIcon={<IconPlus />} onClick={() => router.push('/team/create')}>
         팀 생성
       </Button>
     </Wrapper>

@@ -1,10 +1,12 @@
+import React, { ReactNode } from 'react';
 import styled, { css } from 'styled-components';
 
 interface TextButtonProps {
-  $type?: '16' | '20_underline' | '24'; // default : 12
-  $leftIcon?: string;
-  $rightIcon?: string;
-  $style?: 'disabled'; // 기존 disabled 속성은 이벤트를 차단시킴으로 스타일을 위한 disabled 속성 추가
+  $type?: '16' | '20_underline' | '24'; // default: '12'
+  $disabled?: boolean; // For disabling styles only, not event blocking
+  leftIcon?: ReactNode;
+  rightIcon?: ReactNode;
+  children: ReactNode;
 }
 
 const getButtonTypeStyles = (type: TextButtonProps['$type']) => {
@@ -12,19 +14,30 @@ const getButtonTypeStyles = (type: TextButtonProps['$type']) => {
     case '16':
       return css`
         ${({ theme }) => theme.fontStyle.body_14_medium};
+        svg {
+          width: 16px;
+          height: 16px;
+        }
       `;
     case '20_underline':
       return css`
         ${({ theme }) => theme.fontStyle.body_14_underline};
+        svg {
+          width: 16px;
+          height: 16px;
+        }
       `;
     case '24':
       return css`
         ${({ theme }) => theme.fontStyle.body_16_regular};
+        svg {
+          width: 16px;
+          height: 16px;
+        }
       `;
     default:
       return css`
-        &::before,
-        &::after {
+        svg {
           width: 12px;
           height: 12px;
         }
@@ -32,7 +45,28 @@ const getButtonTypeStyles = (type: TextButtonProps['$type']) => {
   }
 };
 
-const TextButton = styled.button<TextButtonProps>`
+const TextButton = ({
+  $type,
+  leftIcon,
+  rightIcon,
+  $disabled,
+  children,
+  ...props
+}: React.ButtonHTMLAttributes<HTMLButtonElement> & TextButtonProps) => {
+  return (
+    <StyledTextButton $type={$type} $disabled={$disabled} {...props}>
+      {leftIcon && leftIcon}
+      {children}
+      {rightIcon && rightIcon}
+    </StyledTextButton>
+  );
+};
+
+interface StyledTextButtonProps {
+  $type?: TextButtonProps['$type'];
+  $disabled?: TextButtonProps['$disabled'];
+}
+const StyledTextButton = styled.button<StyledTextButtonProps>`
   position: relative;
   display: flex;
   align-items: center;
@@ -45,44 +79,17 @@ const TextButton = styled.button<TextButtonProps>`
   color: ${({ theme }) => theme.sementicColors.text.primary};
   ${({ theme }) => theme.fontStyle.caption_12_regular};
   border-radius: 8px;
+
   &:hover {
     background-color: ${({ theme }) => theme.sementicColors.bg.tertiary_hover_pressed};
   }
-  ${({ $style }) =>
-    $style === 'disabled' &&
+
+  ${({ $disabled }) =>
+    $disabled &&
     css`
       opacity: 0.4;
-      &:hover,
-      &:active {
-        background-color: transparent;
-      }
     `}
 
-  ${({ $leftIcon }) =>
-    $leftIcon &&
-    css`
-      &::before {
-        content: '';
-        position: relative;
-        width: 16px;
-        height: 16px;
-        background-image: url(${$leftIcon});
-        background-size: cover;
-      }
-    `};
-  ${({ $rightIcon }) =>
-    $rightIcon &&
-    css`
-      &::after {
-        content: '';
-        position: relative;
-        display: block;
-        width: 16px;
-        height: 16px;
-        background-image: url(${$rightIcon});
-        background-size: cover;
-      }
-    `}
   ${({ $type }) => getButtonTypeStyles($type)}
 `;
 

@@ -1,3 +1,4 @@
+import { IconDirectionLeft } from '@/assets/icons/line';
 import Breadcrumbs from '@/components/common/ui/breadcrumbs/Breadcrumbs';
 import Button from '@/components/common/ui/button/Button';
 import TextButton from '@/components/common/ui/button/TextButton';
@@ -91,7 +92,7 @@ const TeamCreate = () => {
           )}
           <ControlBox>
             {step === 2 && (
-              <TextButton onClick={onClickPrev} $leftIcon="/assets/icons/line/direction-left.svg">
+              <TextButton onClick={onClickPrev} leftIcon={<IconDirectionLeft />}>
                 이전
               </TextButton>
             )}

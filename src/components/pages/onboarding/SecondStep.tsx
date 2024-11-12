@@ -1,3 +1,4 @@
+import { IconDirectionLeft } from '@/assets/icons/line';
 import Button from '@/components/common/ui/button/Button';
 import TextButton from '@/components/common/ui/button/TextButton';
 import JobSubCard from '@/components/common/ui/card/JobSubCard';
@@ -43,7 +44,7 @@ const SecondStep = ({ jobMain, jobSub, jobSubHandler, onBefore, onNext }: Props)
       </JobCardBox>
       <ButtonContainer>
         <ButtonBox>
-          <TextButton $type="16" $leftIcon="/assets/icons/line/direction-left.svg" onClick={onBefore}>
+          <TextButton $type="16" leftIcon={<IconDirectionLeft />} onClick={onBefore}>
             이전
           </TextButton>
           <Button disabled={jobSub.length === 0} onClick={onNext}>

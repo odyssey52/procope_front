@@ -3,18 +3,33 @@
 import { toastActions, useToastStore } from '@/store/modal/toast';
 import { zIndex } from '@/styles/mixin';
 import { AnimatePresence, motion } from 'framer-motion';
+import Image from 'next/image';
 import { useEffect } from 'react';
 import styled from 'styled-components';
 import Text from '../Text';
-import Icon from '../icon/Icon';
 import Portal from './common/Portal';
 
 const ICON_URL = {
-  success: '/assets/icons/graphic/fill/check.svg',
-  error: '/assets/icons/graphic/fill/error.svg',
-  default: '/assets/icons/graphic/fill/help.svg',
-  info: '/assets/icons/graphic/fill/information.svg',
-  warning: '/assets/icons/graphic/fill/warning.svg',
+  success: {
+    src: '/assets/icons/graphic/fill/check.svg',
+    alt: '성공 아이콘 이미지',
+  },
+  error: {
+    src: '/assets/icons/graphic/fill/error.svg',
+    alt: '에러 아이콘 이미지',
+  },
+  default: {
+    src: '/assets/icons/graphic/fill/help.svg',
+    alt: '기본 아이콘 이미지',
+  },
+  info: {
+    src: '/assets/icons/graphic/fill/information.svg',
+    alt: '정보 아이콘 이미지',
+  },
+  warning: {
+    src: '/assets/icons/graphic/fill/warning.svg',
+    alt: '경고 아이콘 이미지',
+  },
 };
 
 const Toast = () => {
@@ -59,7 +74,7 @@ const Toast = () => {
             //   ease: 'easeOut',
             // }}
           >
-            <Icon src={ICON_URL[state]} width={24} height={24} />
+            <Image src={ICON_URL[state].src} width={24} height={24} alt={ICON_URL[state].alt} />
             <TextBox>
               <Text variant="body_14_medium">{title}</Text>
               {description && (
@@ -70,7 +85,7 @@ const Toast = () => {
             </TextBox>
             {description && (
               <Close onClick={handleClose}>
-                <Icon src="/assets/icons/line/remove.svg" width={20} height={20} />
+                <Image src="/assets/icons/line/remove.svg" width={20} height={20} alt="닫기 아이콘 이미지" />
               </Close>
             )}
           </ToastBox>

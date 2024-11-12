@@ -6,6 +6,7 @@ import StyledComponentsRegistry from '@/lib/registry';
 import GlobalStyles from '@/styles/GlobalStyles';
 import { theme } from '@/styles/theme';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import React from 'react';
 import { ThemeProvider } from 'styled-components';
 
 export const queryClient = new QueryClient();
