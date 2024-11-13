@@ -8,7 +8,7 @@ const NaverCallback = () => {
   const router = useRouter();
   const createTokenWithNaver = useCreateTokenWithNaver();
 
-  const requeseAccessToken = async (code: string) => {
+  const requestAccessToken = async (code: string) => {
     const payload = {
       code,
       state: sessionStorage.getItem('naver_state'),
@@ -27,7 +27,7 @@ const NaverCallback = () => {
       alert('데이터가 변조가 감지되었습니다. 다시 시도해주세요.');
       return router.push('/login');
     }
-    requeseAccessToken(code);
+    requestAccessToken(code);
   }, [router]);
 
   return null;
