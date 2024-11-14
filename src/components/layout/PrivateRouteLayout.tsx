@@ -18,7 +18,7 @@ const PrivateRouteLayout = ({ children }: { children: ReactNode }) => {
             <Image src="/assets/icons/graphic/glass/error.png" width={80} height={80} alt="모달 에러 아이콘 이미지" />
           ),
           type: 'error',
-          title: '로그인 필요',
+          title: '로그인이 필요합니다.',
           description: '로그인 페이지로 이동합니다.',
           cancelLabel: '뒤로가기',
           onCancel: () => router.back(),
@@ -30,7 +30,7 @@ const PrivateRouteLayout = ({ children }: { children: ReactNode }) => {
     [router],
   );
 
-  return children;
+  return isAuthenticated ? children : null;
 };
 
 export default PrivateRouteLayout;
