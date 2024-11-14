@@ -29,13 +29,14 @@ const NaverCallback = () => {
       if (isNewUser) router.push('/onboarding');
       else router.push('/team');
     }
-  }, [isAuthenticated, isNewUser]);
+  }, [isAuthenticated, isNewUser, router]);
 
   useEffect(() => {
     if (authorizationCode && state) {
       requestAccessToken(authorizationCode, state);
     } else {
       alert('로그인에 실패했습니다.');
+      router.push('/');
     }
   }, [router]);
   return null;
