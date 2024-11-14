@@ -23,7 +23,7 @@ const ConfirmDialog = () => {
           )}
           <TextBox>
             <Text variant="heading_20">{state.title}</Text>
-            <Text variant="body_14_medium">{state.description}</Text>
+            <Text variant="body_16_medium">{state.description}</Text>
           </TextBox>
         </Content>
         <ButtonBox>
@@ -64,6 +64,7 @@ const TextBox = styled.div`
   position: relative;
   display: flex;
   flex-direction: column;
+  text-align: center;
   gap: 4px;
 `;
 
