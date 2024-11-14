@@ -4,13 +4,17 @@ import { create } from 'zustand';
 interface AuthState {
   accessToken: string | null;
   isAuthenticated: boolean;
+  isNewUser: boolean;
+  setIsNewUser: (isNewUser: boolean) => void;
   setAccessToken: (token: string) => void;
   logout: () => void;
 }
 
 const useAuthStore = create<AuthState>((set) => ({
   accessToken: null, // 초기값은 null로 설정
-  isAuthenticated: false,
+  isAuthenticated: true,
+  isNewUser: true,
+  setIsNewUser: (isNewUser: boolean) => set({ isNewUser }),
   setAccessToken: (token: string) => set({ accessToken: token, isAuthenticated: true }),
   logout: () => set({ accessToken: null, isAuthenticated: false }),
 }));

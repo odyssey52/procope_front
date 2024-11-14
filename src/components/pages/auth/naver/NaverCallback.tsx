@@ -6,7 +6,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect } from 'react';
 
 const NaverCallback = () => {
-  const { setAccessToken } = useAuthStore();
+  const { isAuthenticated, isNewUser, setAccessToken, setIsNewUser } = useAuthStore();
   const router = useRouter();
   const search = useSearchParams();
   const authorizationCode = search.get('code');
@@ -16,8 +16,20 @@ const NaverCallback = () => {
 
   const requestAccessToken = async (authorizationCode: string, state: string) => {
     const payload = { authorizationCode, state };
-    await createTokenWithNaver.mutateAsync(payload, { onSuccess: (res) => setAccessToken(res.accessToken) });
+    await createTokenWithNaver.mutateAsync(payload, {
+      onSuccess: (res) => {
+        setAccessToken(res.accessToken);
+        setIsNewUser(res.isNewUser);
+      },
+    });
   };
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      if (isNewUser) router.push('/onboarding');
+      else router.push('/team');
+    }
+  }, [isAuthenticated, isNewUser]);
 
   useEffect(() => {
     if (authorizationCode && state) {
