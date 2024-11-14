@@ -1,6 +1,13 @@
 /** params */
 /** payload */
-export type CreateTokenWithNaverPayload = {};
+export type CreateTokenWithNaverPayload = {
+  authorizationCode: string;
+  state: string;
+};
 
 /** response */
-export type CreateTokenWithNaverResponse = {};
+export type CreateTokenWithNaverResponse = {
+  accessToken: string;
+  refreshToken: string;
+  isNewUser: boolean;
+};
