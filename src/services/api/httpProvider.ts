@@ -16,9 +16,9 @@ const PUBLIC_HEADER = {
 export default class HTTPProvider {
   private client: AxiosInstance;
 
-  constructor({ isPublic }: { isPublic: boolean }) {
+  constructor({ isPublic, baseURL }: { isPublic: boolean; baseURL?: string }) {
     this.client = axios.create({
-      baseURL: BASE_URL,
+      baseURL: baseURL || BASE_URL,
       timeout: TIMEOUT,
       headers: isPublic ? PUBLIC_HEADER : PRIVATE_HEADER,
       responseType: 'json' as const,
