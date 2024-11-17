@@ -18,8 +18,17 @@ const Tab = ({ name, path, icon, subTabs }: TabType) => {
   const pathname = usePathname();
   const selected = pathname === path;
   const isOpenSubTab = selected && subTabs;
+
+  const onClick = () => {
+    if (subTabs) {
+      router.push(subTabs[0].path);
+    } else {
+      router.push(path);
+    }
+  };
+
   return (
-    <Wrapper $selected={selected} onClick={() => router.push(path)}>
+    <Wrapper $selected={selected} onClick={onClick}>
       <TabWrapper $selected={selected}>
         {icon}
         <span>{name}</span>

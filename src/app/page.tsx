@@ -2,6 +2,6 @@
 
 import Home from '@/components/pages/Home';
 
-const Page = () => <Home />;
+const page = () => <Home />;
 
-export default Page;
+export default page;

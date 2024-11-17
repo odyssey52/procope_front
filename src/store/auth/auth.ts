@@ -12,7 +12,7 @@ interface AuthState {
 
 const useAuthStore = create<AuthState>((set) => ({
   accessToken: null, // 초기값은 null로 설정
-  isAuthenticated: false,
+  isAuthenticated: true,
   isNewUser: false,
   setIsNewUser: (isNewUser: boolean) => set({ isNewUser }),
   setAccessToken: (token: string) => set({ accessToken: token, isAuthenticated: true }),
