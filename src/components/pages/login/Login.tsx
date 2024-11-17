@@ -1,9 +1,48 @@
 'use client';
 
+import { IconFile, IconHome, IconInteractive, IconSetting, IconUsers02 } from '@/assets/icons/line';
+import TabStep from '@/components/common/ui/tab/TabStep';
 import { HeroSection, LoginSection } from '@/components/pages/login';
 import styled from 'styled-components';
 
 const Login = () => {
+  const SIDE_NAV_TABS = [
+    {
+      name: '대시보드',
+      path: '/dashboard',
+      icon: <IconHome />,
+    },
+    {
+      name: '목표관리',
+      path: '/goal',
+      icon: <IconInteractive />,
+    },
+    {
+      name: '회고관리',
+      path: '/retrospective',
+      icon: <IconFile />,
+    },
+    {
+      name: '팀 관리',
+      path: '/team',
+      icon: <IconUsers02 />,
+      subTabs: [
+        {
+          name: '팀 설정',
+          path: '/team/setting',
+        },
+        {
+          name: '참여 관리',
+          path: '/team/member',
+        },
+      ],
+    },
+    {
+      name: '설정',
+      path: '/setting',
+      icon: <IconSetting />,
+    },
+  ];
   // 모달 및 토스트 사용 예시
   // const handleClick = () => {
   //   confirmModalActions.open({
@@ -29,6 +68,7 @@ const Login = () => {
       <Content>
         <HeroSection />
         <LoginSection />
+        <TabStep tabList={SIDE_NAV_TABS} />
       </Content>
     </Wrapper>
   );

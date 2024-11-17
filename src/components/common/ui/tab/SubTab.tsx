@@ -1,15 +1,19 @@
 'use client';
 
+import { usePathname, useRouter } from 'next/navigation';
 import styled from 'styled-components';
 
-interface SubTabProps {
-  text: string;
-  selected?: boolean;
+export interface SubTabType {
+  name: string;
+  path: string;
 }
-const SubTab = ({ text, selected }: SubTabProps) => {
+const SubTab = ({ name, path }: SubTabType) => {
+  const pathname = usePathname();
+  const router = useRouter();
+  const selected = pathname === path;
   return (
-    <Wrapper $selected={selected}>
-      <span>{text}</span>
+    <Wrapper $selected={selected} onClick={() => router.push(path)}>
+      <span>{name}</span>
     </Wrapper>
   );
 };
