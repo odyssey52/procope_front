@@ -4,26 +4,6 @@ import { HeroSection, LoginSection } from '@/components/pages/login';
 import styled from 'styled-components';
 
 const Login = () => {
-  // 모달 및 토스트 사용 예시
-  // const handleClick = () => {
-  //   confirmModalActions.open({
-  //     icon: <Image src="/assets/icons/graphic/glass/userbook.png" width={96} height={96} alt="유저북 아이콘 이미지" />,
-  //     title: '추가정보 입력이 필요합니다.',
-  //     description: '작성 중이신 회원가입 페이지로 이동합니다.',
-  //     cancelLabel: '취소',
-  //     onCancel: () => console.log('처음부터 다시 시작'),
-  //     confirmLabel: '확인',
-  //     onConfirm: () => console.log('작성 중이던 스테퍼로 이동'),
-  //   });
-  // };
-
-  // const handleToast = () => {
-  //   toastActions.open({
-  //     state: 'warning',
-  //     title: '로그인 실패',
-  //   });
-  // };
-
   return (
     <Wrapper>
       <Content>

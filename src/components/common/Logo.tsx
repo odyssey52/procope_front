@@ -2,7 +2,7 @@ import { useRouter } from 'next/navigation';
 import styled from 'styled-components';
 
 interface LogoProps {
-  type?: 'icon2' | 'iconText-white' | 'iconText' | 'iconText2' | 'text';
+  type?: 'icon' | 'icon2' | 'iconText-white' | 'iconText' | 'iconText2' | 'text';
   size?: number;
   onClick?: () => void; // Optional onClick handler
 }
