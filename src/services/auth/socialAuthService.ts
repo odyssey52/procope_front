@@ -1,7 +1,7 @@
 import ApiClient from '@/services/api/apiClient';
 import * as types from './socialAuthService.type';
 
-const baseURL = process.env.NEXT_PUBLIC_DEV_USER_API_HOST;
+const baseURL = process.env.NEXT_PUBLIC_USER_API_HOST;
 const URLS = {
   CREATE_TOKEN_WITH_SOCIAL: '/auth/callback',
 };
