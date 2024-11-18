@@ -18,16 +18,16 @@ export const TEAM_SIDE_NAV_TABS = (teamId: string) => [
   },
   {
     name: '팀 관리',
-    path: `/team/${teamId}/`,
+    path: `/team/${teamId}/manage`,
     icon: <IconUsers02 />,
     subTabs: [
       {
         name: '팀 설정',
-        path: `/team/${teamId}/setting`,
+        path: `/team/${teamId}/manage/setting`,
       },
       {
         name: '참여 관리',
-        path: `/team/${teamId}/member`,
+        path: `/team/${teamId}/manage/member`,
       },
     ],
   },

@@ -4,7 +4,7 @@ import Logo from './Logo';
 const Header = () => {
   return (
     <Wrapper>
-      <Logo type="iconText" size={147} />
+      <Logo type="icon" size={36} />
     </Wrapper>
   );
 };

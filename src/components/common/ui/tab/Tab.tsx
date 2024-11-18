@@ -1,6 +1,6 @@
 'use client';
 
-import { IconDirectionDown } from '@/assets/icons/line';
+import { IconDirectionDown, IconDirectionUp } from '@/assets/icons/line';
 import { usePathname, useRouter } from 'next/navigation';
 import { ReactNode } from 'react';
 import styled from 'styled-components';
@@ -16,7 +16,7 @@ export interface TabType {
 const Tab = ({ name, path, icon, subTabs }: TabType) => {
   const router = useRouter();
   const pathname = usePathname();
-  const selected = pathname === path;
+  const selected = pathname.includes(path);
   const isOpenSubTab = selected && subTabs;
 
   const onClick = () => {
@@ -32,7 +32,7 @@ const Tab = ({ name, path, icon, subTabs }: TabType) => {
       <TabWrapper $selected={selected}>
         {icon}
         <span>{name}</span>
-        {subTabs && <IconDirectionDown />}
+        {subTabs && isOpenSubTab ? <IconDirectionUp /> : <IconDirectionDown />}
       </TabWrapper>
       <SubTapWrapper>
         {isOpenSubTab &&

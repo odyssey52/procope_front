@@ -1,8 +1,19 @@
 'use client';
 
-import TeamDetail from '@/components/pages/team/detail/TeamDetail';
+import { useParams, useRouter } from 'next/navigation';
+import { useEffect } from 'react';
 
-const page = () => <TeamDetail />;
+const page = () => {
+  const router = useRouter();
+  const params = useParams();
+  const teamId = params.teamId as string;
+
+  useEffect(() => {
+    router.push(`/team/${teamId}/dashboard`);
+  }, [teamId, router]);
+
+  return null;
+};
 
 page.displayName = 'page';
 
