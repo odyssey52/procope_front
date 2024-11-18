@@ -10,3 +10,9 @@ export const useCreateTokenWithNaver = () =>
     mutationKey: AUTH_QUERY_KEY.AUTH_CREATE_TOKEN_NAVER,
     mutationFn: (payload: types.CreateTokenWithNaverPayload) => socialAuthService.createTokenWithNaver(payload),
   });
+
+  export const useCreateTokenWithGoogle = () =>
+    useMutation({
+      mutationKey: AUTH_QUERY_KEY.AUTH_CREATE_TOKEN_GOOGLE,
+      mutationFn: (payload: types.CreateTokenWithGooglePayload) => socialAuthService.createTokenWithGoogle(payload),
+    });
