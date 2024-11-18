@@ -3,7 +3,7 @@
 import { useCreateTokenWithNaver } from '@/query/auth/socialAuthQueries';
 import useAuthStore from '@/store/auth/auth';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useEffect } from 'react';
+import { Suspense, useEffect } from 'react';
 
 const NaverCallback = () => {
   const { isAuthenticated, isNewUser, setAccessToken, setIsNewUser } = useAuthStore();

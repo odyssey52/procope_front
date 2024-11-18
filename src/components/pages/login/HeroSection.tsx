@@ -58,6 +58,10 @@ const TextBox = styled.div`
   gap: 12px;
   align-items: center;
   flex-direction: column;
+  > div {
+    word-break: keep-all;
+    text-align: center;
+  }
 `;
 
 HeroSection.displayName = 'HeroSection';

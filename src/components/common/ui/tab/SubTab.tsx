@@ -1,15 +1,26 @@
 'use client';
 
+import { usePathname, useRouter } from 'next/navigation';
+import { MouseEvent } from 'react';
 import styled from 'styled-components';
 
-interface SubTabProps {
-  text: string;
-  selected?: boolean;
+export interface SubTabType {
+  name: string;
+  path: string;
 }
-const SubTab = ({ text, selected }: SubTabProps) => {
+const SubTab = ({ name, path }: SubTabType) => {
+  const pathname = usePathname();
+  const router = useRouter();
+  const selected = pathname === path;
+
+  const onClick = (e: MouseEvent) => {
+    router.push(path);
+    e.stopPropagation();
+  };
+
   return (
-    <Wrapper $selected={selected}>
-      <span>{text}</span>
+    <Wrapper $selected={selected} onClick={(e: MouseEvent) => onClick(e)}>
+      <span>{name}</span>
     </Wrapper>
   );
 };

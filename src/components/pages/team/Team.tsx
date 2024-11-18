@@ -1,9 +1,6 @@
-import { IconHome } from '@/assets/icons/line';
 import Breadcrumbs from '@/components/common/ui/breadcrumbs/Breadcrumbs';
 import Container from '@/components/common/ui/Container';
 import Empty from '@/components/common/ui/empty/Empty';
-import SubTab from '@/components/common/ui/tab/SubTab';
-import Tab from '@/components/common/ui/tab/Tab';
 import PageSubTitle from '@/components/common/ui/title/PageSubTitle';
 import PageTitle from '@/components/common/ui/title/PageTitle';
 import HeaderLayout from '@/components/layout/HeaderLayout';

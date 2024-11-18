@@ -4,7 +4,7 @@ import useAuthStore from '@/store/auth/auth';
 import { confirmModalActions } from '@/store/modal/confirmModal';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import { ReactNode, useEffect } from 'react';
+import React, { ReactNode, useEffect } from 'react';
 
 const PrivateRouteLayout = ({ children }: { children: ReactNode }) => {
   const { isAuthenticated } = useAuthStore();
@@ -30,7 +30,7 @@ const PrivateRouteLayout = ({ children }: { children: ReactNode }) => {
     [router],
   );
 
-  return isAuthenticated ? children : null;
+  return isAuthenticated ? <>{children}</> : null;
 };
 
 export default PrivateRouteLayout;
