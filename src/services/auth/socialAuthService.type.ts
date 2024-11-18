@@ -11,3 +11,13 @@ export type CreateTokenWithNaverResponse = {
   refreshToken: string;
   isNewUser: boolean;
 };
+
+export type CreateTokenWithGooglePayload = {
+  authorizationCode: string;
+};
+
+export type CreateTokenWithGoogleResponse = {
+  accessToken: string;
+  refreshToken: string;
+  isNewUser: boolean;
+};
