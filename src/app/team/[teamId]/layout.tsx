@@ -30,5 +30,6 @@ const Content = styled.div`
   display: flex;
   justify-content: center;
   flex-grow: 1;
+  background-color: ${({ theme }) => theme.sementicColors.bg.tertiary};
 `;
 export default layout;
