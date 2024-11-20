@@ -21,8 +21,10 @@ export default class SocialAuthService {
     return data;
   }
 
-  async createTokenWithGoogle(payload: types.CreateTokenWithGooglePayload): Promise<types.CreateTokenWithGoogleResponse> {
-    const {data} = await this.apiClient.post<types.CreateTokenWithGoogleResponse>(
+  async createTokenWithGoogle(
+    payload: types.CreateTokenWithGooglePayload,
+  ): Promise<types.CreateTokenWithGoogleResponse> {
+    const { data } = await this.apiClient.post<types.CreateTokenWithGoogleResponse>(
       URLS.CREATE_TOKEN_WITH_SOCIAL,
       payload,
     );
