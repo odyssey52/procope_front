@@ -37,6 +37,8 @@ export { default as IconChat02 } from './Chat02';
 export { default as IconChatting } from './Chatting';
 export { default as IconCheckMarkRectangle } from './CheckMarkRectangle';
 export { default as IconCheckCircle } from './CheckCircle';
+export { default as IconCheckboxChecked } from './CheckboxChecked';
+export { default as IconCheckbox } from './Checkbox';
 export { default as IconClearCircle } from './ClearCircle';
 export { default as IconClockCircle } from './ClockCircle';
 export { default as IconCollection } from './Collection';
