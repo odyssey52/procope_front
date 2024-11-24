@@ -55,9 +55,10 @@ const Chip = ({
   disabled,
   selected,
   text,
+  ...props
 }: React.ButtonHTMLAttributes<HTMLButtonElement> & ChipProps) => {
   return (
-    <Wrapper $size={size} $disabled={disabled} $selected={selected} disabled={disabled}>
+    <Wrapper $size={size} $disabled={disabled} $selected={selected} disabled={disabled} {...props}>
       {leftIcon && leftIcon}
       <ChipText $size={size}>{text}</ChipText>
       {rightIcon && rightIcon}
