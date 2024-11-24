@@ -1,6 +1,5 @@
-import { IconCheckbox, IconCheckboxChecked } from '@/assets/icons/line';
 import { theme } from '@/styles/theme';
-import React from 'react';
+import { ChangeEvent } from 'react';
 import styled from 'styled-components';
 
 interface CheckboxProps {
@@ -11,47 +10,44 @@ interface CheckboxProps {
   checked?: boolean;
   required?: boolean;
   disabled?: boolean;
-  onClick: (id: string, checked: boolean) => void;
+  onChange: (id: string, checked: boolean) => void;
 }
 
-const Checkbox = ({ size = 20, id, label, description, required, checked, disabled, onClick }: CheckboxProps) => {
+const Checkbox2 = ({ size = 20, id, disabled, required, label, description, checked, onChange }: CheckboxProps) => {
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+    onChange(e.target.id, e.target.checked);
+  };
+
   return (
-    <Wrapper disabled={disabled} $disabled={disabled} onClick={() => onClick(id, !checked)}>
-      {checked && (
-        <IconCheckboxChecked
-          size={size}
-          color={disabled ? theme.sementicColors.icon.disabled : theme.sementicColors.icon.brand}
-        />
-      )}
-      {!checked && <IconCheckbox size={size} />}
-      <LabelBox>
-        <Label $disabled={disabled} $size={size}>
+    <Label htmlFor={id}>
+      <input type="checkbox" id={id} checked={checked} disabled={disabled} onChange={handleChange} />
+      <TextBox>
+        <Title $disabled={disabled} $size={size}>
           {label}
           {required && <span>*</span>}
-        </Label>
+        </Title>
         <Description $disabled={disabled} $size={size}>
           {description}
         </Description>
-      </LabelBox>
-    </Wrapper>
+      </TextBox>
+    </Label>
   );
 };
 
-const Wrapper = styled.button<{ $disabled?: boolean }>`
+const Label = styled.label`
   position: relative;
   display: flex;
-  justify-content: center;
-  cursor: ${({ $disabled }) => ($disabled ? 'not-allowed' : 'pointer')};
+  align-items: flex-start;
   gap: 4px;
 `;
-const LabelBox = styled.div`
+const TextBox = styled.div`
   position: relative;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   gap: 4px;
 `;
-const Label = styled.span<{ $disabled?: boolean; $size: 20 | 24 }>`
+const Title = styled.span<{ $disabled?: boolean; $size: 20 | 24 }>`
   position: relative;
   display: flex;
   align-items: center;
@@ -69,6 +65,6 @@ const Description = styled.span<{ $disabled?: boolean; $size: 20 | 24 }>`
     $disabled ? theme.sementicColors.text.disabled : theme.sementicColors.text.secondary};
 `;
 
-Checkbox.displayName = 'Checkbox';
+Checkbox2.displayName = 'Checkbox2';
 
-export default Checkbox;
+export default Checkbox2;
