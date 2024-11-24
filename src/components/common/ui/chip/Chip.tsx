@@ -7,10 +7,10 @@ interface ChipProps {
   size?: 12 | 14 | 16;
   selected?: boolean;
   disabled?: boolean;
-  text: string;
+  label: string;
 }
 
-const chipTextSize = {
+const chipLabelSize = {
   12: css`
     ${({ theme }) => theme.fontStyle.caption_12_medium};
   `,
@@ -54,13 +54,13 @@ const Chip = ({
   size = 14,
   disabled,
   selected,
-  text,
+  label,
   ...props
 }: React.ButtonHTMLAttributes<HTMLButtonElement> & ChipProps) => {
   return (
     <Wrapper $size={size} $disabled={disabled} $selected={selected} disabled={disabled} {...props}>
       {leftIcon && leftIcon}
-      <ChipText $size={size}>{text}</ChipText>
+      <ChipText $size={size}>{label}</ChipText>
       {rightIcon && rightIcon}
     </Wrapper>
   );
@@ -86,7 +86,7 @@ const Wrapper = styled.button<ChipStyledProps>`
 `;
 
 const ChipText = styled.span<{ $size: 12 | 14 | 16 }>`
-  ${({ $size }) => chipTextSize[$size]};
+  ${({ $size }) => chipLabelSize[$size]};
 `;
 Chip.displayName = 'Chip';
 

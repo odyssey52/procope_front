@@ -5,6 +5,7 @@ interface ToggleProps {
   size?: 20 | 24;
   disabled?: boolean;
   checked?: boolean;
+  label?: string;
 }
 
 const toggleStyle = (disabled: ToggleProps['disabled'], checked: ToggleProps['checked']) => {
@@ -12,7 +13,6 @@ const toggleStyle = (disabled: ToggleProps['disabled'], checked: ToggleProps['ch
     if (checked) {
       return css`
         background-color: ${({ theme }) => theme.sementicColors.bg.tertiary_hover_pressed};
-        opacity: 0.3;
         &:hover {
           cursor: not-allowed;
         }
@@ -20,7 +20,6 @@ const toggleStyle = (disabled: ToggleProps['disabled'], checked: ToggleProps['ch
     }
     return css`
       background-color: ${({ theme }) => theme.sementicColors.bg.disabled};
-      opacity: 0.3;
       &:hover {
         cursor: not-allowed;
       }
@@ -46,13 +45,17 @@ const toggleSize = {
 };
 const Toggle = ({
   size = 20,
+  label,
   disabled,
   checked,
   ...props
 }: React.ButtonHTMLAttributes<HTMLButtonElement> & ToggleProps) => {
   return (
-    <Wrapper $size={size} $disabled={disabled} $checked={checked} {...props} disabled={disabled}>
-      <Circle $checked={checked} $size={size} />
+    <Wrapper $size={size} $disabled={disabled}>
+      {label}
+      <ToggleSwitch $size={size} $disabled={disabled} $checked={checked} {...props} disabled={disabled}>
+        <Circle $checked={checked} $size={size} />
+      </ToggleSwitch>
     </Wrapper>
   );
 };
@@ -63,7 +66,17 @@ interface ToggleStyledProps {
   $checked?: boolean;
 }
 
-const Wrapper = styled.button<ToggleStyledProps>`
+const Wrapper = styled.div<{ $size: 20 | 24; $disabled?: boolean }>`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 4px;
+  ${({ $size, theme }) => ($size === 20 ? theme.fontStyle.caption_12_medium : theme.fontStyle.body_14_semibold)};
+  opacity: ${({ $disabled }) => $disabled && 0.4};
+  color: ${({ $disabled, theme }) =>
+    $disabled ? theme.sementicColors.text.disabled : theme.sementicColors.text.primary};
+`;
+const ToggleSwitch = styled.button<ToggleStyledProps>`
   position: relative;
   display: flex;
   cursor: pointer;
