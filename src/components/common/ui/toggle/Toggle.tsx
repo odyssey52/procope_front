@@ -51,9 +51,9 @@ const Toggle = ({
   ...props
 }: React.ButtonHTMLAttributes<HTMLButtonElement> & ToggleProps) => {
   return (
-    <Wrapper $size={size} $disabled={disabled}>
+    <Wrapper $size={size} $disabled={disabled} {...props} disabled={disabled}>
       {label}
-      <ToggleSwitch $size={size} $disabled={disabled} $checked={checked} {...props} disabled={disabled}>
+      <ToggleSwitch $size={size} $disabled={disabled} $checked={checked}>
         <Circle $checked={checked} $size={size} />
       </ToggleSwitch>
     </Wrapper>
@@ -66,17 +66,18 @@ interface ToggleStyledProps {
   $checked?: boolean;
 }
 
-const Wrapper = styled.div<{ $size: 20 | 24; $disabled?: boolean }>`
+const Wrapper = styled.button<{ $size: 20 | 24; $disabled?: boolean }>`
   display: flex;
   justify-content: center;
   align-items: center;
+  cursor: default;
   gap: 4px;
   ${({ $size, theme }) => ($size === 20 ? theme.fontStyle.caption_12_medium : theme.fontStyle.body_14_semibold)};
   opacity: ${({ $disabled }) => $disabled && 0.4};
   color: ${({ $disabled, theme }) =>
     $disabled ? theme.sementicColors.text.disabled : theme.sementicColors.text.primary};
 `;
-const ToggleSwitch = styled.button<ToggleStyledProps>`
+const ToggleSwitch = styled.div<ToggleStyledProps>`
   position: relative;
   display: flex;
   cursor: pointer;

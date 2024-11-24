@@ -1,15 +1,24 @@
-// import styled from 'styled-components';
+import React from 'react';
+import styled from 'styled-components';
 
-// interface CheckboxProps {
-//     label:
-// }
+interface CheckboxProps {
+  size?: 20 | 24;
+  label: string;
+  checked?: boolean;
+  disabled?: boolean;
+}
 
-// const Checkbox = () => {
-//   return <Wrapper></Wrapper>;
-// };
+const Checkbox = ({
+  size = 20,
+  label,
+  checked,
+  disabled,
+}: React.ButtonHTMLAttributes<HTMLButtonElement> & CheckboxProps) => {
+  return <Wrapper>{label}</Wrapper>;
+};
 
-// const Wrapper = styled.div``;
+const Wrapper = styled.div``;
 
-// Checkbox.displayName = 'Checkbox';
+Checkbox.displayName = 'Checkbox';
 
-// export default Checkbox;
+export default Checkbox;
