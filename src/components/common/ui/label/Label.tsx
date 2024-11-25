@@ -1,15 +1,22 @@
 import { theme } from '@/styles/theme';
+import React from 'react';
 import styled, { css } from 'styled-components';
 
 interface LabelProps {
-  icon?: string;
-  size?: 12 | 16; // default 14
+  text: string;
+  icon?: React.ReactNode;
+  size?: 12 | 14 | 16; // default 14
   required?: boolean; // 필수 입력 여부 표시 ( * )
+  disabled?: boolean;
 }
 const LABEL_STYLE_LIST = {
   12: {
     font: theme.fontStyle.caption_12_medium,
     iconSize: 16,
+  },
+  14: {
+    font: theme.fontStyle.body_14_semibold,
+    iconSize: 20,
   },
   16: {
     font: theme.fontStyle.body_16_semibold,
@@ -17,34 +24,37 @@ const LABEL_STYLE_LIST = {
   },
 };
 
-const Label = styled.span<LabelProps>`
+const Label = ({ icon, size = 14, required, disabled, text }: LabelProps) => {
+  return (
+    <Wrapper $size={size} $disabled={disabled}>
+      {icon && icon}
+      {text}
+      {required && <Required>*</Required>}
+    </Wrapper>
+  );
+};
+interface LabelStyledProps {
+  $size: 12 | 14 | 16;
+  $disabled?: boolean;
+}
+const Wrapper = styled.span<LabelStyledProps>`
   position: relative;
   display: flex;
   align-items: center;
   gap: 2px;
-  ${({ theme, size }) => (size ? LABEL_STYLE_LIST[size].font : theme.fontStyle.body_14_semibold)};
-  color: ${({ theme }) => theme.sementicColors.text.tertiary};
-  ${({ icon, size }) =>
-    icon &&
-    css`
-      &::before {
-        content: '';
-        position: relative;
-        display: block;
-        width: ${size ? LABEL_STYLE_LIST[size].iconSize : 20}px;
-        height: ${size ? LABEL_STYLE_LIST[size].iconSize : 20}px;
-        background-image: ${`url(${icon})`};
-        background-size: cover;
-      }
-    `}
-  ${({ required, theme }) =>
-    required &&
-    css`
-      &::after {
-        content: '*';
-        color: ${theme.sementicColors.text.brand};
-      }
-    `}
+  ${({ $size }) => LABEL_STYLE_LIST[$size].font};
+  color: ${({ $disabled, theme }) =>
+    $disabled ? theme.sementicColors.text.disabled : theme.sementicColors.text.tertiary};
+  svg {
+    width: ${({ $size }) => LABEL_STYLE_LIST[$size].iconSize}px;
+    height: ${({ $size }) => LABEL_STYLE_LIST[$size].iconSize}px;
+
+    color: ${({ $disabled, theme }) => $disabled && theme.sementicColors.icon.disabled};
+  }
+`;
+
+const Required = styled.span`
+  color: ${({ theme }) => theme.sementicColors.text.brand};
 `;
 
 Label.displayName = 'Label';

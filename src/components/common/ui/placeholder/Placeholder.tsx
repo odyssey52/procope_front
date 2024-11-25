@@ -43,7 +43,7 @@ const Placeholder = ({
   };
   return (
     <Wrapper onClick={handleWrapperClick}>
-      {label && <Label required={label.required}>{label.text}</Label>}
+      {label && <Label required={label.required} text={label.text} />}
       <InputWrapper $isValid={validation} $disabled={disabled}>
         {leftIcon && leftIcon}
         <Input

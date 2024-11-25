@@ -2,6 +2,7 @@ import { IconRadio, IconRadioChecked } from '@/assets/icons/line';
 import { theme } from '@/styles/theme';
 import { ChangeEvent } from 'react';
 import styled from 'styled-components';
+import Label from '../label/Label';
 
 interface RadioProps {
   size?: 20 | 24;
@@ -21,32 +22,35 @@ const Radio = ({ size = 20, name, id, disabled, required, label, description, ch
   };
 
   return (
-    <Label htmlFor={id} $disabled={disabled}>
+    <ButtonLabel htmlFor={id} $disabled={disabled}>
       {checked && (
-        <IconRadioChecked color={disabled ? theme.sementicColors.icon.disabled : theme.sementicColors.icon.brand} />
+        <IconRadioChecked
+          color={disabled ? theme.sementicColors.icon.disabled : theme.sementicColors.icon.brand}
+          size={size}
+        />
       )}
-      {!checked && <IconRadio color={theme.sementicColors.icon.disabled} />}
+      {!checked && <IconRadio color={theme.sementicColors.icon.disabled} size={size} />}
 
       <Input type="radio" name={name} id={id} checked={checked} disabled={disabled} onChange={handleChange} />
       <TextBox>
-        <Title $disabled={disabled} $size={size}>
-          {label}
-          {required && <span>*</span>}
-        </Title>
-        <Description $disabled={disabled} $size={size}>
+        <LabelBox $size={size}>
+          <Label disabled={disabled} size={size === 20 ? 12 : undefined} text={label} required={required} />
+        </LabelBox>
+        <LabelDescription $disabled={disabled} $size={size}>
           {description}
-        </Description>
+        </LabelDescription>
       </TextBox>
-    </Label>
+    </ButtonLabel>
   );
 };
 
-const Label = styled.label<{ $disabled?: boolean }>`
+const ButtonLabel = styled.label<{ $disabled?: boolean }>`
   position: relative;
   display: flex;
   align-items: flex-start;
   gap: 4px;
   opacity: ${({ $disabled }) => ($disabled ? 0.4 : 1)};
+  cursor: ${({ $disabled }) => ($disabled ? 'not-allowed' : 'pointer')};
 `;
 const Input = styled.input.attrs({ type: 'radio' })`
   appearance: none;
@@ -58,19 +62,13 @@ const TextBox = styled.div`
   align-items: flex-start;
   gap: 4px;
 `;
-const Title = styled.span<{ $disabled?: boolean; $size: 20 | 24 }>`
+const LabelBox = styled.div<{ $size: 20 | 24 }>`
   position: relative;
   display: flex;
   align-items: center;
-  height: ${({ $size }) => ($size === 20 ? '20px' : '24px')};
-  ${({ $size, theme }) => ($size === 20 ? theme.fontStyle.caption_12_medium : theme.fontStyle.body_14_semibold)};
-  color: ${({ theme, $disabled }) =>
-    $disabled ? theme.sementicColors.text.disabled : theme.sementicColors.text.primary};
-  > span {
-    color: ${theme.sementicColors.text.brand};
-  }
+  height: ${({ $size }) => $size}px;
 `;
-const Description = styled.span<{ $disabled?: boolean; $size: 20 | 24 }>`
+const LabelDescription = styled.span<{ $disabled?: boolean; $size: 20 | 24 }>`
   ${({ $size, theme }) => ($size === 20 ? theme.fontStyle.caption_10_regular : theme.fontStyle.caption_12_regular)};
   color: ${({ theme, $disabled }) =>
     $disabled ? theme.sementicColors.text.disabled : theme.sementicColors.text.secondary};

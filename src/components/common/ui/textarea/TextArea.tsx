@@ -44,7 +44,7 @@ const TextArea = ({
 
   return (
     <Wrapper onClick={handleWrapperClick}>
-      {label && <Label required={label.required}>{label.text}</Label>}
+      {label && <Label text={label.text} required={label.required} />}
       <InputWrapper $isValid={validation} $disabled={disabled}>
         <Input
           ref={inputRef}
@@ -89,7 +89,9 @@ const InputWrapper = styled.div<{ $isValid?: boolean; $disabled?: boolean }>`
       &:active {
         border-radius: 8px;
         border: 1px solid ${theme.sementicColors.border.primary_hover_pressed};
-        box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.16), 0px 0px 1px 0px rgba(0, 0, 0, 0.12);
+        box-shadow:
+          0px 1px 2px 0px rgba(0, 0, 0, 0.16),
+          0px 0px 1px 0px rgba(0, 0, 0, 0.12);
       }
     `}
 

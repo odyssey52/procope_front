@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import styled from 'styled-components';
 import Radio from '../common/ui/radio/Radio';
+import Checkbox from '../common/ui/checkbox/Checkbox';
 
 const NotFound = () => {
   const [state, setState] = useState('id1');
@@ -13,6 +14,7 @@ const NotFound = () => {
 
   return (
     <Wrapper>
+      <Checkbox id="asd" label="cpzmqkrtm" onClick={() => console.log('asd')} size={24} checked disabled required />
       <Radio
         description="description"
         name="라디오그룹"
