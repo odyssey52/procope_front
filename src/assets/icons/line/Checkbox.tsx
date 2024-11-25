@@ -1,15 +1,10 @@
 import * as React from 'react';
 import type { SVGProps } from 'react';
 import { Ref, forwardRef } from 'react';
-const Checkbox = (
-  {
-    size = 24,
-    ...props
-  }: SVGProps<SVGSVGElement> & {
-    size?: number | string;
-  },
-  ref: Ref<SVGSVGElement>,
-) => (
+type Props = {
+  size?: number | string;
+};
+const Checkbox = ({ size = 24, ...props }: SVGProps<SVGSVGElement> & Props, ref: Ref<SVGSVGElement>) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
     viewBox="0 0 20 20"

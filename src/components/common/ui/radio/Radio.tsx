@@ -1,63 +1,81 @@
+import { IconRadio, IconRadioChecked } from '@/assets/icons/line';
+import { theme } from '@/styles/theme';
+import { ChangeEvent } from 'react';
 import styled from 'styled-components';
 
 interface RadioProps {
-  $size?: 'sm' | 'lg';
+  size?: 20 | 24;
+  name: string;
+  id: string;
+  label: string;
+  description?: string;
+  checked?: boolean;
+  required?: boolean;
+  disabled?: boolean;
+  onChange: (id: string) => void;
 }
 
-const getSize = ({ $size }: RadioProps) => {
-  switch ($size) {
-    case 'sm':
-      return '36px';
-    case 'lg':
-      return '48px';
-    default:
-      return '40px';
-  }
+const Radio = ({ size = 20, name, id, disabled, required, label, description, checked, onChange }: RadioProps) => {
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+    onChange(e.target.id);
+  };
+
+  return (
+    <Label htmlFor={id} $disabled={disabled}>
+      {checked && (
+        <IconRadioChecked color={disabled ? theme.sementicColors.icon.disabled : theme.sementicColors.icon.brand} />
+      )}
+      {!checked && <IconRadio color={theme.sementicColors.icon.disabled} />}
+
+      <Input type="radio" name={name} id={id} checked={checked} disabled={disabled} onChange={handleChange} />
+      <TextBox>
+        <Title $disabled={disabled} $size={size}>
+          {label}
+          {required && <span>*</span>}
+        </Title>
+        <Description $disabled={disabled} $size={size}>
+          {description}
+        </Description>
+      </TextBox>
+    </Label>
+  );
 };
-const getBorderWidth = ({ $size }: RadioProps) => {
-  switch ($size) {
-    case 'sm':
-      return '10px';
-    case 'lg':
-      return '13px';
-    default:
-      return '11px';
-  }
-};
-const Radio = styled.input.attrs({ type: 'radio' })<RadioProps>`
+
+const Label = styled.label<{ $disabled?: boolean }>`
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: 4px;
+  opacity: ${({ $disabled }) => ($disabled ? 0.4 : 1)};
+`;
+const Input = styled.input.attrs({ type: 'radio' })`
   appearance: none;
-  width: ${getSize};
-  height: ${getSize};
-  border-radius: 50%;
-  border: 2px solid ${({ theme }) => theme.sementicColors.border.primary};
-  background-color: ${({ theme }) => theme.sementicColors.bg.invers};
-  cursor: pointer;
-
-  &:checked {
-    border: ${getBorderWidth} solid ${({ theme }) => theme.sementicColors.border.brand};
-    &:hover,
-    &:active {
-      border: ${getBorderWidth} solid ${({ theme }) => theme.sementicColors.border.brand};
-      box-shadow: none;
-    }
-  }
-
-  &:hover,
-  &:active {
-    border: 2px solid ${({ theme }) => theme.sementicColors.border.primary_hover_pressed};
-    box-shadow: 0 0 0 2px rgba(47, 78, 118, 0.3);
-  }
-
-  &:disabled {
-    cursor: default;
-    &:hover,
-    &:active {
-      border: 2px solid ${({ theme }) => theme.sementicColors.border.primary};
-      box-shadow: none;
-    }
-    &:checked {
-      background-image: url('/assets/svgs/RadioTrueDisabled.svg');
-    }
+`;
+const TextBox = styled.div`
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+`;
+const Title = styled.span<{ $disabled?: boolean; $size: 20 | 24 }>`
+  position: relative;
+  display: flex;
+  align-items: center;
+  height: ${({ $size }) => ($size === 20 ? '20px' : '24px')};
+  ${({ $size, theme }) => ($size === 20 ? theme.fontStyle.caption_12_medium : theme.fontStyle.body_14_semibold)};
+  color: ${({ theme, $disabled }) =>
+    $disabled ? theme.sementicColors.text.disabled : theme.sementicColors.text.primary};
+  > span {
+    color: ${theme.sementicColors.text.brand};
   }
 `;
+const Description = styled.span<{ $disabled?: boolean; $size: 20 | 24 }>`
+  ${({ $size, theme }) => ($size === 20 ? theme.fontStyle.caption_10_regular : theme.fontStyle.caption_12_regular)};
+  color: ${({ theme, $disabled }) =>
+    $disabled ? theme.sementicColors.text.disabled : theme.sementicColors.text.secondary};
+`;
+
+Radio.displayName = 'Checkbox2';
+
 export default Radio;

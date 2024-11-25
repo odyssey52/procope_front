@@ -1,7 +1,7 @@
 import { IconDirectionLeft } from '@/assets/icons/line';
 import Button from '@/components/common/ui/button/Button';
 import TextButton from '@/components/common/ui/button/TextButton';
-import Radio from '@/components/common/ui/radio/Radio';
+import RadioSurvey from '@/components/common/ui/radio/RadioSurvey';
 import Text from '@/components/common/ui/Text';
 import { TENDENCY_TITLE_LIST } from '@/constants/stepper';
 import styled from 'styled-components';
@@ -35,33 +35,33 @@ const ThirdStep = ({ tendency, tendencyHandler, onBefore, onNext }: Props) => {
                 그렇다
               </Text>
               <RadioBox>
-                <Radio
+                <RadioSurvey
                   id={`${index}-very_agree`}
                   name={`${index}`}
                   $size="lg"
                   onClick={() => tendencyHandler(index, 5)}
                   defaultChecked={tendency[index] === 5}
                 />
-                <Radio
+                <RadioSurvey
                   id={`${index}-agree`}
                   name={`${index}`}
                   onClick={() => tendencyHandler(index, 4)}
                   defaultChecked={tendency[index] === 4}
                 />
-                <Radio
+                <RadioSurvey
                   id={`${index}-soso`}
                   name={`${index}`}
                   $size="sm"
                   onClick={() => tendencyHandler(index, 3)}
                   defaultChecked={tendency[index] === 3}
                 />
-                <Radio
+                <RadioSurvey
                   id={`${index}-disagree`}
                   name={`${index}`}
                   onClick={() => tendencyHandler(index, 2)}
                   defaultChecked={tendency[index] === 2}
                 />
-                <Radio
+                <RadioSurvey
                   id={`${index}-very_disagree`}
                   name={`${index}`}
                   $size="lg"

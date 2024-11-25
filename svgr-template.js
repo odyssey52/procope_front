@@ -2,9 +2,13 @@ const template = (variables, { tpl }) => {
   const IconComponentName = variables.componentName.slice(3);
   return tpl`
     ${variables.imports};
+    
+    type Props = { size?: number | string; }
 
     const ${IconComponentName} = (
-      { size = 24, ...props }: SVGProps<SVGSVGElement> & { size?: number | string },
+      { 
+        size = 24, ...props
+      }: SVGProps<SVGSVGElement> & Props,
       ref: Ref<SVGSVGElement>
     ) => (
       ${variables.jsx}

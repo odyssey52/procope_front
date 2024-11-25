@@ -151,6 +151,8 @@ export { default as IconPin } from './Pin';
 export { default as IconPlus } from './Plus';
 export { default as IconPresentation } from './Presentation';
 export { default as IconQrScan } from './QrScan';
+export { default as IconRadioChecked } from './RadioChecked';
+export { default as IconRadio } from './Radio';
 export { default as IconReceipt } from './Receipt';
 export { default as IconRedo } from './Redo';
 export { default as IconReloadCircle } from './ReloadCircle';
