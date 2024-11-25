@@ -1,16 +1,20 @@
+import { ReactNode } from 'react';
 import styled, { css, DefaultTheme } from 'styled-components';
 
 interface IconButtonProps {
-  size?: '36px' | '48px'; // default : 40px
-  status?: 'secondary' | 'outline' | 'tertiary'; // default : primary
-  leftIcon?: string;
-  rightIcon?: string;
+  size?: 36 | 40 | 48;
+  status?: 'primary' | 'secondary' | 'outline' | 'tertiary';
+  leftIcon?: ReactNode;
+  rightIcon?: ReactNode;
 }
 
-const buttonStatusStyle = (status?: 'secondary' | 'outline' | 'tertiary') => (theme: DefaultTheme) => {
+const buttonStatusStyle = (status?: IconButtonProps['status']) => (theme: DefaultTheme) => {
   if (status === 'secondary')
     return css`
       background-color: ${theme.sementicColors.bg.primary};
+      > svg {
+        color: ${theme.sementicColors.icon.invers};
+      }
       &:hover,
       &:active {
         background-color: ${theme.sementicColors.bg.primary_hover_pressed};
@@ -40,6 +44,7 @@ const buttonStatusStyle = (status?: 'secondary' | 'outline' | 'tertiary') => (th
   if (status === 'tertiary')
     return css`
       background-color: ${theme.sementicColors.bg.tertiary_hover_pressed};
+
       &:hover,
       &:active {
         background-color: ${theme.sementicColors.bg.tertiary_hover_pressed};
@@ -50,22 +55,32 @@ const buttonStatusStyle = (status?: 'secondary' | 'outline' | 'tertiary') => (th
         opacity: 0.4;
       }
     `;
-  return css`
-    background-color: ${theme.sementicColors.bg.brand};
-    &:hover,
-    &:active {
-      background-color: ${theme.sementicColors.bg.brand_hover_pressed};
-      box-shadow: 0px 0px 0px 2px rgba(94, 164, 255, 0.4);
-    }
-    &:disabled {
-      background: ${theme.sementicColors.bg.brand};
-      opacity: 0.4;
-    }
-  `;
+  if (status === 'primary') {
+    return css`
+      background-color: ${theme.sementicColors.bg.brand};
+      > svg {
+        color: ${theme.sementicColors.icon.invers};
+      }
+      &:hover,
+      &:active {
+        background-color: ${theme.sementicColors.bg.brand_hover_pressed};
+        box-shadow: 0px 0px 0px 2px rgba(94, 164, 255, 0.4);
+      }
+      &:disabled {
+        background: ${theme.sementicColors.bg.brand};
+        opacity: 0.4;
+      }
+    `;
+  }
 };
 
-const IconButton = ({ size, status, leftIcon, rightIcon }: IconButtonProps) => {
-  return <Wrapper size={size} status={status} leftIcon={leftIcon} rightIcon={rightIcon} />;
+const IconButton = ({ size = 40, status = 'primary', leftIcon, rightIcon }: IconButtonProps) => {
+  return (
+    <Wrapper size={size} status={status}>
+      {leftIcon && leftIcon}
+      {rightIcon && rightIcon}
+    </Wrapper>
+  );
 };
 
 const Wrapper = styled.button<IconButtonProps>`
@@ -74,28 +89,9 @@ const Wrapper = styled.button<IconButtonProps>`
   border-radius: 12px;
   display: flex;
   align-items: center;
-  padding: ${({ size }) => (size === '36px' ? '8px' : '12px')};
-  gap: ${({ size }) => (size === '36px' ? '4px' : size === '48px' ? '8px' : '6px')};
-
-  &::before {
-    content: '';
-    display: ${({ leftIcon }) => (leftIcon ? 'inline-block' : 'none')};
-    mask: url(${({ leftIcon }) => leftIcon}) no-repeat center;
-    background-color: ${({ status, theme }) =>
-      status === 'outline' || status === 'tertiary'
-        ? theme.sementicColors.icon.primary
-        : theme.sementicColors.icon.invers};
-    width: 20px;
-    height: 20px;
-  }
-  &::after {
-    content: '';
-    display: ${({ rightIcon }) => (rightIcon ? 'inline-block' : 'none')};
-    mask: url(${({ rightIcon }) => rightIcon}) no-repeat center;
-    background-color: ${({ status, theme }) =>
-      status === 'outline' || status === 'tertiary'
-        ? theme.sementicColors.icon.primary
-        : theme.sementicColors.icon.invers};
+  padding: ${({ size }) => (size === 36 ? '8px' : '12px')};
+  gap: ${({ size }) => (size === 36 ? '4px' : size === 48 ? '8px' : '6px')};
+  > svg {
     width: 20px;
     height: 20px;
   }
