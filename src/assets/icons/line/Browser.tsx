@@ -1,15 +1,10 @@
 import * as React from 'react';
 import type { SVGProps } from 'react';
 import { Ref, forwardRef } from 'react';
-const Browser = (
-  {
-    size = 24,
-    ...props
-  }: SVGProps<SVGSVGElement> & {
-    size?: number | string;
-  },
-  ref: Ref<SVGSVGElement>,
-) => (
+type Props = {
+  size?: number | string;
+};
+const Browser = ({ size = 24, ...props }: SVGProps<SVGSVGElement> & Props, ref: Ref<SVGSVGElement>) => (
   <svg
     viewBox="0 0 24 24"
     fill="none"
