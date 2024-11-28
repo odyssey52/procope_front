@@ -1,6 +1,6 @@
 'use client';
 
-import { useCreateTokenWithNaver } from '@/query/auth/socialAuthQueries';
+import { useCreateTokenWithNaver } from '@/query/auth/callback/socialAuthQueries';
 import useAuthStore from '@/store/auth/auth';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Suspense, useEffect } from 'react';

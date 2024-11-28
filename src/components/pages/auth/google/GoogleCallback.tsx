@@ -1,6 +1,6 @@
 'use client';
 
-import { useCreateTokenWithGoogle } from '@/query/auth/socialAuthQueries';
+import { useCreateTokenWithGoogle } from '@/query/auth/callback/socialAuthQueries';
 import useAuthStore from '@/store/auth/auth';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect } from 'react';
