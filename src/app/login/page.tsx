@@ -10,7 +10,7 @@ const page = () => {
   useEffect(() => {
     const refreshToken = localStorage.getItem('refreshToken');
     if (refreshToken) {
-      router.push('/login/continue');
+      router.replace('/login/continue');
     }
   }, []);
 

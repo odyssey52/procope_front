@@ -13,6 +13,7 @@ const page = () => {
 
   useEffect(() => {
     const refreshToken = localStorage.getItem('refreshToken');
+    console.log(refreshToken);
     if (refreshToken) {
       createAccessTokenWithRefreshToken.mutate(
         { refreshToken },
