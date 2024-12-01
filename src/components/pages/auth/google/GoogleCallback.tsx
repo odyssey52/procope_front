@@ -18,6 +18,7 @@ const GoogleCallback = () => {
     await createTokenWithGoogle.mutateAsync(payload, {
       onSuccess: (res) => {
         setAccessToken(res.accessToken);
+        localStorage.setItem('refreshToken', res.refreshToken);
         setIsNewUser(res.isNewUser);
       },
     });
@@ -25,8 +26,8 @@ const GoogleCallback = () => {
 
   useEffect(() => {
     if (isAuthenticated) {
-      if (isNewUser) router.push('/onboarding');
-      else router.push('/team');
+      if (isNewUser) router.replace('/onboarding');
+      else router.replace('/team');
     }
   }, [isAuthenticated, isNewUser, router]);
 
@@ -35,7 +36,7 @@ const GoogleCallback = () => {
       requestAccessToken(authorizationCode);
     } else {
       alert('로그인에 실패했습니다.');
-      router.push('/');
+      router.replace('/');
     }
   }, [authorizationCode, router]);
 

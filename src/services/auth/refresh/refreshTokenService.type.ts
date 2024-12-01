@@ -9,4 +9,4 @@ export type ReadAccessTokenWithRefreshTokenResponse = {
   accessToken: string;
 };
 
-export type CreateAccessTokenWithRefreshTokenResponse = ReadAccessTokenWithRefreshTokenResponse;
+export type CreateAccessTokenWithRefreshTokenResponse = string;

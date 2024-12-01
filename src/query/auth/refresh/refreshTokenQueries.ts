@@ -11,12 +11,12 @@ const refreshTokenService = new RefreshTokenService({ isPublic: false });
 //     queryFn: () => refreshTokenService.readAccessTokenWithRefreshToken(),
 //   });
 
-// export const useCreateAccessTokenWithRefreshToken = () =>
-//   useMutation({
-//     mutationKey: REFRESH_QUERY_KEY.CREATE_ACCESSTOKEN_WITH_REFRESHTOKEN,
-//     mutationFn: (payload: types.createAccessTokenWithRefreshTokenPayload) =>
-//       refreshTokenService.createAccessTokenWithRefreshToken(payload),
-//   });
+export const useCreateAccessTokenWithRefreshToken = () =>
+  useMutation({
+    mutationKey: REFRESH_QUERY_KEY.CREATE_ACCESSTOKEN_WITH_REFRESHTOKEN,
+    mutationFn: (payload: types.createAccessTokenWithRefreshTokenPayload) =>
+      refreshTokenService.createAccessTokenWithRefreshToken(payload),
+  });
 
 export const useReadAccessTokenWithRefreshToken = () =>
   useQuery({
