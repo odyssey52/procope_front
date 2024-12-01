@@ -30,7 +30,7 @@ export async function POST(req: NextRequest) {
       { message: 'Login successful' },
       {
         headers: {
-          'Set-Cookie': [`refreshToken=${refreshToken}; HttpOnly; Path=/; Secure; SameSite=Strict;`].join(', '),
+          'Set-Cookie': [`refreshToken=${refreshToken}; HttpOnly; Path=/; Secure; SameSite=None;`].join(', '),
         },
       },
     );
