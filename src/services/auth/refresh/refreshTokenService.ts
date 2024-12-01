@@ -1,8 +1,8 @@
 import ApiClient from '@/services/api/apiClient';
 import * as types from './refreshTokenService.type';
 
-// const baseURL = process.env.NEXT_PUBLIC_USER_API_HOST;
-const baseURL = '/api';
+const baseURL = process.env.NEXT_PUBLIC_USER_API_HOST;
+// const baseURL = '/api';
 
 // refreshtoken 을 통한 accessToken 재발급
 const URLS = {
@@ -24,13 +24,13 @@ export default class RefreshTokenService {
     return data;
   }
 
-  // async createAccessTokenWithRefreshToken(
-  //   payload: types.createAccessTokenWithRefreshTokenPayload,
-  // ): Promise<types.CreateAccessTokenWithRefreshTokenResponse> {
-  //   const { data } = await this.apiClient.post<types.CreateAccessTokenWithRefreshTokenResponse>(
-  //     URLS.REFRESH_ACCESS_TOKEN,
-  //     payload,
-  //   );
-  //   return data;
-  // }
+  async createAccessTokenWithRefreshToken(
+    payload: types.createAccessTokenWithRefreshTokenPayload,
+  ): Promise<types.CreateAccessTokenWithRefreshTokenResponse> {
+    const { data } = await this.apiClient.post<types.CreateAccessTokenWithRefreshTokenResponse>(
+      URLS.REFRESH_ACCESS_TOKEN,
+      payload,
+    );
+    return data;
+  }
 }

@@ -1,24 +1,36 @@
 'use client';
 
-import { useReadAccessTokenWithRefreshToken } from '@/query/auth/refresh/refreshTokenQueries';
+import { useCreateAccessTokenWithRefreshToken } from '@/query/auth/refresh/refreshTokenQueries';
 import useAuthStore from '@/store/auth/auth';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 
 const page = () => {
   // const readAccessTokenWithRefreshToken = useReadAccessTokenWithRefreshToken();
-  const { isError, isSuccess, data } = useReadAccessTokenWithRefreshToken();
+  const createAccessTokenWithRefreshToken = useCreateAccessTokenWithRefreshToken();
   const { accessToken, setAccessToken } = useAuthStore();
   const router = useRouter();
 
   useEffect(() => {
-    if (isError) {
-      router.push('/login');
-    } else if (isSuccess) {
-      const { accessToken } = data;
-      setAccessToken(accessToken);
+    const refreshToken = localStorage.getItem('refreshToken');
+    if (refreshToken) {
+      createAccessTokenWithRefreshToken.mutate(
+        { refreshToken },
+        {
+          onSuccess: (res) => {
+            const accessToken = res;
+            setAccessToken(accessToken);
+          },
+          onError: (error) => {
+            console.log(error);
+            localStorage.removeItem('refreshToken');
+            console.log('리프레시토큰 삭제');
+            router.push('/login');
+          },
+        },
+      );
     }
-  }, [isError, isSuccess, data]);
+  }, []);
 
   useEffect(() => {
     if (accessToken) {
