@@ -54,6 +54,7 @@
     "@svgr/babel-plugin-transform-svg-component": "^8.0.0",
     "@svgr/cli": "^8.1.0",
     "@svgr/webpack": "^8.1.0",
+    "@types/cookie": "^1.0.0",
     "@typescript-eslint/eslint-plugin": "^8.13.0",
     "@typescript-eslint/parser": "^8.13.0",
     "eslint": "^8.57.1",
