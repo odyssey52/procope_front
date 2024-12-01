@@ -1,12 +1,33 @@
 'use client';
 
-import styled from 'styled-components';
+import { useReadAccessTokenWithRefreshToken } from '@/query/auth/refresh/refreshTokenQueries';
+import useAuthStore from '@/store/auth/auth';
+import { useRouter } from 'next/navigation';
+import { useEffect } from 'react';
 
 const page = () => {
-  return <Wrapper>토큰이 존재합니다. 액세스토큰 발급 하세요</Wrapper>;
-};
+  // const readAccessTokenWithRefreshToken = useReadAccessTokenWithRefreshToken();
+  const { isError, isSuccess, data } = useReadAccessTokenWithRefreshToken();
+  const { accessToken, setAccessToken } = useAuthStore();
+  const router = useRouter();
 
-const Wrapper = styled.div``;
+  useEffect(() => {
+    if (isError) {
+      router.push('/login');
+    } else if (isSuccess) {
+      const { accessToken } = data;
+      setAccessToken(accessToken);
+    }
+  }, [isError, isSuccess, data]);
+
+  useEffect(() => {
+    if (accessToken) {
+      router.push('/team');
+    }
+  }, [accessToken]);
+
+  return null;
+};
 
 page.displayName = 'page';
 

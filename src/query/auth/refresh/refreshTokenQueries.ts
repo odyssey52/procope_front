@@ -1,19 +1,25 @@
-import * as types from '@/services/auth/refresh/refreshTokenService.type';
 import RefreshTokenService from '@/services/auth/refresh/refreshTokenService';
-import { useMutation } from '@tanstack/react-query';
-import AUTH_QUERY_KEY from '../queryKey';
+import * as types from '@/services/auth/refresh/refreshTokenService.type';
+import { useMutation, useQuery } from '@tanstack/react-query';
+import REFRESH_QUERY_KEY from './queryKey';
 
 const refreshTokenService = new RefreshTokenService({ isPublic: false });
 
-export const useReadAccessTokenWithRefreshToken = () =>
-  useMutation({
-    mutationKey: AUTH_QUERY_KEY.AUTH_CREATE_TOKEN_NAVER,
-    mutationFn: () => refreshTokenService.readAccessTokenWithRefreshToken(),
-  });
+// export const useReadAccessTokenWithRefreshToken = () =>
+//   useQuery({
+//     queryKey: REFRESH_QUERY_KEY.READ_ACCESSTOKEN_WITH_REFRESHTOKEN,
+//     queryFn: () => refreshTokenService.readAccessTokenWithRefreshToken(),
+//   });
 
-export const useCreateAccessTokenWithRefreshToken = () =>
-  useMutation({
-    mutationKey: AUTH_QUERY_KEY.AUTH_CREATE_TOKEN_GOOGLE,
-    mutationFn: (payload: types.createAccessTokenWithRefreshTokenPayload) =>
-      refreshTokenService.createAccessTokenWithRefreshToken(payload),
+// export const useCreateAccessTokenWithRefreshToken = () =>
+//   useMutation({
+//     mutationKey: REFRESH_QUERY_KEY.CREATE_ACCESSTOKEN_WITH_REFRESHTOKEN,
+//     mutationFn: (payload: types.createAccessTokenWithRefreshTokenPayload) =>
+//       refreshTokenService.createAccessTokenWithRefreshToken(payload),
+//   });
+
+export const useReadAccessTokenWithRefreshToken = () =>
+  useQuery({
+    queryKey: REFRESH_QUERY_KEY.READ_ACCESSTOKEN_WITH_REFRESHTOKEN,
+    queryFn: () => refreshTokenService.readAccessTokenWithRefreshToken(),
   });

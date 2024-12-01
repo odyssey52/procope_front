@@ -4,6 +4,7 @@ import Empty from '@/components/common/ui/empty/Empty';
 import PageSubTitle from '@/components/common/ui/title/PageSubTitle';
 import PageTitle from '@/components/common/ui/title/PageTitle';
 import HeaderLayout from '@/components/layout/HeaderLayout';
+import useAuthStore from '@/store/auth/auth';
 import { useRouter } from 'next/navigation';
 import styled from 'styled-components';
 import ControlBox from './ControlBox';
@@ -157,6 +158,7 @@ const EMPTY_TITLE = '참여 중인 팀이 없습니다.';
 const EMPTY_DESCRIPTION = '팀을 생성하거나 다른 생성자에게 초대받으세요';
 
 const Team = () => {
+  const { accessToken } = useAuthStore();
   const router = useRouter();
   const paths = {
     '팀 목록': '/team',
