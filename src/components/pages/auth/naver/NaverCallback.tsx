@@ -19,7 +19,7 @@ const NaverCallback = () => {
     await createTokenWithNaver.mutateAsync(payload, {
       onSuccess: (res) => {
         setAccessToken(res.accessToken);
-        localStorage.setItem('refreshToken', res.refreshToken);
+        // localStorage.setItem('refreshToken', res.refreshToken);
         setIsNewUser(res.isNewUser);
       },
     });
