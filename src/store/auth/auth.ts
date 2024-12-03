@@ -21,7 +21,6 @@ const useAuthStore = create<AuthState>((set) => ({
   setAccessToken: (token: string) => set({ accessToken: token, isAuthenticated: true }),
   logout: () => {
     set({ accessToken: null, isAuthenticated: false });
-    localStorage.removeItem('refreshToken');
   },
   // setRefreshAccessToken: async () => {
   //   try {
