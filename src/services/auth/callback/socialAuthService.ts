@@ -18,6 +18,7 @@ export default class SocialAuthService {
     const { data } = await this.apiClient.post<types.CreateTokenWithNaverResponse>(
       URLS.CREATE_TOKEN_WITH_SOCIAL,
       payload,
+      { withCredentials: true },
     );
     return data;
   }
@@ -28,6 +29,7 @@ export default class SocialAuthService {
     const { data } = await this.apiClient.post<types.CreateTokenWithGoogleResponse>(
       URLS.CREATE_TOKEN_WITH_SOCIAL,
       payload,
+      { withCredentials: true },
     );
     return data;
   }
