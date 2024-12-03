@@ -19,7 +19,10 @@ const useAuthStore = create<AuthState>((set) => ({
   isNewUser: false,
   setIsNewUser: (isNewUser: boolean) => set({ isNewUser }),
   setAccessToken: (token: string) => set({ accessToken: token, isAuthenticated: true }),
-  logout: () => set({ accessToken: null, isAuthenticated: false }),
+  logout: () => {
+    set({ accessToken: null, isAuthenticated: false });
+    localStorage.removeItem('refreshToken');
+  },
   // setRefreshAccessToken: async () => {
   //   try {
   //     const response = await axios.get('/auth/refresh', { withCredentials: true });
