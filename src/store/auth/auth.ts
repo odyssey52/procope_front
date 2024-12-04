@@ -21,6 +21,9 @@ const useAuthStore = create<AuthState>((set) => ({
   setAccessToken: (token: string) => set({ accessToken: token, isAuthenticated: true }),
   logout: () => {
     set({ accessToken: null, isAuthenticated: false });
+    if (typeof window !== 'undefined') {
+      window.location.href = '/'; // 로그인 페이지로 리다이렉트
+    }
   },
   // setRefreshAccessToken: async () => {
   //   try {

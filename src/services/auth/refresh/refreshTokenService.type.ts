@@ -5,8 +5,6 @@ export type createAccessTokenWithRefreshTokenPayload = {
 };
 
 /** response */
-export type ReadAccessTokenWithRefreshTokenResponse = {
-  accessToken: string;
-};
+export type ReadAccessTokenWithRefreshTokenResponse = string;
 
 export type CreateAccessTokenWithRefreshTokenResponse = string;

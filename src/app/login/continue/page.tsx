@@ -7,13 +7,12 @@ import { useEffect } from 'react';
 
 const page = () => {
   const { data, isError, isSuccess } = useReadAccessTokenWithRefreshToken();
-  // const createAccessTokenWithRefreshToken = useCreateAccessTokenWithRefreshToken();
   const { accessToken, setAccessToken } = useAuthStore();
   const router = useRouter();
 
   useEffect(() => {
     if (isSuccess) {
-      console.log('토큰테스트입니다', data);
+      setAccessToken(data);
     }
   }, [data, isError, isSuccess]);
 
@@ -45,7 +44,7 @@ const page = () => {
     }
   }, [accessToken]);
 
-  return null;
+  return <div>로그인 시도 중... 잠시만 기다려 주세요</div>;
 };
 
 page.displayName = 'page';

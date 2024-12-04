@@ -40,18 +40,28 @@ export default class HTTPProvider {
       async (error) => {
         if (error.response?.status === 401) {
           try {
-            const refreshResponse = await axios.post(`${BASE_URL}/auth/refresh`, {}, { withCredentials: true });
+            const refreshResponse = await axios.get(`${BASE_URL}/auth/refresh`, { withCredentials: true });
             const newAccessToken = refreshResponse.data.accessToken;
 
-            // 전역 상태 업데이트
             useAuthStore.getState().setAccessToken(newAccessToken);
 
-            // 원래 요청 재시도
             error.config.headers.Authorization = `Bearer ${newAccessToken}`;
             return this.client.request(error.config);
           } catch (refreshError) {
-            console.error('Failed to refresh token:', refreshError);
-            throw refreshError;
+            if (axios.isAxiosError(refreshError)) {
+              if (refreshError.response?.status === 401) {
+                console.error('리프레시 토큰이 없거나 만료되었습니다.');
+
+                if (typeof window !== 'undefined') {
+                  alert('세션이 만료되었습니다. 다시 로그인해주세요.');
+                  useAuthStore.getState().logout();
+                }
+              }
+            } else {
+              console.error('예상치 못한 에러 발생:', refreshError);
+            }
+
+            return Promise.reject(refreshError);
           }
         }
         return Promise.reject(error);
