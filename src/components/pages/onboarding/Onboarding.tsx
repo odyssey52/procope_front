@@ -16,7 +16,8 @@ const Onboarding = () => {
   const initialTendency = Array(TENDENCY_TITLE_LIST.length).fill(null);
   const [tendency, setTendency] = useState<(number | null)[]>(initialTendency);
 
-  const isValidTendency = tendency.every((item) => typeof item === 'number');
+  const isValidTendency = (tendency: (number | null)[]): tendency is number[] =>
+    tendency.every((item): item is number => typeof item === 'number');
 
   const pageMove = () => {
     if (step === 1) return <FirstStep jobMain={jobMain} jobMainHandler={jobMainHandler} onNext={() => setStep(2)} />;
@@ -35,12 +36,12 @@ const Onboarding = () => {
         <ThirdStep
           tendency={tendency}
           tendencyHandler={tendencyHandler}
-          isValidTendency={isValidTendency}
+          isValidTendency={isValidTendency(tendency)}
           onBefore={() => setStep(2)}
           onNext={() => setStep(4)}
         />
       );
-    if (step === 4 && jobMain && isValidTendency)
+    if (step === 4 && jobMain && isValidTendency(tendency))
       return (
         <CheckStep
           jobMain={jobMain}
