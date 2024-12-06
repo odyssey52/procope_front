@@ -5,19 +5,20 @@ import Text from '@/components/common/ui/Text';
 import ProgressBar from '@/components/common/ui/progress/ProgressBar';
 import HeaderLayout from '@/components/layout/HeaderLayout';
 import { CheckStep, FirstStep, SecondStep, ThirdStep } from '@/components/pages/onboarding';
-import { JobMainCategory } from '@/constants/stepper';
-import { useEffect, useState } from 'react';
+import { JobMainCategory, TENDENCY_TITLE_LIST } from '@/constants/stepper';
+import { useState } from 'react';
 import styled from 'styled-components';
 
 const Onboarding = () => {
   const [step, setStep] = useState<1 | 2 | 3 | 4>(1);
   const [jobMain, setJobMain] = useState<JobMainCategory | null>(null);
   const [jobSub, setJobSub] = useState<string[]>([]);
-  const [tendency, setTendency] = useState<number[]>([]);
-  // 로컬 스토리지에 step 저장
-  useEffect(() => {
-    localStorage.setItem('step', 'localstep');
-  }, []);
+  const initialTendency = Array(TENDENCY_TITLE_LIST.length).fill(null);
+  const [tendency, setTendency] = useState<(number | null)[]>(initialTendency);
+
+  const isValidTendency = (tendency: (number | null)[]): tendency is number[] =>
+    tendency.every((item): item is number => typeof item === 'number');
+
   const pageMove = () => {
     if (step === 1) return <FirstStep jobMain={jobMain} jobMainHandler={jobMainHandler} onNext={() => setStep(2)} />;
     if (step === 2 && jobMain)
@@ -35,11 +36,12 @@ const Onboarding = () => {
         <ThirdStep
           tendency={tendency}
           tendencyHandler={tendencyHandler}
+          isValidTendency={isValidTendency(tendency)}
           onBefore={() => setStep(2)}
           onNext={() => setStep(4)}
         />
       );
-    if (step === 4 && jobMain)
+    if (step === 4 && jobMain && isValidTendency(tendency))
       return (
         <CheckStep
           jobMain={jobMain}

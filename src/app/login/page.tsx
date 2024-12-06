@@ -2,7 +2,9 @@
 
 import Login from '@/components/pages/login/Login';
 
-const page = () => <Login />;
+const page = () => {
+  return <Login />;
+};
 
 page.displayName = 'page';
 

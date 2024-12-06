@@ -1,6 +1,6 @@
 'use client';
 
-import { useCreateTokenWithGoogle } from '@/query/auth/socialAuthQueries';
+import { useCreateTokenWithGoogle } from '@/query/auth/callback/socialAuthQueries';
 import useAuthStore from '@/store/auth/auth';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect } from 'react';
@@ -25,8 +25,8 @@ const GoogleCallback = () => {
 
   useEffect(() => {
     if (isAuthenticated) {
-      if (isNewUser) router.push('/onboarding');
-      else router.push('/team');
+      if (isNewUser) router.replace('/onboarding');
+      else router.replace('/team');
     }
   }, [isAuthenticated, isNewUser, router]);
 
@@ -35,7 +35,7 @@ const GoogleCallback = () => {
       requestAccessToken(authorizationCode);
     } else {
       alert('로그인에 실패했습니다.');
-      router.push('/');
+      router.replace('/');
     }
   }, [authorizationCode, router]);
 

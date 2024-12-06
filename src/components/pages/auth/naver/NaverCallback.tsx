@@ -1,9 +1,9 @@
 'use client';
 
-import { useCreateTokenWithNaver } from '@/query/auth/socialAuthQueries';
+import { useCreateTokenWithNaver } from '@/query/auth/callback/socialAuthQueries';
 import useAuthStore from '@/store/auth/auth';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { Suspense, useEffect } from 'react';
+import { useEffect } from 'react';
 
 const NaverCallback = () => {
   const { isAuthenticated, isNewUser, setAccessToken, setIsNewUser } = useAuthStore();
@@ -26,8 +26,8 @@ const NaverCallback = () => {
 
   useEffect(() => {
     if (isAuthenticated) {
-      if (isNewUser) router.push('/onboarding');
-      else router.push('/team');
+      if (isNewUser) router.replace('/onboarding');
+      else router.replace('/team');
     }
   }, [isAuthenticated, isNewUser, router]);
 
@@ -36,7 +36,7 @@ const NaverCallback = () => {
       requestAccessToken(authorizationCode, state);
     } else {
       alert('로그인에 실패했습니다.');
-      router.push('/');
+      router.replace('/');
     }
   }, [router]);
   return null;

@@ -7,13 +7,14 @@ import { TENDENCY_TITLE_LIST } from '@/constants/stepper';
 import styled from 'styled-components';
 
 interface Props {
-  tendency: number[];
+  tendency: (number | null)[];
   tendencyHandler: (index: number, tendency: number) => void;
+  isValidTendency: boolean;
   onBefore: () => void;
   onNext: () => void;
 }
 
-const ThirdStep = ({ tendency, tendencyHandler, onBefore, onNext }: Props) => {
+const ThirdStep = ({ tendency, tendencyHandler, isValidTendency, onBefore, onNext }: Props) => {
   return (
     <Wrapper>
       <TextBox>
@@ -36,37 +37,37 @@ const ThirdStep = ({ tendency, tendencyHandler, onBefore, onNext }: Props) => {
               </Text>
               <RadioBox>
                 <RadioSurvey
-                  id={`${index}-very_agree`}
-                  name={`${index}`}
+                  id={`tendency-${index}-very-agree`}
+                  name={`tendency-${index}`}
                   $size="lg"
-                  onClick={() => tendencyHandler(index, 5)}
-                  defaultChecked={tendency[index] === 5}
-                />
-                <RadioSurvey
-                  id={`${index}-agree`}
-                  name={`${index}`}
                   onClick={() => tendencyHandler(index, 4)}
                   defaultChecked={tendency[index] === 4}
                 />
                 <RadioSurvey
-                  id={`${index}-soso`}
-                  name={`${index}`}
-                  $size="sm"
+                  id={`tendency-${index}-agree`}
+                  name={`tendency-${index}`}
                   onClick={() => tendencyHandler(index, 3)}
                   defaultChecked={tendency[index] === 3}
                 />
                 <RadioSurvey
-                  id={`${index}-disagree`}
-                  name={`${index}`}
+                  id={`tendency-${index}-soso`}
+                  name={`tendency-${index}`}
+                  $size="sm"
                   onClick={() => tendencyHandler(index, 2)}
                   defaultChecked={tendency[index] === 2}
                 />
                 <RadioSurvey
-                  id={`${index}-very_disagree`}
-                  name={`${index}`}
-                  $size="lg"
+                  id={`tendency-${index}-disagree`}
+                  name={`tendency-${index}`}
                   onClick={() => tendencyHandler(index, 1)}
                   defaultChecked={tendency[index] === 1}
+                />
+                <RadioSurvey
+                  id={`tendency-${index}-very-disagree`}
+                  name={`tendency-${index}`}
+                  $size="lg"
+                  onClick={() => tendencyHandler(index, 0)}
+                  defaultChecked={tendency[index] === 0}
                 />
               </RadioBox>
               <Text variant="heading_18" color="tertiary">
@@ -81,10 +82,7 @@ const ThirdStep = ({ tendency, tendencyHandler, onBefore, onNext }: Props) => {
           <TextButton $type="16" leftIcon={<IconDirectionLeft />} onClick={onBefore}>
             이전
           </TextButton>
-          <Button
-            // disabled
-            onClick={onNext}
-          >
+          <Button disabled={!isValidTendency} onClick={onNext}>
             다음
           </Button>
         </ButtonBox>
