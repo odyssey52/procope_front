@@ -16,28 +16,6 @@ const page = () => {
     }
   }, [data, isError, isSuccess]);
 
-  // useEffect(() => {
-  //   const refreshToken = localStorage.getItem('refreshToken');
-  //   console.log(refreshToken);
-  //   if (refreshToken) {
-  //     createAccessTokenWithRefreshToken.mutate(
-  //       { refreshToken },
-  //       {
-  //         onSuccess: (res) => {
-  //           const accessToken = res;
-  //           setAccessToken(accessToken);
-  //         },
-  //         onError: (error) => {
-  //           console.log(error);
-  //           localStorage.removeItem('refreshToken');
-  //           console.log('리프레시토큰 삭제');
-  //           router.push('/login');
-  //         },
-  //       },
-  //     );
-  //   }
-  // }, []);
-
   useEffect(() => {
     if (accessToken) {
       router.push('/team');
