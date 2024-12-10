@@ -10,6 +10,12 @@
 
 <br/>
 
+### [2024-10-29] React.js 19.0.0 stable upgrade
+
+React 19 안정화 버전으로 업그레이드 진행되었습니다.
+
+<br/>
+
 ### [2024-10-29] React.js -> Next.js 로 마이그레이션됩니다.
 
 15.0.1v을 채용하였습니다.
@@ -41,11 +47,12 @@ Next.js + styled-components 조합에서 빈번하게 발생하는 hydration err
 
 <br/>
 
-- Next.js
+- Next.js (15.0.4)
+- React (19.0.0)
 - TypeScript
-- Styled-components
 - Tanstack-query
 - Zustand
+- Styled-components
 
 <br/>
 <br/>
