@@ -10,7 +10,7 @@
 
 <br/>
 
-### [2024-10-29] React.js 19.0.0 stable upgrade
+### [2024-12-10] React.js 19.0.0 stable upgrade
 
 React 19 안정화 버전으로 업그레이드 진행되었습니다.
 
