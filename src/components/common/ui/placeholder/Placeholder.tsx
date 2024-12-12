@@ -56,8 +56,8 @@ const Placeholder = ({
         />
         {rightIcon && rightIcon}
       </InputWrapper>
-      {!!description && !errorDescription && <Description>{description}</Description>}
-      {!!errorDescription && validation === false && <Description type="error">{errorDescription}</Description>}
+      {!!description && !errorDescription && <Description text={description} />}
+      {!!errorDescription && validation === false && <Description type="error" text={errorDescription} />}
     </Wrapper>
   );
 };
