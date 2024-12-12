@@ -1,15 +1,27 @@
+import React from 'react';
 import styled from 'styled-components';
-import SelectOption, { SelectOptionProps } from './SelectOption';
+import SelectOption from './SelectOption';
 
-const ItemList = ({ selectOptionList }: { selectOptionList: SelectOptionProps[] }) => {
+export type SelectOptionList = {
+  leftContent?: React.ReactNode;
+  value: string;
+  description?: string;
+}[];
+interface ItemListProps {
+  selectOptionList: SelectOptionList;
+  value: string;
+  valueHandler: (value: string) => void;
+}
+const ItemList = ({ selectOptionList, value, valueHandler }: ItemListProps) => {
   return (
     <Wrapper>
       {selectOptionList.map((item, index) => (
         <SelectOption
           key={index}
           leftContent={item.leftContent}
-          text={item.text}
-          state={item.state}
+          valueHandler={valueHandler}
+          value={item.value}
+          state={item.value === value ? 'selected' : undefined}
           description={item.description}
         />
       ))}
@@ -20,6 +32,7 @@ const ItemList = ({ selectOptionList }: { selectOptionList: SelectOptionProps[] 
 const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
+  overflow: hidden;
   gap: 2px;
   border-radius: 8px;
   justify-content: space-around;
@@ -29,10 +42,6 @@ const Wrapper = styled.div`
   box-shadow:
     0px 2px 4px 0px rgba(0, 0, 0, 0.16),
     0px 0px 2px 0px rgba(0, 0, 0, 0.12);
-`;
-const Option = styled.div`
-  padding: 8px 12px;
-  border-radius: 8px;
 `;
 
 ItemList.displayName = 'ItemList';

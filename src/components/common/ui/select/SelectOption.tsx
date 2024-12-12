@@ -5,18 +5,19 @@ import Text from '../Text';
 export interface SelectOptionProps {
   leftContent?: React.ReactNode;
   state?: 'selected';
-  text?: string;
+  value: string;
   description?: string;
+  valueHandler: (value: string) => void;
 }
 
-const SelectOption = ({ leftContent, state, text, description }: SelectOptionProps) => {
+const SelectOption = ({ leftContent, valueHandler, state, value, description }: SelectOptionProps) => {
   return (
-    <Wrapper $state={state}>
+    <Wrapper $state={state} onClick={() => valueHandler(value)}>
       {leftContent && leftContent}
-      {text && (
+      {value && (
         <TextBox>
           <Text variant="body_14_semibold" color="primary">
-            {text}
+            {value}
           </Text>
           {description && (
             <Text variant="caption_12_regular" color="secondary">
@@ -29,13 +30,13 @@ const SelectOption = ({ leftContent, state, text, description }: SelectOptionPro
   );
 };
 
-const Wrapper = styled.div<{ $state?: 'selected' }>`
+const Wrapper = styled.button<{ $state?: 'selected' }>`
   position: relative;
+  cursor: pointer;
   display: flex;
   min-width: 240px;
   gap: 8px;
   padding: 8px 12px;
-  border-radius: 8px;
   &:hover {
     background: ${({ theme }) => theme.sementicColors.bg.tertiary_hover_pressed};
   }
