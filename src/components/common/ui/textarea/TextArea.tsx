@@ -56,8 +56,8 @@ const TextArea = ({
         />
         {maxLength && <Text variant="caption_12_regular" color="tertiary">{`${charCount}/${maxLength}`}</Text>}
       </InputWrapper>
-      {!!description && !errorDescription && <Description>{description}</Description>}
-      {!!errorDescription && validation === false && <Description type="error">{errorDescription}</Description>}
+      {!!description && !errorDescription && <Description text={description} />}
+      {!!errorDescription && validation === false && <Description type="error" text={errorDescription} />}
     </Wrapper>
   );
 };
