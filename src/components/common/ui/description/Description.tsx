@@ -2,7 +2,8 @@ import { theme } from '@/styles/theme';
 import styled, { css } from 'styled-components';
 
 interface DescriptionProps {
-  type?: 'help' | 'error' | 'info' | 'warning' | 'success'; // default : default
+  type?: 'default' | 'help' | 'error' | 'info' | 'warning' | 'success';
+  text: string;
 }
 
 const DESCRIPTION_STYLE_LIST = {
@@ -26,17 +27,27 @@ const DESCRIPTION_STYLE_LIST = {
     color: theme.sementicColors.text.success,
     icon: '/assets/icons/graphic/fill/check.svg',
   },
+  default: {
+    color: theme.sementicColors.text.tertiary,
+  },
 };
 
-const Description = styled.p<DescriptionProps>`
+const Description = ({ type = 'default', text }: DescriptionProps) => {
+  return <Wrapper type={type}>{text}</Wrapper>;
+};
+interface DescriptionStyledProps {
+  type: 'default' | 'help' | 'error' | 'info' | 'warning' | 'success';
+}
+const Wrapper = styled.p<DescriptionStyledProps>`
   position: relative;
   display: flex;
   align-items: center;
   gap: 4px;
   ${({ theme }) => theme.fontStyle.caption_12_regular};
-  color: ${({ type }) => (type ? DESCRIPTION_STYLE_LIST[type].color : theme.sementicColors.text.tertiary)};
+  color: ${({ type }) => DESCRIPTION_STYLE_LIST[type].color};
+
   ${({ type }) =>
-    type &&
+    type !== 'default' &&
     css`
       &::before {
         content: '';
