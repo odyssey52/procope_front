@@ -57,5 +57,6 @@ module.exports = {
     'react/react-in-jsx-scope': 'off',
     'react/jsx-uses-react': 'off',
     'consistent-return': 'off', // if 와 else if 의 차이가 없을 때 if 사용을 권장하고 return 을 강제. useEffect 에서 return 의 경우 cleanup 함수와 혼동을 줄이기 위해 off 처리함
+    'react/jsx-wrap-multilines': 'off', // jsx 속성에서 줄바꿈 금지하는 속성 제거
   },
 };
