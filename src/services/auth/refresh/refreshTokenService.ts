@@ -7,6 +7,7 @@ const baseURL = process.env.NEXT_PUBLIC_USER_API_HOST;
 // refreshtoken 을 통한 accessToken 재발급
 const URLS = {
   REFRESH_ACCESS_TOKEN: '/auth/refresh',
+  INVALIDATE_REFRESH_TOKEN: '/auth/invalidate',
 };
 
 export default class RefreshTokenService {
@@ -31,6 +32,11 @@ export default class RefreshTokenService {
       URLS.REFRESH_ACCESS_TOKEN,
       payload,
     );
+    return data;
+  }
+
+  async invalidateRefreshToken() {
+    const { data } = await this.apiClient.get(URLS.INVALIDATE_REFRESH_TOKEN, { withCredentials: true });
     return data;
   }
 }
