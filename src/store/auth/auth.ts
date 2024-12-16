@@ -22,21 +22,9 @@ const useAuthStore = create<AuthState>((set) => ({
   logout: () => {
     set({ accessToken: null, isAuthenticated: false });
     if (typeof window !== 'undefined') {
-      window.location.href = '/'; // 로그인 페이지로 리다이렉트
+      window.location.href = '/';
     }
   },
-  // setRefreshAccessToken: async () => {
-  //   try {
-  //     const response = await axios.get('/auth/refresh', { withCredentials: true });
-  //     const newAccessToken = response.data.accessToken;
-  //     set({ accessToken: newAccessToken, isAuthenticated: true });
-  //   } catch (error) {
-  //     set({ accessToken: null, isAuthenticated: false });
-  //     alert('세션이 만료되었습니다. 다시 로그인해주세요.');
-  //     const router = useRouter();
-  //     router.push('/login');
-  //   }
-  // },
 }));
 
 export default useAuthStore;

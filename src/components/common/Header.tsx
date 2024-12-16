@@ -1,3 +1,6 @@
+'use client';
+
+import { useInvalidateRefreshToken } from '@/query/auth/refresh/refreshTokenQueries';
 import useAuthStore from '@/store/auth/auth';
 import styled from 'styled-components';
 import Logo from './Logo';
@@ -5,11 +8,22 @@ import Button from './ui/button/Button';
 
 const Header = () => {
   const { logout } = useAuthStore();
+  const invalidateRefreshToken = useInvalidateRefreshToken();
+
+  const handleLogout = async () => {
+    try {
+      await invalidateRefreshToken.mutateAsync();
+      logout();
+    } catch (error) {
+      console.error('로그아웃 실패:', error);
+      alert('로그아웃 중 문제가 발생했습니다.');
+    }
+  };
 
   return (
     <Wrapper>
       <Logo type="icon" size={36} />
-      <Button onClick={logout}>로그아웃</Button>
+      <Button onClick={handleLogout}>로그아웃</Button>
     </Wrapper>
   );
 };

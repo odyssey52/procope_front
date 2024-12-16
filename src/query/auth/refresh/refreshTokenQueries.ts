@@ -17,3 +17,9 @@ export const useCreateAccessTokenWithRefreshToken = () =>
     mutationFn: (payload: types.createAccessTokenWithRefreshTokenPayload) =>
       refreshTokenService.createAccessTokenWithRefreshToken(payload),
   });
+
+export const useInvalidateRefreshToken = () =>
+  useMutation({
+    mutationKey: REFRESH_QUERY_KEY.READ_INVALIDATE_REFRESHTOKEN,
+    mutationFn: () => refreshTokenService.invalidateRefreshToken(),
+  });
