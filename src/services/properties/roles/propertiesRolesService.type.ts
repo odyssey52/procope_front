@@ -1,7 +1,9 @@
+import { JobMainCategory } from '@/constants/stepper';
+
 /** payload */
 export interface CreatePropertiesRolesPayload {
-  name: string;
-  belongedFields: [string];
+  name: JobMainCategory;
+  belongedFields: string[];
 }
 
 /** response */

@@ -1,7 +1,7 @@
 /** payload */
 export interface CreatePropertiesRolesPayload {
   name: string;
-  belongedFields: [string];
+  belongedFields: string[];
 }
 
 /** response */
