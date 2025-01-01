@@ -7,30 +7,25 @@ const URLS = {
   READ_USER_INFO_ROLES: '/user/info/roles',
   READ_USER_INFO_PREFERENCES: '/user/info/preferences',
 };
-export default class UserInfoService {
-  private apiClient: ApiClient;
 
-  constructor({ isPublic }: { isPublic: boolean }) {
-    this.apiClient = new ApiClient({ isPublic });
-  }
+const api = new ApiClient({ isPublic: false });
 
-  async readUserInfo(): Promise<types.ReadUserInfoResponse> {
-    const { data } = await this.apiClient.get<types.ReadUserInfoResponse>(URLS.READ_USER_INFO);
-    return data;
-  }
+export async function readUserInfo(): Promise<types.ReadUserInfoResponse> {
+  const { data } = await api.get<types.ReadUserInfoResponse>(URLS.READ_USER_INFO);
+  return data;
+}
 
-  async updateUserInfo(payload: types.UpdateUserInfoPayload): Promise<types.UpdateUserInfoResponse> {
-    const res = await this.apiClient.put<types.UpdateUserInfoResponse>(URLS.UPDATE_USER_INFO, payload);
-    return res.data;
-  }
+export async function updateUserInfo(payload: types.UpdateUserInfoPayload): Promise<types.UpdateUserInfoResponse> {
+  const res = await api.put<types.UpdateUserInfoResponse>(URLS.UPDATE_USER_INFO, payload);
+  return res.data;
+}
 
-  async readUserInfoRoles(): Promise<types.ReadUserInfoRolesResponse> {
-    const { data } = await this.apiClient.get<types.ReadUserInfoRolesResponse>(URLS.READ_USER_INFO_ROLES);
-    return data;
-  }
+export async function readUserInfoRoles(): Promise<types.ReadUserInfoRolesResponse> {
+  const { data } = await api.get<types.ReadUserInfoRolesResponse>(URLS.READ_USER_INFO_ROLES);
+  return data;
+}
 
-  async readUserInfoPrefrences(): Promise<types.ReadUserInfoPreferencesResponse> {
-    const { data } = await this.apiClient.get<types.ReadUserInfoPreferencesResponse>(URLS.READ_USER_INFO_PREFERENCES);
-    return data;
-  }
+export async function readUserInfoPreferences(): Promise<types.ReadUserInfoPreferencesResponse> {
+  const { data } = await api.get<types.ReadUserInfoPreferencesResponse>(URLS.READ_USER_INFO_PREFERENCES);
+  return data;
 }

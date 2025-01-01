@@ -30,34 +30,3 @@ export async function invalidateRefreshToken() {
   const { data } = await api.get(URLS.INVALIDATE_REFRESH_TOKEN, { withCredentials: true });
   return data;
 }
-
-export default class RefreshTokenService {
-  private apiClient: ApiClient;
-
-  constructor({ isPublic }: { isPublic: boolean }) {
-    this.apiClient = new ApiClient({ isPublic, baseURL });
-  }
-
-  async readAccessTokenWithRefreshToken(): Promise<types.ReadAccessTokenWithRefreshTokenResponse> {
-    const { data } = await this.apiClient.get<types.ReadAccessTokenWithRefreshTokenResponse>(
-      URLS.REFRESH_ACCESS_TOKEN,
-      { withCredentials: true },
-    );
-    return data;
-  }
-
-  async createAccessTokenWithRefreshToken(
-    payload: types.createAccessTokenWithRefreshTokenPayload,
-  ): Promise<types.CreateAccessTokenWithRefreshTokenResponse> {
-    const { data } = await this.apiClient.post<types.CreateAccessTokenWithRefreshTokenResponse>(
-      URLS.REFRESH_ACCESS_TOKEN,
-      payload,
-    );
-    return data;
-  }
-
-  async invalidateRefreshToken() {
-    const { data } = await this.apiClient.get(URLS.INVALIDATE_REFRESH_TOKEN, { withCredentials: true });
-    return data;
-  }
-}
