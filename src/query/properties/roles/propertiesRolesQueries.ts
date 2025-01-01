@@ -1,18 +1,11 @@
-import PropertiesRolesService from '@/services/properties/roles/propertiesRolesService';
-import * as types from '@/services/properties/roles/propertiesRolesService.type';
-import { useMutation, useQuery } from '@tanstack/react-query';
-import PROPERTIES_QUERY_KEY from '../queryKey';
+import { readPropertiesRoles } from '@/services/properties/roles/propertiesRolesService';
+import { createQueryKeys } from '@lukemorales/query-key-factory';
 
-const propertiesRolesService = new PropertiesRolesService({ isPublic: false });
+const propertiesRolesQueries = createQueryKeys('propertiesRoles', {
+  readPropertiesRoles: {
+    queryKey: null,
+    queryFn: readPropertiesRoles,
+  },
+});
 
-export const useReadPropertiesRoles = () =>
-  useQuery({
-    queryKey: PROPERTIES_QUERY_KEY.READ_PROPERTIES_ROLES,
-    queryFn: () => propertiesRolesService.readPropertiesRoles(),
-  });
-
-export const useCreatePropertiesRoles = () =>
-  useMutation({
-    mutationKey: PROPERTIES_QUERY_KEY.CREATE_PROPERTIES_ROLES,
-    mutationFn: (payload: types.CreatePropertiesRolesPayload) => propertiesRolesService.CreatePropertiesRoles(payload),
-  });
+export default propertiesRolesQueries;

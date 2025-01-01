@@ -6,20 +6,14 @@ const URLS = {
   CREATE_PROPERTIES_QUESTIONS: '/properties/questions',
 };
 
-export default class PropertiesQuestionsService {
-  private apiClient: ApiClient;
+const api = new ApiClient({ isPublic: false });
 
-  constructor({ isPublic }: { isPublic: boolean }) {
-    this.apiClient = new ApiClient({ isPublic });
-  }
+export async function readPropertiesQuestions(): Promise<types.ReadPropertiesQuestionsResponse> {
+  const { data } = await api.get<types.ReadPropertiesQuestionsResponse>(URLS.READ_PROPERTIES_QUESTIONS);
+  return data;
+}
 
-  async readPropertiesQuestions(): Promise<types.ReadPropertiesQuestionsResponse> {
-    const { data } = await this.apiClient.get<types.ReadPropertiesQuestionsResponse>(URLS.READ_PROPERTIES_QUESTIONS);
-    return data;
-  }
-
-  async CreatePropertiesQuestions(payload: types.CreatePropertiesQuestionsPayload) {
-    const response = await this.apiClient.post(URLS.CREATE_PROPERTIES_QUESTIONS, payload);
-    return response;
-  }
+export async function createPropertiesQuestions(payload: types.CreatePropertiesQuestionsPayload) {
+  const response = await api.post(URLS.CREATE_PROPERTIES_QUESTIONS, payload);
+  return response;
 }

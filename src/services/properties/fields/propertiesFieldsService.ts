@@ -5,15 +5,9 @@ const URLS = {
   READ_PROPERTIES_FIELDS: '/properties/fields',
 };
 
-export default class PropertiesFieldsService {
-  private apiClient: ApiClient;
+const api = new ApiClient({ isPublic: false });
 
-  constructor({ isPublic }: { isPublic: boolean }) {
-    this.apiClient = new ApiClient({ isPublic });
-  }
-
-  async readPropertiesFields(): Promise<types.ReadPropertiesFieldsResponse> {
-    const { data } = await this.apiClient.get<types.ReadPropertiesFieldsResponse>(URLS.READ_PROPERTIES_FIELDS);
-    return data;
-  }
+export async function readPropertiesFields(): Promise<types.ReadPropertiesFieldsResponse> {
+  const { data } = await api.get<types.ReadPropertiesFieldsResponse>(URLS.READ_PROPERTIES_FIELDS);
+  return data;
 }

@@ -1,11 +1,11 @@
-import PropertiesFieldsService from '@/services/properties/fields/propertiesFieldsService';
-import { useQuery } from '@tanstack/react-query';
-import PROPERTIES_QUERY_KEY from '../queryKey';
+import { readPropertiesFields } from '@/services/properties/fields/propertiesFieldsService';
+import { createQueryKeys } from '@lukemorales/query-key-factory';
 
-const propertiesFieldsService = new PropertiesFieldsService({ isPublic: false });
+const propertiesFieldsQueries = createQueryKeys('propertiesFields', {
+  readPropertiesFields: {
+    queryKey: null,
+    queryFn: readPropertiesFields,
+  },
+});
 
-export const useReadPropertiesFields = () =>
-  useQuery({
-    queryKey: PROPERTIES_QUERY_KEY.READ_PROPERTIES_FIELDS,
-    queryFn: () => propertiesFieldsService.readPropertiesFields(),
-  });
+export default propertiesFieldsQueries;

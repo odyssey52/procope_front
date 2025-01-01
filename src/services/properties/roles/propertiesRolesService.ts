@@ -6,20 +6,14 @@ const URLS = {
   CREATE_PROPERTIES_ROLES: '/properties/roles',
 };
 
-export default class PropertiesRolesService {
-  private apiClient: ApiClient;
+const api = new ApiClient({ isPublic: false });
 
-  constructor({ isPublic }: { isPublic: boolean }) {
-    this.apiClient = new ApiClient({ isPublic });
-  }
+export async function readPropertiesRoles(): Promise<types.ReadPropertiesRolesResponse> {
+  const { data } = await api.get<types.ReadPropertiesRolesResponse>(URLS.READ_PROPERTIES_ROLES);
+  return data;
+}
 
-  async readPropertiesRoles(): Promise<types.ReadPropertiesRolesResponse> {
-    const { data } = await this.apiClient.get<types.ReadPropertiesRolesResponse>(URLS.READ_PROPERTIES_ROLES);
-    return data;
-  }
-
-  async CreatePropertiesRoles(payload: types.CreatePropertiesRolesPayload) {
-    const response = await this.apiClient.post(URLS.CREATE_PROPERTIES_ROLES, payload);
-    return response;
-  }
+export async function createPropertiesRoles(payload: types.CreatePropertiesRolesPayload) {
+  const response = await api.post(URLS.CREATE_PROPERTIES_ROLES, payload);
+  return response;
 }
