@@ -1011,6 +1011,11 @@
     "@jridgewell/resolve-uri" "^3.1.0"
     "@jridgewell/sourcemap-codec" "^1.4.14"
 
+"@lukemorales/query-key-factory@^1.3.4":
+  version "1.3.4"
+  resolved "https://registry.npmjs.org/@lukemorales/query-key-factory/-/query-key-factory-1.3.4.tgz"
+  integrity sha512-A3frRDdkmaNNQi6mxIshsDk4chRXWoXa05US8fBo4kci/H+lVmujS6QrwQLLGIkNIRFGjMqp2uKjC4XsLdydRw==
+
 "@next/env@15.0.4":
   version "15.0.4"
   resolved "https://registry.npmjs.org/@next/env/-/env-15.0.4.tgz"

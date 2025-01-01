@@ -6,14 +6,10 @@ import ProgressBar from '@/components/common/ui/progress/ProgressBar';
 import HeaderLayout from '@/components/layout/HeaderLayout';
 import { CheckStep, FirstStep, SecondStep, ThirdStep } from '@/components/pages/onboarding';
 import { JobMainCategory, TENDENCY_TITLE_LIST } from '@/constants/stepper';
-import { useCreatePropertiesQuestions } from '@/query/properties/questions/propertiesQuestionsQueries';
-import { useCreatePropertiesRoles } from '@/query/properties/roles/propertiesRolesQueries';
 import { useState } from 'react';
 import styled from 'styled-components';
 
 const Onboarding = () => {
-  const createPropertiesRoles = useCreatePropertiesRoles();
-  const createPRopertiesQuestions = useCreatePropertiesQuestions();
   const [step, setStep] = useState<1 | 2 | 3 | 4>(1);
   const [jobMain, setJobMain] = useState<JobMainCategory | null>(null);
   const [jobSub, setJobSub] = useState<string[]>([]);
@@ -22,8 +18,6 @@ const Onboarding = () => {
 
   const isValidTendency = (tendency: (number | null)[]): tendency is number[] =>
     tendency.every((item): item is number => typeof item === 'number');
-
-  const isValidProperties = !!jobMain && jobSub.length > 0 && isValidTendency;
 
   const pageMove = () => {
     if (step === 1) return <FirstStep jobMain={jobMain} jobMainHandler={jobMainHandler} onNext={() => setStep(2)} />;
@@ -54,7 +48,7 @@ const Onboarding = () => {
           jobSub={jobSub}
           tendency={tendency}
           onBefore={() => setStep(3)}
-          onNext={saveProperties}
+          onNext={() => {}}
         />
       );
     return null;
@@ -83,21 +77,6 @@ const Onboarding = () => {
       newTendency[index] = tendency;
       return newTendency;
     });
-  };
-
-  const saveProperties = async () => {
-    if (isValidProperties) {
-      const payloadProPertiesRoles = {
-        name: jobMain,
-        belongedFields: jobSub,
-      };
-
-      try {
-        await createPropertiesRoles.mutateAsync(payloadProPertiesRoles);
-      } catch (e) {
-        console.error(e);
-      }
-    }
   };
 
   return (
