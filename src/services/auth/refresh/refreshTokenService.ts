@@ -10,6 +10,27 @@ const URLS = {
   INVALIDATE_REFRESH_TOKEN: '/auth/invalidate',
 };
 
+const api = new ApiClient({ isPublic: false, baseURL });
+
+export async function readAccessTokenWithRefreshToken(): Promise<types.ReadAccessTokenWithRefreshTokenResponse> {
+  const { data } = await api.get<types.ReadAccessTokenWithRefreshTokenResponse>(URLS.REFRESH_ACCESS_TOKEN, {
+    withCredentials: true,
+  });
+  return data;
+}
+
+export async function createAccessTokenWithRefreshToken(
+  payload: types.createAccessTokenWithRefreshTokenPayload,
+): Promise<types.CreateAccessTokenWithRefreshTokenResponse> {
+  const { data } = await api.post<types.CreateAccessTokenWithRefreshTokenResponse>(URLS.REFRESH_ACCESS_TOKEN, payload);
+  return data;
+}
+
+export async function invalidateRefreshToken() {
+  const { data } = await api.get(URLS.INVALIDATE_REFRESH_TOKEN, { withCredentials: true });
+  return data;
+}
+
 export default class RefreshTokenService {
   private apiClient: ApiClient;
 

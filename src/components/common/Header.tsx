@@ -1,18 +1,19 @@
 'use client';
 
-import { useInvalidateRefreshToken } from '@/query/auth/refresh/refreshTokenQueries';
+import { invalidateRefreshToken } from '@/services/auth/refresh/refreshTokenService';
 import useAuthStore from '@/store/auth/auth';
+import { useMutation } from '@tanstack/react-query';
 import styled from 'styled-components';
 import Logo from './Logo';
 import Button from './ui/button/Button';
 
 const Header = () => {
   const { logout } = useAuthStore();
-  const invalidateRefreshToken = useInvalidateRefreshToken();
+  const invalidateRefreshTokenMutation = useMutation({ mutationFn: invalidateRefreshToken });
 
   const handleLogout = async () => {
     try {
-      await invalidateRefreshToken.mutateAsync();
+      await invalidateRefreshTokenMutation.mutateAsync();
       logout();
     } catch (error) {
       console.error('로그아웃 실패:', error);
