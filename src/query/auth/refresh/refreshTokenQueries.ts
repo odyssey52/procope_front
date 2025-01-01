@@ -1,5 +1,6 @@
 import RefreshTokenService from '@/services/auth/refresh/refreshTokenService';
 import * as types from '@/services/auth/refresh/refreshTokenService.type';
+import { createQueryKeys } from '@lukemorales/query-key-factory';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import REFRESH_QUERY_KEY from './queryKey';
 
@@ -23,3 +24,10 @@ export const useInvalidateRefreshToken = () =>
     mutationKey: REFRESH_QUERY_KEY.READ_INVALIDATE_REFRESHTOKEN,
     mutationFn: () => refreshTokenService.invalidateRefreshToken(),
   });
+
+export const refreshTokenQueries = createQueryKeys('refreshToken', {
+  accessTokenWithRefreshToken: {
+    queryKey: null,
+    queryFn: () => refreshTokenService.readAccessTokenWithRefreshToken(),
+  },
+});

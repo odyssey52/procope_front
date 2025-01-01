@@ -7,30 +7,22 @@ const URLS = {
   CREATE_TOKEN_WITH_SOCIAL: '/auth/callback',
 };
 
-export default class SocialAuthService {
-  private apiClient: ApiClient;
+const api = new ApiClient({ isPublic: false, baseURL });
 
-  constructor({ isPublic }: { isPublic: boolean }) {
-    this.apiClient = new ApiClient({ isPublic, baseURL });
-  }
+export async function createTokenWithNaver(
+  payload: types.CreateTokenWithNaverPayload,
+): Promise<types.CreateTokenWithNaverResponse> {
+  const { data } = await api.post<types.CreateTokenWithNaverResponse>(URLS.CREATE_TOKEN_WITH_SOCIAL, payload, {
+    withCredentials: true,
+  });
+  return data;
+}
 
-  async createTokenWithNaver(payload: types.CreateTokenWithNaverPayload): Promise<types.CreateTokenWithNaverResponse> {
-    const { data } = await this.apiClient.post<types.CreateTokenWithNaverResponse>(
-      URLS.CREATE_TOKEN_WITH_SOCIAL,
-      payload,
-      { withCredentials: true },
-    );
-    return data;
-  }
-
-  async createTokenWithGoogle(
-    payload: types.CreateTokenWithGooglePayload,
-  ): Promise<types.CreateTokenWithGoogleResponse> {
-    const { data } = await this.apiClient.post<types.CreateTokenWithGoogleResponse>(
-      URLS.CREATE_TOKEN_WITH_SOCIAL,
-      payload,
-      { withCredentials: true },
-    );
-    return data;
-  }
+export async function createTokenWithGoogle(
+  payload: types.CreateTokenWithGooglePayload,
+): Promise<types.CreateTokenWithGoogleResponse> {
+  const { data } = await api.post<types.CreateTokenWithGoogleResponse>(URLS.CREATE_TOKEN_WITH_SOCIAL, payload, {
+    withCredentials: true,
+  });
+  return data;
 }
