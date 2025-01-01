@@ -1,7 +1,8 @@
 'use client';
 
-import { useCreateTokenWithGoogle } from '@/query/auth/callback/socialAuthQueries';
+import { createTokenWithGoogle } from '@/services/auth/callback/socialAuthService';
 import useAuthStore from '@/store/auth/auth';
+import { useMutation } from '@tanstack/react-query';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect } from 'react';
 
@@ -11,11 +12,11 @@ const GoogleCallback = () => {
   const search = useSearchParams();
   const authorizationCode = search.get('code');
 
-  const createTokenWithGoogle = useCreateTokenWithGoogle();
+  const createTokenWithGoogleMutation = useMutation({ mutationFn: createTokenWithGoogle });
 
   const requestAccessToken = async (authorizationCode: string) => {
     const payload = { authorizationCode };
-    await createTokenWithGoogle.mutateAsync(payload, {
+    await createTokenWithGoogleMutation.mutateAsync(payload, {
       onSuccess: (res) => {
         setAccessToken(res.accessToken);
         setIsNewUser(res.isNewUser);

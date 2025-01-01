@@ -1,12 +1,13 @@
 'use client';
 
-import { useReadAccessTokenWithRefreshToken } from '@/query/auth/refresh/refreshTokenQueries';
+import { refreshTokenQueries } from '@/query/auth/refresh/refreshTokenQueries';
 import useAuthStore from '@/store/auth/auth';
+import { useQuery } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 
 const page = () => {
-  const { data, isError, isSuccess } = useReadAccessTokenWithRefreshToken();
+  const { data, isError, isSuccess } = useQuery({ ...refreshTokenQueries.accessTokenWithRefreshToken });
   const { accessToken, setAccessToken } = useAuthStore();
   const router = useRouter();
 
