@@ -1,3 +1,8 @@
+/** params */
+export type ReadPropertiesFieldsParams = {
+  roleId: number;
+};
+
 /** payload */
 export interface CreatePropertiesRolesPayload {
   name: string;

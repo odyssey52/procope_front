@@ -15,7 +15,6 @@ const page = () => {
     if (isSuccess) {
       const { id, name, email, username } = data.userContext;
       setUser({ id, name, email, username });
-      console.log(data);
       if (data.isNewUser) {
         router.replace('/onboarding');
       } else {

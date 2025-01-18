@@ -2,6 +2,10 @@ import Button from '@/components/common/ui/button/Button';
 import JobMainCard from '@/components/common/ui/card/JobMainCard';
 import Text from '@/components/common/ui/Text';
 import { JOB_MAIN_LIST, JobMainCategory } from '@/constants/stepper';
+import propertiesFieldsQueries from '@/query/properties/fields/propertiesFieldsQueries';
+import propertiesQuestionsQueries from '@/query/properties/questions/propertiesQuestionsQueries';
+import propertiesRolesQueries from '@/query/properties/roles/propertiesRolesQueries';
+import { useQuery } from '@tanstack/react-query';
 import styled from 'styled-components';
 
 interface Props {
@@ -11,6 +15,12 @@ interface Props {
 }
 
 const FirstStep = ({ jobMain, jobMainHandler, onNext }: Props) => {
+  const { data: roles } = useQuery({ ...propertiesRolesQueries.readPropertiesRoles });
+  const { data: fields } = useQuery({ ...propertiesFieldsQueries.readPropertiesFields({ roleId: 1 }) });
+  const { data: questions } = useQuery({ ...propertiesQuestionsQueries.readPropertiesQuestions });
+
+  console.log(roles, fields, questions);
+
   return (
     <Wrapper>
       <TextBox>
