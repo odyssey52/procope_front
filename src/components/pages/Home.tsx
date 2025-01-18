@@ -21,6 +21,8 @@ const Home = () => {
       } else {
         router.replace('/team');
       }
+    } else {
+      router.replace('/login');
     }
   }, [data, isSuccess]);
 
