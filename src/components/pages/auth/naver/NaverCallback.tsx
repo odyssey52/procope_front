@@ -1,36 +1,48 @@
 'use client';
 
+import userInfoQueries from '@/query/user/info/userInfoQueries';
 import { createTokenWithNaver } from '@/services/auth/callback/socialAuthService';
 import useAuthStore from '@/store/auth/auth';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect } from 'react';
 
 const NaverCallback = () => {
-  const { isAuthenticated, isNewUser, setAccessToken, setIsNewUser } = useAuthStore();
+  const { isAuthenticated, setAccessToken } = useAuthStore();
   const router = useRouter();
   const search = useSearchParams();
   const authorizationCode = search.get('code');
   const state = search.get('state');
+  const { data: userInfoData, isSuccess: isSuccessReadUserInfo } = useQuery({
+    ...userInfoQueries.readUserInfo,
+    enabled: isAuthenticated,
+  });
 
   const createTokenWithNaverMutation = useMutation({ mutationFn: createTokenWithNaver });
 
   const requestAccessToken = async (authorizationCode: string, state: string) => {
     const payload = { authorizationCode, state };
-    await createTokenWithNaverMutation.mutateAsync(payload, {
-      onSuccess: (res) => {
-        setAccessToken(res.accessToken);
-        setIsNewUser(res.isNewUser);
-      },
-    });
+    try {
+      await createTokenWithNaverMutation.mutateAsync(payload, {
+        onSuccess: (res) => {
+          setAccessToken(res.accessToken);
+        },
+      });
+    } catch (error) {
+      alert('로그인에 실패했습니다.');
+      router.replace('/');
+    }
   };
 
   useEffect(() => {
-    if (isAuthenticated) {
-      if (isNewUser) router.replace('/onboarding');
-      else router.replace('/team');
+    if (isSuccessReadUserInfo) {
+      if (userInfoData.isNewUser) {
+        router.replace('/onboarding');
+      } else {
+        router.replace('/team');
+      }
     }
-  }, [isAuthenticated, isNewUser, router]);
+  }, [isSuccessReadUserInfo, userInfoData]);
 
   useEffect(() => {
     if (authorizationCode && state) {

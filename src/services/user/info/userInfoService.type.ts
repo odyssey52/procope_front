@@ -62,10 +62,10 @@ export interface UpdateUserInfoPayload {
 
 /** response */
 export interface ReadUserInfoResponse {
+  isNewUser: boolean;
   userContext: UserContext;
   roleInfo: RoleInfo;
   preferenceInfoList: PreferenceInfoList;
-  newUser: boolean;
 }
 
 export type UpdateUserInfoResponse = ReadUserInfoResponse;
