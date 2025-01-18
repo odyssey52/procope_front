@@ -3,12 +3,14 @@
 import userInfoQueries from '@/query/user/info/userInfoQueries';
 import { createTokenWithNaver } from '@/services/auth/callback/socialAuthService';
 import useAuthStore from '@/store/auth/auth';
+import useUserStore from '@/store/user/user';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect } from 'react';
 
 const NaverCallback = () => {
   const { isAuthenticated, setAccessToken } = useAuthStore();
+  const { setUser } = useUserStore();
   const router = useRouter();
   const search = useSearchParams();
   const authorizationCode = search.get('code');
@@ -36,6 +38,8 @@ const NaverCallback = () => {
 
   useEffect(() => {
     if (isSuccessReadUserInfo) {
+      const { id, name, email, username } = userInfoData.userContext;
+      setUser({ id, name, email, username });
       if (userInfoData.isNewUser) {
         router.replace('/onboarding');
       } else {

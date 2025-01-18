@@ -1,19 +1,29 @@
 'use client';
 
+import userInfoQueries from '@/query/user/info/userInfoQueries';
 import useAuthStore from '@/store/auth/auth';
+import useUserStore from '@/store/user/user';
+import { useQuery } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 
 const Home = () => {
+  const { data, isSuccess } = useQuery({ ...userInfoQueries.readUserInfo });
+  const { setUser } = useUserStore();
   const router = useRouter();
-  const { isAuthenticated, isNewUser } = useAuthStore();
 
   useEffect(() => {
-    if (isAuthenticated) {
-      if (isNewUser) router.push('/onboarding');
-      else router.push('/team');
-    } else router.push('/login');
-  }, [isAuthenticated, isNewUser, router]);
+    if (isSuccess) {
+      const { id, name, email, username } = data.userContext;
+      setUser({ id, name, email, username });
+      if (data.isNewUser) {
+        router.replace('/onboarding');
+      } else {
+        router.replace('/team');
+      }
+    }
+  }, [data, isSuccess]);
+
   return null;
 };
 
