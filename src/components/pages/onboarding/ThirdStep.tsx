@@ -4,6 +4,8 @@ import TextButton from '@/components/common/ui/button/TextButton';
 import RadioSurvey from '@/components/common/ui/radio/RadioSurvey';
 import Text from '@/components/common/ui/Text';
 import { TENDENCY_TITLE_LIST } from '@/constants/stepper';
+import propertiesQuestionsQueries from '@/query/properties/questions/propertiesQuestionsQueries';
+import { useQuery } from '@tanstack/react-query';
 import styled from 'styled-components';
 
 interface Props {
@@ -15,6 +17,8 @@ interface Props {
 }
 
 const ThirdStep = ({ tendency, tendencyHandler, isValidTendency, onBefore, onNext }: Props) => {
+  const { data: questions } = useQuery({ ...propertiesQuestionsQueries.readPropertiesQuestions });
+  console.log(questions);
   return (
     <Wrapper>
       <TextBox>

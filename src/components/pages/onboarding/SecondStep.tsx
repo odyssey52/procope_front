@@ -3,7 +3,9 @@ import Button from '@/components/common/ui/button/Button';
 import TextButton from '@/components/common/ui/button/TextButton';
 import JobSubCard from '@/components/common/ui/card/JobSubCard';
 import Text from '@/components/common/ui/Text';
-import { JOB_SUB_LIST, JobMainCategory } from '@/constants/stepper';
+import { JOB_MAIN_LIST, JOB_SUB_LIST, JobMainCategory } from '@/constants/stepper';
+import propertiesFieldsQueries from '@/query/properties/fields/propertiesFieldsQueries';
+import { useQuery } from '@tanstack/react-query';
 import styled from 'styled-components';
 
 interface Props {
@@ -15,6 +17,8 @@ interface Props {
 }
 
 const SecondStep = ({ jobMain, jobSub, jobSubHandler, onBefore, onNext }: Props) => {
+  const jobId = JOB_MAIN_LIST[jobMain as JobMainCategory].id;
+  const { data: fields, isSuccess } = useQuery({ ...propertiesFieldsQueries.readPropertiesFields({ roleId: jobId }) });
   return (
     <Wrapper>
       <TextBox>
@@ -28,19 +32,17 @@ const SecondStep = ({ jobMain, jobSub, jobSubHandler, onBefore, onNext }: Props)
         </Text>
       </TextBox>
       <JobCardBox>
-        {JOB_SUB_LIST[jobMain].map((job: string) => {
-          const isDisabled = jobSub.length === 3 && !jobSub.includes(job);
-          const state = jobSub.includes(job) ? 'selected' : isDisabled ? 'disabled' : undefined;
-          return (
-            <JobSubCard
-              key={`JobSubCard-${job}`}
-              text={job}
-              state={state}
-              onClick={() => jobSubHandler(job)}
-              disabled={isDisabled}
-            />
-          );
-        })}
+        {isSuccess &&
+          fields.fields.map(({ id, name }) => {
+            return (
+              <JobSubCard
+                key={`JobSubCard-${id}`}
+                text={name}
+                state={jobSub.includes(name) ? 'selected' : undefined}
+                onClick={() => jobSubHandler(name)}
+              />
+            );
+          })}
       </JobCardBox>
       <ButtonContainer>
         <ButtonBox>

@@ -2,8 +2,6 @@ import Button from '@/components/common/ui/button/Button';
 import JobMainCard from '@/components/common/ui/card/JobMainCard';
 import Text from '@/components/common/ui/Text';
 import { JOB_MAIN_LIST, JobMainCategory } from '@/constants/stepper';
-import propertiesFieldsQueries from '@/query/properties/fields/propertiesFieldsQueries';
-import propertiesQuestionsQueries from '@/query/properties/questions/propertiesQuestionsQueries';
 import propertiesRolesQueries from '@/query/properties/roles/propertiesRolesQueries';
 import { useQuery } from '@tanstack/react-query';
 import styled from 'styled-components';
@@ -15,11 +13,7 @@ interface Props {
 }
 
 const FirstStep = ({ jobMain, jobMainHandler, onNext }: Props) => {
-  const { data: roles } = useQuery({ ...propertiesRolesQueries.readPropertiesRoles });
-  const { data: fields } = useQuery({ ...propertiesFieldsQueries.readPropertiesFields({ roleId: 1 }) });
-  const { data: questions } = useQuery({ ...propertiesQuestionsQueries.readPropertiesQuestions });
-
-  console.log(roles, fields, questions);
+  const { data: roles, isSuccess } = useQuery({ ...propertiesRolesQueries.readPropertiesRoles });
 
   return (
     <Wrapper>
@@ -30,15 +24,20 @@ const FirstStep = ({ jobMain, jobMainHandler, onNext }: Props) => {
         </Text>
       </TextBox>
       <JobCardBox>
-        {Object.entries(JOB_MAIN_LIST).map(([key, { title, img }]) => (
-          <JobMainCard
-            key={`JobMainCard-${key}`}
-            text={title}
-            icon={img}
-            state={jobMain === key ? 'selected' : undefined}
-            onClick={() => jobMainHandler(key as JobMainCategory)}
-          />
-        ))}
+        {isSuccess &&
+          roles.roles.map(({ id, name }) => {
+            const roleName = name as JobMainCategory;
+
+            return (
+              <JobMainCard
+                key={`JobMainCard-${id}`}
+                text={roleName}
+                icon={JOB_MAIN_LIST[roleName].img || ''}
+                state={jobMain === roleName ? 'selected' : undefined}
+                onClick={() => jobMainHandler(roleName as JobMainCategory)}
+              />
+            );
+          })}
       </JobCardBox>
       <ButtonBox>
         <Button disabled={!jobMain} onClick={onNext}>

@@ -5,7 +5,7 @@ import Text from '@/components/common/ui/Text';
 import ProgressBar from '@/components/common/ui/progress/ProgressBar';
 import HeaderLayout from '@/components/layout/HeaderLayout';
 import { CheckStep, FirstStep, SecondStep, ThirdStep } from '@/components/pages/onboarding';
-import { JobMainCategory, TENDENCY_TITLE_LIST } from '@/constants/stepper';
+import { JOB_MAIN_LIST, JobMainCategory, TENDENCY_TITLE_LIST } from '@/constants/stepper';
 import { useState } from 'react';
 import styled from 'styled-components';
 
@@ -13,6 +13,7 @@ const Onboarding = () => {
   const [step, setStep] = useState<1 | 2 | 3 | 4>(1);
   const [jobMain, setJobMain] = useState<JobMainCategory | null>(null);
   const [jobSub, setJobSub] = useState<string[]>([]);
+
   const initialTendency = Array(TENDENCY_TITLE_LIST.length).fill(null);
   const [tendency, setTendency] = useState<(number | null)[]>(initialTendency);
 
