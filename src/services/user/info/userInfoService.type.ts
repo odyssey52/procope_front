@@ -1,3 +1,6 @@
+import { JobSub } from '@/components/pages/onboarding/SecondStep';
+import { Preference } from '@/components/pages/onboarding/ThirdStep';
+
 export type UserContext = {
   id: string;
   name: string;
@@ -45,27 +48,17 @@ export interface UpdateUserInfoPayload {
   role: {
     id: number;
     name: string;
-    fields: [
-      {
-        id: number;
-        name: string;
-      },
-    ];
+    fields: JobSub[];
   };
-  preferences: [
-    {
-      questionId: number;
-      score: number;
-    },
-  ];
+  preferences: Preference[];
 }
 
 /** response */
 export interface ReadUserInfoResponse {
+  isNewUser: boolean;
   userContext: UserContext;
   roleInfo: RoleInfo;
   preferenceInfoList: PreferenceInfoList;
-  newUser: boolean;
 }
 
 export type UpdateUserInfoResponse = ReadUserInfoResponse;

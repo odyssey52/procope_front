@@ -7,7 +7,11 @@ const URLS = {
 
 const api = new ApiClient({ isPublic: false });
 
-export async function readPropertiesFields(): Promise<types.ReadPropertiesFieldsResponse> {
-  const { data } = await api.get<types.ReadPropertiesFieldsResponse>(URLS.READ_PROPERTIES_FIELDS);
+export async function readPropertiesFields(
+  params: types.ReadPropertiesFieldsParams,
+): Promise<types.ReadPropertiesFieldsResponse> {
+  const { data } = await api.get<types.ReadPropertiesFieldsResponse>(
+    `${URLS.READ_PROPERTIES_FIELDS}?roleId=${params.roleId}`,
+  );
   return data;
 }

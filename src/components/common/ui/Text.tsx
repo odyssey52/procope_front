@@ -21,7 +21,7 @@ interface TextStyledProps {
   $className?: string;
 }
 
-const Wrapper = styled.span<TextStyledProps>`
+const Wrapper = styled.div<TextStyledProps>`
   ${({ theme, $variant }) => theme.fontStyle[$variant]}
   color:${({ theme, $color }) => ($color ? theme.sementicColors.text[$color] : theme.sementicColors.text.primary)};
   white-space: pre-wrap;

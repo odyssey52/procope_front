@@ -1,3 +1,8 @@
+/** params */
+export type ReadPropertiesFieldsParams = {
+  roleId: number;
+};
+
 /** payload */
 export interface CreatePropertiesRolesPayload {
   name: string;
@@ -19,14 +24,10 @@ export interface ReadPropertiesRolesResponse {
 }
 
 export interface ReadPropertiesFieldsResponse {
-  roles: [
-    {
-      id: number;
-      name: string;
-      fields: {
-        id: number;
-        name: string;
-      }[];
-    },
-  ];
+  id: number;
+  name: string;
+  fields: {
+    id: number;
+    name: string;
+  }[];
 }

@@ -5,20 +5,47 @@ import Text from '@/components/common/ui/Text';
 import ProgressBar from '@/components/common/ui/progress/ProgressBar';
 import HeaderLayout from '@/components/layout/HeaderLayout';
 import { CheckStep, FirstStep, SecondStep, ThirdStep } from '@/components/pages/onboarding';
-import { JobMainCategory, TENDENCY_TITLE_LIST } from '@/constants/stepper';
+import { TENDENCY_TITLE_LIST } from '@/constants/stepper';
+import { updateUserInfo } from '@/services/user/info/userInfoService';
+import { useMutation } from '@tanstack/react-query';
+import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import styled from 'styled-components';
+import { JobMain } from './FirstStep';
+import { JobSub } from './SecondStep';
+import { Preference } from './ThirdStep';
 
 const Onboarding = () => {
+  const router = useRouter();
   const [step, setStep] = useState<1 | 2 | 3 | 4>(1);
-  const [jobMain, setJobMain] = useState<JobMainCategory | null>(null);
-  const [jobSub, setJobSub] = useState<string[]>([]);
-  const initialTendency = Array(TENDENCY_TITLE_LIST.length).fill(null);
-  const [tendency, setTendency] = useState<(number | null)[]>(initialTendency);
+  const [jobMain, setJobMain] = useState<JobMain | null>(null);
+  const [jobSub, setJobSub] = useState<JobSub[]>([]);
 
-  const isValidTendency = (tendency: (number | null)[]): tendency is number[] =>
-    tendency.every((item): item is number => typeof item === 'number');
+  const updateUserInfoMutation = useMutation({ mutationFn: updateUserInfo });
 
+  const initialPreferences = Array(TENDENCY_TITLE_LIST.length).fill(null);
+  const [preferences, setPreferences] = useState<(Preference | null)[]>(initialPreferences);
+
+  const isValidPreferences = (preferences: (Preference | null)[]): preferences is Preference[] =>
+    preferences.every((item): item is Preference => item !== null);
+
+  const saveUserInfo = async () => {
+    if (!jobMain || jobSub.length === 0 || !isValidPreferences(preferences)) return;
+    try {
+      const payload = {
+        role: {
+          id: jobMain.id,
+          name: jobMain.name,
+          fields: jobSub,
+        },
+        preferences,
+      };
+      await updateUserInfoMutation.mutateAsync(payload);
+      router.replace('/team');
+    } catch (e) {
+      console.log(e);
+    }
+  };
   const pageMove = () => {
     if (step === 1) return <FirstStep jobMain={jobMain} jobMainHandler={jobMainHandler} onNext={() => setStep(2)} />;
     if (step === 2 && jobMain)
@@ -34,32 +61,32 @@ const Onboarding = () => {
     if (step === 3)
       return (
         <ThirdStep
-          tendency={tendency}
-          tendencyHandler={tendencyHandler}
-          isValidTendency={isValidTendency(tendency)}
+          preferences={preferences}
+          preferencesHandler={preferencesHandler}
+          isValidPreferences={isValidPreferences(preferences)}
           onBefore={() => setStep(2)}
           onNext={() => setStep(4)}
         />
       );
-    if (step === 4 && jobMain && isValidTendency(tendency))
+    if (step === 4 && jobMain && isValidPreferences(preferences))
       return (
         <CheckStep
           jobMain={jobMain}
           jobSub={jobSub}
-          tendency={tendency}
+          preferences={preferences}
           onBefore={() => setStep(3)}
-          onNext={() => {}}
+          onNext={saveUserInfo}
         />
       );
     return null;
   };
 
-  const jobMainHandler = (jobMain: JobMainCategory) => {
+  const jobMainHandler = (jobMain: JobMain) => {
     setJobMain(jobMain);
     setJobSub([]);
   };
 
-  const jobSubHandler = (jobSub: string) => {
+  const jobSubHandler = (jobSub: JobSub) => {
     setJobSub((prevJobSub) => {
       const jobSubSet = new Set(prevJobSub);
       if (jobSubSet.has(jobSub)) {
@@ -71,11 +98,11 @@ const Onboarding = () => {
     });
   };
 
-  const tendencyHandler = (index: number, tendency: number) => {
-    setTendency((prevTendency) => {
-      const newTendency = [...prevTendency];
-      newTendency[index] = tendency;
-      return newTendency;
+  const preferencesHandler = (index: number, preference: Preference) => {
+    setPreferences((prevPreferences) => {
+      const newPreferences = [...prevPreferences];
+      newPreferences[index] = preference;
+      return newPreferences;
     });
   };
 

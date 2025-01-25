@@ -1,14 +1,20 @@
 'use client';
 
+import userInfoQueries from '@/query/user/info/userInfoQueries';
 import { invalidateRefreshToken } from '@/services/auth/refresh/refreshTokenService';
 import useAuthStore from '@/store/auth/auth';
-import { useMutation } from '@tanstack/react-query';
+import useUserStore from '@/store/user/user';
+import { useMutation, useQuery } from '@tanstack/react-query';
+import { useEffect } from 'react';
 import styled from 'styled-components';
 import Logo from './Logo';
 import Button from './ui/button/Button';
 
 const Header = () => {
   const { logout } = useAuthStore();
+  const { data, isSuccess } = useQuery({ ...userInfoQueries.readUserInfo });
+  const { setUser } = useUserStore();
+
   const invalidateRefreshTokenMutation = useMutation({ mutationFn: invalidateRefreshToken });
 
   const handleLogout = async () => {
@@ -21,6 +27,12 @@ const Header = () => {
     }
   };
 
+  useEffect(() => {
+    if (isSuccess) {
+      const { id, name, email, username } = data.userContext;
+      setUser({ id, name, email, username });
+    }
+  }, [data, isSuccess]);
   return (
     <Wrapper>
       <Logo type="icon" size={36} />

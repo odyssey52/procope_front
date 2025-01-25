@@ -3,18 +3,28 @@ import Button from '@/components/common/ui/button/Button';
 import TextButton from '@/components/common/ui/button/TextButton';
 import RadioSurvey from '@/components/common/ui/radio/RadioSurvey';
 import Text from '@/components/common/ui/Text';
-import { TENDENCY_TITLE_LIST } from '@/constants/stepper';
+import propertiesQuestionsQueries from '@/query/properties/questions/propertiesQuestionsQueries';
+import { useQuery } from '@tanstack/react-query';
 import styled from 'styled-components';
 
+export interface Preference {
+  questionId: number;
+  score: number;
+}
 interface Props {
-  tendency: (number | null)[];
-  tendencyHandler: (index: number, tendency: number) => void;
-  isValidTendency: boolean;
+  preferences: (Preference | null)[];
+  preferencesHandler: (index: number, preference: Preference) => void;
+  isValidPreferences: boolean;
   onBefore: () => void;
   onNext: () => void;
 }
 
-const ThirdStep = ({ tendency, tendencyHandler, isValidTendency, onBefore, onNext }: Props) => {
+const ThirdStep = ({ preferences, preferencesHandler, isValidPreferences, onBefore, onNext }: Props) => {
+  const { data, isSuccess } = useQuery({
+    ...propertiesQuestionsQueries.readPropertiesQuestions,
+    select: (data) => data.questions.sort((a, b) => a.id - b.id),
+  });
+  if (!isSuccess) return null;
   return (
     <Wrapper>
       <TextBox>
@@ -27,53 +37,53 @@ const ThirdStep = ({ tendency, tendencyHandler, isValidTendency, onBefore, onNex
           답변에 따라 맞춤화된 회고 서비스를 제공해 드려요!
         </Text>
       </TextBox>
-      {TENDENCY_TITLE_LIST.map((title, index) => {
+      {data.map(({ id, description }, index) => {
         return (
           <div key={index}>
-            <Text variant="body_14_semibold">{title}</Text>
-            <TendencyBox>
+            <Text variant="body_14_semibold">{description}</Text>
+            <PreferencesBox>
               <Text variant="heading_18" color="tertiary">
                 그렇다
               </Text>
               <RadioBox>
                 <RadioSurvey
-                  id={`tendency-${index}-very-agree`}
-                  name={`tendency-${index}`}
+                  id={`preferences-${index}-very-agree`}
+                  name={`preferences-${index}`}
                   $size="lg"
-                  onClick={() => tendencyHandler(index, 4)}
-                  defaultChecked={tendency[index] === 4}
+                  onClick={() => preferencesHandler(index, { questionId: id, score: 5 })}
+                  defaultChecked={preferences[index]?.score === 5}
                 />
                 <RadioSurvey
-                  id={`tendency-${index}-agree`}
-                  name={`tendency-${index}`}
-                  onClick={() => tendencyHandler(index, 3)}
-                  defaultChecked={tendency[index] === 3}
+                  id={`preferences-${index}-agree`}
+                  name={`preferences-${index}`}
+                  onClick={() => preferencesHandler(index, { questionId: id, score: 4 })}
+                  defaultChecked={preferences[index]?.score === 4}
                 />
                 <RadioSurvey
-                  id={`tendency-${index}-soso`}
-                  name={`tendency-${index}`}
+                  id={`preferences-${index}-soso`}
+                  name={`preferences-${index}`}
                   $size="sm"
-                  onClick={() => tendencyHandler(index, 2)}
-                  defaultChecked={tendency[index] === 2}
+                  onClick={() => preferencesHandler(index, { questionId: id, score: 3 })}
+                  defaultChecked={preferences[index]?.score === 3}
                 />
                 <RadioSurvey
-                  id={`tendency-${index}-disagree`}
-                  name={`tendency-${index}`}
-                  onClick={() => tendencyHandler(index, 1)}
-                  defaultChecked={tendency[index] === 1}
+                  id={`preferences-${index}-disagree`}
+                  name={`preferences-${index}`}
+                  onClick={() => preferencesHandler(index, { questionId: id, score: 2 })}
+                  defaultChecked={preferences[index]?.score === 2}
                 />
                 <RadioSurvey
-                  id={`tendency-${index}-very-disagree`}
-                  name={`tendency-${index}`}
+                  id={`preferences-${index}-very-disagree`}
+                  name={`preferences-${index}`}
                   $size="lg"
-                  onClick={() => tendencyHandler(index, 0)}
-                  defaultChecked={tendency[index] === 0}
+                  onClick={() => preferencesHandler(index, { questionId: id, score: 1 })}
+                  defaultChecked={preferences[index]?.score === 1}
                 />
               </RadioBox>
               <Text variant="heading_18" color="tertiary">
                 그렇지 않다
               </Text>
-            </TendencyBox>
+            </PreferencesBox>
           </div>
         );
       })}
@@ -82,7 +92,7 @@ const ThirdStep = ({ tendency, tendencyHandler, isValidTendency, onBefore, onNex
           <TextButton $type="16" leftIcon={<IconDirectionLeft />} onClick={onBefore}>
             이전
           </TextButton>
-          <Button disabled={!isValidTendency} onClick={onNext}>
+          <Button disabled={!isValidPreferences} onClick={onNext}>
             다음
           </Button>
         </ButtonBox>
@@ -98,7 +108,7 @@ const Wrapper = styled.div`
 const TextBox = styled.div`
   margin: 40px 0px 36px 0px;
 `;
-const TendencyBox = styled.div`
+const PreferencesBox = styled.div`
   margin: 24px 0px 40px 0px;
   display: flex;
   align-items: center;
