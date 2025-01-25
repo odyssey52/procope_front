@@ -18,7 +18,11 @@ interface Props {
 
 const SecondStep = ({ jobMain, jobSub, jobSubHandler, onBefore, onNext }: Props) => {
   const jobId = JOB_MAIN_LIST[jobMain as JobMainCategory].id;
-  const { data: fields, isSuccess } = useQuery({ ...propertiesFieldsQueries.readPropertiesFields({ roleId: jobId }) });
+  const { data, isSuccess } = useQuery({ ...propertiesFieldsQueries.readPropertiesFields({ roleId: jobId }) });
+
+  if (!isSuccess) return null;
+
+  const sortedData = data.fields.sort((a, b) => a.id - b.id);
   return (
     <Wrapper>
       <TextBox>
@@ -33,7 +37,7 @@ const SecondStep = ({ jobMain, jobSub, jobSubHandler, onBefore, onNext }: Props)
       </TextBox>
       <JobCardBox>
         {isSuccess &&
-          fields.fields.map(({ id, name }) => {
+          sortedData.map(({ id, name }) => {
             return (
               <JobSubCard
                 key={`JobSubCard-${id}`}

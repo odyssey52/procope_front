@@ -17,8 +17,8 @@ interface Props {
 }
 
 const ThirdStep = ({ tendency, tendencyHandler, isValidTendency, onBefore, onNext }: Props) => {
-  const { data: questions } = useQuery({ ...propertiesQuestionsQueries.readPropertiesQuestions });
-  console.log(questions);
+  const { data, isSuccess } = useQuery({ ...propertiesQuestionsQueries.readPropertiesQuestions });
+  if (!isSuccess) return null;
   return (
     <Wrapper>
       <TextBox>
@@ -31,10 +31,10 @@ const ThirdStep = ({ tendency, tendencyHandler, isValidTendency, onBefore, onNex
           답변에 따라 맞춤화된 회고 서비스를 제공해 드려요!
         </Text>
       </TextBox>
-      {TENDENCY_TITLE_LIST.map((title, index) => {
+      {data.questions.map(({ id, description }, index) => {
         return (
           <div key={index}>
-            <Text variant="body_14_semibold">{title}</Text>
+            <Text variant="body_14_semibold">{description}</Text>
             <TendencyBox>
               <Text variant="heading_18" color="tertiary">
                 그렇다
@@ -44,34 +44,34 @@ const ThirdStep = ({ tendency, tendencyHandler, isValidTendency, onBefore, onNex
                   id={`tendency-${index}-very-agree`}
                   name={`tendency-${index}`}
                   $size="lg"
-                  onClick={() => tendencyHandler(index, 4)}
-                  defaultChecked={tendency[index] === 4}
+                  onClick={() => tendencyHandler(index, 5)}
+                  defaultChecked={tendency[index] === 5}
                 />
                 <RadioSurvey
                   id={`tendency-${index}-agree`}
                   name={`tendency-${index}`}
-                  onClick={() => tendencyHandler(index, 3)}
-                  defaultChecked={tendency[index] === 3}
+                  onClick={() => tendencyHandler(index, 4)}
+                  defaultChecked={tendency[index] === 4}
                 />
                 <RadioSurvey
                   id={`tendency-${index}-soso`}
                   name={`tendency-${index}`}
                   $size="sm"
-                  onClick={() => tendencyHandler(index, 2)}
-                  defaultChecked={tendency[index] === 2}
+                  onClick={() => tendencyHandler(index, 3)}
+                  defaultChecked={tendency[index] === 3}
                 />
                 <RadioSurvey
                   id={`tendency-${index}-disagree`}
                   name={`tendency-${index}`}
-                  onClick={() => tendencyHandler(index, 1)}
-                  defaultChecked={tendency[index] === 1}
+                  onClick={() => tendencyHandler(index, 2)}
+                  defaultChecked={tendency[index] === 2}
                 />
                 <RadioSurvey
                   id={`tendency-${index}-very-disagree`}
                   name={`tendency-${index}`}
                   $size="lg"
-                  onClick={() => tendencyHandler(index, 0)}
-                  defaultChecked={tendency[index] === 0}
+                  onClick={() => tendencyHandler(index, 1)}
+                  defaultChecked={tendency[index] === 1}
                 />
               </RadioBox>
               <Text variant="heading_18" color="tertiary">

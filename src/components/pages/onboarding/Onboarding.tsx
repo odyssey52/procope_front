@@ -5,7 +5,7 @@ import Text from '@/components/common/ui/Text';
 import ProgressBar from '@/components/common/ui/progress/ProgressBar';
 import HeaderLayout from '@/components/layout/HeaderLayout';
 import { CheckStep, FirstStep, SecondStep, ThirdStep } from '@/components/pages/onboarding';
-import { JOB_MAIN_LIST, JobMainCategory, TENDENCY_TITLE_LIST } from '@/constants/stepper';
+import { JobMainCategory, TENDENCY_TITLE_LIST } from '@/constants/stepper';
 import { useState } from 'react';
 import styled from 'styled-components';
 
