@@ -1,19 +1,26 @@
 import Button from '@/components/common/ui/button/Button';
 import JobMainCard from '@/components/common/ui/card/JobMainCard';
 import Text from '@/components/common/ui/Text';
-import { JOB_MAIN_LIST, JobMainCategory } from '@/constants/stepper';
+import { JOB_MAIN_IMG_LIST } from '@/constants/stepper';
 import propertiesRolesQueries from '@/query/properties/roles/propertiesRolesQueries';
 import { useQuery } from '@tanstack/react-query';
 import styled from 'styled-components';
 
+export interface JobMain {
+  id: number;
+  name: string;
+}
 interface Props {
-  jobMain: JobMainCategory | null;
-  jobMainHandler: (jobMain: JobMainCategory) => void;
+  jobMain: JobMain | null;
+  jobMainHandler: (jobMain: JobMain) => void;
   onNext: () => void;
 }
 
 const FirstStep = ({ jobMain, jobMainHandler, onNext }: Props) => {
-  const { data: roles, isSuccess } = useQuery({ ...propertiesRolesQueries.readPropertiesRoles });
+  const { data: roles, isSuccess } = useQuery({
+    ...propertiesRolesQueries.readPropertiesRoles,
+    select: (data) => data.roles.sort((a, b) => a.id - b.id),
+  });
 
   return (
     <Wrapper>
@@ -25,16 +32,14 @@ const FirstStep = ({ jobMain, jobMainHandler, onNext }: Props) => {
       </TextBox>
       <JobCardBox>
         {isSuccess &&
-          roles.roles.map(({ id, name }) => {
-            const roleName = name as JobMainCategory;
-
+          roles.map(({ id, name }) => {
             return (
               <JobMainCard
                 key={`JobMainCard-${id}`}
-                text={roleName}
-                icon={JOB_MAIN_LIST[roleName].img || ''}
-                state={jobMain === roleName ? 'selected' : undefined}
-                onClick={() => jobMainHandler(roleName as JobMainCategory)}
+                text={name}
+                icon={JOB_MAIN_IMG_LIST[id - 1] || ''}
+                state={jobMain?.name === name ? 'selected' : undefined}
+                onClick={() => jobMainHandler({ id, name })}
               />
             );
           })}

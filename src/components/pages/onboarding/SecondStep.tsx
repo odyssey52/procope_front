@@ -3,26 +3,31 @@ import Button from '@/components/common/ui/button/Button';
 import TextButton from '@/components/common/ui/button/TextButton';
 import JobSubCard from '@/components/common/ui/card/JobSubCard';
 import Text from '@/components/common/ui/Text';
-import { JOB_MAIN_LIST, JOB_SUB_LIST, JobMainCategory } from '@/constants/stepper';
 import propertiesFieldsQueries from '@/query/properties/fields/propertiesFieldsQueries';
 import { useQuery } from '@tanstack/react-query';
 import styled from 'styled-components';
+import { JobMain } from './FirstStep';
 
+export interface JobSub {
+  id: number;
+  name: string;
+}
 interface Props {
-  jobMain: JobMainCategory;
-  jobSub: string[];
-  jobSubHandler: (jobSub: string) => void;
+  jobMain: JobMain;
+  jobSub: JobSub[];
+  jobSubHandler: (jobSub: JobSub) => void;
   onBefore: () => void;
   onNext: () => void;
 }
 
 const SecondStep = ({ jobMain, jobSub, jobSubHandler, onBefore, onNext }: Props) => {
-  const jobId = JOB_MAIN_LIST[jobMain as JobMainCategory].id;
-  const { data, isSuccess } = useQuery({ ...propertiesFieldsQueries.readPropertiesFields({ roleId: jobId }) });
+  const { data, isSuccess } = useQuery({
+    ...propertiesFieldsQueries.readPropertiesFields({ roleId: jobMain.id }),
+    select: (data) => data.fields.sort((a, b) => a.id - b.id),
+  });
 
   if (!isSuccess) return null;
 
-  const sortedData = data.fields.sort((a, b) => a.id - b.id);
   return (
     <Wrapper>
       <TextBox>
@@ -37,13 +42,13 @@ const SecondStep = ({ jobMain, jobSub, jobSubHandler, onBefore, onNext }: Props)
       </TextBox>
       <JobCardBox>
         {isSuccess &&
-          sortedData.map(({ id, name }) => {
+          data.map((field) => {
             return (
               <JobSubCard
-                key={`JobSubCard-${id}`}
-                text={name}
-                state={jobSub.includes(name) ? 'selected' : undefined}
-                onClick={() => jobSubHandler(name)}
+                key={`JobSubCard-${field.id}`}
+                text={field.name}
+                state={jobSub.includes(field) ? 'selected' : undefined}
+                onClick={() => jobSubHandler(field)}
               />
             );
           })}

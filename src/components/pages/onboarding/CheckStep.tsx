@@ -1,19 +1,22 @@
 import { IconDirectionLeft } from '@/assets/icons/line';
 import Button from '@/components/common/ui/button/Button';
 import TextButton from '@/components/common/ui/button/TextButton';
-import { JOB_MAIN_LIST, JobMainCategory, PREFERENCE_LIST } from '@/constants/stepper';
+import { JOB_MAIN_ICON_LIST, JOB_MAIN_LIST, PREFERENCE_LIST } from '@/constants/stepper';
 import styled from 'styled-components';
+import { JobSub } from './SecondStep';
+import { Preference } from './ThirdStep';
+import { JobMain } from './FirstStep';
 
 interface Props {
-  jobMain: JobMainCategory;
-  jobSub: string[];
-  tendency: number[];
+  jobMain: JobMain;
+  jobSub: JobSub[];
+  preferences: Preference[];
   onBefore: () => void;
   onNext: () => void;
 }
 
-const CheckStep = ({ jobMain, jobSub, tendency, onBefore, onNext }: Props) => {
-  const jobMainTitle = JOB_MAIN_LIST[jobMain].title + JOB_MAIN_LIST[jobMain].icon;
+const CheckStep = ({ jobMain, jobSub, preferences, onBefore, onNext }: Props) => {
+  const jobMainTitle = jobMain.name + JOB_MAIN_ICON_LIST[jobMain.id];
 
   return (
     <Wrapper>
@@ -24,23 +27,23 @@ const CheckStep = ({ jobMain, jobSub, tendency, onBefore, onNext }: Props) => {
         <Text>
           {jobSub.map((sub, i) => (
             <InlineText key={`jobSub${i}`}>
-              <BrandText>{sub}</BrandText>
+              <BrandText>{sub.name}</BrandText>
               {jobSub.length !== i + 1 && ','}{' '}
             </InlineText>
           ))}
           업무를 담당하고 있어
         </Text>
         <Text>
-          피드백 받는 것을 <BrandText>{PREFERENCE_LIST[tendency[0] - 1]}</BrandText> 하고
+          피드백 받는 것을 <BrandText>{PREFERENCE_LIST[preferences[0].score - 1]}</BrandText> 하고
         </Text>
         <Text>
-          구체적인 피드백을 <BrandText>{PREFERENCE_LIST[tendency[1] - 1]}</BrandText> 해
+          구체적인 피드백을 <BrandText>{PREFERENCE_LIST[preferences[1].score - 1]}</BrandText> 해
         </Text>
         <Text>
-          또 칭찬을 자주받는 것을 <BrandText>{PREFERENCE_LIST[tendency[2] - 1]}</BrandText> 하고
+          또 칭찬을 자주받는 것을 <BrandText>{PREFERENCE_LIST[preferences[2].score - 1]}</BrandText> 하고
         </Text>
         <Text>
-          구체적인 칭찬을 <BrandText>{PREFERENCE_LIST[tendency[3] - 1]}</BrandText> 해
+          구체적인 칭찬을 <BrandText>{PREFERENCE_LIST[preferences[3].score - 1]}</BrandText> 해
         </Text>
       </TextBox>
       <ButtonContainer>

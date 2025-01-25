@@ -1,13 +1,15 @@
-export type JobMainCategory = keyof typeof JOB_MAIN_LIST;
 export type JobMainId = (typeof JOB_MAIN_LIST)[keyof typeof JOB_MAIN_LIST]['id'];
 
-export type JobMain = {
-  id: JobMainId;
-  title: string;
-  img: string;
-  icon: string;
-  roles: { id: number; name: string }[];
-};
+export const JOB_MAIN_IMG_LIST = [
+  '/assets/icons/graphic/glass/file-on.png',
+  '/assets/icons/graphic/glass/laptop-on.png',
+  '/assets/icons/graphic/glass/flower-on.png',
+  '/assets/icons/graphic/glass/graph-on.png',
+  '/assets/icons/graphic/glass/coffee-on.png',
+  '/assets/icons/graphic/glass/money-on.png',
+  '/assets/icons/graphic/glass/userbook-on.png',
+];
+export const JOB_MAIN_ICON_LIST = ['📑', '‍🧑‍💻', '🎨', '💰', '🧑‍💼', '☕️', '📊'];
 export const JOB_MAIN_LIST = {
   기획: {
     id: 1,
@@ -174,4 +176,4 @@ export const TENDENCY_TITLE_LIST = [
   '2-1. 구체적인 칭찬을 선호하시나요?',
 ];
 
-export const PREFERENCE_LIST = ['매우 비선호😩', '비선호👎🏻', '선호👍🏻', '보통😐', '매우 선호😆'];
+export const PREFERENCE_LIST = ['매우 비선호😩', '비선호👎🏻', '보통😐', '선호👍🏻', '매우 선호😆'];
