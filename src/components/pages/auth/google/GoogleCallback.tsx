@@ -1,16 +1,23 @@
 'use client';
 
+import userInfoQueries from '@/query/user/info/userInfoQueries';
 import { createTokenWithGoogle } from '@/services/auth/callback/socialAuthService';
 import useAuthStore from '@/store/auth/auth';
-import { useMutation } from '@tanstack/react-query';
+import useUserStore from '@/store/user/user';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect } from 'react';
 
 const GoogleCallback = () => {
-  const { isAuthenticated, isNewUser, setAccessToken, setIsNewUser } = useAuthStore();
+  const { isAuthenticated, setAccessToken } = useAuthStore();
+  const { setUser } = useUserStore();
   const router = useRouter();
   const search = useSearchParams();
   const authorizationCode = search.get('code');
+  const { data: userInfoData, isSuccess: isSuccessReadUserInfo } = useQuery({
+    ...userInfoQueries.readUserInfo,
+    enabled: isAuthenticated,
+  });
 
   const createTokenWithGoogleMutation = useMutation({ mutationFn: createTokenWithGoogle });
 
@@ -19,17 +26,21 @@ const GoogleCallback = () => {
     await createTokenWithGoogleMutation.mutateAsync(payload, {
       onSuccess: (res) => {
         setAccessToken(res.accessToken);
-        setIsNewUser(res.isNewUser);
       },
     });
   };
 
   useEffect(() => {
-    if (isAuthenticated) {
-      if (isNewUser) router.replace('/onboarding');
-      else router.replace('/team');
+    if (isSuccessReadUserInfo) {
+      const { id, name, email, username } = userInfoData.userContext;
+      setUser({ id, name, email, username });
+      if (userInfoData.isNewUser) {
+        router.replace('/onboarding');
+      } else {
+        router.replace('/team');
+      }
     }
-  }, [isAuthenticated, isNewUser, router]);
+  }, [isSuccessReadUserInfo, userInfoData]);
 
   useEffect(() => {
     if (authorizationCode) {
@@ -38,8 +49,7 @@ const GoogleCallback = () => {
       alert('로그인에 실패했습니다.');
       router.replace('/');
     }
-  }, [authorizationCode, router]);
-
+  }, [router]);
   return null;
 };
 
