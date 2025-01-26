@@ -38,7 +38,7 @@ export default class HTTPProvider {
     this.client.interceptors.response.use(
       (response) => response, // 성공 응답은 그대로 반환
       async (error) => {
-        if (error.response?.status === 401) {
+        if (error.response?.status === 401 || error.response?.status === 403) {
           try {
             const refreshResponse = await axios.get(`${BASE_URL}/auth/refresh`, { withCredentials: true });
             const newAccessToken = refreshResponse.data.accessToken;
@@ -49,7 +49,7 @@ export default class HTTPProvider {
             return this.client.request(error.config);
           } catch (refreshError) {
             if (axios.isAxiosError(refreshError)) {
-              if (refreshError.response?.status === 401) {
+              if (refreshError.response?.status === 401 || refreshError.response?.status === 403) {
                 console.error('리프레시 토큰이 없거나 만료되었습니다.');
 
                 if (typeof window !== 'undefined') {
