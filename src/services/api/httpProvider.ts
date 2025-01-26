@@ -5,6 +5,7 @@ import axios from 'axios';
 import type { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_HOST;
+const USER_URL = process.env.NEXT_PUBLIC_USER_API_HOST;
 const TIMEOUT = 10 * 10000;
 
 const PUBLIC_HEADER = {
@@ -40,7 +41,7 @@ export default class HTTPProvider {
       async (error) => {
         if (error.response?.status === 401 || error.response?.status === 403) {
           try {
-            const refreshResponse = await axios.get(`${BASE_URL}/auth/refresh`, { withCredentials: true });
+            const refreshResponse = await axios.get(`${USER_URL}auth/refresh`, { withCredentials: true });
             const newAccessToken = refreshResponse.data.accessToken;
 
             useAuthStore.getState().setAccessToken(newAccessToken);
