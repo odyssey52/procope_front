@@ -39,13 +39,12 @@ export default class HTTPProvider {
     this.client.interceptors.response.use(
       (response) => response, // 성공 응답은 그대로 반환
       async (error) => {
-        if (error.response?.status === 401) {
+        if (error.response?.status === 403) {
           try {
             const refreshResponse = await axios.get(`${USER_URL}auth/refresh`, { withCredentials: true });
-            const newAccessToken = refreshResponse.data.accessToken;
+            const newAccessToken = refreshResponse.data;
 
             useAuthStore.getState().setAccessToken(newAccessToken);
-
             error.config.headers.Authorization = `Bearer ${newAccessToken}`;
             return this.client.request(error.config);
           } catch (refreshError) {
