@@ -50,6 +50,7 @@ export default class HTTPProvider {
           } catch (refreshError) {
             if (axios.isAxiosError(refreshError)) {
               if (typeof window !== 'undefined') {
+                alert('세션이 만료되었습니다. 다시 로그인해주세요.');
                 useAuthStore.getState().logout();
               }
               // TODO 250201 JHW status code 를 핸들링하지 못해 주석 처리
