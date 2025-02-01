@@ -16,7 +16,7 @@ const useAuthStore = create<AuthStore>((set) => ({
   logout: () => {
     set({ accessToken: null, isAuthenticated: false });
     if (typeof window !== 'undefined') {
-      window.location.href = '/';
+      window.location.href = '/login';
     }
   },
 }));

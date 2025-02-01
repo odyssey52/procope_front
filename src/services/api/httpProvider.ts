@@ -49,14 +49,17 @@ export default class HTTPProvider {
             return this.client.request(error.config);
           } catch (refreshError) {
             if (axios.isAxiosError(refreshError)) {
-              if (refreshError.response?.status === 401 || refreshError.response?.status === 403) {
-                console.error('리프레시 토큰이 없거나 만료되었습니다.');
-
-                if (typeof window !== 'undefined') {
-                  alert('세션이 만료되었습니다. 다시 로그인해주세요.');
-                  useAuthStore.getState().logout();
-                }
+              if (typeof window !== 'undefined') {
+                alert('세션이 만료되었습니다. 다시 로그인해주세요.');
+                useAuthStore.getState().logout();
               }
+              // TODO 250201 JHW status code 를 핸들링하지 못해 주석 처리
+              // if (refreshError.response?.status === 401) {
+              //   if (typeof window !== 'undefined') {
+              //     alert('세션이 만료되었습니다. 다시 로그인해주세요.');
+              //     useAuthStore.getState().logout();
+              //   }
+              // }
             } else {
               console.error('예상치 못한 에러 발생:', refreshError);
             }
