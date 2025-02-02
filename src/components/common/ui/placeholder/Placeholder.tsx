@@ -80,6 +80,22 @@ const InputWrapper = styled.div<{ $isValid?: boolean; $disabled?: boolean }>`
   border: 1px solid ${({ theme }) => theme.sementicColors.border.primary};
   background: ${({ theme }) => theme.sementicColors.bg.invers};
 
+  ${({ $isValid, theme }) =>
+    $isValid === false &&
+    css`
+      border-radius: 8px;
+      border: 1px solid ${theme.sementicColors.border.danger};
+      box-shadow: 0px 0px 0px 2px rgba(248, 113, 113, 0.4);
+    `}
+  ${({ $disabled, theme }) =>
+    $disabled &&
+    css`
+      border-radius: 8px;
+      border: 1px solid ${theme.sementicColors.border.disabled};
+      background: ${theme.sementicColors.bg.disabled};
+      cursor: not-allowed;
+    `}
+
   ${({ $isValid, $disabled, theme }) =>
     $isValid !== false &&
     !$disabled &&
@@ -92,22 +108,6 @@ const InputWrapper = styled.div<{ $isValid?: boolean; $disabled?: boolean }>`
           0px 1px 2px 0px rgba(0, 0, 0, 0.16),
           0px 0px 1px 0px rgba(0, 0, 0, 0.12);
       }
-    `}
-
-  ${({ $isValid, theme }) =>
-    $isValid === false &&
-    css`
-      border-radius: 8px;
-      border: 1px solid ${theme.sementicColors.border.danger};
-      box-shadow: 0px 0px 0px 2px rgba(248, 113, 113, 0.4);
-    `}
-    ${({ $disabled, theme }) =>
-    $disabled &&
-    css`
-      border-radius: 8px;
-      border: 1px solid ${theme.sementicColors.border.disabled};
-      background: ${theme.sementicColors.bg.disabled};
-      cursor: not-allowed;
     `}
 `;
 const Input = styled.input`

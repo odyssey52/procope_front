@@ -8,15 +8,17 @@ export interface SelectOptionProps {
   value: string;
   description?: string;
   valueHandler: (value: string) => void;
+  width?: number;
+  pageName?: string;
 }
 
-const SelectOption = ({ leftContent, valueHandler, state, value, description }: SelectOptionProps) => {
+const SelectOption = ({ leftContent, valueHandler, state, value, description, width, pageName }: SelectOptionProps) => {
   return (
-    <Wrapper $state={state} onClick={() => valueHandler(value)}>
+    <Wrapper $state={state} $width={width} onClick={() => valueHandler(value)}>
       {leftContent && leftContent}
       {value && (
         <TextBox>
-          <Text variant="body_14_semibold" color="primary">
+          <Text variant="body_14_semibold" color={pageName === value ? 'brand' : 'primary'}>
             {value}
           </Text>
           {description && (
@@ -30,11 +32,11 @@ const SelectOption = ({ leftContent, valueHandler, state, value, description }: 
   );
 };
 
-const Wrapper = styled.button<{ $state?: 'selected' }>`
+const Wrapper = styled.button<{ $state?: 'selected'; $width?: number }>`
   position: relative;
   cursor: pointer;
   display: flex;
-  min-width: 240px;
+  min-width: ${({ $width }) => ($width ? `${$width}px` : '240px')};
   gap: 8px;
   padding: 8px 12px;
   &:hover {

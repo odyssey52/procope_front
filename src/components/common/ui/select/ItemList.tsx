@@ -9,7 +9,7 @@ export type SelectOptionList = {
 }[];
 interface ItemListProps {
   selectOptionList: SelectOptionList;
-  value: string;
+  value?: string;
   valueHandler: (value: string) => void;
 }
 const ItemList = ({ selectOptionList, value, valueHandler }: ItemListProps) => {
