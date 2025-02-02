@@ -1,3 +1,4 @@
+import { JSX } from 'react';
 import styled, { css } from 'styled-components';
 
 interface AvatarProps {
@@ -5,6 +6,7 @@ interface AvatarProps {
   size?: number; // default 32
   nickname?: string;
   image?: string;
+  onClick?: () => void;
 }
 
 interface AvatarStyledProps {
@@ -56,11 +58,11 @@ const getInitialFontSize = (size: AvatarProps['size']) => {
   return null;
 };
 
-const Avatar = ({ type, size, nickname, image }: AvatarProps) => {
+const Avatar = ({ type, size, nickname, image, onClick }: AvatarProps) => {
   const showInitial = type === 'initial' || (!image && nickname);
 
   return (
-    <Wrapper $size={size} $image={image} $nickname={nickname} $type={type}>
+    <Wrapper $size={size} $image={image} $nickname={nickname} $type={type} onClick={onClick}>
       {showInitial && nickname?.slice(0, 1)}
     </Wrapper>
   );
@@ -72,6 +74,7 @@ const Wrapper = styled.div<AvatarStyledProps>`
   justify-content: center;
   align-items: center;
   width: ${({ $size }) => $size ?? 32}px;
+  cursor: pointer;
   aspect-ratio: 1/1;
   border-radius: 50%;
   color: ${({ theme }) => theme.sementicColors.text.invers};
