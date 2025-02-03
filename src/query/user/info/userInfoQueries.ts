@@ -3,15 +3,15 @@ import { createQueryKeys } from '@lukemorales/query-key-factory';
 
 const userInfoQueries = createQueryKeys('userInfo', {
   readUserInfo: {
-    queryKey: null,
+    queryKey: ['userInfo', 'readUserInfo'],
     queryFn: readUserInfo,
   },
   readUserInfoRoles: {
-    queryKey: null,
+    queryKey: ['userInfo', 'readUserInfoRoles'],
     queryFn: readUserInfoRoles,
   },
   readUserInfoPreferences: {
-    queryKey: null,
+    queryKey: ['userInfo', 'readUserInfoPreferences'],
     queryFn: readUserInfoPreferences,
   },
 });

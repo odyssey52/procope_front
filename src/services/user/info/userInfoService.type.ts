@@ -50,7 +50,7 @@ export interface UpdateUserInfoPayload {
     name: string;
     fields: JobSub[];
   };
-  preferences: Preference[];
+  preferences?: Preference[];
 }
 
 /** response */
