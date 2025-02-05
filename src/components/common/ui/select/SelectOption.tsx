@@ -47,6 +47,8 @@ const Wrapper = styled.button<{ $state?: 'selected'; $width?: number }>`
 `;
 const TextBox = styled.div`
   display: flex;
+  flex-direction: column;
+  align-items: flex-start;
   gap: 4px;
   flex-grow: 1;
 `;
