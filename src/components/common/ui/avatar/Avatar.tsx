@@ -74,6 +74,7 @@ const Wrapper = styled.div<AvatarStyledProps>`
   justify-content: center;
   align-items: center;
   width: ${({ $size }) => $size ?? 32}px;
+  height: ${({ $size }) => $size ?? 32}px;
   cursor: pointer;
   aspect-ratio: 1/1;
   border-radius: 50%;
