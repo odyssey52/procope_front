@@ -24,7 +24,8 @@ const ProfileSetting = ({ data }: Props) => {
   const updateUserInfoMutation = useMutation({ mutationFn: updateUserInfo });
 
   const jobList = Object.keys(JOB_MAIN_LIST);
-  const workList = JOB_MAIN_LIST['디자인'].roles;
+  const jobName = data.roleInfo.name as keyof typeof JOB_MAIN_LIST;
+  const workList = JOB_MAIN_LIST[jobName].roles;
 
   const saveUserInfo = async () => {
     try {
