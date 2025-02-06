@@ -38,71 +38,77 @@ const CommunicationSetting = ({ data }: Props) => {
     }
   };
   return (
-    <Content>
-      {data.preferenceInfoList.preferences.map(({ questionInfo, score }, index) => {
-        return (
-          <div key={index}>
-            <Text variant="body_14_semibold">{questionInfo.description}</Text>
-            <PreferencesBox>
-              <Text variant="heading_18" color="tertiary">
-                그렇다
-              </Text>
-              <RadioBox>
-                <RadioSurvey
-                  id={`preferences-${index}-very-agree`}
-                  name={`preferences-${index}`}
-                  $size="lg"
-                  onClick={() => handleRadioChange(index, 5)}
-                  defaultChecked={score === 5}
-                />
-                <RadioSurvey
-                  id={`preferences-${index}-agree`}
-                  name={`preferences-${index}`}
-                  onClick={() => handleRadioChange(index, 4)}
-                  defaultChecked={score === 4}
-                />
-                <RadioSurvey
-                  id={`preferences-${index}-soso`}
-                  name={`preferences-${index}`}
-                  $size="sm"
-                  onClick={() => handleRadioChange(index, 3)}
-                  defaultChecked={score === 3}
-                />
-                <RadioSurvey
-                  id={`preferences-${index}-disagree`}
-                  name={`preferences-${index}`}
-                  onClick={() => handleRadioChange(index, 2)}
-                  defaultChecked={score === 2}
-                />
-                <RadioSurvey
-                  id={`preferences-${index}-very-disagree`}
-                  name={`preferences-${index}`}
-                  $size="lg"
-                  onClick={() => handleRadioChange(index, 1)}
-                  defaultChecked={score === 1}
-                />
-              </RadioBox>
-              <Text variant="heading_18" color="tertiary">
-                그렇지 않다
-              </Text>
-            </PreferencesBox>
-          </div>
-        );
-      })}
+    <Wrapper>
+      <Content>
+        {data.preferenceInfoList.preferences.map(({ questionInfo, score }, index) => {
+          return (
+            <div key={index}>
+              <Text variant="body_14_semibold">{questionInfo.description}</Text>
+              <PreferencesBox>
+                <Text variant="heading_18" color="tertiary">
+                  그렇다
+                </Text>
+                <RadioBox>
+                  <RadioSurvey
+                    id={`preferences-${index}-very-agree`}
+                    name={`preferences-${index}`}
+                    $size="lg"
+                    onClick={() => handleRadioChange(index, 5)}
+                    defaultChecked={score === 5}
+                  />
+                  <RadioSurvey
+                    id={`preferences-${index}-agree`}
+                    name={`preferences-${index}`}
+                    onClick={() => handleRadioChange(index, 4)}
+                    defaultChecked={score === 4}
+                  />
+                  <RadioSurvey
+                    id={`preferences-${index}-soso`}
+                    name={`preferences-${index}`}
+                    $size="sm"
+                    onClick={() => handleRadioChange(index, 3)}
+                    defaultChecked={score === 3}
+                  />
+                  <RadioSurvey
+                    id={`preferences-${index}-disagree`}
+                    name={`preferences-${index}`}
+                    onClick={() => handleRadioChange(index, 2)}
+                    defaultChecked={score === 2}
+                  />
+                  <RadioSurvey
+                    id={`preferences-${index}-very-disagree`}
+                    name={`preferences-${index}`}
+                    $size="lg"
+                    onClick={() => handleRadioChange(index, 1)}
+                    defaultChecked={score === 1}
+                  />
+                </RadioBox>
+                <Text variant="heading_18" color="tertiary">
+                  그렇지 않다
+                </Text>
+              </PreferencesBox>
+            </div>
+          );
+        })}
+      </Content>
       <BottomSection>
         <div />
         <Button onClick={saveUserInfo}>수정</Button>
       </BottomSection>
-    </Content>
+    </Wrapper>
   );
 };
-
-const Content = styled.div`
+const Wrapper = styled.div`
   width: 686px;
   padding: 24px;
   display: flex;
   flex-direction: column;
-  gap: 32px;
+  gap: 36px;
+`;
+const Content = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
 `;
 const PreferencesBox = styled.div`
   margin: 24px 0px 40px 0px;
