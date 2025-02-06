@@ -38,6 +38,7 @@ const Wrapper = styled.button<{ $state?: 'selected'; $width?: number }>`
   display: flex;
   min-width: ${({ $width }) => ($width ? `${$width}px` : '240px')};
   gap: 8px;
+  align-items: center;
   padding: 8px 12px;
   &:hover {
     background: ${({ theme }) => theme.sementicColors.bg.tertiary_hover_pressed};
