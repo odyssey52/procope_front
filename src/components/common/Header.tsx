@@ -8,17 +8,19 @@ import useUserStore from '@/store/user/user';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { IconHome, IconOut, IconSetting } from '@/assets/icons/line';
 import { elevation } from '@/styles/mixin';
-import { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import Logo from './Logo';
 import Avatar from './ui/avatar/Avatar';
 import ItemList from './ui/select/ItemList';
+import SelectOption from './ui/select/SelectOption';
 
 const Header = () => {
   const router = useRouter();
   const { logout } = useAuthStore();
   const { data, isSuccess } = useQuery({ ...userInfoQueries.readUserInfo });
   const { setUser } = useUserStore();
+  const [isOpen, setIsOpen] = useState(false);
 
   const invalidateRefreshTokenMutation = useMutation({ mutationFn: invalidateRefreshToken });
 
@@ -31,12 +33,19 @@ const Header = () => {
       alert('로그아웃 중 문제가 발생했습니다.');
     }
   };
+  const valueHandler = (value: string) => {
+    setIsOpen(false);
+    if (value === '홈') router.push('/team');
+    else if (value === '계정 설정') router.push('/accountSetting');
+    else if (value === '로그아웃') handleLogout();
+  };
 
   const selectOptionList = [
     {
-      leftContent: <Avatar />,
-      value: '강보민',
-      description: '프론트엔드',
+      leftContent: <Avatar nickname="B" />,
+      value: 'data.userContext.name',
+      description: 'data.roleInfo.name',
+      span: 'long',
     },
     {
       leftContent: <IconHome />,
@@ -45,6 +54,7 @@ const Header = () => {
     {
       leftContent: <IconSetting />,
       value: '계정 설정',
+      span: 'short',
     },
     {
       leftContent: <IconOut />,
@@ -53,11 +63,7 @@ const Header = () => {
   ];
 
   const profileHandler = () => {
-    return (
-      <SettingOption>
-        <ItemList selectOptionList={selectOptionList} valueHandler={() => {}} />
-      </SettingOption>
-    );
+    setIsOpen((prev) => !prev);
   };
 
   useEffect(() => {
@@ -69,7 +75,24 @@ const Header = () => {
   return (
     <Wrapper>
       <Logo type="icon" size={36} />
-      <Avatar onClick={() => router.push('/accountSetting')} />
+      <Avatar onClick={profileHandler} />
+      {isOpen && (
+        <SettingOption onClick={(e) => e.stopPropagation()}>
+          {selectOptionList.map((value) => {
+            return (
+              <>
+                <SelectOption
+                  leftContent={value.leftContent}
+                  description={value.description}
+                  value={value.value}
+                  valueHandler={valueHandler}
+                />
+                {value.span && <Span $span={value.span} />}
+              </>
+            );
+          })}
+        </SettingOption>
+      )}
     </Wrapper>
   );
 };
@@ -80,12 +103,24 @@ const Wrapper = styled.div`
   display: flex;
   padding: 8px 24px;
 `;
-
 const SettingOption = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  position: absolute;
+  top: 48px;
+  right: 24px;
   width: 240px;
-  height: 236px;
   background-color: white;
+  border-radius: 12px;
+  padding: 12px 0px;
+  z-index: 1;
   ${elevation.shadow4}
+`;
+const Span = styled.div<{ $span?: string }>`
+  width: ${({ $span }) => $span && ($span === 'long' ? '240px' : '216px')};
+  border-bottom: ${({ $span, theme }) => ($span ? `1px solid ${theme.sementicColors.border.primary}` : 'none')};
+  margin: 0 auto;
 `;
 
 Header.displayName = 'Header';

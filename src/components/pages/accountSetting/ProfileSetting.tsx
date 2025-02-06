@@ -24,7 +24,8 @@ const ProfileSetting = ({ data }: Props) => {
   const updateUserInfoMutation = useMutation({ mutationFn: updateUserInfo });
 
   const jobList = Object.keys(JOB_MAIN_LIST);
-  const workList = JOB_MAIN_LIST[data.roleInfo.name].roles;
+  const jobName = data.roleInfo.name as keyof typeof JOB_MAIN_LIST;
+  const workList = JOB_MAIN_LIST[jobName].roles;
 
   const saveUserInfo = async () => {
     try {
@@ -40,11 +41,11 @@ const ProfileSetting = ({ data }: Props) => {
       console.log(err);
     }
   };
-  const handleWorkSelect = (work: JobSub) => {
-    setJobSub((prevWorks) =>
-      prevWorks.includes(work) ? prevWorks.filter((item) => item !== work) : [...prevWorks, work],
-    );
-  };
+  // const handleWorkSelect = (work: JobSub) => {
+  //   setJobSub((prevWorks) =>
+  //     prevWorks.includes(work) ? prevWorks.filter((item) => item !== work) : [...prevWorks, work],
+  //   );
+  // };
   const accountDelete = () => {
     setIsModalOpen(true);
   };
@@ -55,9 +56,9 @@ const ProfileSetting = ({ data }: Props) => {
   return (
     <Content>
       <Avatar type="initial" size={84} nickname="B" />
-      <Placeholder value={data!.userContext.name} label={{ text: '이름', required: true }} maxLength={10} />
+      <Placeholder value={data.userContext.name} label={{ text: '이름', required: true }} maxLength={10} />
       <Placeholder
-        value={data!.userContext.email}
+        value={data.userContext.email}
         disabled
         label={{ text: '이메일', required: false }}
         maxLength={200}
@@ -73,7 +74,7 @@ const ProfileSetting = ({ data }: Props) => {
                 name={value}
                 id={value}
                 label={value}
-                checked={selectedValue === data?.roleInfo.name}
+                checked={selectedValue === data.roleInfo.name}
                 onChange={() => setSelectedValue(value)}
               />
             );
@@ -85,13 +86,7 @@ const ProfileSetting = ({ data }: Props) => {
         <ChipBox>
           {workList.map((value, index) => {
             return (
-              <Chip
-                key={index}
-                size={12}
-                label={value.name}
-                onClick={() => handleWorkSelect(value)}
-                selected={jobSub.includes(value)}
-              />
+              <Chip key={index} size={12} label={value.name} onClick={() => {}} selected={jobSub.includes(value)} />
             );
           })}
         </ChipBox>
