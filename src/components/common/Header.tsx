@@ -43,8 +43,8 @@ const Header = () => {
   const selectOptionList = [
     {
       leftContent: <Avatar nickname="B" />,
-      value: 'data.userContext.name',
-      description: 'data.roleInfo.name',
+      value: data ? data.userContext.name : '',
+      description: data ? data.roleInfo.name : '',
       span: 'long',
     },
     {
