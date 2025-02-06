@@ -123,6 +123,7 @@ const Input = styled.input`
   }
   &:disabled {
     background: ${({ theme }) => theme.sementicColors.bg.disabled};
+    color: ${({ theme }) => theme.sementicColors.text.disabled};
     cursor: not-allowed;
   }
 `;

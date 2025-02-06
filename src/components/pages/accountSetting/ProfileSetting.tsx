@@ -19,21 +19,21 @@ interface Props {
 
 const ProfileSetting = ({ data }: Props) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedValue, setSelectedValue] = useState<string>('');
-  const [jobSub, setJobSub] = useState<JobSub[]>([]);
+  const [name, setName] = useState(data.userContext.name);
+  const [jobSelectedValue, setJobSelectedValue] = useState<string>(data.roleInfo.name);
+  const [subJob, setSubJob] = useState<JobSub[]>(data.roleInfo.fields);
   const updateUserInfoMutation = useMutation({ mutationFn: updateUserInfo });
 
   const jobList = Object.keys(JOB_MAIN_LIST);
-  const jobName = data.roleInfo.name as keyof typeof JOB_MAIN_LIST;
-  const workList = JOB_MAIN_LIST[jobName].roles;
+  const subJobList = JOB_MAIN_LIST[jobSelectedValue as keyof typeof JOB_MAIN_LIST].roles;
 
   const saveUserInfo = async () => {
     try {
       const payload = {
         role: {
           id: data.roleInfo.id,
-          name: selectedValue,
-          fields: jobSub.map((work) => ({ id: work.id, name: work.name })),
+          name: jobSelectedValue,
+          fields: subJob.map((work) => ({ id: work.id, name: work.name })),
         },
       };
       await updateUserInfoMutation.mutateAsync(payload);
@@ -41,11 +41,17 @@ const ProfileSetting = ({ data }: Props) => {
       console.log(err);
     }
   };
-  // const handleWorkSelect = (work: JobSub) => {
-  //   setJobSub((prevWorks) =>
-  //     prevWorks.includes(work) ? prevWorks.filter((item) => item !== work) : [...prevWorks, work],
-  //   );
-  // };
+  const handleJob = (value: string) => {
+    setJobSelectedValue(value);
+    setSubJob([]); // 선택된 Chip 초기화
+  };
+  const handleSubJob = (name: string, id: number) => {
+    setSubJob((prev) => {
+      if (prev.some((job) => job.name === name)) return prev.filter((job) => job.name !== name);
+      return prev.length < 3 ? [...prev, { id, name }] : prev;
+    });
+  };
+
   const accountDelete = () => {
     setIsModalOpen(true);
   };
@@ -56,7 +62,7 @@ const ProfileSetting = ({ data }: Props) => {
   return (
     <Content>
       <Avatar type="initial" size={84} nickname="B" />
-      <Placeholder value={data.userContext.name} label={{ text: '이름', required: true }} maxLength={10} />
+      <Placeholder value={name} valueHandler={setName} label={{ text: '이름', required: true }} maxLength={10} />
       <Placeholder
         value={data.userContext.email}
         disabled
@@ -74,8 +80,8 @@ const ProfileSetting = ({ data }: Props) => {
                 name={value}
                 id={value}
                 label={value}
-                checked={selectedValue === data.roleInfo.name}
-                onChange={() => setSelectedValue(value)}
+                checked={jobSelectedValue === value}
+                onChange={() => handleJob(value)}
               />
             );
           })}
@@ -84,9 +90,16 @@ const ProfileSetting = ({ data }: Props) => {
       <WorkSection>
         <Label required text="담당 업무 (최대 3개)" />
         <ChipBox>
-          {workList.map((value, index) => {
+          {subJobList.map((value, index) => {
+            const isSelected = subJob.some((job) => job.name === value.name);
             return (
-              <Chip key={index} size={12} label={value.name} onClick={() => {}} selected={jobSub.includes(value)} />
+              <Chip
+                key={index}
+                size={12}
+                label={value.name}
+                selected={isSelected}
+                onClick={() => handleSubJob(value.name, value.id)}
+              />
             );
           })}
         </ChipBox>
@@ -113,7 +126,11 @@ const JobSection = styled.div`
   flex-direction: column;
   gap: 8px;
 `;
-const WorkSection = styled.div``;
+const WorkSection = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+`;
 const BottomSection = styled.div`
   display: flex;
   align-items: center;
@@ -128,6 +145,7 @@ const RadioBox = styled.div`
 `;
 const ChipBox = styled.div`
   display: flex;
+  flex-wrap: wrap;
   gap: 8px;
 `;
 
