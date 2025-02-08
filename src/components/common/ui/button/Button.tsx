@@ -141,7 +141,6 @@ const StyledButton = styled.button<StyledButtonProps>`
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: fit-content;
   gap: 8px;
   padding: 12px 16px;
   border: none;

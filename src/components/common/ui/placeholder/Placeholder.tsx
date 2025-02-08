@@ -91,6 +91,7 @@ const InputWrapper = styled.div<{ $isValid?: boolean; $disabled?: boolean }>`
     $disabled &&
     css`
       border-radius: 8px;
+      opacity: 0.4;
       border: 1px solid ${theme.sementicColors.border.disabled};
       background: ${theme.sementicColors.bg.disabled};
       cursor: not-allowed;
