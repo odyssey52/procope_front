@@ -80,7 +80,7 @@ const Header = () => {
         <SettingOption onClick={(e) => e.stopPropagation()}>
           {selectOptionList.map((value) => {
             return (
-              <>
+              <div key={value.value}>
                 <SelectOption
                   leftContent={value.leftContent}
                   description={value.description}
@@ -88,7 +88,7 @@ const Header = () => {
                   valueHandler={valueHandler}
                 />
                 {value.span && <Span $span={value.span} />}
-              </>
+              </div>
             );
           })}
         </SettingOption>
