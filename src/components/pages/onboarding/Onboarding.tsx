@@ -3,10 +3,10 @@
 import Container from '@/components/common/ui/Container';
 import Text from '@/components/common/ui/Text';
 import ProgressBar from '@/components/common/ui/progress/ProgressBar';
-import HeaderLayout from '@/components/layout/HeaderLayout';
 import { CheckStep, FirstStep, SecondStep, ThirdStep } from '@/components/pages/onboarding';
 import { TENDENCY_TITLE_LIST } from '@/constants/stepper';
 import { updateUserInfo } from '@/services/user/info/userInfoService';
+import { toastActions } from '@/store/modal/toast';
 import { useMutation } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
@@ -46,6 +46,53 @@ const Onboarding = () => {
       console.error(e);
     }
   };
+
+  const jobMainHandler = (jobMain: JobMain) => {
+    setJobMain(jobMain);
+    setJobSub([]);
+  };
+
+  const updateJobSub = (prevJobSub: JobSub[], jobSub: JobSub): [JobSub[], boolean] => {
+    const jobSubSet = new Set(prevJobSub);
+
+    if (jobSubSet.has(jobSub)) {
+      jobSubSet.delete(jobSub);
+      return [Array.from(jobSubSet), false]; // 이미 선택된 경우, 삭제 후 반환
+    }
+
+    if (jobSubSet.size >= 3) {
+      return [prevJobSub, true]; // 최대 개수 초과 시 기존 값 유지
+    }
+
+    jobSubSet.add(jobSub);
+    return [Array.from(jobSubSet), false]; // 새로운 선택 추가
+  };
+
+  const jobSubHandler = (jobSub: JobSub) => {
+    setJobSub((prevJobSub) => {
+      const [updatedJobSub, isMaxLimit] = updateJobSub(prevJobSub, jobSub);
+
+      if (isMaxLimit) {
+        setTimeout(() => {
+          toastActions.open({
+            state: 'error',
+            title: '최대 3개까지 선택 가능합니다.',
+          });
+        }, 0);
+      }
+
+      return updatedJobSub;
+    });
+  };
+
+  const preferencesHandler = (index: number, preference: Preference) => {
+    setPreferences((prevPreferences) => {
+      const newPreferences = [...prevPreferences];
+      newPreferences[index] = preference;
+      return newPreferences;
+    });
+  };
+
   const pageMove = () => {
     if (step === 1) return <FirstStep jobMain={jobMain} jobMainHandler={jobMainHandler} onNext={() => setStep(2)} />;
     if (step === 2 && jobMain)
@@ -79,31 +126,6 @@ const Onboarding = () => {
         />
       );
     return null;
-  };
-
-  const jobMainHandler = (jobMain: JobMain) => {
-    setJobMain(jobMain);
-    setJobSub([]);
-  };
-
-  const jobSubHandler = (jobSub: JobSub) => {
-    setJobSub((prevJobSub) => {
-      const jobSubSet = new Set(prevJobSub);
-      if (jobSubSet.has(jobSub)) {
-        jobSubSet.delete(jobSub);
-      } else {
-        jobSubSet.add(jobSub);
-      }
-      return Array.from(jobSubSet);
-    });
-  };
-
-  const preferencesHandler = (index: number, preference: Preference) => {
-    setPreferences((prevPreferences) => {
-      const newPreferences = [...prevPreferences];
-      newPreferences[index] = preference;
-      return newPreferences;
-    });
   };
 
   return (
