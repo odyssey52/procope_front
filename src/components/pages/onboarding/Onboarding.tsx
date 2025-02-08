@@ -43,7 +43,7 @@ const Onboarding = () => {
       await updateUserInfoMutation.mutateAsync(payload);
       router.replace('/team');
     } catch (e) {
-      console.log(e);
+      console.error(e);
     }
   };
   const pageMove = () => {
@@ -107,21 +107,19 @@ const Onboarding = () => {
   };
 
   return (
-    <HeaderLayout>
-      <OnBoardingContainer>
-        <Content>
-          {step !== 4 && (
-            <Percent>
-              <ProgressBar rate={100 * (step / 3)} />
-              <Text variant="caption_12_regular" color="secondary">
-                {step}/3단계
-              </Text>
-            </Percent>
-          )}
-          {pageMove()}
-        </Content>
-      </OnBoardingContainer>
-    </HeaderLayout>
+    <OnBoardingContainer>
+      <Content>
+        {step !== 4 && (
+          <Percent>
+            <ProgressBar rate={100 * (step / 3)} />
+            <Text variant="caption_12_regular" color="secondary">
+              {step}/3단계
+            </Text>
+          </Percent>
+        )}
+        {pageMove()}
+      </Content>
+    </OnBoardingContainer>
   );
 };
 
