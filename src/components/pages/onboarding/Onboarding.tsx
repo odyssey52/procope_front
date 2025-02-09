@@ -76,7 +76,8 @@ const Onboarding = () => {
         setTimeout(() => {
           toastActions.open({
             state: 'error',
-            title: '최대 3개까지 선택 가능합니다.',
+            title: '다시 선택해 주세요',
+            description: '최대 3개까지 선택할 수 있습니다.',
           });
         }, 0);
       }
