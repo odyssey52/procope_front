@@ -1,5 +1,6 @@
 'use client';
 
+import Tiptap from '@/components/common/Tiptap';
 import TagJob from '@/components/common/ui/tag/TagJob';
 import styled from 'styled-components';
 
@@ -18,6 +19,7 @@ const page = () => {
   return (
     <PlayGround>
       <TagJob type="development" />
+      <Tiptap />
     </PlayGround>
   );
 };
