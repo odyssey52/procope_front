@@ -1,6 +1,6 @@
 'use client';
 
-import Tiptap from '@/components/common/Tiptap';
+import Tiptap from '@/components/common/ui/tiptap/Tiptap';
 import TagJob from '@/components/common/ui/tag/TagJob';
 import styled from 'styled-components';
 

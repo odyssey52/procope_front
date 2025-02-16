@@ -48,7 +48,8 @@ const Tiptap = () => {
 
 const Wrapper = styled.div`
   .ProseMirror {
-    padding-inline: 4rem;
+    padding: 10px 30px;
+    border: 1px solid ${({ theme }) => theme.sementicColors.border.primary};
 
     > * + * {
       margin-top: 0.75em;
