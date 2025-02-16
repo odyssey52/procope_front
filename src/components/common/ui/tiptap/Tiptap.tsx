@@ -1,41 +1,12 @@
 'use client';
 
 import DragHandle from '@tiptap-pro/extension-drag-handle-react';
-import { EditorContent, useEditor } from '@tiptap/react';
-import StarterKit from '@tiptap/starter-kit';
+import { Editor, EditorContent } from '@tiptap/react';
 import styled from 'styled-components';
 
-const Tiptap = () => {
-  const editor = useEditor({
-    extensions: [StarterKit],
-    content: `
-          <h1>
-            This is a very unique heading.
-          </h1>
-          <p>
-            This is a unique paragraph. It’s so unique, it even has an ID attached to it.
-          </p>
-          <p>
-            And this one, too.
-          </p>
-        `,
-  });
-
-  const toggleEditable = () => {
-    if (!editor) return; // editor가 null이면 함수 종료
-
-    editor.setEditable(!editor.isEditable);
-    editor.view.dispatch(editor.view.state.tr);
-  };
-
-  if (!editor) return <p>Loading editor...</p>; // editor가 없을 때 로딩 상태 표시
+const Tiptap = ({ editor }: { editor: Editor }) => {
   return (
     <Wrapper>
-      <div>
-        <button type="button" onClick={toggleEditable}>
-          수정 활성화
-        </button>
-      </div>
       <DragHandle editor={editor}>
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 9h16.5m-16.5 6.75h16.5" />
@@ -49,8 +20,7 @@ const Tiptap = () => {
 const Wrapper = styled.div`
   .ProseMirror {
     padding: 10px 30px;
-    border: 1px solid ${({ theme }) => theme.sementicColors.border.primary};
-
+    outline-style: none;
     > * + * {
       margin-top: 0.75em;
     }
