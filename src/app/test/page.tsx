@@ -1,47 +1,49 @@
 'use client';
 
-import Description from '@/components/common/ui/description/Description';
-import Label from '@/components/common/ui/label/Label';
-import Select from '@/components/common/ui/select/Select';
-import { useEffect, useState } from 'react';
+import RetroCard from '@/components/common/ui/card/RetroCard';
+import styled from 'styled-components';
 
+const mock = {
+  role: 'development',
+  title: '팀 내부 소통을 하는데 프로코프와 슬랙을 잘 활용하여 업무 소통이 원활하게 이루어지고 있는 것 같아 좋습니다.',
+  content: `
+            <p>
+              팀 내부 소통방식을 정하고 있는 과정입니다.
+            </p>
+            <p>
+              시행착오가 많이 있었지만 이제는 프로코프와 슬랙으로 잘 정착한 것 같습니다.
+            </p>
+            <p>
+              앞으로 프로코프와 슬랙을 유기적으로 결합하여 효율적인 커뮤니케이션 환경을 조성하고 싶습니다.
+            </p>
+          `,
+  user: {
+    nickname: '사용자1',
+    profileImage: 'https://avatars.githubusercontent.com/u/77449865?v=4',
+  },
+  totalComments: 2,
+};
 const page = () => {
-  const [value, setValue] = useState<string>('');
-  const [isError, setIsError] = useState<boolean>(false);
-  const valueHandler = (value: string) => {
-    setValue(value);
-  };
-  const selectOptionList = [
-    { value: 'option1' },
-    { value: 'option2' },
-    { value: 'option3' },
-    { value: 'option4' },
-    { value: 'option5' },
-  ];
-  useEffect(() => {
-    if (value === '') {
-      setIsError(true);
-    } else {
-      setIsError(false);
-    }
-  }, [value]);
   return (
-    <div style={{ padding: '2%' }}>
-      <Select
-        label={<Label text="label" required />}
-        placeholder="선택 필수"
-        value={value}
-        valueHandler={valueHandler}
-        state={isError ? 'error' : undefined}
-        selectOptionList={selectOptionList}
-        description={
-          <Description text={isError ? '필수 선택입니다' : '선택 완료'} type={isError ? 'error' : 'success'} />
-        }
-      />
-    </div>
+    <PlayGround>
+      <Content>
+        <RetroCard item={mock} />
+        <RetroCard item={mock} />
+        <RetroCard item={mock} />
+      </Content>
+    </PlayGround>
   );
 };
 
+const PlayGround = styled.div`
+  min-height: 100vh;
+  padding: 2%;
+`;
+
+const Content = styled.div`
+  display: flex;
+  gap: 16px;
+`;
 page.displayName = 'page';
 
 export default page;

@@ -14,10 +14,11 @@ const JOB_LIST = {
 
 interface TagJobProps {
   type: 'development' | 'planning' | 'data' | 'design' | 'marketing' | 'sales' | 'operations';
+  bgColor?: string;
 }
-const TagJob = ({ type }: TagJobProps) => {
+const TagJob = ({ type, bgColor }: TagJobProps) => {
   return (
-    <Wrapper>
+    <Wrapper $bgColor={bgColor}>
       <Image src={JOB_LIST[type].src} width={16} height={16} alt={`${JOB_LIST[type].title}태그아이콘 이미지`} />
       <Text color="primary" variant="body_14_medium">
         {JOB_LIST[type].title}
@@ -26,13 +27,15 @@ const TagJob = ({ type }: TagJobProps) => {
   );
 };
 
-const Wrapper = styled.div`
+const Wrapper = styled.div<{ $bgColor?: string }>`
   position: relative;
   display: flex;
   align-items: center;
   border-radius: 4px;
   padding: 2px 8px;
+  width: fit-content;
   gap: 2px;
+  background-color: ${({ $bgColor, theme }) => $bgColor || theme.sementicColors.bg.invers};
 `;
 
 TagJob.displayName = 'TagJob';
