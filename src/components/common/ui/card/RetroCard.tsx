@@ -1,11 +1,17 @@
 'use client';
 
+import { IconChat01 } from '@/assets/icons/line';
 import { theme } from '@/styles/theme';
+import BulletList from '@tiptap/extension-bullet-list';
+import ListItem from '@tiptap/extension-list-item';
 import { useEditor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import styled from 'styled-components';
-import { IconMenuCircleVertical } from '@/assets/icons/line';
+import Avatar from '../avatar/Avatar';
+import MoreButton from '../button/MoreButton';
+import Divider from '../line/Divider';
 import TagJob from '../tag/TagJob';
+import Text from '../Text';
 import Tiptap from '../tiptap/Tiptap';
 
 interface RetroCardProps {
@@ -22,8 +28,9 @@ interface RetroCardProps {
 }
 const RetroCard = ({ item }: RetroCardProps) => {
   const editor = useEditor({
-    extensions: [StarterKit],
+    extensions: [BulletList, StarterKit, ListItem],
     content: item.content,
+    editable: false,
   });
 
   const toggleEditable = () => {
@@ -36,24 +43,83 @@ const RetroCard = ({ item }: RetroCardProps) => {
   if (!editor) return <p>Loading editor...</p>; // editor가 없을 때 로딩 상태 표시
   return (
     <Wrapper>
-      <TagJob type={item.role} bgColor={theme.sementicColors.bg.tertiary_hover_pressed} />
+      <Content>
+        <TagBox>
+          <TagJob type={item.role} bgColor={theme.sementicColors.bg.tertiary_hover_pressed} />
+          <div>
+            <button type="button" onClick={toggleEditable}>
+              {editor.isEditable ? '업데이트' : '편집'}
+            </button>
+          </div>
+          <MoreButton />
+        </TagBox>
+        <TextBox>
+          <Text variant="body_16_semibold" color="primary">
+            {item.title}
+          </Text>
 
-      <div>
-        <button type="button" onClick={toggleEditable}>
-          수정 활성화
-        </button>
-      </div>
-      <Tiptap editor={editor} />
+          <Tiptap editor={editor} />
+        </TextBox>
+      </Content>
+      <Divider />
+      <Bottom>
+        <CommentBox>
+          <IconChat01 />
+          <Text variant="body_14_medium" color="tertiary">
+            {item.totalComments}
+          </Text>
+        </CommentBox>
+        <UserBox>
+          <Text variant="body_14_medium" color="tertiary">
+            {item.user.nickname}
+          </Text>
+          <Avatar image={item.user.profileImage} />
+        </UserBox>
+      </Bottom>
     </Wrapper>
   );
 };
 
 const Wrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
   padding: 20px;
+
   border: 1px solid ${({ theme }) => theme.sementicColors.border.primary};
   border-radius: 12px;
 `;
 
+const Content = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+`;
+const TagBox = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+`;
+const TextBox = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+`;
+const Bottom = styled.div`
+  display: flex;
+  justify-content: space-between;
+`;
+
+const CommentBox = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+`;
+const UserBox = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+`;
 RetroCard.displayName = 'RetroCard';
 
 export default RetroCard;

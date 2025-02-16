@@ -1,7 +1,6 @@
 'use client';
 
 import RetroCard from '@/components/common/ui/card/RetroCard';
-import TagJob from '@/components/common/ui/tag/TagJob';
 import styled from 'styled-components';
 
 const mock = {
@@ -19,7 +18,7 @@ const mock = {
             </p>
           `,
   user: {
-    nickname: '강보민은바보',
+    nickname: '사용자1',
     profileImage: 'https://avatars.githubusercontent.com/u/77449865?v=4',
   },
   totalComments: 2,
@@ -27,7 +26,11 @@ const mock = {
 const page = () => {
   return (
     <PlayGround>
-      <RetroCard item={mock} />
+      <Content>
+        <RetroCard item={mock} />
+        <RetroCard item={mock} />
+        <RetroCard item={mock} />
+      </Content>
     </PlayGround>
   );
 };
@@ -35,6 +38,11 @@ const page = () => {
 const PlayGround = styled.div`
   min-height: 100vh;
   padding: 2%;
+`;
+
+const Content = styled.div`
+  display: flex;
+  gap: 16px;
 `;
 page.displayName = 'page';
 

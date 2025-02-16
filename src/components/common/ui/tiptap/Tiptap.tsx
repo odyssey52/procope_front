@@ -19,10 +19,42 @@ const Tiptap = ({ editor }: { editor: Editor }) => {
 
 const Wrapper = styled.div`
   .ProseMirror {
+    &:first-child {
+      margin-top: 0;
+    }
+
+    /* List styles */
+    ul {
+      list-style-type: disc;
+    }
+    ul ul {
+      list-style-type: circle;
+      margin: 12px 12px 12px 8px;
+    }
+    ul ul ul {
+      list-style-type: square;
+    }
+    ol {
+      list-style-type: decimal;
+    }
+    ul,
+    ol {
+      padding: 0 1rem;
+      margin: 14px 14px 14px 8px;
+
+      li p {
+        padding-top: 0.25em;
+        padding-bottom: 0.25em;
+      }
+    }
+
     padding: 10px 30px;
     outline-style: none;
     > * + * {
       margin-top: 0.75em;
+    }
+    strong {
+      font-weight: bold;
     }
 
     [data-id] {
