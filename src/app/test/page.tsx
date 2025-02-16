@@ -3,7 +3,17 @@
 import RetroCard from '@/components/common/ui/card/RetroCard';
 import styled from 'styled-components';
 
-const mock = {
+interface Mock {
+  role: 'development' | 'planning' | 'data' | 'design' | 'marketing' | 'sales' | 'operations';
+  title: string;
+  content: string;
+  user: {
+    nickname: string;
+    profileImage: string;
+  };
+  totalComments: number;
+}
+const mock: Mock = {
   role: 'development',
   title: '팀 내부 소통을 하는데 프로코프와 슬랙을 잘 활용하여 업무 소통이 원활하게 이루어지고 있는 것 같아 좋습니다.',
   content: `
