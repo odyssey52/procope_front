@@ -33,6 +33,7 @@ const Wrapper = styled.div<{ $bgColor?: string }>`
   align-items: center;
   border-radius: 4px;
   padding: 2px 8px;
+  width: fit-content;
   gap: 2px;
   background-color: ${({ $bgColor, theme }) => $bgColor || theme.sementicColors.bg.invers};
 `;
