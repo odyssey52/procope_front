@@ -49,6 +49,9 @@ const Wrapper = styled.div`
   width: 844px;
   height: 630px;
   margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 `;
 const SideBar = styled.div`
   display: flex;
@@ -60,8 +63,8 @@ const SideBar = styled.div`
 const Title = styled.div`
   width: 100%;
   padding: 3px 0px;
-  ${theme.fontStyle.heading_24}
-  ${theme.sementicColors.text.primary}
+  ${({ theme }) => theme.fontStyle.heading_24}
+  color : ${({ theme }) => theme.sementicColors.text.primary}
 `;
 const Section = styled.div`
   display: flex;
