@@ -44,7 +44,7 @@ const Wrapper = styled.span<LabelStyledProps>`
   gap: 2px;
   ${({ $size }) => LABEL_STYLE_LIST[$size].font};
   color: ${({ $disabled, theme }) =>
-    $disabled ? theme.sementicColors.text.disabled : theme.sementicColors.text.tertiary};
+    $disabled ? theme.sementicColors.text.disabled : theme.sementicColors.text.primary};
   svg {
     width: ${({ $size }) => LABEL_STYLE_LIST[$size].iconSize}px;
     height: ${({ $size }) => LABEL_STYLE_LIST[$size].iconSize}px;

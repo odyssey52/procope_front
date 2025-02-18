@@ -42,6 +42,7 @@ const Wrapper = styled.button<{ $state?: 'selected'; $width?: number }>`
   padding: 8px 12px;
   &:hover {
     background: ${({ theme }) => theme.sementicColors.bg.tertiary_hover_pressed};
+    border-radius: 8px;
   }
 
   ${({ theme, $state }) => $state === 'selected' && `background: ${theme.sementicColors.bg.tertiary_hover_pressed}`};
