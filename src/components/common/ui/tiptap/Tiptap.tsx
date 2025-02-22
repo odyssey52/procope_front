@@ -20,6 +20,9 @@ const Tiptap = ({ editor }: { editor: Editor }) => {
 const Wrapper = styled.div`
   position: relative;
   .ProseMirror {
+    ${({ theme }) => theme.fontStyle.body_14_regular};
+    color: ${({ theme }) => theme.sementicColors.text.secondary};
+
     position: relative;
     &:first-child {
       margin-top: 0;
@@ -31,7 +34,6 @@ const Wrapper = styled.div`
     }
     ul ul {
       list-style-type: circle;
-      margin: 12px 12px 12px 8px;
     }
     ul ul ul {
       list-style-type: square;
@@ -41,19 +43,11 @@ const Wrapper = styled.div`
     }
     ul,
     ol {
-      padding: 0 1rem;
-      margin: 14px 14px 14px 8px;
-
-      li p {
-        padding-top: 0.25em;
-        padding-bottom: 0.25em;
-      }
+      padding: 0 16px;
     }
 
-    padding: 10px 30px;
     outline-style: none;
     > * + * {
-      margin-top: 0.75em;
     }
     strong {
       font-weight: bold;
