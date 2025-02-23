@@ -16,13 +16,13 @@ interface Props {
 }
 
 const CheckStep = ({ jobMain, jobSub, preferences, onBefore, onNext }: Props) => {
-  const jobMainTitle = jobMain.name + JOB_MAIN_ICON_LIST[jobMain.id];
+  const jobMainIcon = JOB_MAIN_LIST[jobMain.name as keyof typeof JOB_MAIN_LIST].icon;
 
   return (
     <Wrapper>
       <TextBox>
         <Text>
-          나는 <BrandText>{jobMainTitle}</BrandText> 직무를 맡고 있으며
+          나는 <BrandText>{jobMain.name + jobMainIcon}</BrandText> 직무를 맡고 있으며
         </Text>
         <Text>
           {jobSub.map((sub, i) => (
