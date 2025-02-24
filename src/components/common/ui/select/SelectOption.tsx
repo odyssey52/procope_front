@@ -10,11 +10,21 @@ export interface SelectOptionProps {
   valueHandler: (value: string) => void;
   width?: number;
   pageName?: string;
+  borderRadius?: string;
 }
 
-const SelectOption = ({ leftContent, valueHandler, state, value, description, width, pageName }: SelectOptionProps) => {
+const SelectOption = ({
+  leftContent,
+  valueHandler,
+  state,
+  value,
+  description,
+  width,
+  pageName,
+  borderRadius,
+}: SelectOptionProps) => {
   return (
-    <Wrapper $state={state} $width={width} onClick={() => valueHandler(value)}>
+    <Wrapper $state={state} $width={width} $borderRadius={borderRadius} onClick={() => valueHandler(value)}>
       {leftContent && leftContent}
       {value && (
         <TextBox>
@@ -32,7 +42,7 @@ const SelectOption = ({ leftContent, valueHandler, state, value, description, wi
   );
 };
 
-const Wrapper = styled.button<{ $state?: 'selected'; $width?: number }>`
+const Wrapper = styled.button<{ $state?: 'selected'; $width?: number; $borderRadius?: string }>`
   position: relative;
   cursor: pointer;
   display: flex;
@@ -42,7 +52,7 @@ const Wrapper = styled.button<{ $state?: 'selected'; $width?: number }>`
   padding: 8px 12px;
   &:hover {
     background: ${({ theme }) => theme.sementicColors.bg.tertiary_hover_pressed};
-    border-radius: 8px;
+    border-radius: ${({ $borderRadius }) => ($borderRadius ? `${$borderRadius}` : 'none')};
   }
 
   ${({ theme, $state }) => $state === 'selected' && `background: ${theme.sementicColors.bg.tertiary_hover_pressed}`};
