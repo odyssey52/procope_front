@@ -31,7 +31,7 @@ const DeleteModal = ({ onClose }: DeleteModalProps) => {
               <Text variant="heading_20" color="danger">
                 탈퇴 전에 주의사항 꼭 확인해 주세요.
               </Text>
-              <Text variant="body_14_medium">
+              <Text variant="body_14_medium" color="tertiary">
                 1. 계정 삭제 작업은 실행 중간에 취소할 수 없습니다.
                 <br />
                 2. 관리자 또는 참여자로 있는 모든 팀은 계정을 삭제하더라도 팀에 작성한 내용은 보존이 됩니다.
@@ -41,7 +41,9 @@ const DeleteModal = ({ onClose }: DeleteModalProps) => {
             </TextBox>
           </TopSection>
           <BottomSection>
-            <Text variant="heading_18">현재 0개 의 최고관리자로 참여하고 있는 팀이 있습니다.</Text>
+            <BottomTextBox>
+              <Text variant="heading_18">현재 0개 의 최고관리자로 참여하고 있는 팀이 있습니다.</Text>
+            </BottomTextBox>
             <Placeholder
               value=""
               placeholder="usermail@procope.kr"
@@ -96,7 +98,7 @@ const Title = styled.div`
   align-items: center;
   justify-content: space-between;
   ${({ theme }) => theme.fontStyle.heading_24};
-  ${({ theme }) => theme.sementicColors.text.primary}
+  color: ${({ theme }) => theme.sementicColors.text.primary};
 `;
 const TextBox = styled.div`
   display: flex;
@@ -110,4 +112,7 @@ const ButtonBox = styled.div`
   > button {
     flex-grow: 1;
   }
+`;
+const BottomTextBox = styled.div`
+  padding: 7px 0px;
 `;

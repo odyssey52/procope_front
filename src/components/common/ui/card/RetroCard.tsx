@@ -3,6 +3,7 @@
 import { IconChat01 } from '@/assets/icons/line';
 import { theme } from '@/styles/theme';
 import BulletList from '@tiptap/extension-bullet-list';
+import History from '@tiptap/extension-history';
 import ListItem from '@tiptap/extension-list-item';
 import { useEditor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
@@ -13,6 +14,9 @@ import Divider from '../line/Divider';
 import TagJob from '../tag/TagJob';
 import Text from '../Text';
 import Tiptap from '../tiptap/Tiptap';
+
+const MAX_LINES = 9;
+const MAX_CHARS = 170;
 
 interface RetroCardProps {
   item: {
@@ -85,6 +89,8 @@ const Wrapper = styled.div`
   flex-direction: column;
   gap: 16px;
   padding: 20px;
+  min-width: 460px;
+  max-width: 500px;
 
   border: 1px solid ${({ theme }) => theme.sementicColors.border.primary};
   border-radius: 12px;

@@ -53,7 +53,7 @@ const Toast = () => {
     },
     visible: {
       opacity: 1,
-      x: 0,
+      x: '-50%',
     },
   };
   return (
@@ -100,10 +100,8 @@ const ToastBox = styled(motion.div)<{ $isOneLine: boolean }>`
   position: fixed;
   display: flex;
   align-items: start;
-  top: 24px;
-  right: 24px;
-  max-width: 343px;
-  width: 100%;
+  bottom: 40px;
+  left: 50%;
   gap: 16px;
   padding: ${({ $isOneLine }) => ($isOneLine ? '12px 16px' : '16px')};
   border-radius: ${({ $isOneLine }) => ($isOneLine ? '48px' : '12px')};

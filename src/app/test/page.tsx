@@ -39,7 +39,6 @@ const page = () => {
       <Content>
         <RetroCard item={mock} />
         <RetroCard item={mock} />
-        <RetroCard item={mock} />
       </Content>
     </PlayGround>
   );

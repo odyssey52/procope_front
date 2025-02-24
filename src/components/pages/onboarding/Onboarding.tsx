@@ -151,9 +151,8 @@ const OnBoardingContainer = styled(Container)`
   display: flex;
   flex: 1;
   height: 100%;
-  margin-top: 44px;
-  margin-bottom: 92px;
-  justify-content: center;
+  min-height: 100vh;
+
   align-items: center;
 `;
 const Content = styled.div`
@@ -161,6 +160,8 @@ const Content = styled.div`
   display: flex;
   max-width: 608px;
   width: 100%;
+  margin-top: 12.96vh;
+  margin-bottom: 16px;
   flex-direction: column;
   justify-content: center;
 `;
