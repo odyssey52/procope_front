@@ -32,6 +32,7 @@ const AccountSetting = () => {
                 value={value.value}
                 pageName={page}
                 width={134}
+                borderRadius="8px"
               />
             ))}
           </SideBar>

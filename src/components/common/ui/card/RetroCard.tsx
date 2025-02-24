@@ -30,7 +30,6 @@ interface RetroCardProps {
     totalComments: number;
   };
 }
-
 const RetroCard = ({ item }: RetroCardProps) => {
   const editor = useEditor({
     extensions: [BulletList, StarterKit, ListItem],

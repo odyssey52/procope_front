@@ -121,6 +121,7 @@ const Span = styled.div<{ $span?: string }>`
   width: ${({ $span }) => $span && ($span === 'long' ? '240px' : '216px')};
   border-bottom: ${({ $span, theme }) => ($span ? `1px solid ${theme.sementicColors.border.primary}` : 'none')};
   margin: 0 auto;
+  padding-top: 8px;
 `;
 
 Header.displayName = 'Header';

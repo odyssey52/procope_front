@@ -46,6 +46,16 @@ const Toast = () => {
       return () => clearTimeout(timer);
     }
   }, [isOpen]);
+  const snackbarVariants = {
+    hidden: {
+      opacity: 0,
+      x: 100,
+    },
+    visible: {
+      opacity: 1,
+      x: 0,
+    },
+  };
   const toastVariants = {
     hidden: {
       opacity: 0,
@@ -62,7 +72,7 @@ const Toast = () => {
         {isOpen && (
           <ToastBox
             $isOneLine={!description}
-            variants={toastVariants}
+            variants={description ? snackbarVariants : toastVariants}
             initial="hidden" // 컴포넌트가 시작할 위치와 투명도
             animate="visible" // 컴포넌트가 도달할 위치와 투명도
             exit="hidden" // 컴포넌트가 사라질 때 fade-out
@@ -99,9 +109,10 @@ const ToastBox = styled(motion.div)<{ $isOneLine: boolean }>`
   ${zIndex.layer3};
   position: fixed;
   display: flex;
+  gap: 8px;
   align-items: start;
-  bottom: 40px;
-  left: 50%;
+  ${({ $isOneLine }) =>
+    $isOneLine ? 'bottom: 40px; left: 50%;' : 'top: 24px; right: 24px; max-width: 343px; width: 100%;'}
   gap: 16px;
   padding: ${({ $isOneLine }) => ($isOneLine ? '12px 16px' : '16px')};
   border-radius: ${({ $isOneLine }) => ($isOneLine ? '48px' : '12px')};
