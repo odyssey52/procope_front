@@ -3,6 +3,7 @@ import RadioSurvey from '@/components/common/ui/radio/RadioSurvey';
 import Text from '@/components/common/ui/Text';
 import { updateUserInfo } from '@/services/user/info/userInfoService';
 import { ReadUserInfoResponse } from '@/services/user/info/userInfoService.type';
+import { toastActions } from '@/store/modal/toast';
 import { useMutation } from '@tanstack/react-query';
 import { useState } from 'react';
 import styled from 'styled-components';
@@ -33,8 +34,15 @@ const CommunicationSetting = ({ data }: Props) => {
         })),
       };
       await updateUserInfoMutation.mutateAsync(payload);
+      toastActions.open({
+        state: 'success',
+        title: '계정 정보가 성공적으로 수정되었습니다.',
+      });
     } catch (err) {
-      console.log(err);
+      toastActions.open({
+        state: 'error',
+        title: '다시 시도해 주세요.',
+      });
     }
   };
   return (

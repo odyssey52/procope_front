@@ -21,6 +21,15 @@ const Header = () => {
   const { data, isSuccess } = useQuery({ ...userInfoQueries.readUserInfo });
   const { setUser } = useUserStore();
   const [isOpen, setIsOpen] = useState(false);
+  const [avatar, setAvatar] = useState<{
+    type: 'profile' | 'initial';
+    image: string | undefined;
+    nickname: string | undefined;
+  }>(() => ({
+    type: 'profile',
+    image: data?.userContext.picture,
+    nickname: data?.userContext.name,
+  }));
 
   const invalidateRefreshTokenMutation = useMutation({ mutationFn: invalidateRefreshToken });
 
@@ -40,9 +49,25 @@ const Header = () => {
     else if (value === '로그아웃') handleLogout();
   };
 
+  const profileHandler = () => {
+    setIsOpen((prev) => !prev);
+  };
+
+  useEffect(() => {
+    setAvatar({
+      type: data?.userContext.picture ? 'profile' : 'initial',
+      image: data?.userContext.picture,
+      nickname: data?.userContext.name,
+    });
+    if (isSuccess) {
+      const { id, name, email, username } = data.userContext;
+      setUser({ id, name, email, username });
+    }
+  }, [data?.userContext.picture]);
+
   const selectOptionList = [
     {
-      leftContent: <Avatar nickname="B" />,
+      leftContent: <Avatar type={avatar.type} image={avatar.image} nickname={avatar.nickname} />,
       value: data ? data.userContext.name : '',
       description: data ? data.roleInfo.name : '',
       span: 'long',
@@ -62,20 +87,10 @@ const Header = () => {
     },
   ];
 
-  const profileHandler = () => {
-    setIsOpen((prev) => !prev);
-  };
-
-  useEffect(() => {
-    if (isSuccess) {
-      const { id, name, email, username } = data.userContext;
-      setUser({ id, name, email, username });
-    }
-  }, [data, isSuccess]);
   return (
     <Wrapper>
       <Logo type="icon" size={36} />
-      <Avatar onClick={profileHandler} />
+      <Avatar type={avatar.type} image={avatar.image} nickname={avatar.nickname} onClick={profileHandler} />
       {isOpen && (
         <SettingOption onClick={(e) => e.stopPropagation()}>
           {selectOptionList.map((value) => {

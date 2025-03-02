@@ -88,7 +88,7 @@ const Wrapper = styled.div<AvatarStyledProps>`
   ${({ $nickname, $image, $type }) =>
     $nickname &&
     !$image &&
-    $type !== 'profile' &&
+    $type === 'initial' &&
     css`
       background-image: none;
       border: 1px solid ${({ theme }) => theme.sementicColors.border.primary};
@@ -96,7 +96,7 @@ const Wrapper = styled.div<AvatarStyledProps>`
     `};
   ${({ $image, $type }) =>
     $image &&
-    $type !== 'initial' &&
+    $type === 'profile' &&
     css`
       background-color: transparent;
       background-image: url(${$image});
