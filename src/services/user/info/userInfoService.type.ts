@@ -5,6 +5,7 @@ export type UserContext = {
   id: string;
   name: string;
   email: string;
+  picture: string;
   enabled: boolean;
   password: string;
   authorities: [

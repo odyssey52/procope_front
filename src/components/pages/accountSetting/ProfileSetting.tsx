@@ -1,39 +1,56 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Avatar from '@/components/common/ui/avatar/Avatar';
 import Button from '@/components/common/ui/button/Button';
 import Chip from '@/components/common/ui/chip/Chip';
 import Label from '@/components/common/ui/label/Label';
 import Placeholder from '@/components/common/ui/placeholder/Placeholder';
-import { JOB_MAIN_LIST } from '@/constants/stepper';
 import Radio from '@/components/common/ui/radio/Radio';
 import { ReadUserInfoResponse } from '@/services/user/info/userInfoService.type';
 import { toastActions } from '@/store/modal/toast';
 import styled from 'styled-components';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import { updateUserInfo } from '@/services/user/info/userInfoService';
+import propertiesRolesQueries from '@/query/properties/roles/propertiesRolesQueries';
+import propertiesFieldsQueries from '@/query/properties/fields/propertiesFieldsQueries';
 import { JobSub } from '../onboarding/SecondStep';
 import DeleteModal from './DeleteModal';
+import { JobMain } from '../onboarding/FirstStep';
 
 interface Props {
   data: ReadUserInfoResponse;
 }
 
 const ProfileSetting = ({ data }: Props) => {
+  const [avatar, setAvatar] = useState<{
+    type: 'profile' | 'initial';
+    image: string;
+    nickname: string;
+  }>(() => ({
+    type: 'profile',
+    image: data.userContext.picture,
+    nickname: data.userContext.name,
+  }));
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [name, setName] = useState(data.userContext.name);
-  const [jobSelectedValue, setJobSelectedValue] = useState<string>(data.roleInfo.name);
+  const [jobSelectedValue, setJobSelectedValue] = useState<JobMain>(data.roleInfo);
   const [subJob, setSubJob] = useState<JobSub[]>(data.roleInfo.fields);
   const updateUserInfoMutation = useMutation({ mutationFn: updateUserInfo });
 
-  const jobList = Object.keys(JOB_MAIN_LIST);
-  const subJobList = JOB_MAIN_LIST[jobSelectedValue as keyof typeof JOB_MAIN_LIST].roles;
+  const { data: roles, isSuccess: isRolesSuccess } = useQuery({
+    ...propertiesRolesQueries.readPropertiesRoles,
+    select: (data) => data.roles.sort((a, b) => a.id - b.id),
+  });
+  const { data: subJobList, isSuccess: isSubJobListSuccess } = useQuery({
+    ...propertiesFieldsQueries.readPropertiesFields({ roleId: jobSelectedValue.id }),
+    select: (data) => data.fields.sort((a, b) => a.id - b.id),
+  });
 
   const saveUserInfo = async () => {
     try {
       const payload = {
         role: {
-          id: data.roleInfo.id,
-          name: jobSelectedValue,
+          id: jobSelectedValue.id,
+          name: jobSelectedValue.name,
           fields: subJob.map((work) => ({ id: work.id, name: work.name })),
         },
       };
@@ -49,8 +66,8 @@ const ProfileSetting = ({ data }: Props) => {
       });
     }
   };
-  const handleJob = (value: string) => {
-    setJobSelectedValue(value);
+  const handleJob = (index: number, value: string) => {
+    setJobSelectedValue({ id: index, name: value });
     setSubJob([]); // 선택된 Chip 초기화
   };
   const handleSubJob = (name: string, id: number) => {
@@ -67,9 +84,16 @@ const ProfileSetting = ({ data }: Props) => {
     setIsModalOpen(false);
   };
 
+  useEffect(() => {
+    setAvatar((prev) => ({
+      ...prev,
+      type: data.userContext.picture ? 'profile' : 'initial',
+    }));
+  }, [data.userContext.picture]);
+
   return (
     <Content>
-      <Avatar type="initial" size={84} nickname="B" />
+      <Avatar type={avatar.type} size={84} image={avatar.image} nickname={avatar.nickname} />
       <Placeholder value={name} valueHandler={setName} label={{ text: '이름', required: true }} maxLength={10} />
       <Placeholder
         value={data.userContext.email}
@@ -80,36 +104,38 @@ const ProfileSetting = ({ data }: Props) => {
       <JobSection>
         <Label required text="직무" />
         <RadioBox>
-          {jobList.map((value, index) => {
-            return (
-              <Radio
-                key={index}
-                size={20}
-                name={value}
-                id={value}
-                label={value}
-                checked={jobSelectedValue === value}
-                onChange={() => handleJob(value)}
-              />
-            );
-          })}
+          {isRolesSuccess &&
+            roles.map(({ id, name, fields }) => {
+              return (
+                <Radio
+                  key={`Radio-${id}`}
+                  size={20}
+                  name={name}
+                  id={name}
+                  label={name}
+                  checked={jobSelectedValue.name === name}
+                  onChange={() => handleJob(id, name)}
+                />
+              );
+            })}
         </RadioBox>
       </JobSection>
       <WorkSection>
         <Label required text="담당 업무 (최대 3개)" />
         <ChipBox>
-          {subJobList.map((value, index) => {
-            const isSelected = subJob.some((job) => job.name === value.name);
-            return (
-              <Chip
-                key={index}
-                size={12}
-                label={value.name}
-                selected={isSelected}
-                onClick={() => handleSubJob(value.name, value.id)}
-              />
-            );
-          })}
+          {isSubJobListSuccess &&
+            subJobList.map((value) => {
+              const isSelected = subJob.some((job) => job.name === value.name);
+              return (
+                <Chip
+                  key={`Chip-${value.id}`}
+                  size={12}
+                  label={value.name}
+                  selected={isSelected}
+                  onClick={() => handleSubJob(value.name, value.id)}
+                />
+              );
+            })}
         </ChipBox>
       </WorkSection>
       <BottomSection>
