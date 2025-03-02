@@ -46,7 +46,6 @@ const TeamCreate = () => {
     if (step === 2 && teamName.length > 0 && teamNameValid && teamDescriptionValid) {
       return router.push('/team/create/done');
     }
-    return console.log('입력값을 확인해주세요.');
   };
   const onClickPrev = () => {
     if (step === 2) {
