@@ -9,138 +9,186 @@ import { updateUserInfo } from '@/services/user/info/userInfoService';
 import { toastActions } from '@/store/modal/toast';
 import { useMutation } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import styled from 'styled-components';
 import { JobMain } from './FirstStep';
 import { JobSub } from './SecondStep';
 import { Preference } from './ThirdStep';
+
+const ONBOARDING_CONSTANTS = {
+  MAX_JOB_SUB: 3,
+  TOAST_DELAY: 0,
+  TOTAL_STEPS: 3,
+} as const;
 
 const Onboarding = () => {
   const router = useRouter();
   const [step, setStep] = useState<1 | 2 | 3 | 4>(1);
   const [jobMain, setJobMain] = useState<JobMain | null>(null);
   const [jobSub, setJobSub] = useState<JobSub[]>([]);
+  const [preferences, setPreferences] = useState<(Preference | null)[]>(Array(TENDENCY_TITLE_LIST.length).fill(null));
 
-  const updateUserInfoMutation = useMutation({ mutationFn: updateUserInfo });
+  const updateUserInfoMutation = useMutation({
+    mutationFn: updateUserInfo,
+    onError: (error) => {
+      toastActions.open({
+        state: 'error',
+        title: '저장 실패',
+        description: '정보 저장 중 오류가 발생했습니다. 다시 시도해 주세요.',
+      });
+      console.error('Failed to save user info:', error);
+    },
+  });
 
-  const initialPreferences = Array(TENDENCY_TITLE_LIST.length).fill(null);
-  const [preferences, setPreferences] = useState<(Preference | null)[]>(initialPreferences);
+  const isValidPreferences = useCallback(
+    (preferences: (Preference | null)[]): preferences is Preference[] =>
+      preferences.every((item): item is Preference => item !== null),
+    [],
+  );
 
-  const isValidPreferences = (preferences: (Preference | null)[]): preferences is Preference[] =>
-    preferences.every((item): item is Preference => item !== null);
+  const jobMainHandler = useCallback((jobMain: JobMain) => {
+    setJobMain(jobMain);
+    setJobSub([]);
+  }, []);
 
-  const saveUserInfo = async () => {
-    if (!jobMain || jobSub.length === 0 || !isValidPreferences(preferences)) return;
+  const updateJobSub = useCallback((prevJobSub: JobSub[], jobSub: JobSub): [JobSub[], boolean] => {
+    const jobSubSet = new Set(prevJobSub);
+
+    if (jobSubSet.has(jobSub)) {
+      jobSubSet.delete(jobSub);
+      return [Array.from(jobSubSet), false];
+    }
+
+    if (jobSubSet.size >= ONBOARDING_CONSTANTS.MAX_JOB_SUB) {
+      return [prevJobSub, true];
+    }
+
+    jobSubSet.add(jobSub);
+    return [Array.from(jobSubSet), false];
+  }, []);
+
+  const jobSubHandler = useCallback(
+    (jobSub: JobSub) => {
+      setJobSub((prevJobSub) => {
+        const [updatedJobSub, isMaxLimit] = updateJobSub(prevJobSub, jobSub);
+
+        if (isMaxLimit) {
+          setTimeout(() => {
+            toastActions.open({
+              state: 'error',
+              title: '다시 선택해 주세요',
+              description: `최대 ${ONBOARDING_CONSTANTS.MAX_JOB_SUB}개까지 선택할 수 있습니다.`,
+            });
+          }, ONBOARDING_CONSTANTS.TOAST_DELAY);
+        }
+
+        return updatedJobSub;
+      });
+    },
+    [updateJobSub],
+  );
+
+  const preferencesHandler = useCallback((index: number, preference: Preference) => {
+    setPreferences((prevPreferences) => {
+      const newPreferences = [...prevPreferences];
+      newPreferences[index] = preference;
+      return newPreferences;
+    });
+  }, []);
+
+  const saveUserInfo = useCallback(async () => {
+    if (!jobMain || jobSub.length === 0 || !isValidPreferences(preferences)) {
+      toastActions.open({
+        state: 'error',
+        title: '입력 오류',
+        description: '모든 항목을 입력해주세요.',
+      });
+      return;
+    }
+
     try {
-      const payload = {
+      await updateUserInfoMutation.mutateAsync({
         role: {
           id: jobMain.id,
           name: jobMain.name,
           fields: jobSub,
         },
         preferences,
-      };
-      await updateUserInfoMutation.mutateAsync(payload);
+      });
       router.replace('/team');
-    } catch (e) {
-      console.error(e);
+    } catch {
+      // 에러 처리는 mutation의 onError에서 처리
     }
-  };
+  }, [jobMain, jobSub, preferences, isValidPreferences, updateUserInfoMutation, router]);
 
-  const jobMainHandler = (jobMain: JobMain) => {
-    setJobMain(jobMain);
-    setJobSub([]);
-  };
-
-  const updateJobSub = (prevJobSub: JobSub[], jobSub: JobSub): [JobSub[], boolean] => {
-    const jobSubSet = new Set(prevJobSub);
-
-    if (jobSubSet.has(jobSub)) {
-      jobSubSet.delete(jobSub);
-      return [Array.from(jobSubSet), false]; // 이미 선택된 경우, 삭제 후 반환
+  const currentPage = useMemo(() => {
+    switch (step) {
+      case 1:
+        return <FirstStep jobMain={jobMain} jobMainHandler={jobMainHandler} onNext={() => setStep(2)} />;
+      case 2:
+        return (
+          jobMain && (
+            <SecondStep
+              jobMain={jobMain}
+              jobSub={jobSub}
+              jobSubHandler={jobSubHandler}
+              onBefore={() => setStep(1)}
+              onNext={() => setStep(3)}
+            />
+          )
+        );
+      case 3:
+        return (
+          <ThirdStep
+            preferences={preferences}
+            preferencesHandler={preferencesHandler}
+            isValidPreferences={isValidPreferences(preferences)}
+            onBefore={() => setStep(2)}
+            onNext={() => setStep(4)}
+          />
+        );
+      case 4:
+        return (
+          jobMain &&
+          isValidPreferences(preferences) && (
+            <CheckStep
+              jobMain={jobMain}
+              jobSub={jobSub}
+              preferences={preferences}
+              onBefore={() => setStep(3)}
+              onNext={saveUserInfo}
+            />
+          )
+        );
+      default:
+        return null;
     }
+  }, [
+    step,
+    jobMain,
+    jobSub,
+    preferences,
+    jobMainHandler,
+    jobSubHandler,
+    preferencesHandler,
+    isValidPreferences,
+    saveUserInfo,
+  ]);
 
-    if (jobSubSet.size >= 3) {
-      return [prevJobSub, true]; // 최대 개수 초과 시 기존 값 유지
-    }
-
-    jobSubSet.add(jobSub);
-    return [Array.from(jobSubSet), false]; // 새로운 선택 추가
-  };
-
-  const jobSubHandler = (jobSub: JobSub) => {
-    setJobSub((prevJobSub) => {
-      const [updatedJobSub, isMaxLimit] = updateJobSub(prevJobSub, jobSub);
-
-      if (isMaxLimit) {
-        setTimeout(() => {
-          toastActions.open({
-            state: 'error',
-            title: '다시 선택해 주세요',
-            description: '최대 3개까지 선택할 수 있습니다.',
-          });
-        }, 0);
-      }
-
-      return updatedJobSub;
-    });
-  };
-
-  const preferencesHandler = (index: number, preference: Preference) => {
-    setPreferences((prevPreferences) => {
-      const newPreferences = [...prevPreferences];
-      newPreferences[index] = preference;
-      return newPreferences;
-    });
-  };
-
-  const pageMove = () => {
-    if (step === 1) return <FirstStep jobMain={jobMain} jobMainHandler={jobMainHandler} onNext={() => setStep(2)} />;
-    if (step === 2 && jobMain)
-      return (
-        <SecondStep
-          jobMain={jobMain}
-          jobSub={jobSub}
-          jobSubHandler={jobSubHandler}
-          onBefore={() => setStep(1)}
-          onNext={() => setStep(3)}
-        />
-      );
-    if (step === 3)
-      return (
-        <ThirdStep
-          preferences={preferences}
-          preferencesHandler={preferencesHandler}
-          isValidPreferences={isValidPreferences(preferences)}
-          onBefore={() => setStep(2)}
-          onNext={() => setStep(4)}
-        />
-      );
-    if (step === 4 && jobMain && isValidPreferences(preferences))
-      return (
-        <CheckStep
-          jobMain={jobMain}
-          jobSub={jobSub}
-          preferences={preferences}
-          onBefore={() => setStep(3)}
-          onNext={saveUserInfo}
-        />
-      );
-    return null;
-  };
+  const progressRate = useMemo(() => 100 * (step / ONBOARDING_CONSTANTS.TOTAL_STEPS), [step]);
 
   return (
     <OnBoardingContainer>
       <Content>
         {step !== 4 && (
           <Percent>
-            <ProgressBar rate={100 * (step / 3)} />
+            <ProgressBar rate={progressRate} />
             <Text variant="caption_12_regular" color="secondary">
-              {step}/3단계
+              {step}/{ONBOARDING_CONSTANTS.TOTAL_STEPS}단계
             </Text>
           </Percent>
         )}
-        {pageMove()}
+        {currentPage}
       </Content>
     </OnBoardingContainer>
   );
