@@ -1,11 +1,10 @@
 'use client';
 
+import { useState } from 'react';
+import { useAuth } from '@/hooks/useAuth';
+import { LoadingSpinner } from '@/components/common/LoadingSpinner';
 import SelectOption from '@/components/common/ui/select/SelectOption';
 import HeaderLayout from '@/components/layout/HeaderLayout';
-import { theme } from '@/styles/theme';
-import { useQuery } from '@tanstack/react-query';
-import userInfoQueries from '@/query/user/info/userInfoQueries';
-import { useState } from 'react';
 import styled from 'styled-components';
 import ProfileSetting from './ProfileSetting';
 import CommunicationSetting from './CommunicationSetting';
@@ -13,11 +12,24 @@ import CommunicationSetting from './CommunicationSetting';
 const selectOptionList = [{ value: '프로필 설정' }, { value: '소통 설정' }];
 
 const AccountSetting = () => {
-  const { data, isSuccess } = useQuery({ ...userInfoQueries.readUserInfo });
+  const { user, isLoading } = useAuth();
   const [page, setPage] = useState<'프로필 설정' | '소통 설정'>('프로필 설정');
+
   const valueHandler = (value: string) => {
     return value === '프로필 설정' ? setPage('프로필 설정') : setPage('소통 설정');
   };
+
+  if (isLoading) {
+    return (
+      <HeaderLayout>
+        <LoadingSpinner />
+      </HeaderLayout>
+    );
+  }
+
+  if (!user) {
+    return null;
+  }
 
   return (
     <HeaderLayout>
@@ -36,8 +48,7 @@ const AccountSetting = () => {
               />
             ))}
           </SideBar>
-          {isSuccess &&
-            (page === '프로필 설정' ? <ProfileSetting data={data} /> : <CommunicationSetting data={data} />)}
+          {page === '프로필 설정' ? <ProfileSetting data={user} /> : <CommunicationSetting data={user} />}
         </Section>
       </Wrapper>
     </HeaderLayout>
@@ -54,6 +65,7 @@ const Wrapper = styled.div`
   flex-direction: column;
   gap: 12px;
 `;
+
 const SideBar = styled.div`
   display: flex;
   gap: 8px;
@@ -61,12 +73,14 @@ const SideBar = styled.div`
   height: 112px;
   padding: 16px 0px;
 `;
+
 const Title = styled.div`
   width: 100%;
   padding: 3px 0px;
-  ${({ theme }) => theme.fontStyle.heading_24}
-  color : ${({ theme }) => theme.sementicColors.text.primary}
+  ${({ theme }) => theme.fontStyle.heading_24};
+  color: ${({ theme }) => theme.sementicColors.text.primary};
 `;
+
 const Section = styled.div`
   display: flex;
 `;
