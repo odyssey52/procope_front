@@ -2,6 +2,7 @@ module.exports = {
   env: {
     browser: true,
     es2021: true,
+    jest: true, // Jest 전역 변수 허용
   },
 
   extends: ['airbnb'],

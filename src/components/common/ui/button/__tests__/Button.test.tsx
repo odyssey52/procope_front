@@ -4,12 +4,6 @@ import { ThemeProvider } from 'styled-components';
 import { theme } from '@/styles/theme';
 import Button from '../Button';
 
-// jest 전역 타입 설정
-declare const jest: any;
-declare const describe: any;
-declare const it: any;
-declare const expect: any;
-
 /**
  * Button 컴포넌트를 렌더링하는 헬퍼 함수
  * ThemeProvider로 감싸서 스타일 테마를 제공합니다
