@@ -60,4 +60,18 @@ module.exports = {
     'consistent-return': 'off', // if 와 else if 의 차이가 없을 때 if 사용을 권장하고 return 을 강제. useEffect 에서 return 의 경우 cleanup 함수와 혼동을 줄이기 위해 off 처리함
     'react/jsx-wrap-multilines': 'off', // jsx 속성에서 줄바꿈 금지하는 속성 제거
   },
+  overrides: [
+    {
+      // 테스트 파일에만 적용될 규칙
+      files: ['**/*.test.ts', '**/*.test.tsx', '**/__tests__/**/*'],
+      env: {
+        jest: true, // Jest 전역 변수 활성화
+      },
+      rules: {
+        'no-console': 'off', // console 허용
+        'no-unreachable': 'off', // unreachable code 허용
+        'no-undef': 'off', // 정의되지 않은 변수 허용 (jest 관련)
+      },
+    },
+  ],
 };
