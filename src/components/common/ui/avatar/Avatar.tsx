@@ -1,4 +1,3 @@
-import { JSX } from 'react';
 import styled, { css } from 'styled-components';
 
 interface AvatarProps {
