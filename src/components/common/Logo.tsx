@@ -13,7 +13,14 @@ const Logo = ({ type, size, onClick }: LogoProps) => {
   // If no onClick prop is passed, default to navigating to '/'
   const handleClick = onClick || (() => router.push('/'));
 
-  return <Image src={`/assets/icons/graphic/logo/${type ?? 'icon'}.svg`} width={size} onClick={handleClick} />;
+  return (
+    <Image
+      src={`/assets/icons/graphic/logo/${type ?? 'icon'}.svg`}
+      width={size}
+      onClick={handleClick}
+      data-testid="logo"
+    />
+  );
 };
 
 const Image = styled.img`

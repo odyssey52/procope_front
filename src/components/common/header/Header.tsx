@@ -10,10 +10,9 @@ import { IconHome, IconOut, IconSetting } from '@/assets/icons/line';
 import { elevation } from '@/styles/mixin';
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import Logo from './Logo';
-import Avatar from './ui/avatar/Avatar';
-import ItemList from './ui/select/ItemList';
-import SelectOption from './ui/select/SelectOption';
+import Logo from '../Logo';
+import Avatar from '../ui/avatar/Avatar';
+import SelectOption from '../ui/select/SelectOption';
 
 const Header = () => {
   const router = useRouter();
@@ -92,7 +91,7 @@ const Header = () => {
       <Logo type="icon" size={36} />
       <Avatar type={avatar.type} image={avatar.image} nickname={avatar.nickname} onClick={profileHandler} />
       {isOpen && (
-        <SettingOption onClick={(e) => e.stopPropagation()}>
+        <SettingOption onClick={(e) => e.stopPropagation()} data-testid="setting-option">
           {selectOptionList.map((value) => {
             return (
               <div key={value.value}>
