@@ -7,23 +7,26 @@ import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 
 const Home = () => {
-  const { data, isSuccess } = useQuery({ ...userInfoQueries.readUserInfo });
-  const { setUser } = useUserStore();
   const router = useRouter();
+  const { setUser } = useUserStore();
+  const { data, isSuccess, isError } = useQuery({ ...userInfoQueries.readUserInfo });
 
   useEffect(() => {
-    if (isSuccess) {
-      const { id, name, email, username } = data.userContext;
-      setUser({ id, name, email, username });
-      if (data.isNewUser) {
-        router.replace('/onboarding');
-      } else {
-        router.replace('/team');
-      }
-    } else {
+    if (isError) {
       router.replace('/login');
+      return;
     }
-  }, [data, isSuccess]);
+
+    if (!isSuccess) {
+      return;
+    }
+
+    const { id, name, email, username } = data.userContext;
+    setUser({ id, name, email, username });
+
+    const redirectPath = data.isNewUser ? '/onboarding' : '/team';
+    router.replace(redirectPath);
+  }, [data, isSuccess, isError, router, setUser]);
 
   return null;
 };

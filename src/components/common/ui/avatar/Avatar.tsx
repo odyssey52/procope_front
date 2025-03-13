@@ -1,4 +1,3 @@
-import { JSX } from 'react';
 import styled, { css } from 'styled-components';
 
 interface AvatarProps {
@@ -62,7 +61,7 @@ const Avatar = ({ type, size, nickname, image, onClick }: AvatarProps) => {
   const showInitial = type === 'initial' || (!image && nickname);
 
   return (
-    <Wrapper $size={size} $image={image} $nickname={nickname} $type={type} onClick={onClick}>
+    <Wrapper $size={size} $image={image} $nickname={nickname} $type={type} onClick={onClick} data-testid="avatar">
       {showInitial && nickname?.slice(0, 1)}
     </Wrapper>
   );
