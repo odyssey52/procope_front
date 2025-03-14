@@ -4,12 +4,20 @@ import HeaderLayout from '@/components/layout/HeaderLayout';
 import { ReactNode } from 'react';
 import styled from 'styled-components';
 
-export default function Layout({ sidenav, content }: { sidenav: ReactNode; content: ReactNode }) {
+export default function Layout({
+  sidenav,
+  content,
+  children,
+}: {
+  sidenav: ReactNode;
+  content: ReactNode;
+  children: ReactNode;
+}) {
   return (
     <HeaderLayout>
       <ContentWrapper>
         {sidenav}
-        <Content>{content}</Content>
+        <Content>{content || children}</Content>
       </ContentWrapper>
     </HeaderLayout>
   );
