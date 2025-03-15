@@ -4,7 +4,7 @@ import SideNav from '@/components/common/ui/tab/SideNav';
 import { TEAM_SIDE_NAV_TABS } from '@/constants/sideNavTab';
 import { useParams } from 'next/navigation';
 
-export default function page() {
+export default function sidenav() {
   const params = useParams();
   const teamId = params.teamId as string;
 
