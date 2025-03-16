@@ -1,30 +1,25 @@
 'use client';
 
-import SideNav from '@/components/common/ui/tab/SideNav';
 import HeaderLayout from '@/components/layout/HeaderLayout';
-import { TEAM_SIDE_NAV_TABS } from '@/constants/sideNavTab';
-import { useParams } from 'next/navigation';
 import { ReactNode } from 'react';
 import styled from 'styled-components';
 
-const layout = ({ children }: { children: ReactNode }) => {
-  const params = useParams();
-  const teamId = params.teamId as string;
-
+export default function Layout({ sidenav, content }: { sidenav: ReactNode; content: ReactNode }) {
   return (
     <HeaderLayout>
       <ContentWrapper>
-        <SideNav tabList={TEAM_SIDE_NAV_TABS(teamId)} />
-        <Content>{children}</Content>
+        {sidenav}
+        <Content>{content}</Content>
       </ContentWrapper>
     </HeaderLayout>
   );
-};
+}
 
 const ContentWrapper = styled.div`
   display: flex;
   flex-grow: 1;
 `;
+
 const Content = styled.div`
   position: relative;
   display: flex;
@@ -32,4 +27,3 @@ const Content = styled.div`
   flex-grow: 1;
   background-color: ${({ theme }) => theme.sementicColors.bg.tertiary};
 `;
-export default layout;
