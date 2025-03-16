@@ -11,7 +11,7 @@ const ControlBox = () => {
       <TextButton leftIcon={<IconDirectionDown />} $type="16">
         최신순
       </TextButton>
-      <Button leftIcon={<IconPlus />} onClick={() => router.push('/team/123/')}>
+      <Button leftIcon={<IconPlus />} onClick={() => router.push('/team/create')}>
         팀 생성
       </Button>
     </Wrapper>
