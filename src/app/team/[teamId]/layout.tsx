@@ -23,7 +23,9 @@ const ContentWrapper = styled.div`
 const Content = styled.div`
   position: relative;
   display: flex;
-  justify-content: center;
   flex-grow: 1;
-  background-color: ${({ theme }) => theme.sementicColors.bg.tertiary};
+  background-color: ${({ theme }) => theme.sementicColors.bg.invers};
+
+  margin: 24px;
+  padding: 24px;
 `;
