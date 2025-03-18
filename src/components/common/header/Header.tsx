@@ -67,8 +67,8 @@ const Header = () => {
   const selectOptionList = [
     {
       leftContent: <Avatar type={avatar.type} image={avatar.image} nickname={avatar.nickname} />,
-      value: data ? data.userContext.name : '',
-      description: data ? data.roleInfo.name : '',
+      value: data?.userContext?.name || '',
+      description: data?.roleInfo?.name || '',
       span: 'long',
     },
     {
@@ -89,8 +89,10 @@ const Header = () => {
   return (
     <Wrapper>
       <Logo type="icon" size={36} />
-      <Avatar type={avatar.type} image={avatar.image} nickname={avatar.nickname} onClick={profileHandler} />
-      {isOpen && (
+      {isSuccess && (
+        <Avatar type={avatar.type} image={avatar.image} nickname={avatar.nickname} onClick={profileHandler} />
+      )}
+      {isOpen && isSuccess && (
         <SettingOption onClick={(e) => e.stopPropagation()} data-testid="setting-option">
           {selectOptionList.map((value) => {
             return (
