@@ -1,4 +1,5 @@
 import Breadcrumbs from '@/components/common/ui/breadcrumbs/Breadcrumbs';
+import PartCellContent from '@/components/common/ui/part/PartCellContent';
 import PageTitle from '@/components/common/ui/title/PageTitle';
 import styled from 'styled-components';
 
@@ -15,6 +16,7 @@ const RetroList = () => {
           <PageTitle title="회고관리" />
         </TitleBox>
       </Head>
+      <PartCellContent description="회고를 관리합니다." />
     </Wrapper>
   );
 };
