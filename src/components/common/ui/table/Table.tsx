@@ -56,16 +56,11 @@ const Table = <T extends Record<string, any>>({ data, columns, keyExtractor, cap
         {data.map((item, rowIndex) => {
           return (
             <tr key={keyExtractor(item)}>
-              {columns.map((column, colIndex) => {
-                console.log(column.render);
-                return (
-                  <TableCell key={`td-${rowIndex}-${colIndex}`}>
-                    <PartCellContent>
-                      {column.render ? column.render(item, rowIndex) : item[column.key]}
-                    </PartCellContent>
-                  </TableCell>
-                );
-              })}
+              {columns.map((column, colIndex) => (
+                <TableCell key={`td-${rowIndex}-${colIndex}`}>
+                  <PartCellContent>{column.render ? column.render(item, rowIndex) : item[column.key]}</PartCellContent>
+                </TableCell>
+              ))}
             </tr>
           );
         })}
