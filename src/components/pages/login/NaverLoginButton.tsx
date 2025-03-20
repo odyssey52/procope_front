@@ -16,7 +16,7 @@ const NaverLoginButton = () => {
     const STATE = generateRandomState();
     sessionStorage.setItem('naver_state', STATE);
 
-    const naverLoginUrl = `https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URI}&state=${STATE}`;
+    const naverLoginUrl = `https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URI}&state=${STATE}&auth_type=reprompt`;
 
     window.location.href = naverLoginUrl;
   };

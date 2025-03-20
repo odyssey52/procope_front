@@ -174,6 +174,7 @@ export { default as IconShoppingBag } from './ShoppingBag';
 export { default as IconSignalCelluler } from './SignalCelluler';
 export { default as IconSortArrowDown } from './SortArrowDown';
 export { default as IconSortArrowUp } from './SortArrowUp';
+export { default as IconSortArrow } from './SortArrow';
 export { default as IconSortRectangle } from './SortRectangle';
 export { default as IconSpeakerPlus } from './SpeakerPlus';
 export { default as IconSpeaker } from './Speaker';

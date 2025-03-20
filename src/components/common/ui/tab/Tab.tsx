@@ -32,7 +32,7 @@ const Tab = ({ name, path, icon, subTabs }: TabType) => {
       <TabWrapper $selected={selected}>
         {icon}
         <span>{name}</span>
-        {subTabs && isOpenSubTab ? <IconDirectionUp /> : <IconDirectionDown />}
+        {subTabs && (isOpenSubTab ? <IconDirectionUp /> : <IconDirectionDown />)}
       </TabWrapper>
       <SubTapWrapper>
         {isOpenSubTab &&
@@ -58,7 +58,7 @@ const TabWrapper = styled.div<{ $selected?: boolean }>`
   padding: 16px 0;
   gap: 12px;
   color: ${({ theme, $selected }) =>
-    $selected ? theme.sementicColors.text.invers : theme.sementicColors.text.disabled};
+    $selected ? theme.sementicColors.text.brand : theme.sementicColors.text.disabled};
   > span {
     flex-grow: 1;
   }
