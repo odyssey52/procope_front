@@ -57,9 +57,8 @@ const getInitialFontSize = (size: AvatarProps['size']) => {
   return null;
 };
 
-const Avatar = ({ type, size, nickname, image, onClick }: AvatarProps) => {
+const Avatar = ({ type = 'profile', size, nickname, image, onClick }: AvatarProps) => {
   const showInitial = type === 'initial' || (!image && nickname);
-
   return (
     <Wrapper $size={size} $image={image} $nickname={nickname} $type={type} onClick={onClick} data-testid="avatar">
       {showInitial && nickname?.slice(0, 1)}
