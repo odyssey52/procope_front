@@ -34,11 +34,11 @@ const Wrapper = styled.div<{ $selected?: boolean }>`
   padding: 12px 24px 12px 36px;
   ${({ theme, $selected }) => ($selected ? theme.fontStyle.body_14_semibold : theme.fontStyle.body_14_medium)}
   color: ${({ theme, $selected }) =>
-    $selected ? theme.sementicColors.text.invers : theme.sementicColors.text.disabled};
+    $selected ? theme.sementicColors.text.brand : theme.sementicColors.text.disabled};
   cursor: pointer;
   &:hover,
   &:active {
-    color: ${({ theme }) => theme.sementicColors.text.invers};
+    color: ${({ theme }) => theme.sementicColors.text.brand};
   }
   > span {
     flex-grow: 1;

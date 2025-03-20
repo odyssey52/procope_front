@@ -17,7 +17,7 @@ const SideNav = ({ tabList }: SideNavProps) => {
 
 const Wrapper = styled.div`
   padding: 24px;
-  background-color: ${({ theme }) => theme.sementicColors.bg.primary};
+  background-color: ${({ theme }) => theme.sementicColors.bg.tertiary};
 `;
 
 SideNav.displayName = 'SideNav';
