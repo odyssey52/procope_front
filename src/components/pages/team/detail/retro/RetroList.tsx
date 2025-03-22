@@ -1,13 +1,16 @@
+'use client';
+
 import { IconMenuCircleVertical, IconSortArrow } from '@/assets/icons/line';
 import Avatar from '@/components/common/ui/avatar/Avatar';
 import Breadcrumbs from '@/components/common/ui/breadcrumbs/Breadcrumbs';
+import Button from '@/components/common/ui/button/Button';
+import Empty from '@/components/common/ui/empty/Empty';
 import Table, { TableColumn } from '@/components/common/ui/table/Table';
 import Text from '@/components/common/ui/Text';
 import PageSubTitle from '@/components/common/ui/title/PageSubTitle';
 import PageTitle from '@/components/common/ui/title/PageTitle';
 import React from 'react';
 import styled from 'styled-components';
-import AddRetroButton from './AddRetroButton';
 
 export interface RetroItem {
   title: string;
@@ -20,6 +23,10 @@ export interface RetroItem {
   updatedAt: string;
   actions: React.ReactNode;
 }
+
+const EMPTY_TITLE = '등록된 회고록이 없습니다.';
+const EMPTY_DESCRIPTION = '회고록을 추가하여 회고를 진행해 주세요.';
+const EMPTY_LIST = [];
 
 const columns: TableColumn<RetroItem>[] = [
   {
@@ -150,7 +157,12 @@ const RetroList = () => {
   const paths = {
     회고관리: '/team/[teamId]/retro',
   };
-  const EMPTY_LIST = [];
+
+  const addRetro = () => {
+    alert('addRetro');
+    console.log('addRetro');
+  };
+
   return (
     <Wrapper>
       <Head>
@@ -161,9 +173,15 @@ const RetroList = () => {
       </Head>
       <Content>
         <PageSubTitle first="총" point={`${mockData.length}`} last="개">
-          <AddRetroButton />
+          <Button onClick={addRetro}>추가</Button>
         </PageSubTitle>
-        <Table data={mockData} columns={columns} keyExtractor={(item) => item.title} caption="회고 목록" />
+        <Table
+          data={[]}
+          columns={columns}
+          keyExtractor={(item) => item.title}
+          caption="회고 목록"
+          emptyNode={<Empty title={EMPTY_TITLE} description={EMPTY_DESCRIPTION} onClick={addRetro} />}
+        />
       </Content>
     </Wrapper>
   );
