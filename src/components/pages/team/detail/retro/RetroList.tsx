@@ -160,7 +160,6 @@ const RetroList = () => {
 
   const addRetro = () => {
     alert('addRetro');
-    console.log('addRetro');
   };
 
   return (
@@ -176,7 +175,7 @@ const RetroList = () => {
           <Button onClick={addRetro}>추가</Button>
         </PageSubTitle>
         <Table
-          data={[]}
+          data={mockData}
           columns={columns}
           keyExtractor={(item) => item.title}
           caption="회고 목록"
