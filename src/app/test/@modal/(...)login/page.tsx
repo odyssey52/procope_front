@@ -4,10 +4,11 @@ import Modal from '@/components/common/ui/modal/common/Modal';
 import { LoginSection } from '@/components/pages/login';
 import { useAuth } from '@/hooks/useAuth';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { Suspense, useEffect } from 'react';
 import styled from 'styled-components';
 
-export default function LoginModal() {
+// 로그인 모달 컨텐츠 컴포넌트
+function LoginModalContent() {
   const { isAuthenticated, isLoading } = useAuth();
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -24,6 +25,15 @@ export default function LoginModal() {
     <Modal portalId="confirm-dialog">
       <LoginSection />
     </Modal>
+  );
+}
+
+// 메인 페이지 컴포넌트
+export default function LoginModal() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <LoginModalContent />
+    </Suspense>
   );
 }
 
