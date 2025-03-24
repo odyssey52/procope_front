@@ -1,9 +1,10 @@
 'use client';
 
-import React, { ReactNode } from 'react';
+import { ReactNode } from 'react';
 import styled from 'styled-components';
-import PartHeaderContent from '../part/PartHeaderContent';
 import PartCellContent from '../part/PartCellContent';
+import PartHeaderContent from '../part/PartHeaderContent';
+import Empty from '../empty/Empty';
 
 export interface TableColumn<T> {
   key: string;
@@ -21,9 +22,12 @@ interface TableProps<T> {
   columns: TableColumn<T>[];
   keyExtractor: (item: T) => string;
   caption?: string;
+  emptyNode?: ReactNode;
 }
 
-const Table = <T extends Record<string, any>>({ data, columns, keyExtractor, caption }: TableProps<T>) => {
+const Table = <T extends Record<string, any>>({ data, columns, keyExtractor, caption, emptyNode }: TableProps<T>) => {
+  const isEmpty = !data || data.length === 0;
+
   return (
     <Wrapper>
       {caption && <caption>{caption}</caption>}
@@ -52,9 +56,16 @@ const Table = <T extends Record<string, any>>({ data, columns, keyExtractor, cap
           ))}
         </tr>
       </thead>
-      <tbody>
-        {data.map((item, rowIndex) => {
-          return (
+
+      {isEmpty ? (
+        <tbody>
+          <tr>
+            <EmptyBox colSpan={columns.length}>{emptyNode}</EmptyBox>
+          </tr>
+        </tbody>
+      ) : (
+        <tbody>
+          {data.map((item, rowIndex) => (
             <tr key={keyExtractor(item)}>
               {columns.map((column, colIndex) => (
                 <TableCell key={`td-${rowIndex}-${colIndex}`}>
@@ -62,9 +73,9 @@ const Table = <T extends Record<string, any>>({ data, columns, keyExtractor, cap
                 </TableCell>
               ))}
             </tr>
-          );
-        })}
-      </tbody>
+          ))}
+        </tbody>
+      )}
     </Wrapper>
   );
 };
@@ -90,6 +101,11 @@ const TableHeader = styled.th<{ $width?: string; $minWidth?: string; $maxWidth?:
 
 const TableCell = styled.td<{ $width?: string; $minWidth?: string; $maxWidth?: string }>`
   vertical-align: middle;
+`;
+
+const EmptyBox = styled.td`
+  vertical-align: middle;
+  height: 50vh;
 `;
 
 export default Table;

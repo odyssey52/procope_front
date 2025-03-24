@@ -1,6 +1,7 @@
 'use client';
 
 import RetroCard from '@/components/common/ui/card/RetroCard';
+import Link from 'next/link';
 import styled from 'styled-components';
 
 interface Mock {
@@ -37,6 +38,7 @@ const page = () => {
   return (
     <PlayGround>
       <Content>
+        <Link href="/login">로그인</Link>
         <RetroCard item={mock} />
         <RetroCard item={mock} />
       </Content>
