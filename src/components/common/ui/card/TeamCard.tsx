@@ -1,6 +1,7 @@
+import { ReadTeamListResponse } from '@/services/team/teamService.type';
 import styled from 'styled-components';
-import Tag from '../tag/Tag';
 import AvatarGroup from '../avatar/AvatarGroup';
+import Tag from '../tag/Tag';
 import Text from '../Text';
 
 export interface TagList {
@@ -27,17 +28,19 @@ const TAG_LIST: TagList = {
 };
 
 interface TeamCardProps {
-  tag: keyof TagList;
+  tag: 'SQUAD' | 'FEATURE';
   name: string;
   description: string;
-  members: {
-    nickname?: string;
-    image?: string;
-  }[];
+  members: ReadTeamListResponse['team'][number]['members'];
   selected?: boolean;
 }
 
 const TeamCard = ({ tag, name, description, members, selected }: TeamCardProps) => {
+  const mappedMembers = members.map((member) => ({
+    nickname: member.userId,
+    image: member.picture,
+  }));
+
   return (
     <Wrapper $selected={selected}>
       <TeamInfo>
@@ -53,7 +56,7 @@ const TeamCard = ({ tag, name, description, members, selected }: TeamCardProps) 
           </Description>
         </TextBox>
       </TeamInfo>
-      <AvatarGroup profileList={members} />
+      <AvatarGroup profileList={mappedMembers} />
     </Wrapper>
   );
 };

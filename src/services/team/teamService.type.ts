@@ -2,15 +2,13 @@ export interface ReadTeamListResponse {
   count: number;
   team: {
     teamId: string;
-    type: string;
+    type: 'SQUAD' | 'FEATURE';
     name: string;
     description: string;
-    members: [
-      {
-        userId: string;
-        picture: string;
-        userRole: string;
-      },
-    ];
+    members: {
+      userId: string;
+      picture: string;
+      userRole: string;
+    }[];
   }[];
 }

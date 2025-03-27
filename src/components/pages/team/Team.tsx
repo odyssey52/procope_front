@@ -6,7 +6,7 @@ import PageTitle from '@/components/common/ui/title/PageTitle';
 import HeaderLayout from '@/components/layout/HeaderLayout';
 import teamQueries from '@/query/team/teamQueries';
 import useAuthStore from '@/store/auth/auth';
-import { useQuery } from '@tanstack/react-query';
+import { useSuspenseQuery } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import { Suspense } from 'react';
 import styled, { keyframes } from 'styled-components';
@@ -22,7 +22,7 @@ function TeamContent() {
   const paths = {
     '팀 목록': '/team',
   };
-  const { data, isLoading } = useQuery({
+  const { data } = useSuspenseQuery({
     ...teamQueries.readTeamList(),
   });
 
@@ -37,12 +37,12 @@ function TeamContent() {
           </PageSubTitle>
         </TitleBox>
       </Head>
-      {data && data.team.length === 0 && (
+      {(!data?.team || data.team.length === 0) && (
         <EmptyBox>
           <Empty title={EMPTY_TITLE} description={EMPTY_DESCRIPTION} onClick={() => router.push('/team/create')} />
         </EmptyBox>
       )}
-      {data && data.team.length > 0 && <TeamCardList teamList={data.team} />}
+      {data?.team && data.team.length > 0 && <TeamCardList teamList={data.team} />}
     </Content>
   );
 }
