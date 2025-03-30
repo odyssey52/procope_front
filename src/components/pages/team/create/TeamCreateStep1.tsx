@@ -3,8 +3,8 @@ import Text from '@/components/common/ui/Text';
 import styled from 'styled-components';
 
 interface TeamCreateStep1Props {
-  teamType: number;
-  teamTypeHandler: (type: number) => void;
+  teamType: 'SQUAD' | 'FEATURE' | null;
+  teamTypeHandler: (type: 'SQUAD' | 'FEATURE') => void;
 }
 
 const TeamCreateStep1 = ({ teamType, teamTypeHandler }: TeamCreateStep1Props) => {
@@ -22,16 +22,16 @@ const TeamCreateStep1 = ({ teamType, teamTypeHandler }: TeamCreateStep1Props) =>
         <JobSubCard
           text="스쿼드"
           icon="/assets/icons/graphic/glass/user-on.png"
-          state={teamType === 1 ? 'selected' : undefined}
+          state={teamType === 'SQUAD' ? 'selected' : undefined}
           subText={'특정 목표를 바탕으로\n직무와 상관없이 제품을 만들기 위한 팀'}
-          onClick={() => teamTypeHandler(1)}
+          onClick={() => teamTypeHandler('SQUAD')}
         />
         <JobSubCard
           text="기능"
           icon="/assets/icons/graphic/glass/setting-on.png"
-          state={teamType === 2 ? 'selected' : undefined}
+          state={teamType === 'FEATURE' ? 'selected' : undefined}
           subText={'직무를 중심으로 구성된 팀\n개발, 기획, 마케팅, 재무 등'}
-          onClick={() => teamTypeHandler(2)}
+          onClick={() => teamTypeHandler('FEATURE')}
         />
       </CardBox>
     </Wrapper>

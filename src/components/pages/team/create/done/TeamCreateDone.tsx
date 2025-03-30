@@ -11,7 +11,7 @@ import { useRouter } from 'next/navigation';
 import styled from 'styled-components';
 
 const TeamCreateDone = ({ url }: { url: string }) => {
-  const inviteUrl = `${process.env.NEXT_PUBLIC_APP_URL}/team/invite/${url}`;
+  const inviteUrl = `${process.env.NEXT_PUBLIC_APP_URL}team/invite/${url}`;
   const router = useRouter();
   const handleToast = () => {
     toastActions.open({

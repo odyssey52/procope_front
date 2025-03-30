@@ -26,19 +26,19 @@ const TeamCreate = () => {
   const router = useRouter();
 
   const [step, setStep] = useState<number>(1);
-  const [teamType, setTeamType] = useState<number>(0);
+  const [teamType, setTeamType] = useState<'SQUAD' | 'FEATURE' | null>(null);
   const [teamName, setTeamName] = useState<string>('');
   const [teamDescription, setTeamDescription] = useState<string>('');
 
   const teamNameValid = teamName.length <= 20 && /^[a-zA-Z0-9가-힣]*$/.test(teamName);
-  const teamDescriptionValid = teamName.length <= 200 && /^[a-zA-Z0-9가-힣]*$/.test(teamDescription);
+  const teamDescriptionValid = teamDescription.length <= 200 && /^[a-zA-Z0-9가-힣]*$/.test(teamDescription);
 
   const createTeamMutation = useMutation({
     mutationFn: createTeam,
   });
 
   const stepValidation = () => {
-    if (step === 1 && teamType !== 0) {
+    if (step === 1 && teamType) {
       return true;
     }
     if (step === 2 && teamName.length > 0 && teamNameValid && teamDescriptionValid) {
@@ -46,15 +46,14 @@ const TeamCreate = () => {
     }
     return false;
   };
-
   const onClickNext = async () => {
-    if (step === 1 && teamType !== 0) {
+    if (step === 1 && teamType) {
       return setStep(step + 1);
     }
-    if (step === 2 && teamName.length > 0 && teamNameValid && teamDescriptionValid) {
+    if (step === 2 && teamName.length > 0 && teamNameValid && teamDescriptionValid && teamType) {
       // 팀생성 비동기로 변경해야함
       const payload = {
-        type: teamType === 0 ? 'SQUAD' : 'FEATURE',
+        type: teamType,
         name: teamName,
         description: teamDescription,
       };
@@ -69,7 +68,7 @@ const TeamCreate = () => {
     }
   };
 
-  const teamTypeHandler = (type: number) => {
+  const teamTypeHandler = (type: 'SQUAD' | 'FEATURE') => {
     setTeamType(type);
   };
 
