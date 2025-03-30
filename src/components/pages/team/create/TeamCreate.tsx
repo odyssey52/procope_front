@@ -30,8 +30,10 @@ const TeamCreate = () => {
   const [teamName, setTeamName] = useState<string>('');
   const [teamDescription, setTeamDescription] = useState<string>('');
 
-  const teamNameValid = teamName.length <= 20 && /^[a-zA-Z0-9가-힣]*$/.test(teamName);
-  const teamDescriptionValid = teamDescription.length <= 200 && /^[a-zA-Z0-9가-힣]*$/.test(teamDescription);
+  const teamNameValid =
+    teamName.length <= 20 && /^[a-zA-Z0-9가-힣\s!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]*$/.test(teamName);
+  const teamDescriptionValid =
+    teamDescription.length <= 200 && /^[a-zA-Z0-9가-힣\s!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]*$/.test(teamDescription);
 
   const createTeamMutation = useMutation({
     mutationFn: createTeam,
