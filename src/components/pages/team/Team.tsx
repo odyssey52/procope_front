@@ -22,9 +22,7 @@ function TeamContent() {
   const paths = {
     '팀 목록': '/team',
   };
-  const { data } = useSuspenseQuery({
-    ...teamQueries.readTeamList(),
-  });
+  const { data } = useSuspenseQuery({ ...teamQueries.readTeamList });
 
   return (
     <Content>

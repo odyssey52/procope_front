@@ -1,4 +1,5 @@
-import { Colors } from '@/styles/theme';
+'use client';
+
 import React, { ReactNode } from 'react';
 import styled, { css } from 'styled-components';
 

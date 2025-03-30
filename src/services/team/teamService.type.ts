@@ -12,3 +12,13 @@ export interface ReadTeamListResponse {
     }[];
   }[];
 }
+
+export interface CreateTeamRequest {
+  type: string;
+  name: string;
+  description: string;
+}
+
+export interface CreateTeamResponse {
+  url: string;
+}

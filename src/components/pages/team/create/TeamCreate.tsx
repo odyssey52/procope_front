@@ -1,3 +1,5 @@
+'use client';
+
 import { IconDirectionLeft } from '@/assets/icons/line';
 import Breadcrumbs from '@/components/common/ui/breadcrumbs/Breadcrumbs';
 import Button from '@/components/common/ui/button/Button';
@@ -5,6 +7,8 @@ import TextButton from '@/components/common/ui/button/TextButton';
 import Container from '@/components/common/ui/Container';
 import ProgressBar from '@/components/common/ui/progress/ProgressBar';
 import HeaderLayout from '@/components/layout/HeaderLayout';
+import { createTeam } from '@/services/team/teamService';
+import { useMutation } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import styled from 'styled-components';
@@ -29,6 +33,10 @@ const TeamCreate = () => {
   const teamNameValid = teamName.length <= 20 && /^[a-zA-Z0-9가-힣]*$/.test(teamName);
   const teamDescriptionValid = teamName.length <= 200 && /^[a-zA-Z0-9가-힣]*$/.test(teamDescription);
 
+  const createTeamMutation = useMutation({
+    mutationFn: createTeam,
+  });
+
   const stepValidation = () => {
     if (step === 1 && teamType !== 0) {
       return true;
@@ -39,14 +47,22 @@ const TeamCreate = () => {
     return false;
   };
 
-  const onClickNext = () => {
+  const onClickNext = async () => {
     if (step === 1 && teamType !== 0) {
       return setStep(step + 1);
     }
     if (step === 2 && teamName.length > 0 && teamNameValid && teamDescriptionValid) {
-      return router.push('/team/create/done');
+      // 팀생성 비동기로 변경해야함
+      const payload = {
+        type: teamType === 0 ? 'SQUAD' : 'FEATURE',
+        name: teamName,
+        description: teamDescription,
+      };
+      const { url } = await createTeamMutation.mutateAsync(payload);
+      router.push(`/team/create/${url}`);
     }
   };
+
   const onClickPrev = () => {
     if (step === 2) {
       setStep(step - 1);

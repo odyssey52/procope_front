@@ -1,3 +1,5 @@
+'use client';
+
 import { PropsWithChildren } from 'react';
 import styled, { css } from 'styled-components';
 import { Colors, FontStyle } from '@/styles/theme';
