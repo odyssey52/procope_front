@@ -68,7 +68,7 @@ const Wrapper = styled.div<{ $selected?: boolean }>`
   cursor: pointer;
   gap: 20px;
   align-items: end;
-  width: 292px;
+  width: 100%;
   padding: 16px;
   border-radius: 16px;
   border: 1px solid ${({ theme }) => theme.sementicColors.border.primary};
