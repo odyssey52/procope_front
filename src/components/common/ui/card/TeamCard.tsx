@@ -48,12 +48,12 @@ const TeamCard = ({ tag, name, description, members, selected }: TeamCardProps) 
           {TAG_LIST[tag].label}
         </Tag>
         <TextBox>
-          <TeamName variant="heading_18" color="primary">
+          <Text variant="heading_18" color="primary" ellipsis lines={1}>
             {name}
-          </TeamName>
-          <Description variant="body_14_regular" color="secondary">
+          </Text>
+          <Text variant="body_14_regular" color="secondary" ellipsis lines={2}>
             {description}
-          </Description>
+          </Text>
         </TextBox>
       </TeamInfo>
       <AvatarGroup profileList={mappedMembers} />
@@ -101,26 +101,6 @@ const TextBox = styled.div`
   display: flex;
   flex-direction: column;
   gap: 8px;
-`;
-const TeamName = styled(Text)`
-  display: -webkit-box;
-
-  -webkit-line-clamp: 1;
-  -webkit-box-orient: vertical;
-
-  text-overflow: ellipsis;
-  word-wrap: break-word;
-  word-break: break-all;
-  overflow: hidden;
-`;
-const Description = styled(Text)`
-  display: -webkit-box;
-  overflow: hidden;
-
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-
-  text-overflow: ellipsis;
 `;
 
 TeamCard.displayName = 'TeamCard';
