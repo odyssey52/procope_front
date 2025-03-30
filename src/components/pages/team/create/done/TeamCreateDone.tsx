@@ -1,3 +1,5 @@
+'use client';
+
 import { IconLink } from '@/assets/icons/line';
 import Button from '@/components/common/ui/button/Button';
 import Container from '@/components/common/ui/Container';
@@ -5,10 +7,12 @@ import Placeholder from '@/components/common/ui/placeholder/Placeholder';
 import Text from '@/components/common/ui/Text';
 import HeaderLayout from '@/components/layout/HeaderLayout';
 import { toastActions } from '@/store/modal/toast';
+import { useRouter } from 'next/navigation';
 import styled from 'styled-components';
 
-const TeamCreateDone = () => {
-  const MOCK_URL = 'www.procope.kr/teamOdyssey123456/share/link';
+const TeamCreateDone = ({ url }: { url: string }) => {
+  const inviteUrl = `${process.env.NEXT_PUBLIC_APP_URL}team/invite/${url}`;
+  const router = useRouter();
   const handleToast = () => {
     toastActions.open({
       state: 'success',
@@ -38,12 +42,12 @@ const TeamCreateDone = () => {
             </Text>
           </TitleBox>
           <ShareBox>
-            <Placeholder value={MOCK_URL} disabled />
-            <Button leftIcon={<IconLink />} $type="tertiary" onClick={() => copyToClipboard(MOCK_URL)}>
+            <Placeholder value={inviteUrl} disabled />
+            <Button leftIcon={<IconLink />} $type="tertiary" onClick={() => copyToClipboard(inviteUrl)}>
               초대 링크 복사
             </Button>
           </ShareBox>
-          <StartButton>시작하기</StartButton>
+          <StartButton onClick={() => router.push('/team')}>시작하기</StartButton>
         </Content>
       </Container>
     </HeaderLayout>

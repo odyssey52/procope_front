@@ -4,185 +4,153 @@ import Empty from '@/components/common/ui/empty/Empty';
 import PageSubTitle from '@/components/common/ui/title/PageSubTitle';
 import PageTitle from '@/components/common/ui/title/PageTitle';
 import HeaderLayout from '@/components/layout/HeaderLayout';
+import teamQueries from '@/query/team/teamQueries';
 import useAuthStore from '@/store/auth/auth';
+import { useSuspenseQuery } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
-import styled from 'styled-components';
+import { Suspense } from 'react';
+import styled, { keyframes } from 'styled-components';
 import ControlBox from './ControlBox';
-import TeamCardList, { TeamCardListProps } from './TeamCardList';
-
-const MOCK_TEAM_LIST: TeamCardListProps['teamList'] = [
-  {
-    tag: 'SQUAD',
-    name: 'Squad 1',
-    description: 'Squad 1 Description',
-    members: [
-      {
-        nickname: '김코딩',
-        image: 'https://avatars.githubusercontent.com/u/59657431?v=4',
-      },
-      {
-        nickname: '박디자인',
-        image: 'https://avatars.githubusercontent.com/u/59657431?v=4',
-      },
-      {
-        nickname: '이프로덕트',
-        image: 'https://avatars.githubusercontent.com/u/59657431?v=4',
-      },
-      {
-        nickname: '최매니저',
-        image: 'https://avatars.githubusercontent.com/u/59657431?v=4',
-      },
-      {
-        nickname: '정마케터',
-        image: 'https://avatars.githubusercontent.com/u/59657431?v=4',
-      },
-      {
-        nickname: '홍개발',
-        image: 'https://avatars.githubusercontent.com/u/59657431?v=4',
-      },
-      {
-        nickname: '김디자인',
-        image: 'https://avatars.githubusercontent.com/u/59657431?v=4',
-      },
-      {
-        nickname: '박프로덕트',
-        image: 'https://avatars.githubusercontent.com/u/59657431?v=4',
-      },
-      {
-        nickname: '이매니저',
-        image: 'https://avatars.githubusercontent.com/u/59657431?v=4',
-      },
-      {
-        nickname: '최마케터',
-        image: 'https://avatars.githubusercontent.com/u/59657431?v=4',
-      },
-      {
-        nickname: '정개발',
-        image: 'https://avatars.githubusercontent.com/u/59657431?v=4',
-      },
-      {
-        nickname: '홍디자인',
-        image: 'https://avatars.githubusercontent.com/u/59657431?v=4',
-      },
-      {
-        nickname: '김프로덕트',
-        image: 'https://avatars.githubusercontent.com/u/59657431?v=4',
-      },
-      {
-        nickname: '박매니저',
-        image: 'https://avatars.githubusercontent.com/u/59657431?v=4',
-      },
-      {
-        nickname: '이마케터',
-        image: 'https://avatars.githubusercontent.com/u/59657431?v=4',
-      },
-      {
-        nickname: '최개발',
-        image: 'https://avatars.githubusercontent.com/u/59657431?v=4',
-      },
-    ],
-  },
-  {
-    tag: 'FEATURE',
-    name: 'Feature 1',
-    description: 'Feature 1 Description',
-    members: [
-      {
-        nickname: '김코딩',
-        image: 'https://avatars.githubusercontent.com/u/59657431?v=4',
-      },
-      {
-        nickname: '박디자인',
-        image: 'https://avatars.githubusercontent.com/u/59657431?v=4',
-      },
-      {
-        nickname: '이프로덕트',
-        image: 'https://avatars.githubusercontent.com/u/59657431?v=4',
-      },
-      {
-        nickname: '최매니저',
-        image: 'https://avatars.githubusercontent.com/u/59657431?v=4',
-      },
-      {
-        nickname: '정마케터',
-        image: 'https://avatars.githubusercontent.com/u/59657431?v=4',
-      },
-    ],
-  },
-  {
-    tag: 'SQUAD',
-    name: 'Squad 2',
-    description: 'Squad 2 Description',
-    members: [
-      {
-        nickname: '김코딩',
-        image: 'https://avatars.githubusercontent.com/u/59657431?v=4',
-      },
-      {
-        nickname: '박디자인',
-        image: 'https://avatars.githubusercontent.com/u/59657431?v=4',
-      },
-      {
-        nickname: '이프로덕트',
-        image: 'https://avatars.githubusercontent.com/u/59657431?v=4',
-      },
-      {
-        nickname: '최매니저',
-        image: 'https://avatars.githubusercontent.com/u/59657431?v=4',
-      },
-      {
-        nickname: '정마케터',
-        image: 'https://avatars.githubusercontent.com/u/59657431?v=4',
-      },
-    ],
-  },
-  {
-    tag: 'FEATURE',
-    name: 'Feature 2',
-    description: 'Feature 2 Description',
-    members: [
-      {
-        nickname: '김코딩',
-        image: 'https://avatars.githubusercontent.com/u/59657431?v=4',
-      },
-      {
-        nickname: '박디자인',
-        image: 'https://avatars.githubusercontent.com/u/59657431?v=4',
-      },
-    ],
-  },
-];
-const EMPTY_LIST: TeamCardListProps['teamList'] = [];
+import TeamCardList from './TeamCardList';
 
 const EMPTY_TITLE = '참여 중인 팀이 없습니다.';
 const EMPTY_DESCRIPTION = '팀을 생성하거나 다른 생성자에게 초대받으세요';
 
-const Team = () => {
-  const { accessToken } = useAuthStore();
+// 데이터 페칭을 담당하는 컴포넌트
+function TeamContent() {
   const router = useRouter();
   const paths = {
     '팀 목록': '/team',
   };
+  const { data } = useSuspenseQuery({ ...teamQueries.readTeamList });
+
+  return (
+    <Content>
+      <Head>
+        <TitleBox>
+          <Breadcrumbs paths={paths} />
+          <PageTitle title="Team" />
+          <PageSubTitle first="총" point={`${data?.team?.length || 0}`} last="개">
+            <ControlBox />
+          </PageSubTitle>
+        </TitleBox>
+      </Head>
+      {(!data?.team || data.team.length === 0) && (
+        <EmptyBox>
+          <Empty title={EMPTY_TITLE} description={EMPTY_DESCRIPTION} onClick={() => router.push('/team/create')} />
+        </EmptyBox>
+      )}
+      {data?.team && data.team.length > 0 && <TeamCardList teamList={data.team} />}
+    </Content>
+  );
+}
+
+// 로딩 상태를 표시하는 컴포넌트
+function LoadingFallback() {
+  return (
+    <Content>
+      <Head>
+        <TitleBox>
+          <Breadcrumbs paths={{ '팀 목록': '/team' }} />
+          <PageTitle title="Team" />
+          <PageSubTitle first="총" point="0" last="개">
+            <ControlBox />
+          </PageSubTitle>
+        </TitleBox>
+      </Head>
+      <SkeletonContainer>
+        {[1, 2, 3].map((index) => (
+          <SkeletonCard key={index}>
+            <SkeletonTag />
+            <SkeletonTitle />
+            <SkeletonDescription />
+            <SkeletonMemberList>
+              {[1, 2, 3].map((memberIndex) => (
+                <SkeletonMember key={memberIndex} />
+              ))}
+            </SkeletonMemberList>
+          </SkeletonCard>
+        ))}
+      </SkeletonContainer>
+    </Content>
+  );
+}
+
+// 스켈레톤 UI 스타일 컴포넌트
+const SkeletonContainer = styled.div`
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 24px;
+  width: 100%;
+  padding: 24px 0;
+`;
+
+const skeletonAnimation = keyframes`
+  0% {
+    background-position: -200px 0;
+  }
+  100% {
+    background-position: calc(200px + 100%) 0;
+  }
+`;
+
+const SkeletonCard = styled.div`
+  background: white;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+`;
+
+const SkeletonBase = styled.div`
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200px 100%;
+  animation: ${skeletonAnimation} 1.2s ease-in-out infinite;
+`;
+
+const SkeletonTag = styled(SkeletonBase)`
+  width: 60px;
+  height: 24px;
+  border-radius: 4px;
+`;
+
+const SkeletonTitle = styled(SkeletonBase)`
+  width: 80%;
+  height: 28px;
+  border-radius: 4px;
+`;
+
+const SkeletonDescription = styled(SkeletonBase)`
+  width: 100%;
+  height: 20px;
+  border-radius: 4px;
+`;
+
+const SkeletonMemberList = styled.div`
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 8px;
+`;
+
+const SkeletonMember = styled(SkeletonBase)`
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+`;
+
+// 메인 Team 컴포넌트
+const Team = () => {
+  const { accessToken } = useAuthStore();
+
   return (
     <HeaderLayout>
       <TeamContainer>
-        <Content>
-          <Head>
-            <TitleBox>
-              <Breadcrumbs paths={paths} />
-              <PageTitle title="Team" />
-              <PageSubTitle first="총" point={`${EMPTY_LIST.length}`} last="개">
-                <ControlBox />
-              </PageSubTitle>
-            </TitleBox>
-          </Head>
-          {EMPTY_LIST.length === 0 && (
-            <EmptyBox>
-              <Empty title={EMPTY_TITLE} description={EMPTY_DESCRIPTION} onClick={() => router.push('/team/create')} />
-            </EmptyBox>
-          )}
-          {EMPTY_LIST.length > 0 && <TeamCardList teamList={EMPTY_LIST} />}
-        </Content>
+        <Suspense fallback={<LoadingFallback />}>
+          <TeamContent />
+        </Suspense>
       </TeamContainer>
     </HeaderLayout>
   );

@@ -1,3 +1,5 @@
+'use client';
+
 import { ChangeEvent, ReactNode, useRef } from 'react';
 import styled, { css } from 'styled-components';
 import Description from '../description/Description';

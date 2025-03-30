@@ -1,3 +1,5 @@
+'use client';
+
 import { PropsWithChildren } from 'react';
 import styled, { css } from 'styled-components';
 import { Colors, FontStyle } from '@/styles/theme';
@@ -32,6 +34,8 @@ const Wrapper = styled.div<TextStyledProps>`
 
   /* 기본 동작: 줄바꿈 처리 */
   white-space: ${({ $ellipsis }) => ($ellipsis ? 'normal' : 'pre-wrap')};
+  word-break: break-word;
+  word-wrap: break-word;
 
   /* 말줄임 처리 */
   ${({ $ellipsis, $lines }) =>
@@ -39,22 +43,10 @@ const Wrapper = styled.div<TextStyledProps>`
     css`
       overflow: hidden;
       text-overflow: ellipsis;
-
-      /* 단일 줄 말줄임 처리 */
-      ${$lines === 1 &&
-      css`
-        white-space: nowrap;
-      `}
-
-      /* 다줄 말줄임 처리 */
-      ${$lines &&
-      $lines > 1 &&
-      css`
-        display: -webkit-box;
-        -webkit-line-clamp: ${$lines};
-        -webkit-box-orient: vertical;
-        white-space: normal;
-      `}
+      display: -webkit-box;
+      -webkit-line-clamp: ${$lines};
+      -webkit-box-orient: vertical;
+      white-space: normal;
     `}
 `;
 
