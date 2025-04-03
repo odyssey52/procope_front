@@ -118,6 +118,8 @@ const Wrapper = styled.div`
   justify-content: space-between;
   display: flex;
   padding: 8px 24px;
+  border-bottom: 1px solid ${({ theme }) => theme.sementicColors.border.primary};
+  background-color: ${({ theme }) => theme.sementicColors.bg.invers};
 `;
 const SettingOption = styled.div`
   display: flex;

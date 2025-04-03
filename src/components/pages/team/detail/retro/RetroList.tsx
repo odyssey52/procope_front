@@ -191,6 +191,9 @@ const Wrapper = styled.div`
   flex-direction: column;
   width: 100%;
   gap: 40px;
+  margin: 24px;
+  padding: 24px;
+  background-color: ${({ theme }) => theme.sementicColors.bg.invers};
 `;
 const Content = styled.div`
   display: flex;
