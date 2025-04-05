@@ -10,8 +10,8 @@ import { toastActions } from '@/store/modal/toast';
 import { useRouter } from 'next/navigation';
 import styled from 'styled-components';
 
-const TeamCreateDone = ({ url }: { url: string }) => {
-  const inviteUrl = `${process.env.NEXT_PUBLIC_APP_URL}team/invite/${url}`;
+const TeamCreateDone = ({ code }: { code: string }) => {
+  const inviteUrl = `${process.env.NEXT_PUBLIC_APP_URL}team/invite/${code}`;
   const router = useRouter();
   const handleToast = () => {
     toastActions.open({

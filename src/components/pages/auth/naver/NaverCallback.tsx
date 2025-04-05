@@ -43,7 +43,13 @@ const NaverCallback = () => {
       if (userInfoData.isNewUser) {
         router.replace('/onboarding');
       } else {
-        router.replace('/team');
+        const previousPath = localStorage.getItem('previousPath');
+        if (previousPath) {
+          localStorage.removeItem('previousPath');
+          router.replace(previousPath);
+        } else {
+          router.replace('/team');
+        }
       }
     }
   }, [isSuccessReadUserInfo, userInfoData]);

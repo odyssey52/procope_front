@@ -13,11 +13,11 @@ export const queryClient = new QueryClient();
 
 queryClient.setDefaultOptions({
   queries: {
-    retry: 2,
+    retry: 0,
     retryDelay: 0,
   },
   mutations: {
-    retry: 2,
+    retry: 0,
     retryDelay: 0,
   },
 });
