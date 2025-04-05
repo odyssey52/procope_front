@@ -28,10 +28,10 @@ export function AuthGuard({ children }: { children: React.ReactNode }) {
   // 인증 상태 모니터링 및 리다이렉트 처리
   useEffect(() => {
     if (!isLoading && !isAuthenticated) {
-      // 로딩이 완료되고 인증되지 않은 상태일 때
-      const currentPath = window.location.pathname; // 현재 페이지 경로 저장
-      // 로그인 페이지로 리다이렉트 (현재 경로를 쿼리 파라미터로 전달)
-      router.replace(`/login?from=${encodeURIComponent(currentPath)}`);
+      const currentPath = window.location.pathname;
+      // localStorage에 이전 경로 저장
+      localStorage.setItem('previousPath', currentPath);
+      router.replace('/login');
     }
   }, [isLoading, isAuthenticated, router]);
 

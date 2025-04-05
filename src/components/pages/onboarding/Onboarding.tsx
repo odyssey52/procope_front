@@ -115,7 +115,13 @@ const Onboarding = () => {
         },
         preferences,
       });
-      router.replace('/team');
+      const previousPath = localStorage.getItem('previousPath');
+      if (previousPath) {
+        localStorage.removeItem('previousPath');
+        router.replace(previousPath);
+      } else {
+        router.replace('/team');
+      }
     } catch {
       // 에러 처리는 mutation의 onError에서 처리
     }
