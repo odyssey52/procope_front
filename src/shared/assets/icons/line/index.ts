@@ -79,6 +79,7 @@ export { default as IconFile03 } from './File03';
 export { default as IconFile04 } from './File04';
 export { default as IconFiles01 } from './Files01';
 export { default as IconFilter } from './Filter';
+export { default as IconFlag } from './Flag';
 export { default as IconFlashLight } from './FlashLight';
 export { default as IconFolderDownload } from './FolderDownload';
 export { default as IconFolderAccept } from './FolderAccept';

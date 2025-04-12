@@ -1,6 +1,8 @@
 'use client';
 
 import RetroCard from '@/shared/ui/card/RetroCard';
+import TaskCard from '@/shared/ui/card/TaskCard';
+import Tag from '@/shared/ui/tag/Tag';
 import Link from 'next/link';
 import styled from 'styled-components';
 
@@ -34,11 +36,26 @@ const mock: Mock = {
   },
   totalComments: 2,
 };
+
+// 태그 데이터 예시
+const tagData = [
+  { id: 1, label: '태그1', color: 'blue' },
+  { id: 2, label: '태그2', color: 'green' },
+];
+
 const page = () => {
   return (
     <PlayGround>
       <Content>
         <Link href="/login">로그인</Link>
+        <TaskCard
+          tags={tagData}
+          title="타이틀"
+          startDate="2025-01-01"
+          endDate="2025-01-01"
+          user={mock.user}
+          totalComments={mock.totalComments}
+        />
         <RetroCard item={mock} />
         <RetroCard item={mock} />
       </Content>
