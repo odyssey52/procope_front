@@ -89,7 +89,7 @@ const TaskCard = ({
             </MenuContainer>
           )}
         </TagBox>
-        <Text variant="heading_18" color="secondary">
+        <Text variant="heading_18" color="secondary" ellipsis>
           {title}
         </Text>
       </Top>
