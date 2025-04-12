@@ -1,9 +1,8 @@
 'use client';
 
+import { IconCheckMarkRectangle } from '@/shared/assets/icons/line';
 import RetroCard from '@/shared/ui/card/RetroCard';
 import TaskCard from '@/shared/ui/card/TaskCard';
-import Tag from '@/shared/ui/tag/Tag';
-import Link from 'next/link';
 import styled from 'styled-components';
 
 interface Mock {
@@ -38,24 +37,23 @@ const mock: Mock = {
 };
 
 // 태그 데이터 예시
-const tagData = [
-  { id: 1, label: '태그1', color: 'blue' },
-  { id: 2, label: '태그2', color: 'green' },
-];
+const tagData = [{ id: 1, leftIcon: <IconCheckMarkRectangle />, label: 'PBM1' }];
 
 const page = () => {
   return (
     <PlayGround>
       <Content>
-        <Link href="/login">로그인</Link>
         <TaskCard
           tags={tagData}
+          tagJob="development"
           title="타이틀"
           startDate="2025-01-01"
           endDate="2025-01-01"
           user={mock.user}
           totalComments={mock.totalComments}
         />
+      </Content>
+      <Content>
         <RetroCard item={mock} />
         <RetroCard item={mock} />
       </Content>
@@ -64,8 +62,11 @@ const page = () => {
 };
 
 const PlayGround = styled.div`
+  display: flex;
+  flex-direction: column;
   min-height: 100vh;
   padding: 2%;
+  gap: 20px;
 `;
 
 const Content = styled.div`
