@@ -2,25 +2,118 @@
 
 import { IconDirectionLeft, IconDirectionRight } from '@/assets/icons/line';
 import { theme } from '@/styles/theme';
-import { useState } from 'react';
+import dayjs from 'dayjs';
+import { useEffect, useState } from 'react';
 import styled, { css } from 'styled-components';
 import Text from '../Text';
 import CalendarItem from './CalendarItem';
 
 const days = ['일', '월', '화', '수', '목', '금', '토'];
-const dates = Array.from({ length: 35 }, (_, i) => i - 1); // 날짜 + 공백용
 
-export default function Calendar() {
-  const [selected, setSelected] = useState<number | null>(15);
+interface CalendarProps {
+  selectedDate?: string; // YYYY-MM-DD 형식
+  onChange?: (date: string) => void;
+}
+
+interface SelectedDateInfo {
+  month: number;
+  date: number;
+}
+
+export default function Calendar({ selectedDate, onChange }: CalendarProps) {
+  const [currentDate, setCurrentDate] = useState(dayjs());
+  const [selected, setSelected] = useState<SelectedDateInfo | null>(null);
+
+  // 선택된 날짜가 있으면 해당 월로 이동하고 날짜 선택
+  useEffect(() => {
+    if (selectedDate) {
+      const date = dayjs(selectedDate);
+      setCurrentDate(date);
+      setSelected({
+        month: date.month(),
+        date: date.date(),
+      });
+    }
+  }, [selectedDate]);
+
+  // 현재 달의 첫 날의 요일을 구함 (0: 일요일, 1: 월요일, ...)
+  const firstDayOfMonth = currentDate.startOf('month').day();
+  // 현재 달의 마지막 날짜를 구함
+  const lastDateOfMonth = currentDate.endOf('month').date();
+  // 이전 달의 마지막 날짜를 구함
+  const lastDateOfPrevMonth = currentDate.subtract(1, 'month').endOf('month').date();
+
+  // 달력에 표시할 날짜 배열 생성
+  const dates = Array.from({ length: 35 }, (_, i) => {
+    if (i < firstDayOfMonth) {
+      // 이전 달의 날짜
+      return {
+        date: lastDateOfPrevMonth - (firstDayOfMonth - i - 1),
+        type: 'prev' as const,
+        month: currentDate.month() - 1,
+      };
+    }
+
+    if (i >= firstDayOfMonth && i < firstDayOfMonth + lastDateOfMonth) {
+      // 현재 달의 날짜
+      return {
+        date: i - firstDayOfMonth + 1,
+        type: 'current' as const,
+        month: currentDate.month(),
+      };
+    }
+
+    // 다음 달의 날짜
+    return {
+      date: i - (firstDayOfMonth + lastDateOfMonth) + 1,
+      type: 'next' as const,
+      month: currentDate.month() + 1,
+    };
+  });
+
+  const handlePrevMonth = () => {
+    setCurrentDate(currentDate.subtract(1, 'month'));
+    setSelected(null);
+  };
+
+  const handleNextMonth = () => {
+    setCurrentDate(currentDate.add(1, 'month'));
+    setSelected(null);
+  };
+
+  const handleDateSelect = (date: number, month: number) => {
+    const newSelectedDate = {
+      month,
+      date,
+    };
+    setSelected(newSelectedDate);
+
+    if (onChange) {
+      let selectedDate = currentDate;
+
+      if (month < currentDate.month()) {
+        selectedDate = currentDate.subtract(1, 'month');
+      } else if (month > currentDate.month()) {
+        selectedDate = currentDate.add(1, 'month');
+      }
+
+      const selectedFullDate = selectedDate.date(date).format('YYYY-MM-DD');
+      onChange(selectedFullDate);
+    }
+  };
 
   return (
     <Wrapper>
       <Header>
-        <IconDirectionLeft size={24} color={theme.sementicColors.icon.tertiary} />
+        <NavButton onClick={handlePrevMonth}>
+          <IconDirectionLeft size={24} color={theme.sementicColors.icon.primary} />
+        </NavButton>
         <Text variant="body_16_semibold" color="primary">
-          2025년 4월
+          {currentDate.format('YYYY년 M월')}
         </Text>
-        <IconDirectionRight size={24} color={theme.sementicColors.icon.tertiary} />
+        <NavButton onClick={handleNextMonth}>
+          <IconDirectionRight size={24} color={theme.sementicColors.icon.primary} />
+        </NavButton>
       </Header>
       <Days>
         {days.map((d) => (
@@ -32,17 +125,16 @@ export default function Calendar() {
         ))}
       </Days>
       <Grid>
-        {dates.map((n, i) => {
-          const isDisabled = n <= 0 || n > 30;
-          const isSelected = n === selected;
+        {dates.map((item, i) => {
+          const isSelected = selected?.month === item.month && selected?.date === item.date;
 
           return (
             <CalendarItem
-              key={`calendar-item-${n}`}
-              disabled={isDisabled}
+              key={`calendar-item-${i}`}
+              disabled={false}
               selected={isSelected}
-              label={n > 0 ? n.toString() : ''}
-              onClick={() => !isDisabled && setSelected(n)}
+              label={item.date.toString()}
+              onClick={() => handleDateSelect(item.date, item.month)}
             />
           );
         })}

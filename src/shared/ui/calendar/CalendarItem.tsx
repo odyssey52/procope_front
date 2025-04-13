@@ -4,7 +4,7 @@ import styled, { css } from 'styled-components';
 import Text from '../Text';
 
 interface CalendarItemProps {
-  disabled: boolean;
+  disabled?: boolean;
   selected: boolean;
   label: string;
   onClick: () => void;
@@ -18,7 +18,7 @@ const CalendarItem = ({ disabled, selected, label, onClick }: CalendarItemProps)
   );
 };
 
-const Wrapper = styled.button<{ disabled: boolean; selected: boolean }>`
+const Wrapper = styled.button<{ disabled?: boolean; selected: boolean }>`
   display: flex;
   align-items: center;
   justify-content: center;
