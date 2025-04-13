@@ -127,14 +127,15 @@ export default function Calendar({ selectedDate, onChange }: CalendarProps) {
       <Grid>
         {dates.map((item, i) => {
           const isSelected = selected?.month === item.month && selected?.date === item.date;
+          const isDisabled = item.type !== 'current';
 
           return (
             <CalendarItem
               key={`calendar-item-${i}`}
-              disabled={false}
+              disabled={isDisabled}
               selected={isSelected}
               label={item.date.toString()}
-              onClick={() => handleDateSelect(item.date, item.month)}
+              onClick={() => !isDisabled && handleDateSelect(item.date, item.month)}
             />
           );
         })}
