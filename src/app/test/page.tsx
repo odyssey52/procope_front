@@ -1,6 +1,7 @@
 'use client';
 
 import { IconCheckMarkRectangle } from '@/shared/assets/icons/line';
+import Calendar from '@/shared/ui/calendar/Calendar';
 import RetroCard from '@/shared/ui/card/RetroCard';
 import TaskCard from '@/shared/ui/card/TaskCard';
 import styled from 'styled-components';
@@ -42,6 +43,9 @@ const tagData = [{ id: 1, leftIcon: <IconCheckMarkRectangle />, label: 'PBM1' }]
 const page = () => {
   return (
     <PlayGround>
+      <Content>
+        <Calendar />
+      </Content>
       <Content>
         <TaskCard
           tags={tagData}

@@ -1,7 +1,7 @@
 'use client';
 
-import { IconChat01, IconClockCircle, IconFlag, IconMenuCircleVertical } from '@/assets/icons/line';
-import { theme } from '@/styles/theme';
+import { IconChat01, IconClockCircle, IconFlag, IconMenuCircleVertical } from '@/shared/assets/icons/line';
+import { theme } from '@/shared/styles/theme';
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import Avatar from '../avatar/Avatar';
@@ -137,6 +137,7 @@ const Wrapper = styled.div`
   width: 100%;
   background-color: ${({ theme }) => theme.sementicColors.bg.invers};
   border: 1px solid ${({ theme }) => theme.sementicColors.border.primary};
+  cursor: pointer;
 `;
 
 const Top = styled.div`
