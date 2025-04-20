@@ -1,7 +1,7 @@
 'use client';
 
-import userInfoQueries from '@/query/user/info/userInfoQueries';
-import useUserStore from '@/store/user/user';
+import userInfoQueries from '@/features/user/query/info/userInfoQueries';
+import useUserStore from '@/shared/lib/store/user/user';
 import { useQuery } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';

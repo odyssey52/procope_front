@@ -1,6 +1,6 @@
 'use client';
 
-import NaverCallback from '@/components/pages/auth/naver/NaverCallback';
+import NaverCallback from '@/features/auth/components/naver/NaverCallback';
 import { Suspense } from 'react';
 
 const page = () => {

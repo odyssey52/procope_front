@@ -1,6 +1,6 @@
 'use client';
 
-import TeamCreate from '@/components/pages/team/create/TeamCreate';
+import TeamCreate from '@/features/team/components/create/TeamCreate';
 
 const page = () => <TeamCreate />;
 

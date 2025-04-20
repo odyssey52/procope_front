@@ -1,6 +1,6 @@
 'use client';
 
-import GoogleCallback from '@/components/pages/auth/google/GoogleCallback';
+import GoogleCallback from '@/features/auth/components/google/GoogleCallback';
 import { Suspense } from 'react';
 
 const page = () => {

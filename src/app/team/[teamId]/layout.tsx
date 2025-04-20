@@ -1,8 +1,8 @@
 'use client';
 
-import SideNav from '@/components/common/ui/tab/SideNav';
-import HeaderLayout from '@/components/layout/HeaderLayout';
-import { TEAM_SIDE_NAV_TABS } from '@/constants/sideNavTab';
+import SideNav from '@/shared/ui/tab/SideNav';
+import HeaderLayout from '@/features/layout/HeaderLayout';
+import { TEAM_SIDE_NAV_TABS } from '@/shared/constants/sideNavTab';
 import { useParams } from 'next/navigation';
 import { ReactNode } from 'react';
 import styled from 'styled-components';

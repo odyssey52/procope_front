@@ -1,4 +1,4 @@
-import Provider from '@/components/common/Provider';
+import Provider from '@/shared/ui/provider/Provider';
 import { Metadata } from 'next';
 import { ReactNode } from 'react';
 

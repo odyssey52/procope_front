@@ -1,6 +1,6 @@
 'use clinet';
 
-import AccountSetting from '@/components/pages/accountSetting/AccountSetting';
+import AccountSetting from '@/features/accountSetting/AccountSetting';
 
 const page = () => {
   return <AccountSetting />;

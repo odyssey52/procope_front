@@ -1,6 +1,6 @@
 'use client';
 
-import RetroCard from '@/components/common/ui/card/RetroCard';
+import RetroCard from '@/shared/ui/card/RetroCard';
 import Link from 'next/link';
 import styled from 'styled-components';
 

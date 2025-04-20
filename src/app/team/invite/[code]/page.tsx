@@ -1,4 +1,4 @@
-import InvitePage from '@/components/pages/team/invite/InvitePage';
+import InvitePage from '@/features/team/components/invite/InvitePage';
 
 const page = async ({ params }: { params: Promise<{ code: string }> }) => {
   const { code } = await params;
