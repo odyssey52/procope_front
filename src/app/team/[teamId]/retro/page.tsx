@@ -1,6 +1,6 @@
 'use client';
 
-import RetroList from '@/components/pages/team/detail/retro/RetroList';
+import RetroList from '@/features/team/components/detail/retro/RetroList';
 
 const page = () => {
   return <RetroList />;

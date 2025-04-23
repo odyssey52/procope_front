@@ -1,6 +1,6 @@
 'use client';
 
-import Home from '@/components/pages/Home';
+import Home from '@/features/Home';
 
 const page = () => <Home />;
 

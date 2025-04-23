@@ -1,6 +1,6 @@
 'use client';
 
-import Onboarding from '@/components/pages/onboarding/Onboarding';
+import Onboarding from '@/features/onboarding/Onboarding';
 
 const page = () => <Onboarding />;
 

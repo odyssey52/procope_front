@@ -1,8 +1,8 @@
 'use client';
 
-import Modal from '@/components/common/ui/modal/common/Modal';
-import { LoginSection } from '@/components/pages/login';
-import { useAuth } from '@/hooks/useAuth';
+import Modal from '@/shared/ui/modal/common/Modal';
+import { LoginSection } from '@/features/login';
+import { useAuth } from '@/shared/hooks/useAuth';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Suspense, useEffect } from 'react';
 import styled from 'styled-components';

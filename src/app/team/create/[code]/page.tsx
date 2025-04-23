@@ -1,4 +1,4 @@
-import TeamCreateDone from '@/components/pages/team/create/done/TeamCreateDone';
+import TeamCreateDone from '@/features/team/components/create/done/TeamCreateDone';
 
 const page = async ({ params }: { params: Promise<{ code: string }> }) => {
   const { code } = await params;
