@@ -4,9 +4,8 @@ import { IconCheckMarkRectangle } from '@/shared/assets/icons/line';
 import CalendarModal from '@/shared/ui/calendar/CalendarModal';
 import RetroCard from '@/shared/ui/card/RetroCard';
 import TaskCard from '@/shared/ui/card/TaskCard';
+import { useState, useRef } from 'react';
 import styled from 'styled-components';
-import { useEffect, useRef, useState } from 'react';
-import { calendarModalActions } from '@/shared/lib/store/modal/calendarModal';
 
 interface Mock {
   role: 'development' | 'planning' | 'data' | 'design' | 'marketing' | 'sales' | 'operations';
@@ -44,21 +43,31 @@ const tagData = [{ id: 1, leftIcon: <IconCheckMarkRectangle />, label: 'PBM1' }]
 
 const page = () => {
   const [selectedDate, setSelectedDate] = useState<string>('');
+  const [isCalendarOpen, setIsCalendarOpen] = useState(false);
+  const buttonRef = useRef<HTMLButtonElement>(null);
 
   const handleOpenCalendar = () => {
-    calendarModalActions.open({
-      selectedDate,
-      onSelect: (date) => {
-        setSelectedDate(date);
-      },
-    });
+    setIsCalendarOpen(!isCalendarOpen);
+  };
+
+  const handleDateSelect = (date: string) => {
+    setSelectedDate(date);
   };
 
   return (
     <PlayGround>
-      <button type="button" onClick={handleOpenCalendar}>
-        달력 열어보세요 {selectedDate}
-      </button>
+      <ButtonWrapper>
+        <button type="button" ref={buttonRef} onClick={handleOpenCalendar}>
+          {selectedDate || '날짜 선택'}
+        </button>
+        <CalendarModal
+          isOpen={isCalendarOpen}
+          selectedDate={selectedDate}
+          onSelect={handleDateSelect}
+          onClose={() => setIsCalendarOpen(false)}
+          buttonRef={buttonRef}
+        />
+      </ButtonWrapper>
       <Content>
         <TaskCard
           tags={tagData}
@@ -84,6 +93,10 @@ const PlayGround = styled.div`
   min-height: 100vh;
   padding: 2%;
   gap: 20px;
+`;
+
+const ButtonWrapper = styled.div`
+  position: relative;
 `;
 
 const Content = styled.div`
