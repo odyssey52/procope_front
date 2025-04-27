@@ -1,11 +1,12 @@
 import styled, { css } from 'styled-components';
+import { ReactNode } from 'react';
 
 interface TagProps {
   $status?: 'error' | 'navy' | 'info' | 'success' | 'warning'; // default : default
   $style?: 'fill' | 'transparent'; // default : text
   $size?: 'large'; // default : small
-  $leftIcon?: string;
-  $rightIcon?: string;
+  $leftIcon?: ReactNode;
+  $rightIcon?: ReactNode;
 }
 
 const getTagStatusStyles = (style: TagProps['$style'], status: TagProps['$status']) => {
@@ -194,6 +195,8 @@ const Tag = styled.span<TagProps>`
   cursor: default;
   color: ${({ theme }) => theme.sementicColors.text.invers};
   > svg {
+    width: 16px;
+    height: 16px;
     stroke: ${({ theme }) => theme.sementicColors.text.primary};
   }
   ${({ theme }) => theme.fontStyle.caption_12_regular};
@@ -203,38 +206,29 @@ const Tag = styled.span<TagProps>`
       box-shadow: none;
     }
   }
-  ${({ $leftIcon }) =>
-    $leftIcon &&
-    css`
-      &::before {
-        content: '';
-        position: relative;
-        width: 16px;
-        height: 16px;
-        background-size: cover;
-        mask-image: url(${$leftIcon});
-        mask-size: cover;
-        background-color: ${({ theme }) => theme.sementicColors.icon.invers};
-        background-image: none;
-      }
-    `};
-  ${({ $rightIcon }) =>
-    $rightIcon &&
-    css`
-      &::after {
-        content: '';
-        position: relative;
-        width: 16px;
-        height: 16px;
-        background-size: cover;
-        mask-image: url(${$rightIcon});
-        mask-size: cover;
-        background-color: ${({ theme }) => theme.sementicColors.icon.invers};
-        background-image: none;
-      }
-    `};
   ${({ $style, $status }) => getTagStatusStyles($style, $status)}
   ${({ $size }) => getTagSizeStyles($size)}
 `;
 
-export default Tag;
+// 아이콘을 렌더링하기 위한 래퍼 컴포넌트
+const TagWrapper = ({
+  $leftIcon,
+  $rightIcon,
+  $status,
+  $style,
+  $size,
+  children,
+  ...props
+}: TagProps & { children: ReactNode }) => {
+  return (
+    <Tag $status={$status} $style={$style} $size={$size} {...props}>
+      {$leftIcon}
+      {children}
+      {$rightIcon}
+    </Tag>
+  );
+};
+
+TagWrapper.displayName = 'Tag';
+
+export default TagWrapper;

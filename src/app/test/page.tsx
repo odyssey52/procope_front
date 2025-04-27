@@ -1,7 +1,10 @@
 'use client';
 
+import { IconCheckMarkRectangle } from '@/shared/assets/icons/line';
+import CalendarModal from '@/shared/ui/calendar/CalendarModal';
 import RetroCard from '@/shared/ui/card/RetroCard';
-import Link from 'next/link';
+import TaskCard from '@/shared/ui/card/TaskCard';
+import { useState, useRef } from 'react';
 import styled from 'styled-components';
 
 interface Mock {
@@ -34,11 +37,49 @@ const mock: Mock = {
   },
   totalComments: 2,
 };
+
+// 태그 데이터 예시
+const tagData = [{ id: 1, leftIcon: <IconCheckMarkRectangle />, label: 'PBM1' }];
+
 const page = () => {
+  const [selectedDate, setSelectedDate] = useState<string>('');
+  const [isCalendarOpen, setIsCalendarOpen] = useState(false);
+  const buttonRef = useRef<HTMLButtonElement>(null);
+
+  const handleOpenCalendar = () => {
+    setIsCalendarOpen(!isCalendarOpen);
+  };
+
+  const handleDateSelect = (date: string) => {
+    setSelectedDate(date);
+  };
+
   return (
     <PlayGround>
+      <ButtonWrapper>
+        <button type="button" ref={buttonRef} onClick={handleOpenCalendar}>
+          {selectedDate || '날짜 선택'}
+        </button>
+        <CalendarModal
+          isOpen={isCalendarOpen}
+          selectedDate={selectedDate}
+          onSelect={handleDateSelect}
+          onClose={() => setIsCalendarOpen(false)}
+          buttonRef={buttonRef}
+        />
+      </ButtonWrapper>
       <Content>
-        <Link href="/login">로그인</Link>
+        <TaskCard
+          tags={tagData}
+          tagJob="development"
+          title="타이틀"
+          startDate="2025-01-01"
+          endDate="2025-01-01"
+          user={mock.user}
+          totalComments={mock.totalComments}
+        />
+      </Content>
+      <Content>
         <RetroCard item={mock} />
         <RetroCard item={mock} />
       </Content>
@@ -47,14 +88,22 @@ const page = () => {
 };
 
 const PlayGround = styled.div`
+  display: flex;
+  flex-direction: column;
   min-height: 100vh;
   padding: 2%;
+  gap: 20px;
+`;
+
+const ButtonWrapper = styled.div`
+  position: relative;
 `;
 
 const Content = styled.div`
   display: flex;
   gap: 16px;
 `;
+
 page.displayName = 'page';
 
 export default page;
