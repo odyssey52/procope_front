@@ -8,6 +8,7 @@ import { theme } from '@/shared/styles/theme';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import React from 'react';
 import { ThemeProvider } from 'styled-components';
+import CalendarModal from '../calendar/CalendarModal';
 
 export const queryClient = new QueryClient();
 
@@ -30,6 +31,7 @@ const Provider = ({ children }: { children: React.ReactNode }) => {
           <GlobalStyles />
           <Toast />
           <ConfirmDialog />
+          <CalendarModal />
           {children}
         </ThemeProvider>
       </StyledComponentsRegistry>

@@ -1,10 +1,12 @@
 'use client';
 
 import { IconCheckMarkRectangle } from '@/shared/assets/icons/line';
-import Calendar from '@/shared/ui/calendar/Calendar';
+import CalendarModal from '@/shared/ui/calendar/CalendarModal';
 import RetroCard from '@/shared/ui/card/RetroCard';
 import TaskCard from '@/shared/ui/card/TaskCard';
 import styled from 'styled-components';
+import { useEffect, useRef, useState } from 'react';
+import { calendarModalActions } from '@/shared/lib/store/modal/calendarModal';
 
 interface Mock {
   role: 'development' | 'planning' | 'data' | 'design' | 'marketing' | 'sales' | 'operations';
@@ -41,11 +43,22 @@ const mock: Mock = {
 const tagData = [{ id: 1, leftIcon: <IconCheckMarkRectangle />, label: 'PBM1' }];
 
 const page = () => {
+  const [selectedDate, setSelectedDate] = useState<string>('');
+
+  const handleOpenCalendar = () => {
+    calendarModalActions.open({
+      selectedDate,
+      onSelect: (date) => {
+        setSelectedDate(date);
+      },
+    });
+  };
+
   return (
     <PlayGround>
-      <Content>
-        <Calendar />
-      </Content>
+      <button type="button" onClick={handleOpenCalendar}>
+        달력 열어보세요 {selectedDate}
+      </button>
       <Content>
         <TaskCard
           tags={tagData}
@@ -77,6 +90,7 @@ const Content = styled.div`
   display: flex;
   gap: 16px;
 `;
+
 page.displayName = 'page';
 
 export default page;
