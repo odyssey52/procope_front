@@ -1,7 +1,7 @@
 'use client';
 
-import { IconDirectionLeft, IconDirectionRight } from '@/assets/icons/line';
-import { theme } from '@/styles/theme';
+import { IconDirectionLeft, IconDirectionRight } from '@/shared/assets/icons/line';
+import { theme } from '@/shared/styles/theme';
 import dayjs from 'dayjs';
 import { useEffect, useState } from 'react';
 import styled, { css } from 'styled-components';
