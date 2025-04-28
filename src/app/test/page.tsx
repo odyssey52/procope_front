@@ -4,6 +4,7 @@ import { IconCheckMarkRectangle } from '@/shared/assets/icons/line';
 import CalendarModal from '@/shared/ui/calendar/CalendarModal';
 import RetroCard from '@/shared/ui/card/RetroCard';
 import TaskCard from '@/shared/ui/card/TaskCard';
+import Toggle from '@/shared/ui/toggle/Toggle';
 import { useState, useRef } from 'react';
 import styled from 'styled-components';
 
@@ -43,6 +44,7 @@ const tagData = [{ id: 1, leftIcon: <IconCheckMarkRectangle />, label: 'PBM1' }]
 
 const page = () => {
   const [selectedDate, setSelectedDate] = useState<string>('');
+  const [isToggleChecked, setIsToggleChecked] = useState(false);
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
   const buttonRef = useRef<HTMLButtonElement>(null);
 
@@ -56,6 +58,7 @@ const page = () => {
 
   return (
     <PlayGround>
+      <Toggle label="토글" checked={isToggleChecked} onClick={() => setIsToggleChecked(!isToggleChecked)} />
       <ButtonWrapper>
         <button type="button" ref={buttonRef} onClick={handleOpenCalendar}>
           {selectedDate || '날짜 선택'}

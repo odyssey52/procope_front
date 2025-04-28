@@ -6,13 +6,14 @@ interface ToggleProps {
   disabled?: boolean;
   checked?: boolean;
   label?: string;
+  onClick?: () => void;
 }
 
 const toggleStyle = (disabled: ToggleProps['disabled'], checked: ToggleProps['checked']) => {
   if (disabled) {
     if (checked) {
       return css`
-        background-color: ${({ theme }) => theme.sementicColors.bg.tertiary_hover_pressed};
+        background-color: ${({ theme }) => theme.sementicColors.bg.primary};
         &:hover {
           cursor: not-allowed;
         }
@@ -81,7 +82,7 @@ const ToggleSwitch = styled.div<ToggleStyledProps>`
   position: relative;
   display: flex;
   cursor: pointer;
-  background-color: ${({ theme }) => theme.sementicColors.bg.disabled_bold};
+  background-color: ${({ theme }) => theme.sementicColors.bg.disabled};
   ${({ $disabled, $checked }) => toggleStyle($disabled, $checked)};
   transition: background-color 0.2s;
   padding: 2px;
