@@ -10,7 +10,14 @@ const TeamCardList = ({ teamList }: TeamCardListProps) => {
   return (
     <Wrapper>
       {teamList.map((team, index) => (
-        <TeamCard key={index} tag={team.type} name={team.name} description={team.description} members={team.members} />
+        <TeamCard
+          key={index}
+          tag={team.type}
+          name={team.name}
+          description={team.description}
+          members={team.members}
+          teamId={team.teamId}
+        />
       ))}
     </Wrapper>
   );

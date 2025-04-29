@@ -1,4 +1,5 @@
 import { ReadTeamListResponse } from '@/features/team/services/teamService.type';
+import { useRouter } from 'next/navigation';
 import styled from 'styled-components';
 import AvatarGroup from '../avatar/AvatarGroup';
 import Tag from '../tag/Tag';
@@ -32,17 +33,20 @@ interface TeamCardProps {
   name: string;
   description: string;
   members: ReadTeamListResponse['team'][number]['members'];
+  teamId: string;
   selected?: boolean;
 }
 
-const TeamCard = ({ tag, name, description, members, selected }: TeamCardProps) => {
+const TeamCard = ({ tag, name, description, members, teamId, selected }: TeamCardProps) => {
+  const router = useRouter();
+
   const mappedMembers = members.map((member) => ({
     nickname: member.userId,
     image: member.picture,
   }));
 
   return (
-    <Wrapper $selected={selected}>
+    <Wrapper $selected={selected} onClick={() => router.push(`/team/${teamId}/dashboard`)}>
       <TeamInfo>
         <Tag $style="transparent" $status={TAG_LIST[tag].status}>
           {TAG_LIST[tag].label}
