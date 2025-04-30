@@ -6,6 +6,7 @@ import { IconHome, IconOut, IconSetting } from '@/shared/assets/icons/line';
 import useAuthStore from '@/shared/lib/store/auth/auth';
 import useTeamStore from '@/shared/lib/store/team/team';
 import useUserStore from '@/shared/lib/store/user/user';
+import { handleLogout } from '@/shared/lib/utils/auth';
 import { elevation } from '@/shared/styles/mixin';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
@@ -18,7 +19,6 @@ import Tab2 from '../tab/Tab2';
 
 const Header = () => {
   const router = useRouter();
-  const { logout } = useAuthStore();
   const { setUser } = useUserStore();
   const { teamInfo } = useTeamStore();
   const { data, isSuccess } = useQuery({ ...userInfoQueries.readUserInfo });
@@ -35,20 +35,22 @@ const Header = () => {
 
   const invalidateRefreshTokenMutation = useMutation({ mutationFn: invalidateRefreshToken });
 
-  const handleLogout = async () => {
+  const handleLogoutClick = async () => {
     try {
       await invalidateRefreshTokenMutation.mutateAsync();
-      logout();
+      useAuthStore.getState().logout('manual');
+      handleLogout({ savePreviousPath: false });
     } catch (error) {
       console.error('로그아웃 실패:', error);
       alert('로그아웃 중 문제가 발생했습니다.');
     }
   };
+
   const valueHandler = (value: string) => {
     setIsOpen(false);
     if (value === '홈') router.push('/team');
     else if (value === '계정 설정') router.push('/accountSetting');
-    else if (value === '로그아웃') handleLogout();
+    else if (value === '로그아웃') handleLogoutClick();
   };
 
   const profileHandler = () => {

@@ -1,10 +1,9 @@
 import { useCallback } from 'react';
 import { AxiosError, AxiosResponse } from 'axios';
-import { useRouter } from 'next/navigation';
-import useAuthStore from '@/shared/lib/store/auth/auth';
 import { toastActions } from '@/shared/lib/store/modal/toast';
 import { ERROR_MESSAGES } from '@/shared/constants/errorMessages';
 import { ErrorHandlerConfig, ErrorType, determineErrorType } from '@/shared/types/error';
+import { handleLogout } from '@/shared/lib/utils/auth';
 
 interface AxiosErrorResponse {
   message?: string;
@@ -16,18 +15,15 @@ interface AxiosErrorWithResponse extends AxiosError {
 }
 
 const createDefaultConfig = (): ErrorHandlerConfig => {
-  const router = useRouter();
-  const { logout } = useAuthStore();
-
   return {
     showToast: (message: string) => {
       toastActions.open({ title: message, state: 'error' });
     },
     logout: async () => {
-      logout(); // httpProvider에서 이미 토큰 무효화와 리다이렉트를 처리하므로 단순히 로그아웃만 실행
+      await handleLogout({ savePreviousPath: true });
     },
     redirect: (path: string) => {
-      router.push(path);
+      handleLogout({ redirectPath: path });
     },
     logError: (error: unknown) => {
       console.error('API 에러 발생:', error);
@@ -39,13 +35,14 @@ const handleErrorByType = async (errorType: ErrorType, error: AxiosErrorWithResp
   const { showToast, logout, logError } = config;
   const errorMessage = error.response?.data?.message;
 
+  if (errorType === 'UNAUTHORIZED') {
+    await logout();
+    return;
+  }
+
   switch (errorType) {
     case 'BAD_REQUEST':
       showToast(errorMessage || ERROR_MESSAGES.BAD_REQUEST);
-      break;
-    case 'UNAUTHORIZED':
-      showToast(ERROR_MESSAGES.UNAUTHORIZED);
-      await logout();
       break;
     case 'FORBIDDEN':
       showToast(ERROR_MESSAGES.FORBIDDEN);
