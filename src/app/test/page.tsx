@@ -4,6 +4,7 @@ import { IconCheckMarkRectangle } from '@/shared/assets/icons/line';
 import CalendarModal from '@/shared/ui/calendar/CalendarModal';
 import RetroCard from '@/shared/ui/card/RetroCard';
 import TaskCard from '@/shared/ui/card/TaskCard';
+import Tab2 from '@/shared/ui/tab/Tab2';
 import Toggle from '@/shared/ui/toggle/Toggle';
 import { useState, useRef } from 'react';
 import styled from 'styled-components';
@@ -59,6 +60,8 @@ const page = () => {
   return (
     <PlayGround>
       <Toggle label="토글" checked={isToggleChecked} onClick={() => setIsToggleChecked(!isToggleChecked)} />
+      <Tab2 name="탭1" selected />
+      <Tab2 name="탭1" />
       <ButtonWrapper>
         <button type="button" ref={buttonRef} onClick={handleOpenCalendar}>
           {selectedDate || '날짜 선택'}
