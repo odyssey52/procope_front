@@ -123,7 +123,8 @@ const Wrapper = styled.div`
   position: relative;
   justify-content: space-between;
   display: flex;
-  padding: 8px 24px;
+  padding: 0 24px;
+  height: 55px;
   border-bottom: 1px solid ${({ theme }) => theme.sementicColors.border.primary};
   background-color: ${({ theme }) => theme.sementicColors.bg.invers};
 `;
