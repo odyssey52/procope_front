@@ -6,5 +6,6 @@ export const ERROR_MESSAGES = {
   CONFLICT: '이미 존재하는 데이터입니다.',
   SERVER_ERROR: '서버 오류가 발생했습니다. 잠시 후 다시 시도해주세요.',
   NETWORK_ERROR: '서버 연결이 원활하지 않습니다.',
-  UNKNOWN_ERROR: '네트워크 연결 오류 또는 기타 오류가 발생했습니다.',
+  UNKNOWN_ERROR: '알 수 없는 오류가 발생했습니다.',
+  LOGOUT_FAILED: '로그아웃 중 문제가 발생했습니다. 다시 시도해주세요.',
 } as const;

@@ -35,6 +35,13 @@ const handleErrorByType = async (errorType: ErrorType, error: AxiosErrorWithResp
   const { showToast, logout, logError } = config;
   const errorMessage = error.response?.data?.message;
 
+  // 로그아웃 관련 에러인 경우
+  if (error.config?.url?.includes('auth/logout') || error.config?.url?.includes('auth/refresh')) {
+    showToast(ERROR_MESSAGES.LOGOUT_FAILED);
+    logError(error);
+    return;
+  }
+
   if (errorType === 'UNAUTHORIZED') {
     await logout();
     return;

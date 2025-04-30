@@ -3,6 +3,7 @@
 import { invalidateRefreshToken } from '@/features/auth/services/refresh/refreshTokenService';
 import userInfoQueries from '@/features/user/query/info/userInfoQueries';
 import { IconHome, IconOut, IconSetting } from '@/shared/assets/icons/line';
+import useApiError from '@/shared/lib/hooks/useApiError';
 import useAuthStore from '@/shared/lib/store/auth/auth';
 import useTeamStore from '@/shared/lib/store/team/team';
 import useUserStore from '@/shared/lib/store/user/user';
@@ -22,6 +23,7 @@ const Header = () => {
   const { setUser } = useUserStore();
   const { teamInfo } = useTeamStore();
   const { data, isSuccess } = useQuery({ ...userInfoQueries.readUserInfo });
+  const { handleError } = useApiError();
   const [isOpen, setIsOpen] = useState(false);
   const [avatar, setAvatar] = useState<{
     type: 'profile' | 'initial';
@@ -41,8 +43,7 @@ const Header = () => {
       useAuthStore.getState().logout('manual');
       handleLogout({ savePreviousPath: false });
     } catch (error) {
-      console.error('로그아웃 실패:', error);
-      alert('로그아웃 중 문제가 발생했습니다.');
+      handleError(error);
     }
   };
 
