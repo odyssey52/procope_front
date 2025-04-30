@@ -122,6 +122,7 @@ const Header = () => {
 const Wrapper = styled.div`
   position: relative;
   justify-content: space-between;
+  align-items: center;
   display: flex;
   padding: 0 24px;
   height: 55px;
