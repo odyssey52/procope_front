@@ -1,131 +1,103 @@
-import { invalidateRefreshToken } from '@/features/auth/services/refresh/refreshTokenService';
+import useAuthStore from '@/shared/lib/store/auth/auth';
 import { toastActions } from '@/shared/lib/store/modal/toast';
+import { ErrorType } from '@/shared/types/error';
 import { renderHook } from '@testing-library/react';
 import { AxiosError } from 'axios';
 import useApiError from '../useApiError';
 
-jest.mock('@/shared/lib/store/modal/toast', () => ({
-  toastActions: {
-    open: jest.fn(),
-  },
-}));
-
-const mockLogout = jest.fn();
+// 모듈 모킹
+jest.mock('@/shared/lib/store/modal/toast');
 jest.mock('@/shared/lib/store/auth/auth', () => ({
   __esModule: true,
-  default: jest.fn(() => ({
-    logout: mockLogout,
-  })),
-}));
-
-jest.mock('@/features/auth/services/refresh/refreshTokenService', () => ({
-  invalidateRefreshToken: jest.fn().mockResolvedValue(undefined),
-}));
-
-jest.mock('next/navigation', () => ({
-  useRouter: () => ({
-    push: jest.fn(),
-  }),
+  default: jest.fn(),
 }));
 
 describe('useApiError', () => {
+  const mockLogout = jest.fn();
+  const mockToastOpen = jest.fn();
+
   beforeEach(() => {
     jest.clearAllMocks();
+    (toastActions.open as jest.Mock).mockImplementation(mockToastOpen);
+    (useAuthStore as unknown as jest.Mock).mockReturnValue({ logout: mockLogout });
   });
 
-  it('should handle 400 error with custom message', () => {
-    const { result } = renderHook(() => useApiError());
-    const error = new AxiosError('Bad Request', '400', undefined, undefined, {
-      status: 400,
-      data: { message: '잘못된 요청입니다.' },
-      statusText: 'Bad Request',
+  const createAxiosError = (status: number, message?: string): AxiosError => {
+    const error = new AxiosError();
+    error.response = {
+      status,
+      data: { message },
+      statusText: '',
       headers: {},
       config: {} as any,
-    });
+    };
+    return error;
+  };
 
-    result.current.handleError(error);
-
-    expect(toastActions.open).toHaveBeenCalledWith({
-      title: '잘못된 요청입니다.',
-      state: 'error',
-    });
-  });
-
-  it('should handle 401 error and trigger logout', async () => {
+  const testErrorHandling = async (
+    status: number,
+    expectedMessage: string,
+    expectedType: ErrorType,
+    additionalChecks?: () => void,
+  ) => {
     const { result } = renderHook(() => useApiError());
-    const error = new AxiosError('Unauthorized', '401', undefined, undefined, {
-      status: 401,
-      data: { message: '인증 실패' },
-      statusText: 'Unauthorized',
-      headers: {},
-      config: {} as any,
-    });
-
+    const error = createAxiosError(status);
     await result.current.handleError(error);
 
-    expect(toastActions.open).toHaveBeenCalledWith({
-      title: '로그인 세션이 만료되었습니다. 다시 로그인해주세요.',
+    expect(mockToastOpen).toHaveBeenCalledWith({
+      title: expectedMessage,
       state: 'error',
     });
-    expect(invalidateRefreshToken).toHaveBeenCalled();
-    expect(mockLogout).toHaveBeenCalled();
+
+    if (additionalChecks) {
+      additionalChecks();
+    }
+  };
+
+  it('400 에러를 올바르게 처리한다', async () => {
+    await testErrorHandling(400, '잘못된 요청입니다.', 'BAD_REQUEST');
   });
 
-  it('should handle 403 error', () => {
-    const { result } = renderHook(() => useApiError());
-    const error = new AxiosError('Forbidden', '403', undefined, undefined, {
-      status: 403,
-      data: { message: '권한 없음' },
-      statusText: 'Forbidden',
-      headers: {},
-      config: {} as any,
-    });
-
-    result.current.handleError(error);
-
-    expect(toastActions.open).toHaveBeenCalledWith({
-      title: '해당 기능에 대한 권한이 없습니다.',
-      state: 'error',
+  it('401 에러를 올바르게 처리한다', async () => {
+    await testErrorHandling(401, '로그인 세션이 만료되었습니다. 다시 로그인해주세요.', 'UNAUTHORIZED', () => {
+      expect(mockLogout).toHaveBeenCalled();
     });
   });
 
-  it('should handle 500 error', () => {
-    const { result } = renderHook(() => useApiError());
-    const error = new AxiosError('Internal Server Error', '500', undefined, undefined, {
-      status: 500,
-      data: { message: '서버 오류' },
-      statusText: 'Internal Server Error',
-      headers: {},
-      config: {} as any,
-    });
-
-    result.current.handleError(error);
-
-    expect(toastActions.open).toHaveBeenCalledWith({
-      title: '서버 오류가 발생했습니다. 잠시 후 다시 시도해주세요.',
-      state: 'error',
-    });
+  it('403 에러를 올바르게 처리한다', async () => {
+    await testErrorHandling(403, '해당 기능에 대한 권한이 없습니다.', 'FORBIDDEN');
   });
 
-  it('should handle network error', () => {
+  it('404 에러를 올바르게 처리한다', async () => {
+    await testErrorHandling(404, '요청한 리소스를 찾을 수 없습니다.', 'NOT_FOUND');
+  });
+
+  it('409 에러를 올바르게 처리한다', async () => {
+    await testErrorHandling(409, '이미 존재하는 데이터입니다.', 'CONFLICT');
+  });
+
+  it('500 에러를 올바르게 처리한다', async () => {
+    await testErrorHandling(500, '서버 오류가 발생했습니다. 잠시 후 다시 시도해주세요.', 'SERVER_ERROR');
+  });
+
+  it('네트워크 에러를 올바르게 처리한다', async () => {
     const { result } = renderHook(() => useApiError());
-    const error = new AxiosError('Network Error', 'ERR_NETWORK', undefined, undefined, undefined);
+    const error = new AxiosError();
+    error.message = 'Network Error';
+    await result.current.handleError(error);
 
-    result.current.handleError(error);
-
-    expect(toastActions.open).toHaveBeenCalledWith({
+    expect(mockToastOpen).toHaveBeenCalledWith({
       title: '서버 연결이 원활하지 않습니다.',
       state: 'error',
     });
   });
 
-  it('should handle unknown error', () => {
+  it('알 수 없는 에러를 올바르게 처리한다', async () => {
     const { result } = renderHook(() => useApiError());
     const error = new Error('Unknown error');
+    await result.current.handleError(error);
 
-    result.current.handleError(error);
-
-    expect(toastActions.open).toHaveBeenCalledWith({
+    expect(mockToastOpen).toHaveBeenCalledWith({
       title: '네트워크 연결 오류 또는 기타 오류가 발생했습니다.',
       state: 'error',
     });

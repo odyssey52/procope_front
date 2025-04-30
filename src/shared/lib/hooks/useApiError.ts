@@ -1,63 +1,90 @@
 import { useCallback } from 'react';
-import { AxiosError } from 'axios';
+import { AxiosError, AxiosResponse } from 'axios';
 import { useRouter } from 'next/navigation';
-import { invalidateRefreshToken } from '@/features/auth/services/refresh/refreshTokenService';
 import useAuthStore from '@/shared/lib/store/auth/auth';
 import { toastActions } from '@/shared/lib/store/modal/toast';
+import { ERROR_MESSAGES } from '@/shared/constants/errorMessages';
+import { ErrorHandlerConfig, ErrorType, determineErrorType } from '@/shared/types/error';
 
-interface ErrorResponse {
-  message: string;
-  code?: string;
+interface AxiosErrorResponse {
+  message?: string;
+  [key: string]: unknown;
 }
 
-type StatusHandlers = {
-  [key: number]: (message?: string) => Promise<void> | void;
-  default: (message?: string) => void;
-};
+interface AxiosErrorWithResponse extends AxiosError {
+  response?: AxiosResponse<AxiosErrorResponse>;
+}
 
-const useApiError = () => {
+const createDefaultConfig = (): ErrorHandlerConfig => {
   const router = useRouter();
   const { logout } = useAuthStore();
 
-  const handleLogout = async () => {
-    try {
-      await invalidateRefreshToken();
-      logout();
-      router.push('/login');
-    } catch (error) {
-      console.error('로그아웃 실패:', error);
-    }
-  };
-
-  const statusHandlers: StatusHandlers = {
-    400: (message) => toastActions.open({ title: message || '잘못된 요청입니다.', state: 'error' }),
-    401: async () => {
-      toastActions.open({ title: '로그인 세션이 만료되었습니다. 다시 로그인해주세요.', state: 'error' });
-      await handleLogout();
+  return {
+    showToast: (message: string) => {
+      toastActions.open({ title: message, state: 'error' });
     },
-    403: () => toastActions.open({ title: '해당 기능에 대한 권한이 없습니다.', state: 'error' }),
-    404: () => toastActions.open({ title: '요청한 리소스를 찾을 수 없습니다.', state: 'error' }),
-    409: () => toastActions.open({ title: '이미 존재하는 데이터입니다.', state: 'error' }),
-    500: () => toastActions.open({ title: '서버 오류가 발생했습니다. 잠시 후 다시 시도해주세요.', state: 'error' }),
-    default: (message) => toastActions.open({ title: message || '알 수 없는 오류가 발생했습니다.', state: 'error' }),
+    logout: async () => {
+      logout(); // httpProvider에서 이미 토큰 무효화와 리다이렉트를 처리하므로 단순히 로그아웃만 실행
+    },
+    redirect: (path: string) => {
+      router.push(path);
+    },
+    logError: (error: unknown) => {
+      console.error('API 에러 발생:', error);
+    },
   };
+};
 
-  const handleError = useCallback(async (error: unknown) => {
-    if (error instanceof AxiosError) {
-      if (error.response) {
-        const httpStatus = error.response.status;
-        const errorResponse = error.response.data as ErrorResponse;
-        const httpMessage = errorResponse.message;
+const handleErrorByType = async (errorType: ErrorType, error: AxiosErrorWithResponse, config: ErrorHandlerConfig) => {
+  const { showToast, logout, logError } = config;
+  const errorMessage = error.response?.data?.message;
 
-        const handler = statusHandlers[httpStatus] || statusHandlers.default;
-        await handler(httpMessage);
+  switch (errorType) {
+    case 'BAD_REQUEST':
+      showToast(errorMessage || ERROR_MESSAGES.BAD_REQUEST);
+      break;
+    case 'UNAUTHORIZED':
+      showToast(ERROR_MESSAGES.UNAUTHORIZED);
+      await logout();
+      break;
+    case 'FORBIDDEN':
+      showToast(ERROR_MESSAGES.FORBIDDEN);
+      break;
+    case 'NOT_FOUND':
+      showToast(ERROR_MESSAGES.NOT_FOUND);
+      break;
+    case 'CONFLICT':
+      showToast(ERROR_MESSAGES.CONFLICT);
+      break;
+    case 'SERVER_ERROR':
+      showToast(ERROR_MESSAGES.SERVER_ERROR);
+      break;
+    case 'NETWORK_ERROR':
+      showToast(ERROR_MESSAGES.NETWORK_ERROR);
+      break;
+    default:
+      showToast(ERROR_MESSAGES.UNKNOWN_ERROR);
+  }
+
+  logError(error);
+};
+
+const useApiError = (config?: Partial<ErrorHandlerConfig>) => {
+  const defaultConfig = createDefaultConfig();
+  const finalConfig = { ...defaultConfig, ...config };
+
+  const handleError = useCallback(
+    async (error: unknown) => {
+      if (error instanceof AxiosError) {
+        const errorType = determineErrorType(error);
+        await handleErrorByType(errorType, error as AxiosErrorWithResponse, finalConfig);
       } else {
-        toastActions.open({ title: '서버 연결이 원활하지 않습니다.', state: 'error' });
+        finalConfig.showToast(ERROR_MESSAGES.UNKNOWN_ERROR);
+        finalConfig.logError(error);
       }
-    } else {
-      toastActions.open({ title: '네트워크 연결 오류 또는 기타 오류가 발생했습니다.', state: 'error' });
-    }
-  }, []);
+    },
+    [finalConfig],
+  );
 
   return { handleError };
 };
