@@ -1,24 +1,27 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
-import userInfoQueries from '@/features/user/query/info/userInfoQueries';
 import { invalidateRefreshToken } from '@/features/auth/services/refresh/refreshTokenService';
-import useAuthStore from '@/shared/lib/store/auth/auth';
-import useUserStore from '@/shared/lib/store/user/user';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import userInfoQueries from '@/features/user/query/info/userInfoQueries';
 import { IconHome, IconOut, IconSetting } from '@/shared/assets/icons/line';
+import useAuthStore from '@/shared/lib/store/auth/auth';
+import useTeamStore from '@/shared/lib/store/team/team';
+import useUserStore from '@/shared/lib/store/user/user';
 import { elevation } from '@/shared/styles/mixin';
-import React, { useEffect, useState } from 'react';
+import { useMutation, useQuery } from '@tanstack/react-query';
+import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import Logo from '../Logo';
 import Avatar from '../avatar/Avatar';
 import SelectOption from '../select/SelectOption';
+import Tab2 from '../tab/Tab2';
 
 const Header = () => {
   const router = useRouter();
   const { logout } = useAuthStore();
-  const { data, isSuccess } = useQuery({ ...userInfoQueries.readUserInfo });
   const { setUser } = useUserStore();
+  const { teamInfo } = useTeamStore();
+  const { data, isSuccess } = useQuery({ ...userInfoQueries.readUserInfo });
   const [isOpen, setIsOpen] = useState(false);
   const [avatar, setAvatar] = useState<{
     type: 'profile' | 'initial';
@@ -88,7 +91,10 @@ const Header = () => {
 
   return (
     <Wrapper>
-      <Logo type="icon" size={36} />
+      <LeftBox>
+        <Logo type="icon" size={36} />
+        {teamInfo && <Tab2 name={teamInfo.name} />}
+      </LeftBox>
       {isSuccess && (
         <Avatar type={avatar.type} image={avatar.image} nickname={avatar.nickname} onClick={profileHandler} />
       )}
@@ -121,6 +127,13 @@ const Wrapper = styled.div`
   border-bottom: 1px solid ${({ theme }) => theme.sementicColors.border.primary};
   background-color: ${({ theme }) => theme.sementicColors.bg.invers};
 `;
+
+const LeftBox = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 12px;
+`;
+
 const SettingOption = styled.div`
   display: flex;
   flex-direction: column;
@@ -135,6 +148,7 @@ const SettingOption = styled.div`
   z-index: 1;
   ${elevation.shadow4}
 `;
+
 const Span = styled.div<{ $span?: string }>`
   width: ${({ $span }) => $span && ($span === 'long' ? '240px' : '216px')};
   border-bottom: ${({ $span, theme }) => ($span ? `1px solid ${theme.sementicColors.border.primary}` : 'none')};
