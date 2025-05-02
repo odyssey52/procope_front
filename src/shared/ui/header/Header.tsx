@@ -131,7 +131,7 @@ const Wrapper = styled.div`
   padding: 0 24px;
   height: 55px;
   border-bottom: 1px solid ${({ theme }) => theme.sementicColors.border.primary};
-  background-color: ${({ theme }) => theme.sementicColors.bg.invers};
+  background-color: ${({ theme }) => theme.sementicColors.bg.inverse};
 `;
 
 const LeftBox = styled.div`

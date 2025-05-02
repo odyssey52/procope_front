@@ -96,7 +96,7 @@ const Circle = styled.span<{ $checked?: boolean; $size: 20 | 24 }>`
   /* box-shadow: 0px 0px 0.5px rgba(0, 0, 0, 0.12); */
   box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.16);
   border-radius: 50%;
-  background-color: ${({ theme }) => theme.sementicColors.bg.invers};
+  background-color: ${({ theme }) => theme.sementicColors.bg.inverse};
   transition: 0.2s;
   left: ${({ $checked, $size }) => ($checked ? `calc(100% - ${$size - 2}px)` : '2px')};
 `;

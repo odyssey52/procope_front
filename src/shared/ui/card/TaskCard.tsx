@@ -135,7 +135,7 @@ const Wrapper = styled.div`
   padding: 24px;
   max-width: 444px;
   width: 100%;
-  background-color: ${({ theme }) => theme.sementicColors.bg.invers};
+  background-color: ${({ theme }) => theme.sementicColors.bg.inverse};
   border: 1px solid ${({ theme }) => theme.sementicColors.border.primary};
   cursor: pointer;
 `;
@@ -187,7 +187,7 @@ const MenuDropdown = styled.div`
   position: absolute;
   top: 100%;
   right: 0;
-  background-color: ${({ theme }) => theme.sementicColors.bg.invers};
+  background-color: ${({ theme }) => theme.sementicColors.bg.inverse};
   border: 1px solid ${({ theme }) => theme.sementicColors.border.primary};
   border-radius: 8px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);

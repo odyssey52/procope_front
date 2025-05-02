@@ -5,6 +5,7 @@ import CalendarModal from '@/shared/ui/calendar/CalendarModal';
 import RetroCard from '@/shared/ui/card/RetroCard';
 import TaskCard from '@/shared/ui/card/TaskCard';
 import Tab2 from '@/shared/ui/tab/Tab2';
+import SegmentedTabs from '@/shared/ui/tab/SegmentedTabs';
 import Toggle from '@/shared/ui/toggle/Toggle';
 import { useState, useRef } from 'react';
 import styled from 'styled-components';
@@ -59,6 +60,13 @@ const page = () => {
 
   return (
     <PlayGround>
+      <SegmentedTabs
+        tabs={[
+          { title: 'Tab1', href: '/test?v=1' },
+          { title: 'Tab2', href: '/test?v=2' },
+          { title: 'Tab3', href: '/test?v=3' },
+        ]}
+      />
       <Toggle label="토글" checked={isToggleChecked} onClick={() => setIsToggleChecked(!isToggleChecked)} />
       <Tab2 name="탭1" selected />
       <Tab2 name="탭1" />

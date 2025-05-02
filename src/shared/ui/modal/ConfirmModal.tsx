@@ -47,7 +47,7 @@ const Wrapper = styled.div`
   width: 450px;
   padding: 24px;
   border-radius: 16px;
-  background-color: ${({ theme }) => theme.sementicColors.bg.invers};
+  background-color: ${({ theme }) => theme.sementicColors.bg.inverse};
   ${elevation.shadow16}
   ${zIndex.layer4};
 `;

@@ -85,7 +85,7 @@ const Wrapper = styled.button<ChipStyledProps>`
   gap: 4px;
   border-radius: 20px;
   border: 1px solid ${({ theme }) => theme.sementicColors.border.primary};
-  background-color: ${({ theme }) => theme.sementicColors.bg.invers};
+  background-color: ${({ theme }) => theme.sementicColors.bg.inverse};
   ${({ $size, $disabled, $selected }) => chipStyle($size, $disabled, $selected)};
 `;
 

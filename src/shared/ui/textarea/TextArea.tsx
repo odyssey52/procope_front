@@ -79,7 +79,7 @@ const InputWrapper = styled.div<{ $isValid?: boolean; $disabled?: boolean }>`
   gap: 8px;
   border-radius: 8px;
   border: 1px solid ${({ theme }) => theme.sementicColors.border.primary};
-  background: ${({ theme }) => theme.sementicColors.bg.invers};
+  background: ${({ theme }) => theme.sementicColors.bg.inverse};
 
   ${({ $isValid, $disabled, theme }) =>
     $isValid !== false &&

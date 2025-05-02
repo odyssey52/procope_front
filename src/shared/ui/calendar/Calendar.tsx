@@ -152,7 +152,7 @@ export const Wrapper = styled.div`
   padding: 12px 0;
   gap: 4px;
   border-radius: 12px;
-  background: ${theme.sementicColors.bg.invers};
+  background: ${theme.sementicColors.bg.inverse};
   box-shadow:
     0px 2px 4px rgba(0, 0, 0, 0.16),
     0px 0px 2px rgba(0, 0, 0, 0.12);

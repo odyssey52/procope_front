@@ -34,7 +34,7 @@ const LoginSection = () => {
 const Wrapper = styled.div`
   position: relative;
   display: flex;
-  background-color: ${({ theme }) => theme.sementicColors.bg.invers};
+  background-color: ${({ theme }) => theme.sementicColors.bg.inverse};
   justify-content: center;
   flex-direction: column;
   align-items: center;

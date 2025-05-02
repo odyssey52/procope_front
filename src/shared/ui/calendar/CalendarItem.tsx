@@ -48,7 +48,7 @@ const Wrapper = styled.button<{ disabled?: boolean; selected: boolean }>`
             cursor: not-allowed;
             color: ${({ theme }) => theme.sementicColors.text.disabled};
             &:hover {
-              background: ${({ theme }) => theme.sementicColors.bg.invers};
+              background: ${({ theme }) => theme.sementicColors.bg.inverse};
             }
           }
         `}

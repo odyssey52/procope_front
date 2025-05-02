@@ -28,7 +28,7 @@ const getButtonTypeStyles = (type: ButtonProps['$type']) => {
       `;
     case 'outline':
       return css`
-        background-color: ${({ theme }) => theme.sementicColors.bg.invers};
+        background-color: ${({ theme }) => theme.sementicColors.bg.inverse};
         border: 1px solid ${({ theme }) => theme.sementicColors.border.primary};
         color: ${({ theme }) => theme.sementicColors.text.primary};
 
@@ -39,7 +39,7 @@ const getButtonTypeStyles = (type: ButtonProps['$type']) => {
           color: ${({ theme }) => theme.sementicColors.text.primary_hover_pressed};
         }
         &:disabled {
-          background-color: ${({ theme }) => theme.sementicColors.bg.invers};
+          background-color: ${({ theme }) => theme.sementicColors.bg.inverse};
           opacity: 0.4;
           box-shadow: none;
         }

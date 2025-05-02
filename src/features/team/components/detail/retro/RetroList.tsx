@@ -193,7 +193,7 @@ const Wrapper = styled.div`
   gap: 40px;
   margin: 24px;
   padding: 24px;
-  background-color: ${({ theme }) => theme.sementicColors.bg.invers};
+  background-color: ${({ theme }) => theme.sementicColors.bg.inverse};
 `;
 const Content = styled.div`
   display: flex;
