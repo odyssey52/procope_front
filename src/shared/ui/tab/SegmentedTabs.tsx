@@ -1,6 +1,7 @@
 'use client';
 
 import { usePathname, useSearchParams } from 'next/navigation';
+import { Suspense } from 'react';
 import styled from 'styled-components';
 import Tab4 from './Tab4';
 
@@ -10,8 +11,18 @@ interface SegmentedTabsProps {
     href: string;
   }[];
 }
+// JHW : useSearchParams 를 사용할 때에는 Suspense 를 사용하도록 next 프레임워크에서 강제하고 있습니다.
+// 이유는 URL 을 가져오기 위해 비동기 작업이 필요하기 때문
 
-const SegmentedTabs = ({ tabs }: SegmentedTabsProps) => {
+const SegmentedTabs = (props: SegmentedTabsProps) => {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <SegmentedTabsContent {...props} />
+    </Suspense>
+  );
+};
+
+const SegmentedTabsContent = ({ tabs }: SegmentedTabsProps) => {
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
