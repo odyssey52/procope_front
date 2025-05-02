@@ -61,6 +61,7 @@ export default AccountSetting;
 
 const Wrapper = styled.div`
   max-width: 908px;
+  margin: 0 auto;
   display: flex;
   width: 100%;
   padding: 0 32px;
