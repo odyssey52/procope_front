@@ -20,7 +20,7 @@ const Wrapper = styled.div`
   max-width: 440px;
   width: 100%;
   aspect-ratio: 440/302;
-  background-color: ${({ theme }) => theme.sementicColors.bg.invers};
+  background-color: ${({ theme }) => theme.sementicColors.bg.inverse};
   border-radius: 32px;
 `;
 const BgImg = styled.img`

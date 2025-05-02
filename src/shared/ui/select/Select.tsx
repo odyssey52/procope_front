@@ -87,10 +87,10 @@ const Wrapper = styled.div`
 const getSelectBoxStateStyle = {
   default: css`
     border: 1px solid ${theme.sementicColors.border.primary};
-    background: ${theme.sementicColors.bg.invers};
+    background: ${theme.sementicColors.bg.inverse};
     &:hover {
       border: 1px solid ${theme.sementicColors.border.primary_hover_pressed};
-      background: ${theme.sementicColors.bg.invers};
+      background: ${theme.sementicColors.bg.inverse};
       box-shadow:
         0px 1px 2px 0px rgba(0, 0, 0, 0.16),
         0px 0px 1px 0px rgba(0, 0, 0, 0.12);
@@ -98,7 +98,7 @@ const getSelectBoxStateStyle = {
   `,
   error: css`
     border: 1px solid ${theme.sementicColors.border.danger};
-    background: ${theme.sementicColors.bg.invers};
+    background: ${theme.sementicColors.bg.inverse};
     box-shadow: 0px 0px 0px 2px rgba(248, 113, 113, 0.4);
   `,
   disabled: css`

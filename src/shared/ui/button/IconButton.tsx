@@ -27,7 +27,7 @@ const buttonStatusStyle = (status?: IconButtonProps['status']) => (theme: Defaul
     `;
   if (status === 'outline')
     return css`
-      background-color: ${theme.sementicColors.bg.invers};
+      background-color: ${theme.sementicColors.bg.inverse};
       border: 1px solid ${theme.sementicColors.border.primary};
       &:hover,
       &:active {
@@ -36,7 +36,7 @@ const buttonStatusStyle = (status?: IconButtonProps['status']) => (theme: Defaul
         box-shadow: 0px 0px 0px 2px rgba(47, 78, 118, 0.3);
       }
       &:disabled {
-        background-color: ${theme.sementicColors.bg.invers};
+        background-color: ${theme.sementicColors.bg.inverse};
         border: 1px solid ${theme.sementicColors.border.primary};
         opacity: 0.4;
       }

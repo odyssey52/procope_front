@@ -37,7 +37,7 @@ const Wrapper = styled.div`
   border-radius: 8px;
   justify-content: space-around;
   border: 1px solid ${({ theme }) => theme.sementicColors.border.primary};
-  background: ${({ theme }) => theme.sementicColors.bg.invers};
+  background: ${({ theme }) => theme.sementicColors.bg.inverse};
 
   box-shadow:
     0px 2px 4px 0px rgba(0, 0, 0, 0.16),

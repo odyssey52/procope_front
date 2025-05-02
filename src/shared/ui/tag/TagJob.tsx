@@ -35,7 +35,7 @@ const Wrapper = styled.div<{ $bgColor?: string }>`
   padding: 2px 8px;
   width: fit-content;
   gap: 2px;
-  background-color: ${({ $bgColor, theme }) => $bgColor || theme.sementicColors.bg.invers};
+  background-color: ${({ $bgColor, theme }) => $bgColor || theme.sementicColors.bg.inverse};
 `;
 
 TagJob.displayName = 'TagJob';

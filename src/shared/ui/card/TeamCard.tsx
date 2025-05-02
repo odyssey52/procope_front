@@ -76,7 +76,7 @@ const Wrapper = styled.div<{ $selected?: boolean }>`
   padding: 16px;
   border-radius: 16px;
   border: 1px solid ${({ theme }) => theme.sementicColors.border.primary};
-  background: ${({ theme }) => theme.sementicColors.bg.invers};
+  background: ${({ theme }) => theme.sementicColors.bg.inverse};
   ${({ $selected, theme }) =>
     $selected &&
     `

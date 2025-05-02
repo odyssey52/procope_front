@@ -30,7 +30,7 @@ const RadioSurvey = styled.input.attrs({ type: 'radio' })<RadioProps>`
   height: ${getSize};
   border-radius: 50%;
   border: 2px solid ${({ theme }) => theme.sementicColors.border.primary};
-  background-color: ${({ theme }) => theme.sementicColors.bg.invers};
+  background-color: ${({ theme }) => theme.sementicColors.bg.inverse};
   cursor: pointer;
 
   &:checked {
