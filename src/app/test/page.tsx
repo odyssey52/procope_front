@@ -62,9 +62,9 @@ const page = () => {
     <PlayGround>
       <SegmentedTabs
         tabs={[
-          { title: 'Tab1', href: '/test?1' },
-          { title: 'Tab2', href: '/test?2' },
-          { title: 'Tab3', href: '/test?3' },
+          { title: 'Tab1', href: '/test?v=1' },
+          { title: 'Tab2', href: '/test?v=2' },
+          { title: 'Tab3', href: '/test?v=3' },
         ]}
       />
       <Toggle label="토글" checked={isToggleChecked} onClick={() => setIsToggleChecked(!isToggleChecked)} />
