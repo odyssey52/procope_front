@@ -1,9 +1,10 @@
 'use client';
 
 import React, { useEffect } from 'react';
-import { useRouter } from 'next/navigation';
 import { LoadingSpinner } from '@/shared/ui/LoadingSpinner';
 import { useAuth } from '@/shared/hooks/useAuth';
+import { handleLogout } from '@/shared/lib/utils/auth';
+import useAuthStore from '@/shared/lib/store/auth/auth';
 
 /**
  * 인증이 필요한 페이지를 보호하는 컴포넌트
@@ -23,17 +24,16 @@ import { useAuth } from '@/shared/hooks/useAuth';
 export function AuthGuard({ children }: { children: React.ReactNode }) {
   // useAuth 훅에서 인증 관련 상태 가져오기
   const { isAuthenticated, isLoading, user } = useAuth();
-  const router = useRouter();
+  const { logoutType } = useAuthStore();
 
   // 인증 상태 모니터링 및 리다이렉트 처리
   useEffect(() => {
     if (!isLoading && !isAuthenticated) {
-      const currentPath = window.location.pathname;
-      // localStorage에 이전 경로 저장
-      localStorage.setItem('previousPath', currentPath);
-      router.replace('/login');
+      // 수동 로그아웃인 경우 이전 페이지를 저장하지 않음
+      const savePreviousPath = logoutType !== 'manual';
+      handleLogout({ savePreviousPath });
     }
-  }, [isLoading, isAuthenticated, router]);
+  }, [isLoading, isAuthenticated, logoutType]);
 
   // 로딩 중일 때 스피너 표시
   if (isLoading) {

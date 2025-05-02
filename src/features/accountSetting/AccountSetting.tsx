@@ -48,7 +48,9 @@ const AccountSetting = () => {
               />
             ))}
           </SideBar>
-          {page === '프로필 설정' ? <ProfileSetting data={user} /> : <CommunicationSetting data={user} />}
+          <Content>
+            {page === '프로필 설정' ? <ProfileSetting data={user} /> : <CommunicationSetting data={user} />}
+          </Content>
         </Section>
       </Wrapper>
     </HeaderLayout>
@@ -58,12 +60,13 @@ const AccountSetting = () => {
 export default AccountSetting;
 
 const Wrapper = styled.div`
-  width: 844px;
-  height: 630px;
-  margin: 0 auto;
+  max-width: 908px;
   display: flex;
+  width: 100%;
+  padding: 0 32px;
   flex-direction: column;
-  gap: 12px;
+  align-items: center;
+  margin-top: 8vh; // 임시 JHW (140px = 12.96vh 지만 디바이스 높이가 작을 경우 마진이 너무 크게 적용되어 8vh로 설정)
 `;
 
 const SideBar = styled.div`
@@ -82,7 +85,12 @@ const Title = styled.div`
 `;
 
 const Section = styled.div`
+  gap: 24px;
   display: flex;
+  width: 100%;
 `;
 
+const Content = styled.div`
+  flex-grow: 1;
+`;
 AccountSetting.displayName = 'AccountSetting';

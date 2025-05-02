@@ -149,7 +149,7 @@ const ProfileSetting = ({ data }: Props) => {
 };
 
 const Content = styled.div`
-  width: 686px;
+  width: 100%;
   padding: 24px;
   display: flex;
   flex-direction: column;

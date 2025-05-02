@@ -107,7 +107,7 @@ const CommunicationSetting = ({ data }: Props) => {
   );
 };
 const Wrapper = styled.div`
-  width: 686px;
+  width: 100%;
   padding: 24px;
   display: flex;
   flex-direction: column;

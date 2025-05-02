@@ -1,6 +1,9 @@
 /* eslint-disable no-param-reassign */
 import useAuthStore from '@/shared/lib/store/auth/auth';
 import axios from 'axios';
+import { toastActions } from '@/shared/lib/store/modal/toast';
+import { ERROR_MESSAGES } from '@/shared/constants/errorMessages';
+import { handleLogout } from '@/shared/lib/utils/auth';
 
 import type { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
 
@@ -30,14 +33,14 @@ export default class HTTPProvider {
 
   private setAccessTokenInterceptor() {
     this.client.interceptors.request.use((config) => {
-      const { accessToken } = useAuthStore.getState(); // Zustand에서 액세스토큰 가져오기
+      const { accessToken } = useAuthStore.getState();
       if (accessToken) {
         config.headers.Authorization = `Bearer ${accessToken}`;
       }
       return config;
     });
     this.client.interceptors.response.use(
-      (response) => response, // 성공 응답은 그대로 반환
+      (response) => response,
       async (error) => {
         if (error.response?.status === 403) {
           try {
@@ -49,21 +52,11 @@ export default class HTTPProvider {
             return this.client.request(error.config);
           } catch (refreshError) {
             if (axios.isAxiosError(refreshError)) {
-              if (typeof window !== 'undefined') {
-                alert('세션이 만료되었습니다. 다시 로그인해주세요.');
-                useAuthStore.getState().logout();
-              }
-              // TODO 250201 JHW status code 를 핸들링하지 못해 주석 처리
-              // if (refreshError.response?.status === 401) {
-              //   if (typeof window !== 'undefined') {
-              //     alert('세션이 만료되었습니다. 다시 로그인해주세요.');
-              //     useAuthStore.getState().logout();
-              //   }
-              // }
+              toastActions.open({ title: ERROR_MESSAGES.UNAUTHORIZED, state: 'error' });
+              await handleLogout({ savePreviousPath: true });
             } else {
               console.error('예상치 못한 에러 발생:', refreshError);
             }
-
             return Promise.reject(refreshError);
           }
         }
