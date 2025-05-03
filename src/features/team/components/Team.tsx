@@ -1,11 +1,12 @@
+import HeaderLayout from '@/features/layout/HeaderLayout';
+import teamQueries from '@/features/team/query/teamQueries';
+import useAuthStore from '@/shared/lib/store/auth/auth';
 import Breadcrumbs from '@/shared/ui/breadcrumbs/Breadcrumbs';
 import Container from '@/shared/ui/Container';
 import Empty from '@/shared/ui/empty/Empty';
+import ErrorBoundary from '@/shared/ui/errorboundary/ErrorBoundary';
 import PageSubTitle from '@/shared/ui/title/PageSubTitle';
-import HeaderLayout from '@/features/layout/HeaderLayout';
 import PageTitle from '@/shared/ui/title/PageTitle';
-import teamQueries from '@/features/team/query/teamQueries';
-import useAuthStore from '@/shared/lib/store/auth/auth';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import { Suspense } from 'react';
@@ -40,7 +41,7 @@ function TeamContent() {
           <Empty title={EMPTY_TITLE} description={EMPTY_DESCRIPTION} onClick={() => router.push('/team/create')} />
         </EmptyBox>
       )}
-      {data?.team && data.team.length > 0 && <TeamCardList teamList={data.team} />}
+      <ErrorBoundary>{data?.team && data.team.length > 0 && <TeamCardList teamList={data.team} />}</ErrorBoundary>
     </Content>
   );
 }
