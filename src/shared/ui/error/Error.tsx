@@ -1,23 +1,18 @@
 import Image from 'next/image';
 import styled from 'styled-components';
 import Text from '../Text';
+import Button from '../button/Button';
 
-interface EmptyProps {
-  title?: string;
-  description?: string;
-  onClick?: () => void;
+interface ErrorProps {
+  title: string;
+  description: string;
+  onRetry?: () => void;
 }
 
-const Error = ({ title, description, onClick }: EmptyProps) => {
+const Error = ({ title, description, onRetry }: ErrorProps) => {
   return (
     <Wrapper>
-      <Image
-        src="/assets/icons/graphic/glass/warning.png"
-        width={120}
-        height={120}
-        onClick={onClick}
-        alt="추가 아이콘 이미지"
-      />
+      <Image src="/assets/icons/graphic/glass/warning.png" width={120} height={120} alt="추가 아이콘 이미지" />
       <TextBox>
         <Text variant="heading_18" color="primary">
           {title || 'Error'}
@@ -26,6 +21,11 @@ const Error = ({ title, description, onClick }: EmptyProps) => {
           {description || '잠시후 다시 시도해 주시길 바랍니다.'}
         </Text>
       </TextBox>
+      {onRetry && (
+        <Button $type="outline" onClick={onRetry}>
+          다시 시도
+        </Button>
+      )}
     </Wrapper>
   );
 };
