@@ -7,7 +7,7 @@ import Empty from '@/shared/ui/empty/Empty';
 import ErrorBoundary from '@/shared/ui/errorboundary/ErrorBoundary';
 import PageSubTitle from '@/shared/ui/title/PageSubTitle';
 import PageTitle from '@/shared/ui/title/PageTitle';
-import { useSuspenseQuery } from '@tanstack/react-query';
+import { useQueryClient, useSuspenseQuery } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import { Suspense } from 'react';
 import styled, { keyframes } from 'styled-components';
@@ -24,6 +24,7 @@ function TeamContent() {
     '팀 목록': '/team',
   };
   const { data } = useSuspenseQuery({ ...teamQueries.readTeamList });
+  const queryClient = useQueryClient();
 
   return (
     <Content>
@@ -41,7 +42,16 @@ function TeamContent() {
           <Empty title={EMPTY_TITLE} description={EMPTY_DESCRIPTION} onClick={() => router.push('/team/create')} />
         </EmptyBox>
       )}
-      <ErrorBoundary>{data?.team && data.team.length > 0 && <TeamCardList teamList={data.team} />}</ErrorBoundary>
+      <ErrorBoundary
+        title="팀 목록 로딩 실패"
+        description="팀 목록을 불러오는 중 문제가 발생했습니다."
+        onRetry={() => {
+          // 쿼리 다시 실행
+          queryClient.invalidateQueries({ queryKey: teamQueries.readTeamList.queryKey });
+        }}
+      >
+        {data?.team && data.team.length > 0 && <TeamCardList teamList={data.team} />}
+      </ErrorBoundary>
     </Content>
   );
 }

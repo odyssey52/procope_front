@@ -1,17 +1,12 @@
-import TeamCard from '@/shared/ui/card/TeamCard';
 import { ReadTeamListResponse } from '@/features/team/services/teamService.type';
+import TeamCard from '@/shared/ui/card/TeamCard';
 import styled from 'styled-components';
-import { useEffect } from 'react';
 
 export interface TeamCardListProps {
   teamList: ReadTeamListResponse['team'];
 }
 
 const TeamCardList = ({ teamList }: TeamCardListProps) => {
-  useEffect(() => {
-    throw new Error('팀 카드를 불러오는 중 오류가 발생했습니다.');
-  }, []);
-
   return (
     <Wrapper>
       {teamList.map((team, index) => (
