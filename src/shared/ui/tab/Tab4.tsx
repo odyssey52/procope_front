@@ -12,7 +12,7 @@ interface Tab4Props {
 const Tab4 = ({ title, href, selected }: Tab4Props) => {
   const router = useRouter();
   return (
-    <Wrapper onClick={() => router.push(href)} $selected={selected}>
+    <Wrapper onClick={() => router.push(href)} $selected={selected} role="tab" aria-selected={selected}>
       {title}
     </Wrapper>
   );
