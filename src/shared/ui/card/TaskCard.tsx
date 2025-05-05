@@ -28,12 +28,13 @@ interface TaskCardProps {
   tagJob: 'development' | 'planning' | 'data' | 'design' | 'marketing' | 'sales' | 'operations';
   title: string;
   startDate: string;
-  endDate: string;
-  totalComments: number;
+  endDate?: string;
+  totalComments?: number;
   user: {
     nickname: string;
     profileImage: string;
   };
+  hasComments?: boolean;
   showMenu?: boolean;
   menuItems?: MenuItem[];
 }
@@ -45,7 +46,8 @@ const TaskCard = ({
   startDate,
   endDate,
   user,
-  totalComments,
+  hasComments = false,
+  totalComments = 0,
   showMenu = false,
   menuItems = [],
 }: TaskCardProps) => {
@@ -108,18 +110,22 @@ const TaskCard = ({
           </Text>
         </UserBox>
         <BottomRight>
-          <CommentBox>
-            <IconChat01 size={24} color={theme.sementicColors.icon.tertiary} />
-            <Text variant="body_14_medium" color="tertiary">
-              {totalComments}
-            </Text>
-          </CommentBox>
-          <EndDateBox>
-            <IconFlag size={24} color={theme.sementicColors.icon.tertiary} />
-            <Text variant="body_14_medium" color="disabled">
-              {endDate}
-            </Text>
-          </EndDateBox>
+          {hasComments && (
+            <CommentBox>
+              <IconChat01 size={24} color={theme.sementicColors.icon.tertiary} />
+              <Text variant="body_14_medium" color="tertiary">
+                {totalComments}
+              </Text>
+            </CommentBox>
+          )}
+          {endDate && (
+            <EndDateBox>
+              <IconFlag size={24} color={theme.sementicColors.icon.tertiary} />
+              <Text variant="body_14_medium" color="disabled">
+                {endDate}
+              </Text>
+            </EndDateBox>
+          )}
         </BottomRight>
       </Bottom>
     </Wrapper>

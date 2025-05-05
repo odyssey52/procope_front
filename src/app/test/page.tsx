@@ -88,9 +88,9 @@ const page = () => {
           tagJob="development"
           title="타이틀"
           startDate="2025-01-01"
-          endDate="2025-01-01"
           user={mock.user}
-          totalComments={mock.totalComments}
+          // totalComments={mock.totalComments}
+          // hasComments
         />
       </Content>
       <Content>
