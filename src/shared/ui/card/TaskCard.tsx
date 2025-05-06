@@ -143,7 +143,6 @@ const Wrapper = styled.div`
   width: 100%;
   background-color: ${({ theme }) => theme.sementicColors.bg.inverse};
   border: 1px solid ${({ theme }) => theme.sementicColors.border.primary};
-  cursor: pointer;
 `;
 
 const Top = styled.div`
@@ -237,6 +236,7 @@ const CommentBox = styled.div`
   display: flex;
   align-items: center;
   gap: 4px;
+  cursor: pointer;
 `;
 
 const EndDateBox = styled.div`
