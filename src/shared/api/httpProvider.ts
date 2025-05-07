@@ -52,7 +52,11 @@ export default class HTTPProvider {
             return this.client.request(error.config);
           } catch (refreshError) {
             if (axios.isAxiosError(refreshError)) {
-              toastActions.open({ title: MESSAGES.ERROR.UNAUTHORIZED, state: 'error' });
+              toastActions.open({
+                title: MESSAGES.ERROR.UNAUTHORIZED,
+                description: MESSAGES.ERROR.UNAUTHORIZED_DESCRIPTION,
+                state: 'error',
+              });
               await handleLogout({ savePreviousPath: true });
             } else {
               console.error('예상치 못한 에러 발생:', refreshError);
