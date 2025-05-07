@@ -1,8 +1,10 @@
 // 2회 이상 재사용되는 메시지
 export const MESSAGES = {
   TOAST: {
-    COPY_SUCCESS: '클립보드에 복사되었습니다.',
-    COPY_ERROR: '클립보드 복사 실패:',
+    CLIPBOARD_COPY_SUCCESS: '클립보드에 복사되었습니다.',
+    CLIPBOARD_COPY_ERROR: '클립보드 복사 실패:',
+    ACCOUNT_SAVE_SUCCESS: '계정 정보가 성공적으로 수정되었습니다.',
+    ACCOUNT_SAVE_ERROR: '다시 시도해 주세요.',
   },
 
   ERROR: {

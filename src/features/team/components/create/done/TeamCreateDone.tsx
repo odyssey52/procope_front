@@ -17,7 +17,7 @@ const TeamCreateDone = ({ code }: { code: string }) => {
   const handleToast = () => {
     toastActions.open({
       state: 'success',
-      title: MESSAGES.TOAST.COPY_SUCCESS,
+      title: MESSAGES.TOAST.CLIPBOARD_COPY_SUCCESS,
     });
   };
   const copyToClipboard = (text: string) => {
@@ -28,7 +28,7 @@ const TeamCreateDone = ({ code }: { code: string }) => {
       (err) => {
         toastActions.open({
           state: 'error',
-          title: MESSAGES.TOAST.COPY_ERROR,
+          title: MESSAGES.TOAST.CLIPBOARD_COPY_ERROR,
         });
         console.error('클립보드 복사 실패:', err);
       },
