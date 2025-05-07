@@ -57,12 +57,12 @@ const ProfileSetting = ({ data }: Props) => {
       await updateUserInfoMutation.mutateAsync(payload);
       toastActions.open({
         state: 'success',
-        title: MESSAGES.TOAST.ACCOUNT_SAVE_SUCCESS,
+        title: MESSAGES.ACCOUNT_SAVE_SUCCESS,
       });
     } catch (err) {
       toastActions.open({
         state: 'error',
-        title: MESSAGES.TOAST.ACCOUNT_SAVE_ERROR,
+        title: MESSAGES.ACCOUNT_SAVE_ERROR,
       });
     }
   };

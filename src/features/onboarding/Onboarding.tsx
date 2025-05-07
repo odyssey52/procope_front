@@ -1,20 +1,20 @@
 'use client';
 
+import { updateUserInfo } from '@/features/user/services/info/userInfoService';
+import { MESSAGES } from '@/shared/constants/messages';
+import { TENDENCY_TITLE_LIST } from '@/shared/constants/stepper';
+import { toastActions } from '@/shared/lib/store/modal/toast';
 import Container from '@/shared/ui/Container';
 import Text from '@/shared/ui/Text';
 import ProgressBar from '@/shared/ui/progress/ProgressBar';
-import { TENDENCY_TITLE_LIST } from '@/shared/constants/stepper';
-import { updateUserInfo } from '@/features/user/services/info/userInfoService';
-import { toastActions } from '@/shared/lib/store/modal/toast';
 import { useMutation } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import { useCallback, useMemo, useState } from 'react';
 import styled from 'styled-components';
+import CheckStep from './CheckStep';
 import FirstStep, { JobMain } from './FirstStep';
 import SecondStep, { JobSub } from './SecondStep';
 import ThirdStep, { Preference } from './ThirdStep';
-import CheckStep from './CheckStep';
-
 const ONBOARDING_CONSTANTS = {
   MAX_JOB_SUB: 3,
   TOAST_DELAY: 0,
@@ -33,8 +33,8 @@ const Onboarding = () => {
     onError: (error) => {
       toastActions.open({
         state: 'error',
-        title: '저장 실패',
-        description: '정보 저장 중 오류가 발생했습니다. 다시 시도해 주세요.',
+        title: MESSAGES.TITLE_SAVE_FAILED,
+        description: MESSAGES.DESCRIPTION_SAVE_FAILED,
       });
       console.error('Failed to save user info:', error);
     },
