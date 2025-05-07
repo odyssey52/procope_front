@@ -12,6 +12,9 @@ interface Props {
   data: ReadUserInfoResponse;
 }
 
+const SUCCESS_MESSAGE = '계정 정보가 성공적으로 수정되었습니다.' as const;
+const ERROR_MESSAGE = '다시 시도해 주세요.' as const;
+
 const CommunicationSetting = ({ data }: Props) => {
   const [preferences, setPreferences] = useState(data.preferenceInfoList.preferences.map((pref) => pref.score));
 
@@ -36,12 +39,12 @@ const CommunicationSetting = ({ data }: Props) => {
       await updateUserInfoMutation.mutateAsync(payload);
       toastActions.open({
         state: 'success',
-        title: '계정 정보가 성공적으로 수정되었습니다.',
+        title: SUCCESS_MESSAGE,
       });
     } catch (err) {
       toastActions.open({
         state: 'error',
-        title: '다시 시도해 주세요.',
+        title: ERROR_MESSAGE,
       });
     }
   };
