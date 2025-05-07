@@ -1,6 +1,6 @@
+import { MESSAGES } from '@/shared/constants/messages';
 import useAuthStore from '@/shared/lib/store/auth/auth';
 import { toastActions } from '@/shared/lib/store/modal/toast';
-import { ERROR_MESSAGES } from '@/shared/constants/errorMessages';
 
 interface LogoutOptions {
   savePreviousPath?: boolean;
@@ -25,6 +25,6 @@ export const handleLogout = async (options: LogoutOptions = {}) => {
     }
   } catch (error) {
     console.error('로그아웃 처리 중 에러 발생:', error);
-    toastActions.open({ title: ERROR_MESSAGES.LOGOUT_FAILED, state: 'error' });
+    toastActions.open({ title: MESSAGES.ERROR.LOGOUT_FAILED, state: 'error' });
   }
 };

@@ -1,3 +1,4 @@
+import { MESSAGES } from '@/shared/constants/messages';
 import { Component, ErrorInfo, ReactNode } from 'react';
 import Error from '../error/Error';
 
@@ -47,11 +48,11 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
 
   render() {
     if (this.state.hasError) {
-      const errorMessage = this.state.error?.message || '';
+      console.error('ErrorBoundary Error:', this.state.error);
       return (
         <Error
           title={this.props.title || '문제가 발생했습니다.'}
-          description={this.props.description || `잠시 후 다시 시도해 주세요. (${errorMessage})`}
+          description={this.props.description || MESSAGES.ERROR.RETRY}
           onRetry={this.resetError}
         />
       );

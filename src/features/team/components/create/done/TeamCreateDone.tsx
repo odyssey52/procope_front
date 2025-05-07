@@ -9,6 +9,7 @@ import Text from '@/shared/ui/Text';
 import { toastActions } from '@/shared/lib/store/modal/toast';
 import { useRouter } from 'next/navigation';
 import styled from 'styled-components';
+import { MESSAGES } from '@/shared/constants/messages';
 
 const TeamCreateDone = ({ code }: { code: string }) => {
   const inviteUrl = `${process.env.NEXT_PUBLIC_APP_URL}team/invite/${code}`;
@@ -16,7 +17,7 @@ const TeamCreateDone = ({ code }: { code: string }) => {
   const handleToast = () => {
     toastActions.open({
       state: 'success',
-      title: '클립보드에 복사되었습니다.',
+      title: MESSAGES.TOAST.COPY_SUCCESS,
     });
   };
   const copyToClipboard = (text: string) => {
@@ -25,6 +26,10 @@ const TeamCreateDone = ({ code }: { code: string }) => {
         handleToast();
       },
       (err) => {
+        toastActions.open({
+          state: 'error',
+          title: MESSAGES.TOAST.COPY_ERROR,
+        });
         console.error('클립보드 복사 실패:', err);
       },
     );
