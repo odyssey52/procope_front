@@ -1,21 +1,21 @@
-import { useEffect, useState } from 'react';
+import propertiesFieldsQueries from '@/features/properties/query/fields/propertiesFieldsQueries';
+import propertiesRolesQueries from '@/features/properties/query/roles/propertiesRolesQueries';
+import { updateUserInfo } from '@/features/user/services/info/userInfoService';
+import { ReadUserInfoResponse } from '@/features/user/services/info/userInfoService.type';
+import { MESSAGES } from '@/shared/constants/messages';
+import { toastActions } from '@/shared/lib/store/modal/toast';
 import Avatar from '@/shared/ui/avatar/Avatar';
 import Button from '@/shared/ui/button/Button';
 import Chip from '@/shared/ui/chip/Chip';
 import Label from '@/shared/ui/label/Label';
 import Placeholder from '@/shared/ui/placeholder/Placeholder';
 import Radio from '@/shared/ui/radio/Radio';
-import { ReadUserInfoResponse } from '@/features/user/services/info/userInfoService.type';
-import { toastActions } from '@/shared/lib/store/modal/toast';
-import styled from 'styled-components';
 import { useMutation, useQuery } from '@tanstack/react-query';
-import { updateUserInfo } from '@/features/user/services/info/userInfoService';
-import propertiesRolesQueries from '@/features/properties/query/roles/propertiesRolesQueries';
-import propertiesFieldsQueries from '@/features/properties/query/fields/propertiesFieldsQueries';
+import { useEffect, useState } from 'react';
+import styled from 'styled-components';
+import { JobMain } from '../onboarding/FirstStep';
 import { JobSub } from '../onboarding/SecondStep';
 import DeleteModal from './DeleteModal';
-import { JobMain } from '../onboarding/FirstStep';
-
 interface Props {
   data: ReadUserInfoResponse;
 }
@@ -57,12 +57,12 @@ const ProfileSetting = ({ data }: Props) => {
       await updateUserInfoMutation.mutateAsync(payload);
       toastActions.open({
         state: 'success',
-        title: '계정 정보가 성공적으로 수정되었습니다.',
+        title: MESSAGES.TOAST.ACCOUNT_SAVE_SUCCESS,
       });
     } catch (err) {
       toastActions.open({
         state: 'error',
-        title: '다시 시도해 주세요.',
+        title: MESSAGES.TOAST.ACCOUNT_SAVE_ERROR,
       });
     }
   };
