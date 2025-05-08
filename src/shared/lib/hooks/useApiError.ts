@@ -16,8 +16,8 @@ interface AxiosErrorWithResponse extends AxiosError {
 
 const createDefaultConfig = (): ErrorHandlerConfig => {
   return {
-    showToast: (message: string) => {
-      toastActions.open({ title: message, state: 'error' });
+    showToast: (message: string, description?: string) => {
+      toastActions.open({ title: message, description, state: 'error' });
     },
     logout: async () => {
       await handleLogout({ savePreviousPath: true });
@@ -61,7 +61,7 @@ const handleErrorByType = async (errorType: ErrorType, error: AxiosErrorWithResp
       showToast(MESSAGES.ERROR.CONFLICT);
       break;
     case 'SERVER_ERROR':
-      showToast(MESSAGES.ERROR.SERVER_ERROR);
+      showToast(MESSAGES.ERROR.SERVER_ERROR, MESSAGES.ERROR.RETRY);
       break;
     case 'NETWORK_ERROR':
       showToast(MESSAGES.ERROR.NETWORK_ERROR);

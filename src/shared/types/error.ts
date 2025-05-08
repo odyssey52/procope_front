@@ -17,7 +17,7 @@ export type ErrorType =
   | 'UNKNOWN_ERROR';
 
 export interface ErrorHandlerConfig {
-  showToast: (message: string) => void;
+  showToast: (message: string, description?: string) => void;
   logout: () => Promise<void>;
   redirect: (path: string) => void;
   logError: (error: unknown) => void;
