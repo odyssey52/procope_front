@@ -1,7 +1,9 @@
 'use client';
 
+import RetroList from '@/features/team/components/detail/retro/RetroList';
+
 const page = () => {
-  return <div>retro</div>;
+  return <RetroList />;
 };
 
 page.displayName = 'page';

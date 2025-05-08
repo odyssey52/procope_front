@@ -1,0 +1,26 @@
+// 2회 이상 재사용되는 메시지
+export const MESSAGES = {
+  CLIPBOARD_COPY_SUCCESS: '클립보드에 복사되었습니다.',
+  CLIPBOARD_COPY_ERROR: '클립보드 복사 실패:',
+  ACCOUNT_SAVE_SUCCESS: '계정 정보가 성공적으로 수정되었습니다.',
+  ACCOUNT_SAVE_ERROR: '다시 시도해 주세요.',
+  TITLE_SAVE_FAILED: '저장 실패',
+  DESCRIPTION_SAVE_FAILED: '정보 저장 중 오류가 발생했습니다. 다시 시도해 주세요.',
+  TEAM_JOIN_SUCCESS: '팀에 성공적으로 합류했습니다.',
+  TEAM_JOIN_FAILED: '팀 합류에 실패했습니다.',
+  CODE_EXPIRED: '초대 링크가 유효하지 않거나 만료되었습니다.',
+
+  ERROR: {
+    RETRY: '잠시 후 다시 시도해주세요.',
+    BAD_REQUEST: '잘못된 요청입니다.',
+    UNAUTHORIZED: '로그인 세션이 만료되었습니다.',
+    UNAUTHORIZED_DESCRIPTION: '다시 로그인해주세요.',
+    FORBIDDEN: '해당 기능에 대한 권한이 없습니다.',
+    NOT_FOUND: '요청한 리소스를 찾을 수 없습니다.',
+    CONFLICT: '이미 존재하는 데이터입니다.',
+    SERVER_ERROR: '서버 오류가 발생했습니다.',
+    NETWORK_ERROR: '서버 연결이 원활하지 않습니다.',
+    UNKNOWN_ERROR: '알 수 없는 오류가 발생했습니다.',
+    LOGOUT_FAILED: '로그아웃 중 문제가 발생했습니다.',
+  },
+};

@@ -1,10 +1,12 @@
 /** @type {import('next').NextConfig} */
+const path = require('path');
 
 const nextConfig = {
+  reactStrictMode: false,
   compiler: {
     styledComponents: true,
   },
-  webpack: (config) => {
+  webpack: (config, { isServer }) => {
     config.module.rules.push({
       test: /\.svg$/,
       use: [
@@ -26,7 +28,12 @@ const nextConfig = {
         },
       ],
     });
-
+    // Yjs 사용 시 주석 해제 필요
+    // if (!isServer) {
+    //   // Ensure that all imports of 'yjs' resolve to the same instance
+    //   // eslint-disable-next-line no-param-reassign, dot-notation
+    //   config.resolve.alias['yjs'] = path.resolve(__dirname, 'node_modules/yjs');
+    // }
     return config;
   },
   experimental: {
