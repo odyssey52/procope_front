@@ -1,13 +1,13 @@
+import { updateUserInfo } from '@/features/user/services/info/userInfoService';
+import { ReadUserInfoResponse } from '@/features/user/services/info/userInfoService.type';
+import { MESSAGES } from '@/shared/constants/messages';
+import { toastActions } from '@/shared/lib/store/modal/toast';
 import Button from '@/shared/ui/button/Button';
 import RadioSurvey from '@/shared/ui/radio/RadioSurvey';
 import Text from '@/shared/ui/Text';
-import { updateUserInfo } from '@/features/user/services/info/userInfoService';
-import { ReadUserInfoResponse } from '@/features/user/services/info/userInfoService.type';
-import { toastActions } from '@/shared/lib/store/modal/toast';
 import { useMutation } from '@tanstack/react-query';
 import { useState } from 'react';
 import styled from 'styled-components';
-
 interface Props {
   data: ReadUserInfoResponse;
 }
@@ -36,12 +36,12 @@ const CommunicationSetting = ({ data }: Props) => {
       await updateUserInfoMutation.mutateAsync(payload);
       toastActions.open({
         state: 'success',
-        title: '계정 정보가 성공적으로 수정되었습니다.',
+        title: MESSAGES.ACCOUNT_SAVE_SUCCESS,
       });
     } catch (err) {
       toastActions.open({
         state: 'error',
-        title: '다시 시도해 주세요.',
+        title: MESSAGES.ACCOUNT_SAVE_ERROR,
       });
     }
   };

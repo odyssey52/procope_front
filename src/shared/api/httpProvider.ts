@@ -1,9 +1,9 @@
 /* eslint-disable no-param-reassign */
+import { MESSAGES } from '@/shared/constants/messages';
 import useAuthStore from '@/shared/lib/store/auth/auth';
-import axios from 'axios';
 import { toastActions } from '@/shared/lib/store/modal/toast';
-import { ERROR_MESSAGES } from '@/shared/constants/errorMessages';
 import { handleLogout } from '@/shared/lib/utils/auth';
+import axios from 'axios';
 
 import type { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
 
@@ -52,7 +52,11 @@ export default class HTTPProvider {
             return this.client.request(error.config);
           } catch (refreshError) {
             if (axios.isAxiosError(refreshError)) {
-              toastActions.open({ title: ERROR_MESSAGES.UNAUTHORIZED, state: 'error' });
+              toastActions.open({
+                title: MESSAGES.ERROR.UNAUTHORIZED,
+                description: MESSAGES.ERROR.UNAUTHORIZED_DESCRIPTION,
+                state: 'error',
+              });
               await handleLogout({ savePreviousPath: true });
             } else {
               console.error('예상치 못한 에러 발생:', refreshError);

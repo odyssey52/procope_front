@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 import { AxiosError, AxiosResponse } from 'axios';
 import { toastActions } from '@/shared/lib/store/modal/toast';
-import { ERROR_MESSAGES } from '@/shared/constants/errorMessages';
+import { MESSAGES } from '@/shared/constants/messages';
 import { ErrorHandlerConfig, ErrorType, determineErrorType } from '@/shared/types/error';
 import { handleLogout } from '@/shared/lib/utils/auth';
 
@@ -16,8 +16,8 @@ interface AxiosErrorWithResponse extends AxiosError {
 
 const createDefaultConfig = (): ErrorHandlerConfig => {
   return {
-    showToast: (message: string) => {
-      toastActions.open({ title: message, state: 'error' });
+    showToast: (message: string, description?: string) => {
+      toastActions.open({ title: message, description, state: 'error' });
     },
     logout: async () => {
       await handleLogout({ savePreviousPath: true });
@@ -37,7 +37,7 @@ const handleErrorByType = async (errorType: ErrorType, error: AxiosErrorWithResp
 
   // 로그아웃 관련 에러인 경우
   if (error.config?.url?.includes('auth/logout') || error.config?.url?.includes('auth/refresh')) {
-    showToast(ERROR_MESSAGES.LOGOUT_FAILED);
+    showToast(MESSAGES.ERROR.LOGOUT_FAILED);
     logError(error);
     return;
   }
@@ -49,25 +49,25 @@ const handleErrorByType = async (errorType: ErrorType, error: AxiosErrorWithResp
 
   switch (errorType) {
     case 'BAD_REQUEST':
-      showToast(errorMessage || ERROR_MESSAGES.BAD_REQUEST);
+      showToast(errorMessage || MESSAGES.ERROR.BAD_REQUEST);
       break;
     case 'FORBIDDEN':
-      showToast(ERROR_MESSAGES.FORBIDDEN);
+      showToast(MESSAGES.ERROR.FORBIDDEN);
       break;
     case 'NOT_FOUND':
-      showToast(ERROR_MESSAGES.NOT_FOUND);
+      showToast(MESSAGES.ERROR.NOT_FOUND);
       break;
     case 'CONFLICT':
-      showToast(ERROR_MESSAGES.CONFLICT);
+      showToast(MESSAGES.ERROR.CONFLICT);
       break;
     case 'SERVER_ERROR':
-      showToast(ERROR_MESSAGES.SERVER_ERROR);
+      showToast(MESSAGES.ERROR.SERVER_ERROR, MESSAGES.ERROR.RETRY);
       break;
     case 'NETWORK_ERROR':
-      showToast(ERROR_MESSAGES.NETWORK_ERROR);
+      showToast(MESSAGES.ERROR.NETWORK_ERROR);
       break;
     default:
-      showToast(ERROR_MESSAGES.UNKNOWN_ERROR);
+      showToast(MESSAGES.ERROR.UNKNOWN_ERROR);
   }
 
   logError(error);
@@ -83,7 +83,7 @@ const useApiError = (config?: Partial<ErrorHandlerConfig>) => {
         const errorType = determineErrorType(error);
         await handleErrorByType(errorType, error as AxiosErrorWithResponse, finalConfig);
       } else {
-        finalConfig.showToast(ERROR_MESSAGES.UNKNOWN_ERROR);
+        finalConfig.showToast(MESSAGES.ERROR.UNKNOWN_ERROR);
         finalConfig.logError(error);
       }
     },
