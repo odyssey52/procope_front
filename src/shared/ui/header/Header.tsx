@@ -102,11 +102,7 @@ const Header = () => {
       <LeftBox>
         <Logo type="icon" size={36} />
         {teamInfo && <Tab2 name={teamInfo.name} onClick={() => setIsDropdownOpen((prev) => !prev)} />}
-        {isDropdownOpen && (
-          <Suspense fallback={<LoadingSpinner />}>
-            <TeamListDropdown />
-          </Suspense>
-        )}
+        {isDropdownOpen && <TeamListDropdown />}
       </LeftBox>
       {isSuccess && (
         <Avatar type={avatar.type} image={avatar.image} nickname={avatar.nickname} onClick={profileHandler} />
