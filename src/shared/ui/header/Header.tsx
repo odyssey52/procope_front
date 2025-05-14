@@ -1,6 +1,8 @@
 'use client';
 
 import { invalidateRefreshToken } from '@/features/auth/services/refresh/refreshTokenService';
+import teamQueries from '@/features/team/query/teamQueries';
+import { ReadTeamListResponse } from '@/features/team/services/teamService.type';
 import userInfoQueries from '@/features/user/query/info/userInfoQueries';
 import { IconHome, IconOut, IconSetting } from '@/shared/assets/icons/line';
 import useApiError from '@/shared/lib/hooks/useApiError';
@@ -9,7 +11,7 @@ import useTeamStore from '@/shared/lib/store/team/team';
 import useUserStore from '@/shared/lib/store/user/user';
 import { handleLogout } from '@/shared/lib/utils/auth';
 import { elevation } from '@/shared/styles/mixin';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useSuspenseQuery } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import styled from 'styled-components';
@@ -22,7 +24,10 @@ const Header = () => {
   const router = useRouter();
   const { setUser } = useUserStore();
   const { teamInfo } = useTeamStore();
+
   const { data, isSuccess } = useQuery({ ...userInfoQueries.readUserInfo });
+  const { data: teamData } = useSuspenseQuery({ ...teamQueries.readTeamList });
+
   const { handleError } = useApiError();
   const [isTabOpen, setIsTabOpen] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
@@ -57,6 +62,11 @@ const Header = () => {
 
   const profileHandler = () => {
     setIsOpen((prev) => !prev);
+  };
+
+  const handleTeamSelect = (teamId: string) => {
+    router.push(`/team/${teamId}/dashboard`);
+    setIsTabOpen(false);
   };
 
   useEffect(() => {
@@ -97,7 +107,45 @@ const Header = () => {
     <Wrapper>
       <LeftBox>
         <Logo type="icon" size={36} />
-        {teamInfo && <Tab2 name={teamInfo.name} onClick={() => setIsTabOpen((prev) => !prev)} />}
+        {teamInfo && (
+          <div style={{ position: 'relative' }}>
+            <Tab2 name={teamInfo.name} onClick={() => setIsTabOpen((prev) => !prev)} />
+            {isTabOpen && (
+              <div
+                style={{
+                  position: 'absolute',
+                  top: '100%',
+                  left: 0,
+                  backgroundColor: 'white',
+                  border: '1px solid #e0e0e0',
+                  borderRadius: '8px',
+                  padding: '8px',
+                  marginTop: '4px',
+                  zIndex: 1000,
+                }}
+              >
+                {teamData?.team.map((team) => (
+                  <button
+                    key={team.teamId}
+                    type="button"
+                    onClick={() => handleTeamSelect(team.teamId)}
+                    style={{
+                      display: 'block',
+                      width: '100%',
+                      padding: '8px 16px',
+                      textAlign: 'left',
+                      border: 'none',
+                      background: 'none',
+                      cursor: 'pointer',
+                    }}
+                  >
+                    {team.name}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
       </LeftBox>
       {isSuccess && (
         <Avatar type={avatar.type} image={avatar.image} nickname={avatar.nickname} onClick={profileHandler} />
