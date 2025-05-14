@@ -76,7 +76,7 @@ const Wrapper = styled.div<AvatarStyledProps>`
   cursor: pointer;
   aspect-ratio: 1/1;
   border-radius: 50%;
-  color: ${({ theme }) => theme.sementicColors.text.invers};
+  color: ${({ theme }) => theme.sementicColors.text.inverse};
   background-color: ${({ theme }) => theme.sementicColors.bg.brand};
   border: 1px solid ${({ theme }) => theme.sementicColors.border.primary};
   background-size: cover;
@@ -90,7 +90,7 @@ const Wrapper = styled.div<AvatarStyledProps>`
     css`
       background-image: none;
       border: 1px solid ${({ theme }) => theme.sementicColors.border.primary};
-      color: ${({ theme }) => theme.sementicColors.text.invers};
+      color: ${({ theme }) => theme.sementicColors.text.inverse};
     `};
   ${({ $image, $type }) =>
     $image &&

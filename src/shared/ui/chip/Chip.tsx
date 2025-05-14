@@ -39,7 +39,7 @@ const chipStyle = (size: ChipProps['size'], disabled: ChipProps['disabled'], sel
     }
     return css`
       background: ${({ theme }) => theme.sementicColors.bg.brand};
-      color: ${({ theme }) => theme.sementicColors.text.invers};
+      color: ${({ theme }) => theme.sementicColors.text.inverse};
       border: none;
       z-index: 1;
     `;

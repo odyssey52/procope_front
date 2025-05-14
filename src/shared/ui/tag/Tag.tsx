@@ -193,7 +193,7 @@ const Tag = styled.span<TagProps>`
   border-radius: 4px;
   border: none;
   cursor: default;
-  color: ${({ theme }) => theme.sementicColors.text.invers};
+  color: ${({ theme }) => theme.sementicColors.text.inverse};
   > svg {
     width: 16px;
     height: 16px;
