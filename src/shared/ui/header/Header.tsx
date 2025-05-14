@@ -24,6 +24,7 @@ const Header = () => {
   const { teamInfo } = useTeamStore();
   const { data, isSuccess } = useQuery({ ...userInfoQueries.readUserInfo });
   const { handleError } = useApiError();
+  const [isTabOpen, setIsTabOpen] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [avatar, setAvatar] = useState<{
     type: 'profile' | 'initial';
@@ -96,7 +97,7 @@ const Header = () => {
     <Wrapper>
       <LeftBox>
         <Logo type="icon" size={36} />
-        {teamInfo && <Tab2 name={teamInfo.name} />}
+        {teamInfo && <Tab2 name={teamInfo.name} onClick={() => setIsTabOpen((prev) => !prev)} />}
       </LeftBox>
       {isSuccess && (
         <Avatar type={avatar.type} image={avatar.image} nickname={avatar.nickname} onClick={profileHandler} />
