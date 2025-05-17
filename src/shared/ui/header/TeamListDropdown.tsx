@@ -1,13 +1,16 @@
 'use client';
 
+import { useClickOutside } from '@/shared/lib/hooks/useClickOutside';
 import { Suspense } from 'react';
 import styled from 'styled-components';
 import { LoadingSpinner } from '../LoadingSpinner';
 import TeamListDropdownContent from './TeamListDropdownContent';
 
-const TeamListDropdown = () => {
+const TeamListDropdown = ({ closeDropdown }: { closeDropdown: () => void }) => {
+  const ref = useClickOutside<HTMLDivElement>(closeDropdown);
+
   return (
-    <Wrapper>
+    <Wrapper ref={ref}>
       <Suspense
         fallback={
           <LoadingContainer>

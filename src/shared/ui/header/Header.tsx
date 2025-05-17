@@ -11,7 +11,7 @@ import { handleLogout } from '@/shared/lib/utils/auth';
 import { elevation } from '@/shared/styles/mixin';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import Logo from '../Logo';
 import Avatar from '../avatar/Avatar';
@@ -20,13 +20,17 @@ import Tab2 from '../tab/Tab2';
 import TeamListDropdown from './TeamListDropdown';
 
 const Header = () => {
+  // Router & Store
   const router = useRouter();
   const { setUser } = useUserStore();
   const { teamInfo } = useTeamStore();
-
-  const { data, isSuccess } = useQuery({ ...userInfoQueries.readUserInfo });
-
   const { handleError } = useApiError();
+
+  // Queries & Mutations
+  const { data, isSuccess } = useQuery({ ...userInfoQueries.readUserInfo });
+  const invalidateRefreshTokenMutation = useMutation({ mutationFn: invalidateRefreshToken });
+
+  // State
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [avatar, setAvatar] = useState<{
@@ -39,8 +43,7 @@ const Header = () => {
     nickname: data?.userContext.name,
   }));
 
-  const invalidateRefreshTokenMutation = useMutation({ mutationFn: invalidateRefreshToken });
-
+  // Handlers
   const handleLogoutClick = async () => {
     try {
       await invalidateRefreshTokenMutation.mutateAsync();
@@ -50,6 +53,10 @@ const Header = () => {
       handleError(error);
     }
   };
+
+  const closeDropdown = useCallback(() => {
+    setIsDropdownOpen(false);
+  }, []);
 
   const valueHandler = (value: string) => {
     setIsOpen(false);
@@ -62,6 +69,7 @@ const Header = () => {
     setIsOpen((prev) => !prev);
   };
 
+  // Effects
   useEffect(() => {
     setAvatar({
       type: data?.userContext.picture ? 'profile' : 'initial',
@@ -72,8 +80,9 @@ const Header = () => {
       const { id, name, email, username } = data.userContext;
       setUser({ id, name, email, username });
     }
-  }, [data?.userContext.picture]);
+  }, [data?.userContext.picture, isSuccess, setUser]);
 
+  // Constants
   const selectOptionList = [
     {
       leftContent: <Avatar type={avatar.type} image={avatar.image} nickname={avatar.nickname} />,
@@ -101,32 +110,31 @@ const Header = () => {
       <LeftBox>
         <Logo type="icon" size={36} />
         {teamInfo && <Tab2 name={teamInfo.name} onClick={() => setIsDropdownOpen((prev) => !prev)} />}
-        {isDropdownOpen && <TeamListDropdown />}
+        {isDropdownOpen && <TeamListDropdown closeDropdown={closeDropdown} />}
       </LeftBox>
       {isSuccess && (
         <Avatar type={avatar.type} image={avatar.image} nickname={avatar.nickname} onClick={profileHandler} />
       )}
       {isOpen && isSuccess && (
         <SettingOption onClick={(e) => e.stopPropagation()} data-testid="setting-option">
-          {selectOptionList.map((value) => {
-            return (
-              <div key={value.value}>
-                <SelectOption
-                  leftContent={value.leftContent}
-                  description={value.description}
-                  value={value.value}
-                  valueHandler={valueHandler}
-                />
-                {value.span && <Span $span={value.span} />}
-              </div>
-            );
-          })}
+          {selectOptionList.map((value) => (
+            <div key={value.value}>
+              <SelectOption
+                leftContent={value.leftContent}
+                description={value.description}
+                value={value.value}
+                valueHandler={valueHandler}
+              />
+              {value.span && <Span $span={value.span} />}
+            </div>
+          ))}
         </SettingOption>
       )}
     </Wrapper>
   );
 };
 
+// Styled Components
 const Wrapper = styled.div`
   position: relative;
   justify-content: space-between;
