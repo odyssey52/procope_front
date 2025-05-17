@@ -12,12 +12,14 @@ const TeamListDropdownContent = () => {
 
   const selectOptionList =
     teamData?.team.map((team) => ({
-      value: team.teamId,
-      description: team.name,
+      value: team.name,
+      id: team.teamId,
     })) || [];
 
-  const handleTeamSelect = (value: string) => {
-    router.push(`/team/${value}/dashboard`);
+  const handleTeamSelect = (value: string, id?: string | number) => {
+    if (id) {
+      router.push(`/team/${id}/dashboard`);
+    }
   };
 
   return (

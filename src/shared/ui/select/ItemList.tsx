@@ -5,13 +5,16 @@ import SelectOption from './SelectOption';
 export type SelectOptionList = {
   leftContent?: React.ReactNode;
   value: string;
+  id?: string | number;
   description?: string;
 }[];
+
 interface ItemListProps {
   selectOptionList: SelectOptionList;
   value?: string;
-  valueHandler: (value: string) => void;
+  valueHandler: (value: string, id?: string | number) => void;
 }
+
 const ItemList = ({ selectOptionList, value, valueHandler }: ItemListProps) => {
   return (
     <Wrapper>
@@ -19,7 +22,7 @@ const ItemList = ({ selectOptionList, value, valueHandler }: ItemListProps) => {
         <SelectOption
           key={index}
           leftContent={item.leftContent}
-          valueHandler={valueHandler}
+          valueHandler={() => valueHandler(item.value, item.id)}
           value={item.value}
           state={item.value === value ? 'selected' : undefined}
           description={item.description}
@@ -39,6 +42,7 @@ const Wrapper = styled.div`
   border: 1px solid ${({ theme }) => theme.sementicColors.border.primary};
   background: ${({ theme }) => theme.sementicColors.bg.inverse};
   max-height: calc(40px * 8); // SelectOption의 높이(40px) * 8개
+  outline: none; // 포커스 아웃라인 제거
 
   box-shadow:
     0px 2px 4px 0px rgba(0, 0, 0, 0.16),
