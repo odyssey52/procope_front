@@ -4,34 +4,25 @@ import teamQueries from '@/features/team/query/teamQueries';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import styled from 'styled-components';
+import ItemList from '../select/ItemList';
 
 const TeamListDropdownContent = () => {
   const router = useRouter();
   const { data: teamData } = useSuspenseQuery({ ...teamQueries.readTeamList });
 
-  const handleTeamSelect = (teamId: string) => {
-    router.push(`/team/${teamId}/dashboard`);
+  const selectOptionList =
+    teamData?.team.map((team) => ({
+      value: team.teamId,
+      description: team.name,
+    })) || [];
+
+  const handleTeamSelect = (value: string) => {
+    router.push(`/team/${value}/dashboard`);
   };
+
   return (
     <Wrapper>
-      {teamData?.team.map((team) => (
-        <button
-          key={team.teamId}
-          type="button"
-          onClick={() => handleTeamSelect(team.teamId)}
-          style={{
-            display: 'block',
-            width: '100%',
-            padding: '8px 16px',
-            textAlign: 'left',
-            border: 'none',
-            background: 'none',
-            cursor: 'pointer',
-          }}
-        >
-          {team.name}
-        </button>
-      ))}
+      <ItemList selectOptionList={selectOptionList} valueHandler={handleTeamSelect} />
     </Wrapper>
   );
 };

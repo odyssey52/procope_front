@@ -8,7 +8,13 @@ import TeamListDropdownContent from './TeamListDropdownContent';
 const TeamListDropdown = () => {
   return (
     <Wrapper>
-      <Suspense fallback={<LoadingSpinner />}>
+      <Suspense
+        fallback={
+          <LoadingContainer>
+            <LoadingSpinner />
+          </LoadingContainer>
+        }
+      >
         <TeamListDropdownContent />
       </Suspense>
     </Wrapper>
@@ -16,16 +22,23 @@ const TeamListDropdown = () => {
 };
 
 const Wrapper = styled.div`
-  /* color: ${({ theme }) => theme.sementicColors.text.primary}; */
-  /* background-color: ${({ theme }) => theme.sementicColors.bg.inverse}; */
   position: absolute;
-  top: 100%;
-  background-color: white;
-  border: 1px solid #e0e0e0;
-  border-radius: 8px;
-  padding: 8px;
-  margin-top: 4px;
+  top: calc(100% + 4px);
   z-index: 1000;
+`;
+
+const LoadingContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: calc(40px * 8);
+  width: 240px;
+  border-radius: 8px;
+  background-color: ${({ theme }) => theme.sementicColors.bg.inverse};
+  border: 1px solid ${({ theme }) => theme.sementicColors.border.primary};
+  box-shadow:
+    0px 2px 4px 0px rgba(0, 0, 0, 0.16),
+    0px 0px 2px 0px rgba(0, 0, 0, 0.12);
 `;
 
 TeamListDropdown.displayName = 'TeamListDropdown';

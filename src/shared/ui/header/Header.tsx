@@ -11,14 +11,13 @@ import { handleLogout } from '@/shared/lib/utils/auth';
 import { elevation } from '@/shared/styles/mixin';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
-import { Suspense, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { LoadingSpinner } from '../LoadingSpinner';
 import Logo from '../Logo';
 import Avatar from '../avatar/Avatar';
 import SelectOption from '../select/SelectOption';
-import TeamListDropdown from './TeamListDropdown';
 import Tab2 from '../tab/Tab2';
+import TeamListDropdown from './TeamListDropdown';
 
 const Header = () => {
   const router = useRouter();
