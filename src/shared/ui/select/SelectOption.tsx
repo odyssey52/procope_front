@@ -51,6 +51,7 @@ const Wrapper = styled.button<{ $state?: 'selected'; $width?: number; $borderRad
   gap: 8px;
   align-items: center;
   padding: 8px 12px;
+  user-select: none;
   &:hover {
     background: ${({ theme }) => theme.sementicColors.bg.tertiary_hover_pressed};
     border-radius: ${({ $borderRadius }) => ($borderRadius ? `${$borderRadius}` : 'none')};
@@ -64,6 +65,7 @@ const TextBox = styled.div`
   align-items: flex-start;
   gap: 4px;
   flex-grow: 1;
+  user-select: none;
 `;
 
 SelectOption.displayName = 'SelectOption';
