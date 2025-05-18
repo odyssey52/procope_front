@@ -18,6 +18,7 @@ import Avatar from '../avatar/Avatar';
 import SelectOption from '../select/SelectOption';
 import Tab2 from '../tab/Tab2';
 import TeamListDropdown from './TeamListDropdown';
+import UserArea from './UserArea';
 
 const Header = () => {
   // Router & Store
@@ -113,22 +114,13 @@ const Header = () => {
         {isDropdownOpen && <TeamListDropdown closeDropdown={closeDropdown} />}
       </LeftBox>
       {isSuccess && (
-        <Avatar type={avatar.type} image={avatar.image} nickname={avatar.nickname} onClick={profileHandler} />
-      )}
-      {isOpen && isSuccess && (
-        <SettingOption onClick={(e) => e.stopPropagation()} data-testid="setting-option">
-          {selectOptionList.map((value) => (
-            <div key={value.value}>
-              <SelectOption
-                leftContent={value.leftContent}
-                description={value.description}
-                value={value.value}
-                valueHandler={valueHandler}
-              />
-              {value.span && <Span $span={value.span} />}
-            </div>
-          ))}
-        </SettingOption>
+        <UserArea
+          userData={{
+            name: data.userContext.name,
+            picture: data.userContext.picture,
+            roleName: data.roleInfo?.name,
+          }}
+        />
       )}
     </Wrapper>
   );
@@ -151,21 +143,6 @@ const LeftBox = styled.div`
   display: flex;
   align-items: center;
   gap: 12px;
-`;
-
-const SettingOption = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  position: absolute;
-  top: 48px;
-  right: 24px;
-  width: 240px;
-  background-color: white;
-  border-radius: 12px;
-  padding: 12px 0px;
-  z-index: 1;
-  ${elevation.shadow4}
 `;
 
 const Span = styled.div<{ $span?: string }>`
