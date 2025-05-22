@@ -99,11 +99,11 @@ const UserArea = ({ userData }: UserAreaProps) => {
 };
 
 const SettingOption = styled.div`
+  position: absolute;
   display: flex;
   flex-direction: column;
   gap: 8px;
-  position: absolute;
-  top: 48px;
+  top: calc(100% + 4px);
   right: 24px;
   width: 240px;
   background-color: white;

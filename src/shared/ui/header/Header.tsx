@@ -8,14 +8,12 @@ import useAuthStore from '@/shared/lib/store/auth/auth';
 import useTeamStore from '@/shared/lib/store/team/team';
 import useUserStore from '@/shared/lib/store/user/user';
 import { handleLogout } from '@/shared/lib/utils/auth';
-import { elevation } from '@/shared/styles/mixin';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
-import React, { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import Logo from '../Logo';
 import Avatar from '../avatar/Avatar';
-import SelectOption from '../select/SelectOption';
 import Tab2 from '../tab/Tab2';
 import TeamListDropdown from './TeamListDropdown';
 import UserArea from './UserArea';
@@ -82,29 +80,6 @@ const Header = () => {
       setUser({ id, name, email, username });
     }
   }, [data?.userContext.picture, isSuccess, setUser]);
-
-  // Constants
-  const selectOptionList = [
-    {
-      leftContent: <Avatar type={avatar.type} image={avatar.image} nickname={avatar.nickname} />,
-      value: data?.userContext?.name || '',
-      description: data?.roleInfo?.name || '',
-      span: 'long',
-    },
-    {
-      leftContent: <IconHome />,
-      value: '홈',
-    },
-    {
-      leftContent: <IconSetting />,
-      value: '계정 설정',
-      span: 'short',
-    },
-    {
-      leftContent: <IconOut />,
-      value: '로그아웃',
-    },
-  ];
 
   return (
     <Wrapper>
