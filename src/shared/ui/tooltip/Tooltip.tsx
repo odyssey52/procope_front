@@ -37,7 +37,7 @@ const tooltipPoint = (direction: 'left' | 'right' | 'center') => (location?: 'to
 };
 
 const tooltipColor = (theme: DefaultTheme) => {
-  return `background-color: ${theme.sementicColors.bg.primary}; color: ${theme.sementicColors.text.invers}`;
+  return `background-color: ${theme.sementicColors.bg.primary}; color: ${theme.sementicColors.text.inverse}`;
 };
 
 const Tooltip = ({ text, direction, location, icon }: TooltipProps) => {

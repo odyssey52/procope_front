@@ -146,7 +146,7 @@ const StyledButton = styled.button<StyledButtonProps>`
   padding: 12px 16px;
   border: none;
   cursor: pointer;
-  color: ${({ theme }) => theme.sementicColors.text.invers};
+  color: ${({ theme }) => theme.sementicColors.text.inverse};
   ${({ theme }) => theme.fontStyle.body_14_medium};
   border-radius: 12px;
   &:disabled {

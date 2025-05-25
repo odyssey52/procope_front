@@ -228,7 +228,7 @@ export const sementicColors = {
     tertiary: primitiveColors.gray[600],
     tertiary_hober_pressed: primitiveColors.gray[700],
     disabled: primitiveColors.gray[500],
-    invers: primitiveColors.base.white,
+    inverse: primitiveColors.base.white,
     danger: primitiveColors.red[500],
     danger_hover_pressed: primitiveColors.red[700],
     info: primitiveColors.blue[500],

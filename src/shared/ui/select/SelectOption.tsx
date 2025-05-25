@@ -28,11 +28,11 @@ const SelectOption = ({
       {leftContent && leftContent}
       {value && (
         <TextBox>
-          <Text variant="body_14_semibold" color={pageName === value ? 'brand' : 'primary'}>
+          <Text variant="body_14_semibold" color={pageName === value ? 'brand' : 'primary'} ellipsis>
             {value}
           </Text>
           {description && (
-            <Text variant="caption_12_regular" color="secondary">
+            <Text variant="caption_12_regular" color="secondary" ellipsis>
               {description}
             </Text>
           )}
@@ -46,10 +46,12 @@ const Wrapper = styled.button<{ $state?: 'selected'; $width?: number; $borderRad
   position: relative;
   cursor: pointer;
   display: flex;
-  min-width: ${({ $width }) => ($width ? `${$width}px` : '240px')};
+  min-width: 240px;
+  width: ${({ $width }) => ($width ? `${$width}px` : '240px')};
   gap: 8px;
   align-items: center;
   padding: 8px 12px;
+  user-select: none;
   &:hover {
     background: ${({ theme }) => theme.sementicColors.bg.tertiary_hover_pressed};
     border-radius: ${({ $borderRadius }) => ($borderRadius ? `${$borderRadius}` : 'none')};
@@ -63,6 +65,7 @@ const TextBox = styled.div`
   align-items: flex-start;
   gap: 4px;
   flex-grow: 1;
+  user-select: none;
 `;
 
 SelectOption.displayName = 'SelectOption';

@@ -35,6 +35,8 @@ const Wrapper = styled.div<{ $selected?: boolean }>`
   width: fit-content;
   padding: 4px 10px;
   cursor: pointer;
+  outline: none;
+  user-select: none;
   ${({ theme }) => theme.fontStyle.body_16_regular};
   ${({ $selected }) =>
     $selected &&

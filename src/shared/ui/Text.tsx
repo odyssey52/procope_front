@@ -42,6 +42,7 @@ const Wrapper = styled.div<TextStyledProps>`
     $ellipsis &&
     css`
       overflow: hidden;
+      text-align: left;
       text-overflow: ellipsis;
       display: -webkit-box;
       -webkit-line-clamp: ${$lines};

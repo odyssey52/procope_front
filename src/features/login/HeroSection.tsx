@@ -12,10 +12,10 @@ const HeroSection = () => {
         <TrafficLightCard />
       </ImageBox>
       <TextBox>
-        <Text variant="heading_24" color="invers">
+        <Text variant="heading_24" color="inverse">
           애자일 팀 원픽 회고 관리 서비스
         </Text>
-        <Text variant="body_16_medium" color="invers">
+        <Text variant="body_16_medium" color="inverse">
           목표관리와 회고를 수치화하여 관리할 수 있게 도와드립니다.
           <br />
           회고 진행사항을 한눈에 확인해 보세요.
