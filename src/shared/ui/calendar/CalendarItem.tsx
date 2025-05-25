@@ -34,7 +34,7 @@ const Wrapper = styled.button<{ disabled?: boolean; selected: boolean }>`
       ? css`
           ${({ theme }) => theme.fontStyle.body_14_semibold};
           background: ${({ theme }) => theme.sementicColors.bg.primary};
-          color: ${({ theme }) => theme.sementicColors.text.invers};
+          color: ${({ theme }) => theme.sementicColors.text.inverse};
           &:disabled {
             cursor: not-allowed;
             opacity: 0.5;
