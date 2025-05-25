@@ -1,37 +1,26 @@
 'use client';
 
-import { invalidateRefreshToken } from '@/features/auth/services/refresh/refreshTokenService';
 import userInfoQueries from '@/features/user/query/info/userInfoQueries';
-import { IconHome, IconOut, IconSetting } from '@/shared/assets/icons/line';
-import useApiError from '@/shared/lib/hooks/useApiError';
-import useAuthStore from '@/shared/lib/store/auth/auth';
 import useTeamStore from '@/shared/lib/store/team/team';
 import useUserStore from '@/shared/lib/store/user/user';
-import { handleLogout } from '@/shared/lib/utils/auth';
-import { useMutation, useQuery } from '@tanstack/react-query';
-import { useRouter } from 'next/navigation';
+import { elevation } from '@/shared/styles/mixin';
+import { useQuery } from '@tanstack/react-query';
 import { useCallback, useEffect, useState } from 'react';
 import styled from 'styled-components';
-import Logo from '../Logo';
 import Avatar from '../avatar/Avatar';
+import Logo from '../Logo';
 import Tab2 from '../tab/Tab2';
 import TeamListDropdown from './TeamListDropdown';
 import UserArea from './UserArea';
 
 const Header = () => {
-  // Router & Store
-  const router = useRouter();
   const { setUser } = useUserStore();
   const { teamInfo } = useTeamStore();
-  const { handleError } = useApiError();
-
-  // Queries & Mutations
   const { data, isSuccess } = useQuery({ ...userInfoQueries.readUserInfo });
-  const invalidateRefreshTokenMutation = useMutation({ mutationFn: invalidateRefreshToken });
 
-  // State
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [isOpen, setIsOpen] = useState(false);
+  const [isUserAreaOpen, setIsUserAreaOpen] = useState(false);
+
   const [avatar, setAvatar] = useState<{
     type: 'profile' | 'initial';
     image: string | undefined;
@@ -42,33 +31,18 @@ const Header = () => {
     nickname: data?.userContext.name,
   }));
 
-  // Handlers
-  const handleLogoutClick = async () => {
-    try {
-      await invalidateRefreshTokenMutation.mutateAsync();
-      useAuthStore.getState().logout('manual');
-      handleLogout({ savePreviousPath: false });
-    } catch (error) {
-      handleError(error);
-    }
+  const closeDropdown = () => {
+    setIsDropdownOpen(false);
   };
 
-  const closeDropdown = useCallback(() => {
-    setIsDropdownOpen(false);
+  const closeUserArea = useCallback(() => {
+    setIsUserAreaOpen(false);
   }, []);
 
-  const valueHandler = (value: string) => {
-    setIsOpen(false);
-    if (value === '홈') router.push('/team');
-    else if (value === '계정 설정') router.push('/accountSetting');
-    else if (value === '로그아웃') handleLogoutClick();
+  const handleUserAreaClick = () => {
+    setIsUserAreaOpen((prev) => !prev);
   };
 
-  const profileHandler = () => {
-    setIsOpen((prev) => !prev);
-  };
-
-  // Effects
   useEffect(() => {
     setAvatar({
       type: data?.userContext.picture ? 'profile' : 'initial',
@@ -89,19 +63,27 @@ const Header = () => {
         {isDropdownOpen && <TeamListDropdown closeDropdown={closeDropdown} />}
       </LeftBox>
       {isSuccess && (
+        <Avatar
+          type={data?.userContext.picture ? 'profile' : 'initial'}
+          image={data?.userContext.picture}
+          nickname={data?.userContext.name}
+          onClick={handleUserAreaClick}
+        />
+      )}
+      {isUserAreaOpen && (
         <UserArea
           userData={{
-            name: data.userContext.name,
-            picture: data.userContext.picture,
-            roleName: data.roleInfo?.name,
+            name: data?.userContext.name,
+            picture: data?.userContext.picture,
+            roleName: data?.roleInfo?.name,
           }}
+          closeUserArea={closeUserArea}
         />
       )}
     </Wrapper>
   );
 };
 
-// Styled Components
 const Wrapper = styled.div`
   position: relative;
   justify-content: space-between;
@@ -118,13 +100,6 @@ const LeftBox = styled.div`
   display: flex;
   align-items: center;
   gap: 12px;
-`;
-
-const Span = styled.div<{ $span?: string }>`
-  width: ${({ $span }) => $span && ($span === 'long' ? '240px' : '216px')};
-  border-bottom: ${({ $span, theme }) => ($span ? `1px solid ${theme.sementicColors.border.primary}` : 'none')};
-  margin: 0 auto;
-  padding-top: 8px;
 `;
 
 Header.displayName = 'Header';

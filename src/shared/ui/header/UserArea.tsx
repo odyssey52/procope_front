@@ -1,12 +1,12 @@
 import { invalidateRefreshToken } from '@/features/auth/services/refresh/refreshTokenService';
 import { IconHome, IconOut, IconSetting } from '@/shared/assets/icons/line';
 import useApiError from '@/shared/lib/hooks/useApiError';
+import { useClickOutside } from '@/shared/lib/hooks/useClickOutside';
 import useAuthStore from '@/shared/lib/store/auth/auth';
 import { handleLogout } from '@/shared/lib/utils/auth';
 import { elevation } from '@/shared/styles/mixin';
 import { useMutation } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
 import styled from 'styled-components';
 import Avatar from '../avatar/Avatar';
 import SelectOption from '../select/SelectOption';
@@ -17,12 +17,13 @@ interface UserAreaProps {
     picture?: string;
     roleName?: string;
   };
+  closeUserArea: () => void;
 }
 
-const UserArea = ({ userData }: UserAreaProps) => {
+const UserArea = ({ userData, closeUserArea }: UserAreaProps) => {
   const router = useRouter();
   const { handleError } = useApiError();
-  const [isOpen, setIsOpen] = useState(false);
+  const ref = useClickOutside<HTMLDivElement>(closeUserArea);
 
   const invalidateRefreshTokenMutation = useMutation({ mutationFn: invalidateRefreshToken });
 
@@ -37,14 +38,10 @@ const UserArea = ({ userData }: UserAreaProps) => {
   };
 
   const valueHandler = (value: string) => {
-    setIsOpen(false);
+    closeUserArea();
     if (value === '홈') router.push('/team');
     else if (value === '계정 설정') router.push('/accountSetting');
     else if (value === '로그아웃') handleLogoutClick();
-  };
-
-  const profileHandler = () => {
-    setIsOpen((prev) => !prev);
   };
 
   const selectOptionList = [
@@ -54,7 +51,7 @@ const UserArea = ({ userData }: UserAreaProps) => {
       ),
       value: userData.name || '',
       description: userData.roleName || '',
-      span: 'long',
+      size: 'long',
     },
     {
       leftContent: <IconHome />,
@@ -63,7 +60,7 @@ const UserArea = ({ userData }: UserAreaProps) => {
     {
       leftContent: <IconSetting />,
       value: '계정 설정',
-      span: 'short',
+      size: 'short',
     },
     {
       leftContent: <IconOut />,
@@ -72,29 +69,19 @@ const UserArea = ({ userData }: UserAreaProps) => {
   ];
 
   return (
-    <>
-      <Avatar
-        type={userData.picture ? 'profile' : 'initial'}
-        image={userData.picture}
-        nickname={userData.name}
-        onClick={profileHandler}
-      />
-      {isOpen && (
-        <SettingOption onClick={(e) => e.stopPropagation()} data-testid="setting-option">
-          {selectOptionList.map((value) => (
-            <div key={value.value}>
-              <SelectOption
-                leftContent={value.leftContent}
-                description={value.description}
-                value={value.value}
-                valueHandler={valueHandler}
-              />
-              {value.span && <Span $span={value.span} />}
-            </div>
-          ))}
-        </SettingOption>
-      )}
-    </>
+    <SettingOption ref={ref} onClick={(e) => e.stopPropagation()} data-testid="setting-option">
+      {selectOptionList.map((value) => (
+        <div key={value.value}>
+          <SelectOption
+            leftContent={value.leftContent}
+            description={value.description}
+            value={value.value}
+            valueHandler={valueHandler}
+          />
+          {value.size && <Line $size={value.size} />}
+        </div>
+      ))}
+    </SettingOption>
   );
 };
 
@@ -113,9 +100,9 @@ const SettingOption = styled.div`
   ${elevation.shadow4}
 `;
 
-const Span = styled.div<{ $span?: string }>`
-  width: ${({ $span }) => $span && ($span === 'long' ? '240px' : '216px')};
-  border-bottom: ${({ $span, theme }) => ($span ? `1px solid ${theme.sementicColors.border.primary}` : 'none')};
+const Line = styled.div<{ $size?: string }>`
+  width: ${({ $size }) => $size && ($size === 'long' ? '240px' : '216px')};
+  border-bottom: ${({ $size, theme }) => ($size ? `1px solid ${theme.sementicColors.border.primary}` : 'none')};
   margin: 0 auto;
   padding-top: 8px;
 `;
