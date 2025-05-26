@@ -3,7 +3,6 @@ import Modal from '@/shared/ui/modal/common/Modal';
 import Placeholder from '@/shared/ui/placeholder/Placeholder';
 import Text from '@/shared/ui/Text';
 import Image from 'next/image';
-import { useRouter } from 'next/navigation';
 import styled from 'styled-components';
 
 interface DeleteModalProps {
@@ -13,7 +12,6 @@ interface DeleteModalProps {
 const DeleteModal = ({ onClose }: DeleteModalProps) => {
   const errorIcon = '/assets/icons/graphic/fill/error.svg';
   const clearIcon = '/assets/icons/line/remove.svg';
-  const router = useRouter();
 
   return (
     <Modal portalId="confirm-dialog">
@@ -70,7 +68,7 @@ export default DeleteModal;
 const Wrapper = styled.div`
   width: 608px;
   height: 448px;
-  background-color: white;
+  background-color: ${({ theme }) => theme.sementicColors.bg.inverse};
   border-radius: 32px;
   padding: 40px;
 `;
