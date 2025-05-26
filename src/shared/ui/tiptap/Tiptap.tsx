@@ -3,8 +3,34 @@
 import DragHandle from '@tiptap-pro/extension-drag-handle-react';
 import { Editor, EditorContent } from '@tiptap/react';
 import styled from 'styled-components';
+import { useEffect, useState } from 'react';
 
-const Tiptap = ({ editor }: { editor: Editor }) => {
+interface TiptapProps {
+  editor: Editor;
+  maxLength?: number;
+}
+
+const Tiptap = ({ editor, maxLength }: TiptapProps) => {
+  const [charCount, setCharCount] = useState(0);
+
+  useEffect(() => {
+    const updateCharCount = () => {
+      const count = editor.getText().length;
+      setCharCount(count);
+
+      if (maxLength && count > maxLength) {
+        // maxLength를 초과하는 경우 마지막 문자를 제거
+        const content = editor.getHTML();
+        editor.commands.setContent(content.slice(0, maxLength));
+      }
+    };
+
+    editor.on('update', updateCharCount);
+    return () => {
+      editor.off('update', updateCharCount);
+    };
+  }, [editor, maxLength]);
+
   return (
     <Wrapper>
       <DragHandle editor={editor} className={editor?.isEditable ? 'block' : 'hidden'}>
@@ -13,6 +39,11 @@ const Tiptap = ({ editor }: { editor: Editor }) => {
         </svg>
       </DragHandle>
       <EditorContent editor={editor} />
+      {maxLength && (
+        <CharCount>
+          {charCount}/{maxLength}
+        </CharCount>
+      )}
     </Wrapper>
   );
 };
@@ -94,4 +125,13 @@ const Wrapper = styled.div`
     }
   }
 `;
+
+const CharCount = styled.div`
+  position: absolute;
+  bottom: -20px;
+  right: 0;
+  font-size: 12px;
+  color: ${({ theme }) => theme.sementicColors.text.secondary};
+`;
+
 export default Tiptap;

@@ -62,7 +62,7 @@ const RetroCard = ({ item }: RetroCardProps) => {
             {item.title}
           </Text>
 
-          <Tiptap editor={editor} />
+          <Tiptap editor={editor} maxLength={MAX_CHARS} />
         </TextBox>
       </Content>
       <Divider />
