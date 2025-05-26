@@ -9,6 +9,7 @@ export const MESSAGES = {
   TEAM_JOIN_SUCCESS: '팀에 성공적으로 합류했습니다.',
   TEAM_JOIN_FAILED: '팀 합류에 실패했습니다.',
   CODE_EXPIRED: '초대 링크가 유효하지 않거나 만료되었습니다.',
+  UPDATE_SAVE_SUCCESS: '변경사항이 저장되었습니다.',
 
   ERROR: {
     RETRY: '잠시 후 다시 시도해주세요.',

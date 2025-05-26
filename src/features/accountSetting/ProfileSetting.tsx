@@ -105,7 +105,7 @@ const ProfileSetting = ({ data }: Props) => {
         <Label required text="직무" />
         <RadioBox>
           {isRolesSuccess &&
-            roles.map(({ id, name, fields }) => {
+            roles.map(({ id, name }) => {
               return (
                 <Radio
                   key={`Radio-${id}`}
