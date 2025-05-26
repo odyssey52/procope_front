@@ -11,11 +11,6 @@ export function useTeamSetting(teamId: string) {
 
   const secessionTeamMutation = useMutation({ mutationFn: secessionTeam });
   const deleteTeamMutation = useMutation({ mutationFn: deleteTeam });
-  const saveTeamMutation = useMutation({
-    mutationFn: ({ payload, params }: { payload: types.UpdateTeamPayload; params: types.UpdateTeamParams }) => {
-      return updateTeam(payload, params);
-    },
-  });
 
   const secessionHandle = async () => {
     await secessionTeamMutation.mutateAsync({ teamId });
@@ -31,31 +26,8 @@ export function useTeamSetting(teamId: string) {
     router.push('/team');
   };
 
-  const saveTeamHandle = async () => {
-    try {
-      const payload = {
-        type: '',
-        name: '',
-        description: '',
-      };
-      const params = { teamId };
-
-      await saveTeamMutation.mutateAsync({ payload, params });
-      toastActions.open({
-        state: 'success',
-        title: MESSAGES.UPDATE_SAVE_SUCCESS,
-      });
-    } catch (err) {
-      toastActions.open({
-        state: 'error',
-        title: MESSAGES.ACCOUNT_SAVE_ERROR,
-      });
-    }
-  };
-
   return {
     secessionHandle,
     deleteHandle,
-    saveTeamHandle,
   };
 }
