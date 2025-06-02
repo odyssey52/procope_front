@@ -9,9 +9,11 @@ const URLS = {
   DELETE_TEAM: (teamId: string) => `/teams/${teamId}`,
   SECESSION_TEAM: (teamId: string) => `/teams/users/${teamId}`,
   UPDATE_TEAM: (teamId: string) => `/teams/${teamId}`,
+  READ_RETRO_LIST: (teamId: string) => `/teams/${teamId}/retrospectives`,
 };
 
 const api = new ApiClient({ isPublic: false });
+const testApi = new ApiClient({ isPublic: false, baseURL: process.env.NEXT_PUBLIC_TEST_API_HOST });
 
 export async function readTeamList(): Promise<types.ReadTeamListResponse> {
   const { data } = await api.get<types.ReadTeamListResponse>(URLS.READ_TEAM_LIST);
@@ -50,5 +52,10 @@ export async function deleteTeam(params: types.DeleteTeamParams) {
 
 export async function secessionTeam(params: types.SecessionTeamParams) {
   const { data } = await api.delete(URLS.SECESSION_TEAM(params.teamId));
+  return data;
+}
+
+export async function readRetroList(params: types.ReadRetroListParams): Promise<types.ReadRetroListResponse> {
+  const { data } = await testApi.get<types.ReadRetroListResponse>(URLS.READ_RETRO_LIST(params.teamId));
   return data;
 }

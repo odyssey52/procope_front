@@ -11,6 +11,9 @@ export interface SecessionTeamParams {
 export interface UpdateTeamParams {
   teamId: string;
 }
+export interface ReadRetroListParams {
+  teamId: string;
+}
 
 // Payload
 export interface CreateTeamPayload {
@@ -64,3 +67,14 @@ export interface CreateTeamResponse {
 export type CreateInviteTeamResponse = string;
 
 export type UpdateTeamResponse = string;
+
+export type ReadRetroListItem = {
+  id: number;
+  title: string;
+  createUserName: string;
+  joinedUserIds: string[];
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type ReadRetroListResponse = ReadRetroListItem[];
