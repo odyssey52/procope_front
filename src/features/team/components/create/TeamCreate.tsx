@@ -14,6 +14,7 @@ import { useState } from 'react';
 import styled from 'styled-components';
 import TeamCreateStep1 from './TeamCreateStep1';
 import TeamCreateStep2 from './TeamCreateStep2';
+import { teamDescriptionValid, teamNameValid } from '../../utils/data';
 
 const PATH = {
   '팀 목록': '/team',
@@ -30,11 +31,6 @@ const TeamCreate = () => {
   const [teamName, setTeamName] = useState<string>('');
   const [teamDescription, setTeamDescription] = useState<string>('');
 
-  const teamNameValid =
-    teamName.length <= 20 && /^[a-zA-Z0-9가-힣\s!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]*$/.test(teamName);
-  const teamDescriptionValid =
-    teamDescription.length <= 200 && /^[a-zA-Z0-9가-힣\s!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]*$/.test(teamDescription);
-
   const createTeamMutation = useMutation({
     mutationFn: createTeam,
   });
@@ -43,7 +39,7 @@ const TeamCreate = () => {
     if (step === 1 && teamType) {
       return true;
     }
-    if (step === 2 && teamName.length > 0 && teamNameValid && teamDescriptionValid) {
+    if (step === 2 && teamName.length > 0 && teamNameValid(teamName) && teamDescriptionValid(teamDescription)) {
       return true;
     }
     return false;
@@ -52,7 +48,13 @@ const TeamCreate = () => {
     if (step === 1 && teamType) {
       return setStep(step + 1);
     }
-    if (step === 2 && teamName.length > 0 && teamNameValid && teamDescriptionValid && teamType) {
+    if (
+      step === 2 &&
+      teamName.length > 0 &&
+      teamNameValid(teamName) &&
+      teamDescriptionValid(teamDescription) &&
+      teamType
+    ) {
       // 팀생성 비동기로 변경해야함
       const payload = {
         type: teamType,
@@ -102,8 +104,8 @@ const TeamCreate = () => {
               teamNameHandler={teamNameHandler}
               teamDescription={teamDescription}
               teamDescriptionHandler={teamDescriptionHandler}
-              teamNameValid={teamNameValid}
-              teamDescriptionValid={teamDescriptionValid}
+              teamNameValid={teamNameValid(teamName)}
+              teamDescriptionValid={teamDescriptionValid(teamDescription)}
             />
           )}
           <ControlBox>

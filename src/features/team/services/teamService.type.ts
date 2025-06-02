@@ -2,6 +2,15 @@
 export interface ReadTeamDetailParams {
   teamId: string;
 }
+export interface DeleteTeamParams {
+  teamId: string;
+}
+export interface SecessionTeamParams {
+  teamId: string;
+}
+export interface UpdateTeamParams {
+  teamId: string;
+}
 
 // Payload
 export interface CreateTeamPayload {
@@ -12,6 +21,12 @@ export interface CreateTeamPayload {
 
 export interface CreateInviteTeamPayload {
   url: string;
+}
+
+export interface UpdateTeamPayload {
+  type: 'SQUAD' | 'FEATURE';
+  name: string;
+  description: string;
 }
 
 // response
@@ -47,3 +62,5 @@ export interface CreateTeamResponse {
 }
 
 export type CreateInviteTeamResponse = string;
+
+export type UpdateTeamResponse = string;

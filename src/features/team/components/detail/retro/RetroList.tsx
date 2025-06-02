@@ -9,6 +9,7 @@ import Table, { TableColumn } from '@/shared/ui/table/Table';
 import Text from '@/shared/ui/Text';
 import PageSubTitle from '@/shared/ui/title/PageSubTitle';
 import PageTitle from '@/shared/ui/title/PageTitle';
+import { useParams } from 'next/navigation';
 import React from 'react';
 import styled from 'styled-components';
 
@@ -154,8 +155,10 @@ const mockData: RetroItem[] = [
 ];
 
 const RetroList = () => {
+  console.log('RetroList');
+  const params = useParams();
   const paths = {
-    회고관리: '/team/[teamId]/retro',
+    회고관리: `/team/${params.teamId}/retro`,
   };
 
   const addRetro = () => {

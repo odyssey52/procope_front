@@ -2,6 +2,12 @@ import Placeholder from '@/shared/ui/placeholder/Placeholder';
 import Text from '@/shared/ui/Text';
 import TextArea from '@/shared/ui/textarea/TextArea';
 import styled from 'styled-components';
+import {
+  ERROR_DESCRIPTION_TEAM_DESCRIPTION,
+  ERROR_DESCRIPTION_TEAM_NAME,
+  PLACEHOLDER_TEAM_DESCRIPTION,
+  PLACEHOLDER_TEAM_NAME,
+} from '../../utils/data';
 
 interface TeamCreateStep2Props {
   teamName: string;
@@ -11,12 +17,6 @@ interface TeamCreateStep2Props {
   teamDescriptionHandler: (description: string) => void;
   teamDescriptionValid: boolean;
 }
-
-const PLACEHOLDER_TEAM_NAME = '팀 이름을 입력해 주세요. (최대 20자)';
-const PLACEHOLDER_TEAM_DESCRIPTION = '팀을 간단히 소개해 주세요. (최대 200자)';
-
-const ERROR_DESCRIPTION_TEAM_NAME = '팀 이름은 20글자 이하로 알파벳, 숫자, 한글만 조합할 수 있습니다.';
-const ERROR_DESCRIPTION_TEAM_DESCRIPTION = '팀 소개는 200글자 이하로 입력해 주세요.';
 
 const TeamCreateStep2 = ({
   teamName,
