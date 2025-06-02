@@ -18,7 +18,7 @@ export interface TableColumn<T> {
 }
 
 interface TableProps<T> {
-  data: T[];
+  data?: T[];
   columns: TableColumn<T>[];
   keyExtractor: (item: T) => string;
   caption?: string;
