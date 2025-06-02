@@ -9,7 +9,7 @@ const URLS = {
   DELETE_TEAM: (teamId: string) => `/teams/${teamId}`,
   SECESSION_TEAM: (teamId: string) => `/teams/users/${teamId}`,
   UPDATE_TEAM: (teamId: string) => `/teams/${teamId}`,
-  READ_RETRO_LIST: (teamId: string) => `/teams/${teamId}/retrospectives`,
+  READ_RETRO_LIST: (teamId: string) => `/retrospectives/${teamId}`,
 };
 
 const api = new ApiClient({ isPublic: false });

@@ -1,5 +1,6 @@
 'use client';
 
+import teamQueries from '@/features/team/query/teamQueries';
 import { IconMenuCircleVertical, IconSortArrow } from '@/shared/assets/icons/line';
 import Avatar from '@/shared/ui/avatar/Avatar';
 import Breadcrumbs from '@/shared/ui/breadcrumbs/Breadcrumbs';
@@ -9,6 +10,7 @@ import Table, { TableColumn } from '@/shared/ui/table/Table';
 import Text from '@/shared/ui/Text';
 import PageSubTitle from '@/shared/ui/title/PageSubTitle';
 import PageTitle from '@/shared/ui/title/PageTitle';
+import { useQuery } from '@tanstack/react-query';
 import { useParams } from 'next/navigation';
 import React from 'react';
 import styled from 'styled-components';
@@ -155,8 +157,8 @@ const mockData: RetroItem[] = [
 ];
 
 const RetroList = () => {
-  console.log('RetroList');
   const params = useParams();
+  const { data } = useQuery({ ...teamQueries.readRetroList({ teamId: '1' as string }) });
   const paths = {
     회고관리: `/team/${params.teamId}/retro`,
   };
@@ -164,6 +166,8 @@ const RetroList = () => {
   const addRetro = () => {
     alert('addRetro');
   };
+
+  console.log(data);
 
   return (
     <Wrapper>
