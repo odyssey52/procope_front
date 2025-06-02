@@ -44,19 +44,19 @@ const columns = [
       </Text>
     ),
   },
-  // {
-  //   key: 'user',
-  //   title: '생성자',
-  //   width: '240px',
-  //   render: (item: ReadRetroListItem) => (
-  //     <>
-  //       <Avatar image={item.user.profileImage} nickname={item.user.name} />
-  //       <Text variant="body_14_regular" color="secondary" ellipsis>
-  //         {item.user.name}
-  //       </Text>
-  //     </>
-  //   ),
-  // },
+  {
+    key: 'user',
+    title: '생성자',
+    width: '240px',
+    render: (item: ReadRetroListItem) => (
+      <>
+        <Avatar nickname={item.createUserName} />
+        <Text variant="body_14_regular" color="secondary" ellipsis>
+          {item.createUserName}
+        </Text>
+      </>
+    ),
+  },
   {
     key: 'members',
     title: '참여자',
