@@ -14,6 +14,11 @@ export interface UpdateTeamParams {
 export interface ReadRetroListParams {
   teamId: string;
 }
+export interface CreateRetroParams {
+  title: string;
+  createdAt: string;
+  joinUserIds: number[];
+}
 
 // Payload
 export interface CreateTeamPayload {

@@ -10,6 +10,7 @@ const URLS = {
   SECESSION_TEAM: (teamId: string) => `/teams/users/${teamId}`,
   UPDATE_TEAM: (teamId: string) => `/teams/${teamId}`,
   READ_RETRO_LIST: (teamId: string) => `/retrospectives/${teamId}`,
+  CREATE_RETRO: '/retrospective',
 };
 
 const api = new ApiClient({ isPublic: false });
@@ -57,5 +58,10 @@ export async function secessionTeam(params: types.SecessionTeamParams) {
 
 export async function readRetroList(params: types.ReadRetroListParams): Promise<types.ReadRetroListResponse> {
   const { data } = await testApi.get<types.ReadRetroListResponse>(URLS.READ_RETRO_LIST(params.teamId));
+  return data;
+}
+
+export async function createRetro(params: types.CreateRetroParams) {
+  const { data } = await testApi.post(URLS.CREATE_RETRO, params);
   return data;
 }
