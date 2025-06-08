@@ -11,7 +11,6 @@ import Placeholder from '@/shared/ui/placeholder/Placeholder';
 import Text from '@/shared/ui/Text';
 import { useMutation } from '@tanstack/react-query';
 import Image from 'next/image';
-import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import styled from 'styled-components';
 import { deleteUser } from '../user/services/delete/userDeleteService';
@@ -21,7 +20,6 @@ interface DeleteModalProps {
 }
 
 const DeleteModal = ({ onClose }: DeleteModalProps) => {
-  const router = useRouter();
   const [email, setEmail] = useState('');
   const { id } = useUserStore();
   const { logout } = useAuthStore();
