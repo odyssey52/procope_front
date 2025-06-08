@@ -45,6 +45,7 @@ export interface ReadTeamListResponse {
     type: 'SQUAD' | 'FEATURE';
     name: string;
     description: string;
+    myRole: 'ADMIN' | 'MANAGER' | 'MEMBER';
     members: {
       userId: string;
       picture: string;
