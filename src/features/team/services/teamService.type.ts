@@ -1,3 +1,5 @@
+import { TeamType, UserRole } from '@/shared/types/team';
+
 // Params
 export interface ReadTeamDetailParams {
   teamId: string;
@@ -32,7 +34,7 @@ export interface CreateInviteTeamPayload {
 }
 
 export interface UpdateTeamPayload {
-  type: 'SQUAD' | 'FEATURE';
+  type: TeamType;
   name: string;
   description: string;
 }
@@ -42,10 +44,10 @@ export interface ReadTeamListResponse {
   count: number;
   team: {
     teamId: string;
-    type: 'SQUAD' | 'FEATURE';
+    type: TeamType;
     name: string;
     description: string;
-    myRole: 'ADMIN' | 'MANAGER' | 'MEMBER';
+    myRole: UserRole;
     members: {
       userId: string;
       picture: string;
@@ -56,7 +58,7 @@ export interface ReadTeamListResponse {
 
 export interface ReadTeamDetailResponse {
   teamId: string;
-  type: 'SQUAD' | 'FEATURE';
+  type: TeamType;
   name: string;
   description: string;
   members: {

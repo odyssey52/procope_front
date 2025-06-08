@@ -1,20 +1,21 @@
 'use client';
 
+import HeaderLayout from '@/features/layout/HeaderLayout';
+import { createTeam } from '@/features/team/services/teamService';
 import { IconDirectionLeft } from '@/shared/assets/icons/line';
+import { TeamType } from '@/shared/types/team';
 import Breadcrumbs from '@/shared/ui/breadcrumbs/Breadcrumbs';
 import Button from '@/shared/ui/button/Button';
 import TextButton from '@/shared/ui/button/TextButton';
 import Container from '@/shared/ui/Container';
 import ProgressBar from '@/shared/ui/progress/ProgressBar';
-import HeaderLayout from '@/features/layout/HeaderLayout';
-import { createTeam } from '@/features/team/services/teamService';
 import { useMutation } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import styled from 'styled-components';
+import { teamDescriptionValid, teamNameValid } from '../../utils/data';
 import TeamCreateStep1 from './TeamCreateStep1';
 import TeamCreateStep2 from './TeamCreateStep2';
-import { teamDescriptionValid, teamNameValid } from '../../utils/data';
 
 const PATH = {
   '팀 목록': '/team',
@@ -27,7 +28,7 @@ const TeamCreate = () => {
   const router = useRouter();
 
   const [step, setStep] = useState<number>(1);
-  const [teamType, setTeamType] = useState<'SQUAD' | 'FEATURE' | null>(null);
+  const [teamType, setTeamType] = useState<TeamType | null>(null);
   const [teamName, setTeamName] = useState<string>('');
   const [teamDescription, setTeamDescription] = useState<string>('');
 
@@ -72,7 +73,7 @@ const TeamCreate = () => {
     }
   };
 
-  const teamTypeHandler = (type: 'SQUAD' | 'FEATURE') => {
+  const teamTypeHandler = (type: TeamType) => {
     setTeamType(type);
   };
 

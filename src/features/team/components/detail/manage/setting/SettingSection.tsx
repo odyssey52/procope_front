@@ -1,3 +1,5 @@
+import { updateTeam } from '@/features/team/services/teamService';
+import * as types from '@/features/team/services/teamService.type';
 import { ReadTeamDetailResponse } from '@/features/team/services/teamService.type';
 import {
   ERROR_DESCRIPTION_TEAM_DESCRIPTION,
@@ -7,19 +9,18 @@ import {
   teamDescriptionValid,
   teamNameValid,
 } from '@/features/team/utils/data';
+import { MESSAGES } from '@/shared/constants/messages';
+import { toastActions } from '@/shared/lib/store/modal/toast';
+import { TeamType } from '@/shared/types/team';
+import Breadcrumbs from '@/shared/ui/breadcrumbs/Breadcrumbs';
 import Button from '@/shared/ui/button/Button';
 import JobSubCard from '@/shared/ui/card/JobSubCard';
 import Placeholder from '@/shared/ui/placeholder/Placeholder';
 import TextArea from '@/shared/ui/textarea/TextArea';
+import PageTitle from '@/shared/ui/title/PageTitle';
+import { useMutation } from '@tanstack/react-query';
 import { useState } from 'react';
 import styled from 'styled-components';
-import { useMutation } from '@tanstack/react-query';
-import * as types from '@/features/team/services/teamService.type';
-import { updateTeam } from '@/features/team/services/teamService';
-import { toastActions } from '@/shared/lib/store/modal/toast';
-import { MESSAGES } from '@/shared/constants/messages';
-import Breadcrumbs from '@/shared/ui/breadcrumbs/Breadcrumbs';
-import PageTitle from '@/shared/ui/title/PageTitle';
 import SubModal from './SubModal';
 
 interface Props {
@@ -36,7 +37,7 @@ const SettingSection = ({ teamData, teamId }: Props) => {
     name: null,
     type: false,
   });
-  const [teamType, setTeamType] = useState<'SQUAD' | 'FEATURE' | null>(teamData.type);
+  const [teamType, setTeamType] = useState<TeamType | null>(teamData.type);
   const [teamName, setTeamName] = useState<string>(teamData.name);
   const [teamDescription, setTeamDescription] = useState<string>(teamData.description);
 
