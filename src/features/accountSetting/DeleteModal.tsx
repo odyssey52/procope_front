@@ -40,10 +40,9 @@ const DeleteModal = ({ onClose }: DeleteModalProps) => {
           title: MESSAGES.TITLE_DELETE_ACCOUNT_SUCCESS,
           description: MESSAGES.DELETE_ACCOUNT_SUCCESS,
         });
-        logout();
 
         setTimeout(() => {
-          router.push('/login');
+          logout();
           onClose();
         }, 2000);
       } catch (error) {
