@@ -23,6 +23,7 @@ interface DeleteModalProps {
 const DeleteModal = ({ onClose }: DeleteModalProps) => {
   const router = useRouter();
   const [email, setEmail] = useState('');
+  const { id } = useUserStore();
   const { logout } = useAuthStore();
   const { email: userEmail } = useUserStore();
   const deleteUserMutation = useMutation({
@@ -31,9 +32,9 @@ const DeleteModal = ({ onClose }: DeleteModalProps) => {
   const isEmailValid = email === userEmail;
 
   const deleteAccount = async () => {
-    if (isEmailValid) {
+    if (isEmailValid && id) {
       try {
-        await deleteUserMutation.mutateAsync({ id: userEmail });
+        await deleteUserMutation.mutateAsync({ id });
         toastActions.open({
           state: 'success',
           title: MESSAGES.TITLE_DELETE_ACCOUNT_SUCCESS,
