@@ -1,28 +1,56 @@
 'use client';
 
 import { IconRemove } from '@/shared/assets/icons/line';
+import { MESSAGES } from '@/shared/constants/messages';
+import useAuthStore from '@/shared/lib/store/auth/auth';
+import { toastActions } from '@/shared/lib/store/modal/toast';
 import useUserStore from '@/shared/lib/store/user/user';
 import Button from '@/shared/ui/button/Button';
 import Modal from '@/shared/ui/modal/common/Modal';
 import Placeholder from '@/shared/ui/placeholder/Placeholder';
 import Text from '@/shared/ui/Text';
+import { useMutation } from '@tanstack/react-query';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import styled from 'styled-components';
+import { deleteUser } from '../user/services/delete/userDeleteService';
 
 interface DeleteModalProps {
   onClose: () => void;
 }
 
 const DeleteModal = ({ onClose }: DeleteModalProps) => {
+  const router = useRouter();
   const [email, setEmail] = useState('');
+  const { logout } = useAuthStore();
   const { email: userEmail } = useUserStore();
-
+  const deleteUserMutation = useMutation({
+    mutationFn: deleteUser,
+  });
   const isEmailValid = email === userEmail;
 
-  const deleteAccount = () => {
+  const deleteAccount = async () => {
     if (isEmailValid) {
-      console.log('deleteAccount');
+      try {
+        await deleteUserMutation.mutateAsync({ id: userEmail });
+        toastActions.open({
+          state: 'success',
+          title: MESSAGES.TITLE_DELETE_ACCOUNT_SUCCESS,
+          description: MESSAGES.DELETE_ACCOUNT_SUCCESS,
+        });
+        logout();
+
+        setTimeout(() => {
+          router.push('/login');
+          onClose();
+        }, 2000);
+      } catch (error) {
+        toastActions.open({
+          state: 'error',
+          title: MESSAGES.DELETE_ACCOUNT_FAILED,
+        });
+      }
     }
   };
 
@@ -77,7 +105,7 @@ const DeleteModal = ({ onClose }: DeleteModalProps) => {
             <Button $type="tertiary" onClick={() => onClose()}>
               취소
             </Button>
-            <Button $type="error" onClick={() => {}} disabled={!isEmailValid}>
+            <Button $type="error" onClick={deleteAccount} disabled={!isEmailValid}>
               탈퇴하기
             </Button>
           </ButtonBox>
