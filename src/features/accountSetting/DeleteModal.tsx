@@ -1,3 +1,4 @@
+import { IconRemove } from '@/shared/assets/icons/line';
 import Button from '@/shared/ui/button/Button';
 import Modal from '@/shared/ui/modal/common/Modal';
 import Placeholder from '@/shared/ui/placeholder/Placeholder';
@@ -23,7 +24,7 @@ const DeleteModal = ({ onClose }: DeleteModalProps) => {
                 <Image src={errorIcon} width={36} height={36} alt="에러 아이콘 이미지" />
                 계정을 영구적으로 삭제하시겠습니까?
               </div>
-              <Image src={clearIcon} width={40} height={40} alt="엑스 아이콘 이미지" onClick={() => onClose()} />
+              <IconRemove size={40} onClick={() => onClose()} />
             </Title>
             <TextBox>
               <Text variant="heading_20" color="danger">
