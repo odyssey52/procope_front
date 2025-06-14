@@ -1,4 +1,5 @@
 import { ReadTeamListResponse } from '@/features/team/services/teamService.type';
+import { TeamType } from '@/shared/types/team';
 import { useRouter } from 'next/navigation';
 import styled from 'styled-components';
 import AvatarGroup from '../avatar/AvatarGroup';
@@ -29,7 +30,7 @@ const TAG_LIST: TagList = {
 };
 
 interface TeamCardProps {
-  tag: 'SQUAD' | 'FEATURE';
+  tag: TeamType;
   name: string;
   description: string;
   members: ReadTeamListResponse['team'][number]['members'];

@@ -1,17 +1,63 @@
+'use client';
+
+import { IconRemove } from '@/shared/assets/icons/line';
+import { MESSAGES } from '@/shared/constants/messages';
+import useAuthStore from '@/shared/lib/store/auth/auth';
+import { toastActions } from '@/shared/lib/store/modal/toast';
+import useUserStore from '@/shared/lib/store/user/user';
 import Button from '@/shared/ui/button/Button';
 import Modal from '@/shared/ui/modal/common/Modal';
 import Placeholder from '@/shared/ui/placeholder/Placeholder';
 import Text from '@/shared/ui/Text';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import Image from 'next/image';
+import { useState } from 'react';
 import styled from 'styled-components';
+import { deleteUser } from '../user/services/delete/userDeleteService';
+import { readTeamRoleCount } from '../team/services/teamService';
 
 interface DeleteModalProps {
   onClose: () => void;
 }
 
 const DeleteModal = ({ onClose }: DeleteModalProps) => {
+  const [email, setEmail] = useState('');
+  const { id } = useUserStore();
+  const { logout } = useAuthStore();
+  const { data: teamRoleCount } = useQuery({
+    queryKey: ['teamRoleCount'],
+    queryFn: () => readTeamRoleCount({ role: 'ADMIN' }),
+  });
+  const { email: userEmail } = useUserStore();
+  const deleteUserMutation = useMutation({
+    mutationFn: deleteUser,
+  });
+  const isEmailValid = email === userEmail;
+
+  const deleteAccount = async () => {
+    if (isEmailValid && id) {
+      try {
+        await deleteUserMutation.mutateAsync({ id });
+        toastActions.open({
+          state: 'success',
+          title: MESSAGES.TITLE_DELETE_ACCOUNT_SUCCESS,
+          description: MESSAGES.DELETE_ACCOUNT_SUCCESS,
+        });
+
+        setTimeout(() => {
+          logout();
+          onClose();
+        }, 2000);
+      } catch (error) {
+        toastActions.open({
+          state: 'error',
+          title: MESSAGES.DELETE_ACCOUNT_FAILED,
+        });
+      }
+    }
+  };
+
   const errorIcon = '/assets/icons/graphic/fill/error.svg';
-  const clearIcon = '/assets/icons/line/remove.svg';
 
   return (
     <Modal portalId="confirm-dialog">
@@ -23,7 +69,9 @@ const DeleteModal = ({ onClose }: DeleteModalProps) => {
                 <Image src={errorIcon} width={36} height={36} alt="에러 아이콘 이미지" />
                 계정을 영구적으로 삭제하시겠습니까?
               </div>
-              <Image src={clearIcon} width={40} height={40} alt="엑스 아이콘 이미지" onClick={() => onClose()} />
+              <button type="button" onClick={onClose} aria-label="닫기" style={{ cursor: 'pointer', fontSize: 0 }}>
+                <IconRemove size={40} />
+              </button>
             </Title>
             <TextBox>
               <Text variant="heading_20" color="danger">
@@ -40,10 +88,17 @@ const DeleteModal = ({ onClose }: DeleteModalProps) => {
           </TopSection>
           <BottomSection>
             <BottomTextBox>
-              <Text variant="heading_18">현재 0개 의 최고관리자로 참여하고 있는 팀이 있습니다.</Text>
+              <Text variant="heading_18">현재</Text>
+              <Text variant="heading_18" color="brand">
+                {teamRoleCount?.number || 0}개
+              </Text>
+              <Text variant="heading_18">의 최고관리자로 참여하고 있는 팀이 있습니다.</Text>
             </BottomTextBox>
             <Placeholder
-              value=""
+              value={email}
+              valueHandler={setEmail}
+              validation={email.length > 0 ? isEmailValid : undefined}
+              errorDescription="이메일이 일치하지 않습니다."
               placeholder="usermail@procope.kr"
               label={{ text: '이메일을 입력하여 삭제를 진행해 주세요.', required: true }}
               maxLength={200}
@@ -53,7 +108,7 @@ const DeleteModal = ({ onClose }: DeleteModalProps) => {
             <Button $type="tertiary" onClick={() => onClose()}>
               취소
             </Button>
-            <Button $type="error" onClick={() => {}}>
+            <Button $type="error" onClick={deleteAccount} disabled={!isEmailValid}>
               탈퇴하기
             </Button>
           </ButtonBox>
@@ -67,7 +122,6 @@ export default DeleteModal;
 
 const Wrapper = styled.div`
   width: 608px;
-  height: 448px;
   background-color: ${({ theme }) => theme.sementicColors.bg.inverse};
   border-radius: 32px;
   padding: 40px;
@@ -112,5 +166,8 @@ const ButtonBox = styled.div`
   }
 `;
 const BottomTextBox = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 4px;
   padding: 7px 0px;
 `;

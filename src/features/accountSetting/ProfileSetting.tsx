@@ -10,17 +10,19 @@ import Chip from '@/shared/ui/chip/Chip';
 import Label from '@/shared/ui/label/Label';
 import Placeholder from '@/shared/ui/placeholder/Placeholder';
 import Radio from '@/shared/ui/radio/Radio';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { JobMain } from '../onboarding/FirstStep';
 import { JobSub } from '../onboarding/SecondStep';
 import DeleteModal from './DeleteModal';
+import userInfoQueries from '../user/query/info/userInfoQueries';
 interface Props {
   data: ReadUserInfoResponse;
 }
 
 const ProfileSetting = ({ data }: Props) => {
+  const queryClient = useQueryClient();
   const [avatar, setAvatar] = useState<{
     type: 'profile' | 'initial';
     image: string;
@@ -34,7 +36,12 @@ const ProfileSetting = ({ data }: Props) => {
   const [name, setName] = useState(data.userContext.name);
   const [jobSelectedValue, setJobSelectedValue] = useState<JobMain>(data.roleInfo);
   const [subJob, setSubJob] = useState<JobSub[]>(data.roleInfo.fields);
-  const updateUserInfoMutation = useMutation({ mutationFn: updateUserInfo });
+  const updateUserInfoMutation = useMutation({
+    mutationFn: updateUserInfo,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: userInfoQueries.readUserInfo.queryKey });
+    },
+  });
 
   const { data: roles, isSuccess: isRolesSuccess } = useQuery({
     ...propertiesRolesQueries.readPropertiesRoles,
@@ -48,6 +55,7 @@ const ProfileSetting = ({ data }: Props) => {
   const saveUserInfo = async () => {
     try {
       const payload = {
+        name,
         role: {
           id: jobSelectedValue.id,
           name: jobSelectedValue.name,

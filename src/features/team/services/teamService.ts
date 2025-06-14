@@ -1,16 +1,21 @@
 import ApiClient from '@/shared/api/apiClient';
+import { UserRole } from '@/shared/types/team';
 import * as types from './teamService.type';
 
 const URLS = {
   READ_TEAM_LIST: '/teams',
   READ_TEAM_DETAIL: (teamId: string) => `/teams/${teamId}`,
+  READ_RETRO_LIST: (teamId: string) => `/retrospectives/${teamId}`,
+  READ_TEAM_ROLE_COUNT: (role: UserRole) => `/teams/count?role=${role}`,
+
   CREATE_TEAM: '/teams',
   CREATE_INVITE_TEAM: '/teams/invite', // 초대 링크를 통해 팀 합류
+  CREATE_RETRO: '/retrospective',
+
+  UPDATE_TEAM: (teamId: string) => `/teams/${teamId}`,
+
   DELETE_TEAM: (teamId: string) => `/teams/${teamId}`,
   SECESSION_TEAM: (teamId: string) => `/teams/users/${teamId}`,
-  UPDATE_TEAM: (teamId: string) => `/teams/${teamId}`,
-  READ_RETRO_LIST: (teamId: string) => `/retrospectives/${teamId}`,
-  CREATE_RETRO: '/retrospective',
 };
 
 const api = new ApiClient({ isPublic: false });
@@ -23,6 +28,13 @@ export async function readTeamList(): Promise<types.ReadTeamListResponse> {
 
 export async function readTeamDetail(params: types.ReadTeamDetailParams): Promise<types.ReadTeamDetailResponse> {
   const { data } = await api.get<types.ReadTeamDetailResponse>(URLS.READ_TEAM_DETAIL(params.teamId));
+  return data;
+}
+
+export async function readTeamRoleCount(
+  params: types.ReadTeamRoleCountParams,
+): Promise<types.ReadTeamRoleCountResponse> {
+  const { data } = await api.get<types.ReadTeamRoleCountResponse>(URLS.READ_TEAM_ROLE_COUNT(params.role));
   return data;
 }
 

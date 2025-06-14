@@ -41,6 +41,7 @@ const Wrapper = styled.span<LabelStyledProps>`
   position: relative;
   display: flex;
   align-items: center;
+  white-space: nowrap;
   gap: 2px;
   ${({ $size }) => LABEL_STYLE_LIST[$size].font};
   color: ${({ $disabled, theme }) =>
