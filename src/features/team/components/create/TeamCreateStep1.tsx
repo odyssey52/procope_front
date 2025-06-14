@@ -1,10 +1,11 @@
+import { TeamType } from '@/shared/types/team';
 import JobSubCard from '@/shared/ui/card/JobSubCard';
 import Text from '@/shared/ui/Text';
 import styled from 'styled-components';
 
 interface TeamCreateStep1Props {
-  teamType: 'SQUAD' | 'FEATURE' | null;
-  teamTypeHandler: (type: 'SQUAD' | 'FEATURE') => void;
+  teamType: TeamType | null;
+  teamTypeHandler: (type: TeamType) => void;
 }
 
 const TeamCreateStep1 = ({ teamType, teamTypeHandler }: TeamCreateStep1Props) => {
