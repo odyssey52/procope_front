@@ -16,6 +16,9 @@ export interface UpdateTeamParams {
 export interface ReadRetroListParams {
   teamId: string;
 }
+export interface ReadTeamRoleCountParams {
+  role: UserRole;
+}
 export interface CreateRetroParams {
   title: string;
   createdAt: string;
@@ -86,3 +89,7 @@ export type ReadRetroListItem = {
 };
 
 export type ReadRetroListResponse = ReadRetroListItem[];
+
+export type ReadTeamRoleCountResponse = {
+  number: number;
+};
