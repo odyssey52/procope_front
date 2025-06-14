@@ -9,11 +9,12 @@ import Button from '@/shared/ui/button/Button';
 import Modal from '@/shared/ui/modal/common/Modal';
 import Placeholder from '@/shared/ui/placeholder/Placeholder';
 import Text from '@/shared/ui/Text';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import Image from 'next/image';
 import { useState } from 'react';
 import styled from 'styled-components';
 import { deleteUser } from '../user/services/delete/userDeleteService';
+import { readTeamRoleCount } from '../team/services/teamService';
 
 interface DeleteModalProps {
   onClose: () => void;
@@ -23,6 +24,10 @@ const DeleteModal = ({ onClose }: DeleteModalProps) => {
   const [email, setEmail] = useState('');
   const { id } = useUserStore();
   const { logout } = useAuthStore();
+  const { data: teamRoleCount } = useQuery({
+    queryKey: ['teamRoleCount'],
+    queryFn: () => readTeamRoleCount({ role: 'ADMIN' }),
+  });
   const { email: userEmail } = useUserStore();
   const deleteUserMutation = useMutation({
     mutationFn: deleteUser,
@@ -85,7 +90,7 @@ const DeleteModal = ({ onClose }: DeleteModalProps) => {
             <BottomTextBox>
               <Text variant="heading_18">현재</Text>
               <Text variant="heading_18" color="brand">
-                0개
+                {teamRoleCount?.number || 0}개
               </Text>
               <Text variant="heading_18">의 최고관리자로 참여하고 있는 팀이 있습니다.</Text>
             </BottomTextBox>
