@@ -46,6 +46,7 @@ export type PreferenceInfoList = {
 
 /** payload */
 export interface UpdateUserInfoPayload {
+  name?: string;
   role: {
     id: number;
     name: string;
