@@ -7,8 +7,11 @@ import TaskCard from '@/shared/ui/card/TaskCard';
 import Tab2 from '@/shared/ui/tab/Tab2';
 import SegmentedTabs from '@/shared/ui/tab/SegmentedTabs';
 import Toggle from '@/shared/ui/toggle/Toggle';
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import styled from 'styled-components';
+import { Stomp, CompatClient } from '@stomp/stompjs';
+import SockJS from 'sockjs-client';
+import useAuthStore from '@/shared/lib/store/auth/auth';
 
 interface Mock {
   role: 'development' | 'planning' | 'data' | 'design' | 'marketing' | 'sales' | 'operations';
@@ -50,6 +53,97 @@ const page = () => {
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
   const buttonRef = useRef<HTMLButtonElement>(null);
 
+  // STOMP 웹소켓 관련 상태
+  const [isConnected, setIsConnected] = useState(false);
+  const [messages, setMessages] = useState<string[]>([]);
+  const [testMessage, setTestMessage] = useState('');
+  const { accessToken } = useAuthStore();
+  const client = useRef<CompatClient | null>(null);
+
+  const connectHandler = () => {
+    const socket = new SockJS('http://192.168.0.17:8081/websocket');
+
+    client.current = Stomp.over(socket);
+
+    console.log('액세스 토큰:', accessToken);
+    client.current.connect(
+      {
+        Authorization: `Bearer ${accessToken}`,
+        'Content-Type': 'application/json',
+      },
+      () => {
+        console.log('✅ STOMP 연결 성공');
+        setIsConnected(true);
+        setMessages((prev) => [...prev, '웹소켓 연결 성공!']);
+
+        // 구독 설정
+        console.log('구독 설정 중: /topic/goodThing');
+        client.current?.subscribe('/topic/goodThing', (message) => {
+          console.log('📨 메시지 수신:', message.body);
+          setMessages((prev) => [...prev, `수신: ${message.body}`]);
+        });
+      },
+      (error: any) => {
+        console.error('❌ STOMP 에러:', error);
+        setIsConnected(false);
+        setMessages((prev) => [...prev, `연결 에러: ${error}`]);
+      },
+    );
+  };
+
+  useEffect(() => {
+    connectHandler();
+
+    // 컴포넌트 언마운트 시 연결 해제
+    return () => {
+      if (client.current && client.current.connected) {
+        client.current.disconnect();
+      }
+    };
+  }, []);
+
+  // 연결/해제 토글 함수
+  const toggleConnection = () => {
+    if (client.current) {
+      if (isConnected) {
+        client.current.disconnect();
+      } else {
+        connectHandler();
+      }
+    }
+  };
+
+  // 테스트 메시지 전송
+  const sendTestMessage = () => {
+    if (client.current && client.current.connected) {
+      client.current.send(
+        '/app/goodThing',
+        {
+          Authorization: `Bearer ${accessToken}`,
+          'Content-Type': 'application/json',
+        },
+        JSON.stringify({
+          action: 'DETAIL',
+          payload: {
+            retroId: 1,
+            id: 3,
+          },
+        }),
+      );
+      setMessages((prev) => [
+        ...prev,
+        `전송: ${JSON.stringify({
+          action: 'DETAIL',
+          payload: {
+            retroId: 1,
+            id: 3,
+          },
+        })}`,
+      ]);
+      setTestMessage('');
+    }
+  };
+
   const handleOpenCalendar = () => {
     setIsCalendarOpen(!isCalendarOpen);
   };
@@ -67,6 +161,71 @@ const page = () => {
           { title: 'Tab3', href: '/test?v=3' },
         ]}
       />
+
+      {/* STOMP 웹소켓 테스트 섹션 */}
+      <WebSocketSection>
+        <h2>STOMP 웹소켓 테스트</h2>
+        <ConnectionStatus>
+          <StatusIndicator connected={isConnected.toString()} />
+          <span>연결 상태: {isConnected ? '연결됨' : '연결 안됨'}</span>
+        </ConnectionStatus>
+
+        <ButtonGroup>
+          <button
+            type="button"
+            onClick={toggleConnection}
+            style={{
+              backgroundColor: isConnected ? '#ff4444' : '#44aa44',
+              color: 'white',
+              padding: '8px 16px',
+              border: 'none',
+              borderRadius: '4px',
+              cursor: 'pointer',
+            }}
+          >
+            {isConnected ? '연결 해제' : '연결'}
+          </button>
+        </ButtonGroup>
+
+        <MessageSection>
+          <h3>메시지 전송</h3>
+          <MessageInput>
+            <input
+              type="text"
+              value={testMessage}
+              onChange={(e) => setTestMessage(e.target.value)}
+              placeholder="전송할 메시지를 입력하세요"
+              onKeyPress={(e) => e.key === 'Enter' && sendTestMessage()}
+            />
+            <button
+              type="button"
+              onClick={sendTestMessage}
+              disabled={!isConnected || !testMessage.trim()}
+              style={{
+                backgroundColor: isConnected && testMessage.trim() ? '#007bff' : '#ccc',
+                color: 'white',
+                padding: '8px 16px',
+                border: 'none',
+                borderRadius: '4px',
+                cursor: isConnected && testMessage.trim() ? 'pointer' : 'not-allowed',
+              }}
+            >
+              전송
+            </button>
+          </MessageInput>
+        </MessageSection>
+
+        <MessageLog>
+          <h3>메시지 로그</h3>
+          <LogContainer>
+            {messages.map((msg, index) => (
+              <LogItem key={index}>{msg}</LogItem>
+            ))}
+            {messages.length === 0 && <LogItem style={{ color: '#999' }}>메시지가 없습니다.</LogItem>}
+          </LogContainer>
+        </MessageLog>
+      </WebSocketSection>
+
       <Toggle label="토글" checked={isToggleChecked} onClick={() => setIsToggleChecked(!isToggleChecked)} />
       <Tab2 name="탭1" selected />
       <Tab2 name="탭1" />
@@ -107,6 +266,84 @@ const PlayGround = styled.div`
   min-height: 100vh;
   padding: 2%;
   gap: 20px;
+`;
+
+const WebSocketSection = styled.div`
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 20px;
+  background-color: #f9f9f9;
+
+  h2 {
+    margin-top: 0;
+    margin-bottom: 16px;
+    color: #333;
+  }
+
+  h3 {
+    margin-top: 16px;
+    margin-bottom: 8px;
+    color: #555;
+  }
+`;
+
+const ConnectionStatus = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 16px;
+  font-weight: 500;
+`;
+
+const StatusIndicator = styled.div<{ connected: string }>`
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background-color: ${(props) => (props.connected === 'true' ? '#44aa44' : '#ff4444')};
+`;
+
+const ButtonGroup = styled.div`
+  margin-bottom: 16px;
+`;
+
+const MessageSection = styled.div`
+  margin-bottom: 16px;
+`;
+
+const MessageInput = styled.div`
+  display: flex;
+  gap: 8px;
+
+  input {
+    flex: 1;
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+  }
+`;
+
+const MessageLog = styled.div`
+  margin-top: 16px;
+`;
+
+const LogContainer = styled.div`
+  max-height: 200px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background-color: white;
+  padding: 8px;
+`;
+
+const LogItem = styled.div`
+  padding: 4px 0;
+  font-size: 14px;
+  border-bottom: 1px solid #eee;
+
+  &:last-child {
+    border-bottom: none;
+  }
 `;
 
 const ButtonWrapper = styled.div`
