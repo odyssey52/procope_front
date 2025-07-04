@@ -61,7 +61,7 @@ const page = () => {
   const client = useRef<CompatClient | null>(null);
 
   const connectHandler = () => {
-    const socket = new SockJS('http://192.168.0.17:8081/websocket');
+    const socket = new SockJS(`http://192.168.0.17:8081/websocket?token=${accessToken}&retroId=1`);
 
     client.current = Stomp.over(socket);
 
