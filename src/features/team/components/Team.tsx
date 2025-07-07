@@ -1,7 +1,7 @@
 import HeaderLayout from '@/features/layout/HeaderLayout';
 import teamQueries from '@/features/team/query/teamQueries';
-import useAuthStore from '@/shared/lib/store/auth/auth';
 import Breadcrumbs from '@/shared/ui/breadcrumbs/Breadcrumbs';
+import Button from '@/shared/ui/button/Button';
 import Container from '@/shared/ui/Container';
 import Empty from '@/shared/ui/empty/Empty';
 import ErrorBoundary from '@/shared/ui/errorboundary/ErrorBoundary';
@@ -152,13 +152,12 @@ const SkeletonMember = styled(SkeletonBase)`
   border-radius: 50%;
 `;
 
-// 메인 Team 컴포넌트
 const Team = () => {
-  const { accessToken } = useAuthStore();
-
+  const router = useRouter();
   return (
     <HeaderLayout>
       <TeamContainer>
+        <Button onClick={() => router.push('/test')}>test</Button>
         <Suspense fallback={<LoadingFallback />}>
           <TeamContent />
         </Suspense>

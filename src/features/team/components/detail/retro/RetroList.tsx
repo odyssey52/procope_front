@@ -160,7 +160,7 @@ const columns = [
 
 const RetroList = () => {
   const params = useParams();
-  const { data } = useQuery({ ...teamQueries.readRetroList({ teamId: '1' as string }) });
+  const { data } = useQuery({ ...teamQueries.readRetroList({ teamId: params.teamId as string }) });
   const paths = {
     회고관리: `/team/${params.teamId}/retro`,
   };
@@ -168,8 +168,6 @@ const RetroList = () => {
   const addRetro = () => {
     alert('addRetro');
   };
-
-  console.log(data);
 
   return (
     <Wrapper>
@@ -180,7 +178,7 @@ const RetroList = () => {
         </TitleBox>
       </Head>
       <Content>
-        <PageSubTitle first="총" point={`${data?.length}`} last="개">
+        <PageSubTitle first="총" point={`${data?.length || 0}`} last="개">
           <Button onClick={addRetro}>추가</Button>
         </PageSubTitle>
         <Table

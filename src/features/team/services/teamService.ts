@@ -69,7 +69,7 @@ export async function secessionTeam(params: types.SecessionTeamParams) {
 }
 
 export async function readRetroList(params: types.ReadRetroListParams): Promise<types.ReadRetroListResponse> {
-  const { data } = await testApi.get<types.ReadRetroListResponse>(URLS.READ_RETRO_LIST(params.teamId));
+  const { data } = await api.get<types.ReadRetroListResponse>(URLS.READ_RETRO_LIST(params.teamId));
   return data;
 }
 
