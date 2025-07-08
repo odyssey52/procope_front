@@ -50,7 +50,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "icon": "npx @svgr/cli --out-dir src/assets/icons/line --index-template svgr-index-template.js --template svgr-template.js  public/assets/icons/line",
+    "icon": "npx @svgr/cli --out-dir src/shared/assets/icons/line --index-template svgr-index-template.js --template svgr-template.js  public/assets/icons/line",
     "test": "jest",
     "test:watch": "jest --watch"
   },
