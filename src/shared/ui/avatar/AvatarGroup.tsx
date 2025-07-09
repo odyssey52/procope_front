@@ -59,8 +59,8 @@ const ExtraAvatarWrapper = styled.div<{ $size?: 16 | 24 | 32 | 48 }>`
   display: flex;
   justify-content: center;
   align-items: center;
-  width: ${({ $size }) => $size ?? 32}px;
-  height: ${({ $size }) => $size ?? 32}px;
+  width: ${({ $size }) => $size}px;
+  height: ${({ $size }) => $size}px;
   border-radius: 50%;
   background-color: ${({ theme }) => theme.sementicColors.bg.tertiary};
   border: 1px solid ${({ theme }) => theme.sementicColors.border.primary};
