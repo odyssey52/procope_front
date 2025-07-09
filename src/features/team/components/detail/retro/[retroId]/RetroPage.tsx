@@ -3,6 +3,7 @@
 import AvatarGroup from '@/shared/ui/avatar/AvatarGroup';
 import Breadcrumbs from '@/shared/ui/breadcrumbs/Breadcrumbs';
 import Button from '@/shared/ui/button/Button';
+import MoreButton from '@/shared/ui/button/MoreButton';
 import PageTitle from '@/shared/ui/title/PageTitle';
 import { useParams } from 'next/navigation';
 import { useState } from 'react';
@@ -54,6 +55,7 @@ const RetroPage = () => {
               <Button $type="outline" pressed={isMemberListOpen} onClick={() => setIsMemberListOpen(!isMemberListOpen)}>
                 Member
               </Button>
+              <MoreButton size={40} />
             </MemberWrapper>
           </TitleWrapper>
         </RetroInfoWrapper>
