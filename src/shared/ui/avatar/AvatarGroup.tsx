@@ -5,11 +5,12 @@ interface AvatarGroupProps {
   profileList: {
     nickname?: string;
     image?: string;
+    isOnline?: boolean;
   }[];
-  size?: 16 | 24 | 32 | 48; // default 32
+  size?: 16 | 24 | 32 | 48;
 }
 
-const AvatarGroup = ({ profileList, size }: AvatarGroupProps) => {
+const AvatarGroup = ({ profileList, size = 32 }: AvatarGroupProps) => {
   const maxVisibleAvatars = 6;
   const visibleAvatars = profileList.slice(0, maxVisibleAvatars);
   const extraAvatarsCount = profileList.length - maxVisibleAvatars;
@@ -18,7 +19,7 @@ const AvatarGroup = ({ profileList, size }: AvatarGroupProps) => {
     <Wrapper>
       {visibleAvatars.map((profile, index) => (
         <AvatarWrapper key={`visibleAvatars${index}`} $size={size} $index={index}>
-          <Avatar nickname={profile.nickname} image={profile.image} size={size ?? 32} />
+          <Avatar nickname={profile.nickname} image={profile.image} size={size} isOnline={profile.isOnline} />
         </AvatarWrapper>
       ))}
       {extraAvatarsCount > 0 && <ExtraAvatarWrapper $size={size}>+{extraAvatarsCount}</ExtraAvatarWrapper>}
