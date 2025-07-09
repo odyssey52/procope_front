@@ -1,7 +1,9 @@
 'use client';
 
 import Breadcrumbs from '@/shared/ui/breadcrumbs/Breadcrumbs';
+import PageTitle from '@/shared/ui/title/PageTitle';
 import { useParams } from 'next/navigation';
+import { useState } from 'react';
 import styled from 'styled-components';
 
 const RetroPage = () => {
@@ -23,11 +25,13 @@ const RetroPage = () => {
       clickable: true,
     },
   ];
+  const [title, setTitle] = useState<string>('');
 
   return (
     <Wrapper>
       <Head>
         <Breadcrumbs paths={paths} />
+        <PageTitle title={title} setTitle={setTitle} placeholder="제목을 작성해 주세요" />
       </Head>
     </Wrapper>
   );
