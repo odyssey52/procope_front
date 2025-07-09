@@ -30,6 +30,7 @@ export { default as IconCall } from './Call';
 export { default as IconCameraOff } from './CameraOff';
 export { default as IconCamera } from './Camera';
 export { default as IconCast } from './Cast';
+export { default as IconChat01On } from './Chat01On';
 export { default as IconChatInformation } from './ChatInformation';
 export { default as IconChat } from './Chat';
 export { default as IconChat01 } from './Chat01';
