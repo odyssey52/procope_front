@@ -6,16 +6,23 @@ import Text from '../Text';
 interface PageTitleProps {
   hasBack?: boolean;
   title: string;
+  setTitle?: (title: string) => void;
+  placeholder?: string;
   description?: string;
   children?: React.ReactNode;
 }
-const PageTitle = ({ hasBack, title, description, children }: PageTitleProps) => {
+const PageTitle = ({ hasBack, title, setTitle, placeholder, description, children }: PageTitleProps) => {
   return (
     <Wrapper>
       {hasBack && <Back />}
-      <Text variant="heading_24" color="primary">
-        {title}
-      </Text>
+      {setTitle && (
+        <Input type="text" value={title} onChange={(e) => setTitle(e.target.value)} placeholder={placeholder} />
+      )}
+      {!setTitle && (
+        <Text variant="heading_24" color="primary">
+          {title}
+        </Text>
+      )}
       {description && (
         <Text variant="caption_12_regular" color="tertiary">
           {description}
@@ -32,6 +39,19 @@ const Wrapper = styled.div`
   gap: 8px;
 `;
 
+const Input = styled.input`
+  width: 100%;
+  border: none;
+  outline: none;
+  border-radius: 8px;
+  background: transparent;
+  ${({ theme }) => theme.fontStyle.heading_24};
+  color: ${({ theme }) => theme.sementicColors.text.primary};
+
+  &::placeholder {
+    color: ${({ theme }) => theme.sementicColors.text.disabled};
+  }
+`;
 PageTitle.displayName = 'PageTitle';
 
 export default PageTitle;
