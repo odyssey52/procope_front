@@ -4,7 +4,7 @@ import { ReactNode } from 'react';
 import styled from 'styled-components';
 import PartCellContent from '../part/PartCellContent';
 import PartHeaderContent from '../part/PartHeaderContent';
-import Empty from '../empty/Empty';
+import Error from '../error/Error';
 
 export interface TableColumn<T> {
   key: string;
@@ -23,9 +23,20 @@ interface TableProps<T> {
   keyExtractor: (item: T) => string;
   caption?: string;
   emptyNode?: ReactNode;
+  isError?: boolean;
 }
 
-const Table = <T extends Record<string, any>>({ data, columns, keyExtractor, caption, emptyNode }: TableProps<T>) => {
+const ERROR_TITLE = 'Error';
+const ERROR_DESCRIPTION = '잠시후 다시 시도해 주시길 바랍니다.';
+
+const Table = <T extends Record<string, any>>({
+  data,
+  columns,
+  keyExtractor,
+  caption,
+  emptyNode,
+  isError,
+}: TableProps<T>) => {
   const isEmpty = !data || data.length === 0;
 
   return (
@@ -57,13 +68,23 @@ const Table = <T extends Record<string, any>>({ data, columns, keyExtractor, cap
         </tr>
       </thead>
 
-      {isEmpty ? (
+      {isEmpty && (
         <tbody>
           <tr>
             <EmptyBox colSpan={columns.length}>{emptyNode}</EmptyBox>
           </tr>
         </tbody>
-      ) : (
+      )}
+      {isError && (
+        <tbody>
+          <tr>
+            <EmptyBox colSpan={columns.length}>
+              <Error title={ERROR_TITLE} description={ERROR_DESCRIPTION} />
+            </EmptyBox>
+          </tr>
+        </tbody>
+      )}
+      {!isError && !isEmpty && (
         <tbody>
           {data.map((item, rowIndex) => (
             <tr key={keyExtractor(item)}>

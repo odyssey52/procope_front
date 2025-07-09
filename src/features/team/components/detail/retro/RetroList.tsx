@@ -1,19 +1,19 @@
 'use client';
 
 import teamQueries from '@/features/team/query/teamQueries';
-import { ReadRetroListItem, ReadRetroListResponse } from '@/features/team/services/teamService.type';
-import { IconMenuCircleVertical, IconSortArrow } from '@/shared/assets/icons/line';
+import { ReadRetroListItem } from '@/features/team/services/teamService.type';
+import { IconSortArrow } from '@/shared/assets/icons/line';
 import Avatar from '@/shared/ui/avatar/Avatar';
 import Breadcrumbs from '@/shared/ui/breadcrumbs/Breadcrumbs';
 import Button from '@/shared/ui/button/Button';
 import Empty from '@/shared/ui/empty/Empty';
-import Table, { TableColumn } from '@/shared/ui/table/Table';
+import Table from '@/shared/ui/table/Table';
 import Text from '@/shared/ui/Text';
 import PageSubTitle from '@/shared/ui/title/PageSubTitle';
 import PageTitle from '@/shared/ui/title/PageTitle';
 import { formatToDotDate } from '@/shared/utils/date';
 import { useQuery } from '@tanstack/react-query';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import React from 'react';
 import styled from 'styled-components';
 
@@ -31,7 +31,6 @@ export interface RetroItem {
 
 const EMPTY_TITLE = '등록된 회고록이 없습니다.';
 const EMPTY_DESCRIPTION = '회고록을 추가하여 회고를 진행해 주세요.';
-const EMPTY_LIST = [];
 
 const columns = [
   {
@@ -159,14 +158,16 @@ const columns = [
 // ];
 
 const RetroList = () => {
+  const router = useRouter();
   const params = useParams();
-  const { data } = useQuery({ ...teamQueries.readRetroList({ teamId: params.teamId as string }) });
+  const { data, isError } = useQuery({ ...teamQueries.readRetroList({ teamId: params.teamId as string }) });
   const paths = {
     회고관리: `/team/${params.teamId}/retro`,
   };
 
   const addRetro = () => {
-    alert('addRetro');
+    // 추후 추가 로직으로 변경
+    router.push(`/team/${params.teamId}/retro/${123}`);
   };
 
   return (
@@ -186,6 +187,7 @@ const RetroList = () => {
           columns={columns}
           keyExtractor={(item) => item.title}
           caption="회고 목록"
+          isError={isError}
           emptyNode={<Empty title={EMPTY_TITLE} description={EMPTY_DESCRIPTION} onClick={addRetro} />}
         />
       </Content>
