@@ -17,20 +17,28 @@ import TeamCardList from './TeamCardList';
 const EMPTY_TITLE = '참여 중인 팀이 없습니다.';
 const EMPTY_DESCRIPTION = '팀을 생성하거나 다른 생성자에게 초대받으세요';
 
+const PATH = [
+  {
+    name: '팀 목록',
+    path: '/team',
+    clickable: true,
+  },
+];
 // 데이터 페칭을 담당하는 컴포넌트
 function TeamContent() {
   const router = useRouter();
-  const paths = {
-    '팀 목록': '/team',
-  };
   const { data } = useSuspenseQuery({ ...teamQueries.readTeamList });
   const queryClient = useQueryClient();
+
+  const refetch = () => {
+    queryClient.invalidateQueries({ queryKey: teamQueries.readTeamList.queryKey });
+  };
 
   return (
     <Content>
       <Head>
         <TitleBox>
-          <Breadcrumbs paths={paths} />
+          <Breadcrumbs paths={PATH} />
           <PageTitle title="Team" />
           <PageSubTitle first="총" point={`${data?.team?.length || 0}`} last="개">
             <ControlBox />
@@ -45,10 +53,7 @@ function TeamContent() {
       <ErrorBoundary
         title="팀 목록 로딩 실패"
         description="팀 목록을 불러오는 중 문제가 발생했습니다."
-        onRetry={() => {
-          // 쿼리 다시 실행
-          queryClient.invalidateQueries({ queryKey: teamQueries.readTeamList.queryKey });
-        }}
+        onRetry={refetch}
       >
         {data?.team && data.team.length > 0 && <TeamCardList teamList={data.team} />}
       </ErrorBoundary>
@@ -62,7 +67,7 @@ function LoadingFallback() {
     <Content>
       <Head>
         <TitleBox>
-          <Breadcrumbs paths={{ '팀 목록': '/team' }} />
+          <Breadcrumbs paths={PATH} />
           <PageTitle title="Team" />
           <PageSubTitle first="총" point="0" last="개">
             <ControlBox />

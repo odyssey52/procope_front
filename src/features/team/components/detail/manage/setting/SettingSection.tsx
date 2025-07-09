@@ -19,6 +19,7 @@ import Placeholder from '@/shared/ui/placeholder/Placeholder';
 import TextArea from '@/shared/ui/textarea/TextArea';
 import PageTitle from '@/shared/ui/title/PageTitle';
 import { useMutation } from '@tanstack/react-query';
+import { useParams } from 'next/navigation';
 import { useState } from 'react';
 import styled from 'styled-components';
 import SubModal from './SubModal';
@@ -29,10 +30,19 @@ interface Props {
 }
 
 const SettingSection = ({ teamData, teamId }: Props) => {
-  const path = {
-    '팀 관리': '/team',
-    설정: '/team/setting',
-  };
+  const params = useParams();
+  const path = [
+    {
+      name: '팀 관리',
+      path: '/team',
+      clickable: false,
+    },
+    {
+      name: '설정',
+      path: `/team/${params.teamId}/manage/setting`,
+      clickable: true,
+    },
+  ];
   const [isModalOpen, setIsModalOpen] = useState<{ name: 'secession' | 'delete' | null; type: boolean }>({
     name: null,
     type: false,
