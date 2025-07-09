@@ -6,6 +6,7 @@ interface AvatarProps {
   nickname?: string;
   image?: string;
   onClick?: () => void;
+  isOnline?: boolean;
 }
 
 interface AvatarStyledProps {
@@ -13,6 +14,7 @@ interface AvatarStyledProps {
   $size?: number; // default 32
   $nickname?: string;
   $image?: string;
+  $isOnline?: boolean;
 }
 
 const getInitialFontSize = (size: AvatarProps['size']) => {
@@ -57,10 +59,18 @@ const getInitialFontSize = (size: AvatarProps['size']) => {
   return null;
 };
 
-const Avatar = ({ type = 'profile', size, nickname, image, onClick }: AvatarProps) => {
+const Avatar = ({ type = 'profile', size, nickname, image, onClick, isOnline = true }: AvatarProps) => {
   const showInitial = type === 'initial' || (!image && nickname);
   return (
-    <Wrapper $size={size} $image={image} $nickname={nickname} $type={type} onClick={onClick} data-testid="avatar">
+    <Wrapper
+      $size={size}
+      $image={image}
+      $nickname={nickname}
+      $type={type}
+      $isOnline={isOnline}
+      onClick={onClick}
+      data-testid="avatar"
+    >
       {showInitial && nickname?.slice(0, 1)}
     </Wrapper>
   );
@@ -106,6 +116,21 @@ const Wrapper = styled.div<AvatarStyledProps>`
     css`
       background-color: transparent;
       background-image: url('/assets/icons/graphic/profile/empty.svg');
+    `};
+  ${({ $isOnline }) =>
+    !$isOnline &&
+    css`
+      &:after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: ${({ theme }) => theme.sementicColors.bg.inverse};
+        opacity: 0.6;
+        border-radius: 50%;
+      }
     `};
 `;
 
