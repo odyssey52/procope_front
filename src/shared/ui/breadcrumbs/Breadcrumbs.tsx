@@ -4,25 +4,34 @@ import React from 'react';
 import styled from 'styled-components';
 import TextButton from '../button/TextButton';
 
+interface BreadcrumbItem {
+  name: string;
+  path: string;
+  clickable?: boolean;
+}
+
 interface BreadcrumbProps {
-  paths: { [key: string]: string }; // key는 경로 이름 (ex. 팀 목록), value는 (ex. /team)
+  paths: BreadcrumbItem[];
 }
 
 const Breadcrumbs: React.FC<BreadcrumbProps> = ({ paths }) => {
-  const pathEntries = Object.entries(paths); // 객체를 배열로 변환
   const router = useRouter();
+
   return (
     <Wrapper aria-label="breadcrumb">
       <ol>
-        {pathEntries.map(([name, path], index) => (
+        {paths.map((item, index) => (
           <Breadcrumb key={index}>
             <TextButton
               $type="16"
-              $disabled={index < pathEntries.length - 1}
-              rightIcon={index < pathEntries.length - 1 ? <IconDirectionRight /> : undefined} // 마지막 항목일 경우 rightIcon 없음
-              onClick={() => router.push(path)}
+              $disabled={index < paths.length - 1}
+              rightIcon={index < paths.length - 1 ? <IconDirectionRight /> : undefined}
+              style={{
+                cursor: item.clickable ? 'pointer' : 'default',
+              }}
+              onClick={() => item.clickable && router.push(item.path)}
             >
-              {name}
+              {item.name}
             </TextButton>
           </Breadcrumb>
         ))}

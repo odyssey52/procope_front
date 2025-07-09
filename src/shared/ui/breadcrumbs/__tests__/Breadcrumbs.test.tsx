@@ -28,11 +28,23 @@ describe('Breadcrumbs 컴포넌트', () => {
   });
 
   it('경로가 올바르게 렌더링되어야 합니다', () => {
-    const paths = {
-      홈: '/',
-      팀: '/team',
-      프로젝트: '/team/project',
-    };
+    const paths = [
+      {
+        name: '홈',
+        path: '/',
+        clickable: true,
+      },
+      {
+        name: '팀',
+        path: '/team',
+        clickable: true,
+      },
+      {
+        name: '프로젝트',
+        path: '/team/project',
+        clickable: true,
+      },
+    ];
 
     render(<Breadcrumbs paths={paths} />, { wrapper: TestWrapper });
 
@@ -43,11 +55,28 @@ describe('Breadcrumbs 컴포넌트', () => {
   });
 
   it('마지막 항목을 제외한 모든 항목에 화살표 아이콘이 있어야 합니다', () => {
-    const paths = {
-      홈: '/',
-      팀: '/team',
-      프로젝트: '/team/project',
-    };
+    const paths = [
+      {
+        name: '홈',
+        path: '/',
+        clickable: true,
+      },
+      {
+        name: '팀',
+        path: '/team',
+        clickable: true,
+      },
+      {
+        name: '팀 관리',
+        path: '/team',
+        clickable: true,
+      },
+      {
+        name: '프로젝트',
+        path: '/team/project',
+        clickable: true,
+      },
+    ];
 
     render(<Breadcrumbs paths={paths} />, { wrapper: TestWrapper });
 
@@ -57,10 +86,28 @@ describe('Breadcrumbs 컴포넌트', () => {
   });
 
   it('항목 클릭 시 해당 경로로 이동해야 합니다', () => {
-    const paths = {
-      홈: '/',
-      팀: '/team',
-    };
+    const paths = [
+      {
+        name: '홈',
+        path: '/',
+        clickable: true,
+      },
+      {
+        name: '팀',
+        path: '/team',
+        clickable: true,
+      },
+      {
+        name: '팀 관리',
+        path: '/team',
+        clickable: true,
+      },
+      {
+        name: '프로젝트',
+        path: '/team/project',
+        clickable: true,
+      },
+    ];
 
     render(<Breadcrumbs paths={paths} />, { wrapper: TestWrapper });
 
