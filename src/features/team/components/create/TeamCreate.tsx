@@ -17,10 +17,18 @@ import { teamDescriptionValid, teamNameValid } from '../../utils/data';
 import TeamCreateStep1 from './TeamCreateStep1';
 import TeamCreateStep2 from './TeamCreateStep2';
 
-const PATH = {
-  '팀 목록': '/team',
-  '팀 생성': '/team/create',
-};
+const PATH = [
+  {
+    name: '팀 목록',
+    path: '/team',
+    clickable: true,
+  },
+  {
+    name: '팀 생성',
+    path: '/team/create',
+    clickable: true,
+  },
+];
 
 const TeamCreate = () => {
   const TOTAL_STEP = 2;

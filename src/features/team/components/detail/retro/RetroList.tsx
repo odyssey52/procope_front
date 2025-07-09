@@ -161,9 +161,18 @@ const RetroList = () => {
   const router = useRouter();
   const params = useParams();
   const { data, isError } = useQuery({ ...teamQueries.readRetroList({ teamId: params.teamId as string }) });
-  const paths = {
-    회고관리: `/team/${params.teamId}/retro`,
-  };
+  const paths = [
+    {
+      name: '회고 관리',
+      path: `/team/${params.teamId}`,
+      clickable: false,
+    },
+    {
+      name: '회고 목록',
+      path: `/team/${params.teamId}/retro`,
+      clickable: true,
+    },
+  ];
 
   const addRetro = () => {
     // 추후 추가 로직으로 변경
@@ -175,7 +184,7 @@ const RetroList = () => {
       <Head>
         <TitleBox>
           <Breadcrumbs paths={paths} />
-          <PageTitle title="회고관리" />
+          <PageTitle title="회고 목록" />
         </TitleBox>
       </Head>
       <Content>
@@ -204,22 +213,26 @@ const Wrapper = styled.div`
   padding: 24px;
   background-color: ${({ theme }) => theme.sementicColors.bg.inverse};
 `;
+
 const Content = styled.div`
   display: flex;
   flex-direction: column;
   gap: 16px;
 `;
+
 const Head = styled.div`
   position: relative;
   display: flex;
   flex-direction: column;
   gap: 8px;
 `;
+
 const TitleBox = styled.div`
   display: flex;
   flex-direction: column;
   gap: 16px;
 `;
+
 RetroList.displayName = 'RetroList';
 
 export default RetroList;
