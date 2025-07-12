@@ -1,8 +1,10 @@
 'use client';
 
 import teamQueries from '@/features/team/query/teamQueries';
+import { createRetro } from '@/features/team/services/teamService';
 import { ReadRetroListItem } from '@/features/team/services/teamService.type';
 import { IconSortArrow } from '@/shared/assets/icons/line';
+import { toastActions } from '@/shared/lib/store/modal/toast';
 import Avatar from '@/shared/ui/avatar/Avatar';
 import Breadcrumbs from '@/shared/ui/breadcrumbs/Breadcrumbs';
 import Button from '@/shared/ui/button/Button';
@@ -12,7 +14,7 @@ import Text from '@/shared/ui/Text';
 import PageSubTitle from '@/shared/ui/title/PageSubTitle';
 import PageTitle from '@/shared/ui/title/PageTitle';
 import { formatToDotDate } from '@/shared/utils/date';
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import { useParams, useRouter } from 'next/navigation';
 import React from 'react';
 import styled from 'styled-components';
@@ -161,6 +163,11 @@ const RetroList = () => {
   const router = useRouter();
   const params = useParams();
   const { data, isError } = useQuery({ ...teamQueries.readRetroList({ teamId: params.teamId as string }) });
+
+  const createRetroMutation = useMutation({
+    mutationFn: createRetro,
+  });
+
   const paths = [
     {
       name: '회고 관리',
@@ -174,9 +181,20 @@ const RetroList = () => {
     },
   ];
 
-  const addRetro = () => {
-    // 추후 추가 로직으로 변경
-    router.push(`/team/${params.teamId}/retro/${123}`);
+  const addRetro = async () => {
+    try {
+      const payload = {
+        title: '새 회고',
+        teamId: params.teamId as string,
+      };
+      const { id } = await createRetroMutation.mutateAsync(payload);
+      router.push(`/team/${params.teamId}/retro/${id}`);
+    } catch {
+      toastActions.open({
+        state: 'error',
+        title: '회고 생성 실패',
+      });
+    }
   };
 
   return (
