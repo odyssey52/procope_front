@@ -8,7 +8,7 @@ import MoreButton from '@/shared/ui/button/MoreButton';
 import PageTitle from '@/shared/ui/title/PageTitle';
 import { useQuery } from '@tanstack/react-query';
 import { useParams } from 'next/navigation';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 
 const members = [
@@ -43,12 +43,18 @@ const RetroPage = () => {
       clickable: true,
     },
   ];
-  const { data } = useQuery({
+  const { data, isSuccess } = useQuery({
     ...teamQueries.readRetro({ teamId: params.teamId as string, retroId: params.retroId as string }),
   });
-  console.log(data);
   const [title, setTitle] = useState<string>('');
   const [isMemberListOpen, setIsMemberListOpen] = useState(false);
+
+  useEffect(() => {
+    if (isSuccess) {
+      setTitle(data?.title ?? '');
+    }
+  }, [isSuccess]);
+
   return (
     <Wrapper>
       <Head>
