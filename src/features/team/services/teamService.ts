@@ -3,21 +3,22 @@ import { UserRole } from '@/shared/types/team';
 import * as types from './teamService.type';
 
 const URLS = {
+  CREATE_TEAM: '/teams',
   READ_TEAM_LIST: '/teams',
   READ_TEAM_DETAIL: (teamId: string) => `/teams/${teamId}`,
   READ_RETRO_LIST: (teamId: string) => `/retrospectives/${teamId}`,
   READ_TEAM_ROLE_COUNT: (role: UserRole) => `/teams/count?role=${role}`,
 
   READ_TEAM_USERS: (teamId: string) => `/teams/users/${teamId}`,
-  CREATE_TEAM: '/teams',
-  CREATE_INVITE_TEAM: '/teams/invite', // 초대 링크를 통해 팀 합류
-  CREATE_RETRO: '/retrospective',
-
   UPDATE_TEAM: (teamId: string) => `/teams/${teamId}`,
   DELETE_TEAM: (teamId: string) => `/teams/${teamId}`,
+
+  CREATE_INVITE_TEAM: '/teams/invite', // 초대 링크를 통해 팀 합류
   SECESSION_TEAM: (teamId: string) => `/teams/users/${teamId}`,
   DELETE_TEAM_USERS: (teamId: string, userId: string) => `/teams/users/${teamId}/${userId}`,
   UPDATE_TEAM_USERS: (teamId: string, userId: string) => `/teams/users/${teamId}/${userId}`,
+
+  CREATE_RETRO: (teamId: string) => `/retrospectives/${teamId}`,
 };
 
 const api = new ApiClient({ isPublic: false });
@@ -79,8 +80,10 @@ export async function readRetroList(params: types.ReadRetroListParams): Promise<
   return data;
 }
 
-export async function createRetro(params: types.CreateRetroParams) {
-  const { data } = await testApi.post(URLS.CREATE_RETRO, params);
+export async function createRetro(payload: types.CreateRetroPayload): Promise<types.CreateRetroResponse> {
+  const { data } = await api.post<types.CreateRetroResponse>(URLS.CREATE_RETRO(payload.teamId), {
+    title: payload.title,
+  });
   return data;
 }
 export async function deleteTeamUser(params: types.DeleteTeamUserParams) {

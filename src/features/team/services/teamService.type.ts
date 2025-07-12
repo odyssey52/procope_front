@@ -43,6 +43,11 @@ export interface CreateTeamPayload {
   description: string;
 }
 
+export interface CreateRetroPayload {
+  title: string;
+  teamId: string;
+}
+
 export interface CreateInviteTeamPayload {
   url: string;
 }
@@ -105,6 +110,9 @@ export interface ReadTeamDetailResponse {
 
 export interface CreateTeamResponse {
   url: string;
+}
+export interface CreateRetroResponse {
+  id: number;
 }
 
 export type CreateInviteTeamResponse = string;
