@@ -15,6 +15,7 @@ import PageSubTitle from '@/shared/ui/title/PageSubTitle';
 import PageTitle from '@/shared/ui/title/PageTitle';
 import { formatToDotDate } from '@/shared/utils/date';
 import { useMutation, useQuery } from '@tanstack/react-query';
+import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
 import React from 'react';
 import styled from 'styled-components';
@@ -34,39 +35,67 @@ export interface RetroItem {
 const EMPTY_TITLE = '등록된 회고록이 없습니다.';
 const EMPTY_DESCRIPTION = '회고록을 추가하여 회고를 진행해 주세요.';
 
-const columns = [
+const renderTitle = (item: ReadRetroListItem, index: number, teamId: string) => (
+  <Link href={`/team/${teamId}/retro/${item.id}`}>
+    <Text variant="body_14_medium" color="primary" ellipsis lines={1}>
+      {item.title}
+    </Text>
+  </Link>
+);
+
+const renderCreator = (item: ReadRetroListItem, index: number) => (
+  <CreatorWrapper>
+    <Avatar nickname={item.createUserName} />
+    <Text variant="body_14_regular" color="secondary" ellipsis>
+      {item.createUserName}
+    </Text>
+  </CreatorWrapper>
+);
+
+const renderMembers = (item: ReadRetroListItem, index: number) => (
+  <Text variant="body_14_underline" color="primary">
+    {item.joinedUserIds.length}명
+  </Text>
+);
+
+const renderDate = (date: string) => (
+  <Text variant="body_14_medium" color="primary">
+    {formatToDotDate(date)}
+  </Text>
+);
+
+const renderCreatedAt = (item: ReadRetroListItem, index: number) => renderDate(item.createdAt);
+
+const renderUpdatedAt = (item: ReadRetroListItem, index: number) => renderDate(item.updatedAt);
+
+// 컬럼 정의를 더 명확하게 타입화
+type ColumnConfig = {
+  key: string;
+  title: string;
+  width: string;
+  sortable?: boolean;
+  icon?: React.ReactNode;
+  render: (item: ReadRetroListItem, index: number) => React.ReactNode;
+};
+
+const createColumns = (teamId: string): ColumnConfig[] => [
   {
     key: 'title',
     title: '제목',
     width: '700px',
-    render: (item: ReadRetroListItem) => (
-      <Text variant="body_14_medium" color="primary" ellipsis lines={1}>
-        {item.title}
-      </Text>
-    ),
+    render: (item, index) => renderTitle(item, index, teamId),
   },
   {
-    key: 'user',
+    key: 'creator',
     title: '생성자',
     width: '240px',
-    render: (item: ReadRetroListItem) => (
-      <>
-        <Avatar nickname={item.createUserName} />
-        <Text variant="body_14_regular" color="secondary" ellipsis>
-          {item.createUserName}
-        </Text>
-      </>
-    ),
+    render: renderCreator,
   },
   {
-    key: 'members',
+    key: 'memberCount',
     title: '참여자',
     width: '140px',
-    render: (item: ReadRetroListItem) => (
-      <Text variant="body_14_underline" color="primary">
-        {item.joinedUserIds.length}명
-      </Text>
-    ),
+    render: renderMembers,
   },
   {
     key: 'createdAt',
@@ -74,11 +103,7 @@ const columns = [
     width: '184px',
     sortable: true,
     icon: <IconSortArrow />,
-    render: (item: ReadRetroListItem) => (
-      <Text variant="body_14_medium" color="primary">
-        {formatToDotDate(item.createdAt)}
-      </Text>
-    ),
+    render: renderCreatedAt,
   },
   {
     key: 'updatedAt',
@@ -86,78 +111,9 @@ const columns = [
     width: '184px',
     sortable: true,
     icon: <IconSortArrow />,
-    render: (item: ReadRetroListItem) => (
-      <Text variant="body_14_medium" color="primary">
-        {formatToDotDate(item.updatedAt)}
-      </Text>
-    ),
+    render: renderUpdatedAt,
   },
-  // {
-  //   key: 'actions',
-  //   title: ' ',
-  //   maxWidth: '60px',
-  //   width: '60px',
-  //   render: (item: ReadRetroListItem) => item.actions,
-  // },
 ];
-// const mockData: RetroItem[] = [
-//   {
-//     title: '2025년 7월 첫째주 개발 회의 및 스프린트 회고',
-//     user: {
-//       // 예시 이미지를 웹사이트에서 가져오기
-//       profileImage: 'https://avatars.githubusercontent.com/u/77449865?v=4',
-//       name: '홍길동',
-//     },
-//     members: 5,
-//     createdAt: '2023.07.07',
-//     updatedAt: '2023.07.10',
-//     actions: <IconMenuCircleVertical />,
-//   },
-//   {
-//     title: '프로젝트 중간 회고',
-//     user: {
-//       profileImage: 'https://avatars.githubusercontent.com/u/77449865?v=4',
-//       name: '김철수',
-//     },
-//     members: 7,
-//     createdAt: '2023.07.15',
-//     updatedAt: '2023.07.15',
-//     actions: <IconMenuCircleVertical />,
-//   },
-//   {
-//     title: '팀 빌딩 세션 회고',
-//     user: {
-//       profileImage: 'https://avatars.githubusercontent.com/u/77449865?v=4',
-//       name: '이영희',
-//     },
-//     members: 10,
-//     createdAt: '2023.07.20',
-//     updatedAt: '2023.07.22',
-//     actions: <IconMenuCircleVertical />,
-//   },
-//   {
-//     title: '디자인 시스템 논의 회고',
-//     user: {
-//       profileImage: 'https://avatars.githubusercontent.com/u/77449865?v=4',
-//       name: '박지민',
-//     },
-//     members: 4,
-//     createdAt: '2023.07.25',
-//     updatedAt: '2023.07.27',
-//     actions: <IconMenuCircleVertical />,
-//   },
-//   {
-//     title: '백엔드 연동 작업 회고',
-//     user: {
-//       profileImage: 'https://avatars.githubusercontent.com/u/77449865?v=4',
-//       name: '최준호',
-//     },
-//     members: 6,
-//     createdAt: '2023.08.01',
-//     updatedAt: '2023.08.03',
-//     actions: <IconMenuCircleVertical />,
-//   },
-// ];
 
 const RetroList = () => {
   const router = useRouter();
@@ -196,6 +152,8 @@ const RetroList = () => {
       });
     }
   };
+
+  const columns = createColumns(params.teamId as string);
 
   return (
     <Wrapper>
@@ -249,6 +207,12 @@ const TitleBox = styled.div`
   display: flex;
   flex-direction: column;
   gap: 16px;
+`;
+
+const CreatorWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 8px;
 `;
 
 RetroList.displayName = 'RetroList';
