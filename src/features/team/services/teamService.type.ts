@@ -36,6 +36,11 @@ export interface UpdateTeamUserParams {
   userId: string;
 }
 
+export interface ReadRetroParams {
+  teamId: string;
+  retroId: string;
+}
+
 // Payload
 export interface CreateTeamPayload {
   type: string;
@@ -132,3 +137,21 @@ export type ReadTeamRoleCountResponse = {
   number: number;
 };
 export type UpdateTeamUserResponse = string;
+
+export interface ReadRetroResponse {
+  id: number;
+  title: string;
+  createUserInfo: {
+    id: string;
+    name: string;
+    profileImageUrl: string;
+  };
+  createdAt: string;
+  joinUserInfos: [
+    {
+      id: string;
+      name: string;
+      profileImageUrl: string;
+    },
+  ];
+}

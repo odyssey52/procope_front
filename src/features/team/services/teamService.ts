@@ -6,23 +6,24 @@ const URLS = {
   CREATE_TEAM: '/teams',
   READ_TEAM_LIST: '/teams',
   READ_TEAM_DETAIL: (teamId: string) => `/teams/${teamId}`,
-  READ_RETRO_LIST: (teamId: string) => `/retrospectives/${teamId}`,
   READ_TEAM_ROLE_COUNT: (role: UserRole) => `/teams/count?role=${role}`,
 
+  CREATE_INVITE_TEAM: '/teams/invite',
   READ_TEAM_USERS: (teamId: string) => `/teams/users/${teamId}`,
   UPDATE_TEAM: (teamId: string) => `/teams/${teamId}`,
   DELETE_TEAM: (teamId: string) => `/teams/${teamId}`,
 
-  CREATE_INVITE_TEAM: '/teams/invite', // 초대 링크를 통해 팀 합류
   SECESSION_TEAM: (teamId: string) => `/teams/users/${teamId}`,
   DELETE_TEAM_USERS: (teamId: string, userId: string) => `/teams/users/${teamId}/${userId}`,
   UPDATE_TEAM_USERS: (teamId: string, userId: string) => `/teams/users/${teamId}/${userId}`,
 
   CREATE_RETRO: (teamId: string) => `/retrospectives/${teamId}`,
+  READ_RETRO_LIST: (teamId: string) => `/retrospectives/${teamId}`,
+  READ_RETRO: (teamId: string, retroId: string) => `/retrospectives/${teamId}/${retroId}`,
 };
 
 const api = new ApiClient({ isPublic: false });
-const testApi = new ApiClient({ isPublic: false, baseURL: process.env.NEXT_PUBLIC_TEST_API_HOST });
+// const testApi = new ApiClient({ isPublic: false, baseURL: process.env.NEXT_PUBLIC_TEST_API_HOST });
 
 export async function readTeamList(): Promise<types.ReadTeamListResponse> {
   const { data } = await api.get<types.ReadTeamListResponse>(URLS.READ_TEAM_LIST);
@@ -99,5 +100,10 @@ export async function updateTeamUser(
     URLS.UPDATE_TEAM_USERS(params.teamId, params.userId),
     payload,
   );
+  return data;
+}
+
+export async function readRetro(params: types.ReadRetroParams): Promise<types.ReadRetroResponse> {
+  const { data } = await api.get<types.ReadRetroResponse>(URLS.READ_RETRO(params.teamId, params.retroId));
   return data;
 }
