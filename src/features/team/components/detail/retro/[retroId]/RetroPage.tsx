@@ -96,6 +96,7 @@ const TitleWrapper = styled.div`
 const MemberWrapper = styled.div`
   display: flex;
   gap: 12px;
+  align-items: center;
 `;
 
 RetroPage.displayName = 'RetroPage';
