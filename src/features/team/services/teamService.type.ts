@@ -20,6 +20,11 @@ export interface ReadTeamRoleCountParams {
   role: UserRole;
 }
 
+export interface ReadRetroParams {
+  teamId: string;
+  retroId: string;
+}
+
 // Payload
 export interface CreateTeamPayload {
   type: string;
@@ -94,3 +99,21 @@ export type ReadRetroListResponse = ReadRetroListItem[];
 export type ReadTeamRoleCountResponse = {
   number: number;
 };
+
+export interface ReadRetroResponse {
+  id: number;
+  title: string;
+  createUserInfo: {
+    id: string;
+    name: string;
+    profileImageUrl: string;
+  };
+  createdAt: string;
+  joinUserInfos: [
+    {
+      id: string;
+      name: string;
+      profileImageUrl: string;
+    },
+  ];
+}

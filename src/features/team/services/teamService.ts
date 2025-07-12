@@ -15,10 +15,11 @@ const URLS = {
 
   CREATE_RETRO: (teamId: string) => `/retrospectives/${teamId}`,
   READ_RETRO_LIST: (teamId: string) => `/retrospectives/${teamId}`,
+  READ_RETRO: (teamId: string, retroId: string) => `/retrospectives/${teamId}/${retroId}`,
 };
 
 const api = new ApiClient({ isPublic: false });
-const testApi = new ApiClient({ isPublic: false, baseURL: process.env.NEXT_PUBLIC_TEST_API_HOST });
+// const testApi = new ApiClient({ isPublic: false, baseURL: process.env.NEXT_PUBLIC_TEST_API_HOST });
 
 export async function readTeamList(): Promise<types.ReadTeamListResponse> {
   const { data } = await api.get<types.ReadTeamListResponse>(URLS.READ_TEAM_LIST);
@@ -76,5 +77,10 @@ export async function createRetro(payload: types.CreateRetroPayload): Promise<ty
   const { data } = await api.post<types.CreateRetroResponse>(URLS.CREATE_RETRO(payload.teamId), {
     title: payload.title,
   });
+  return data;
+}
+
+export async function readRetro(params: types.ReadRetroParams): Promise<types.ReadRetroResponse> {
+  const { data } = await api.get<types.ReadRetroResponse>(URLS.READ_RETRO(params.teamId, params.retroId));
   return data;
 }
