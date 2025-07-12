@@ -74,9 +74,7 @@ export interface ReadTeamDetailResponse {
 export interface CreateTeamResponse {
   url: string;
 }
-export interface CreateRetroResponse {
-  id: number;
-}
+export type CreateRetroResponse = number;
 
 export type CreateInviteTeamResponse = string;
 

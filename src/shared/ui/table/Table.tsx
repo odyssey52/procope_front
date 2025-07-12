@@ -87,7 +87,7 @@ const Table = <T extends Record<string, any>>({
       {!isError && !isEmpty && (
         <tbody>
           {data.map((item, rowIndex) => (
-            <tr key={keyExtractor(item)}>
+            <tr key={`tr-${keyExtractor(item)}-${rowIndex}`}>
               {columns.map((column, colIndex) => (
                 <TableCell key={`td-${rowIndex}-${colIndex}`}>
                   <PartCellContent>{column.render ? column.render(item, rowIndex) : item[column.key]}</PartCellContent>

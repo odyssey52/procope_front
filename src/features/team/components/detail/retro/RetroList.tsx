@@ -187,7 +187,7 @@ const RetroList = () => {
         title: '새 회고',
         teamId: params.teamId as string,
       };
-      const { id } = await createRetroMutation.mutateAsync(payload);
+      const id = await createRetroMutation.mutateAsync(payload);
       router.push(`/team/${params.teamId}/retro/${id}`);
     } catch {
       toastActions.open({
