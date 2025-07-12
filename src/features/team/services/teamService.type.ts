@@ -19,17 +19,17 @@ export interface ReadRetroListParams {
 export interface ReadTeamRoleCountParams {
   role: UserRole;
 }
-export interface CreateRetroParams {
-  title: string;
-  createdAt: string;
-  joinUserIds: number[];
-}
 
 // Payload
 export interface CreateTeamPayload {
   type: string;
   name: string;
   description: string;
+}
+
+export interface CreateRetroPayload {
+  title: string;
+  teamId: string;
 }
 
 export interface CreateInviteTeamPayload {
@@ -73,6 +73,9 @@ export interface ReadTeamDetailResponse {
 
 export interface CreateTeamResponse {
   url: string;
+}
+export interface CreateRetroResponse {
+  id: number;
 }
 
 export type CreateInviteTeamResponse = string;
