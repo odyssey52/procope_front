@@ -43,6 +43,7 @@ const getMarginLeft = (size?: number) => {
 const Wrapper = styled.div`
   position: relative;
   display: flex;
+  height: fit-content;
 `;
 
 const AvatarWrapper = styled.div<{ $size?: 16 | 24 | 32 | 48; $index: number }>`
