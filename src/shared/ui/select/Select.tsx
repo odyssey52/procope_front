@@ -9,9 +9,10 @@ interface SelectProps {
   label?: React.ReactNode;
   description?: React.ReactNode;
   state?: 'default' | 'error' | 'disabled';
+  width?: number;
   placeholder: string;
-  value: string;
-  valueHandler: (value: string) => void;
+  value: string | React.ReactNode;
+  valueHandler: (value: string | React.ReactNode) => void;
   selectOptionList: SelectOptionList;
 }
 
@@ -19,6 +20,7 @@ const Select = ({
   label,
   placeholder,
   state = 'default',
+  width,
   description,
   value,
   valueHandler,
@@ -37,7 +39,7 @@ const Select = ({
     setIsOpen(!isOpen);
   };
 
-  const onClickItem = (value: string) => {
+  const onClickItem = (value: string | React.ReactNode) => {
     setIsOpen(false);
     valueHandler(value);
   };
@@ -52,7 +54,7 @@ const Select = ({
     <Wrapper ref={selectRef}>
       {label && label}
       <SelectBoxWrapper>
-        <SelectBox onClick={toggleOpen} $state={state} disabled={state === 'disabled'}>
+        <SelectBox onClick={toggleOpen} $state={state} $width={width} disabled={state === 'disabled'}>
           {placeholder && !value && (
             <Text variant="body_14_regular" color="tertiary">
               {placeholder}
@@ -112,12 +114,15 @@ const getSelectBoxStateStyle = {
     background-color: ${theme.sementicColors.bg.disabled};
   `,
 };
-const SelectBox = styled.button<{ $state: 'default' | 'error' | 'disabled' }>`
+const SelectBox = styled.button<{ $state: 'default' | 'error' | 'disabled'; $width?: number }>`
   position: relative;
   display: flex;
   justify-content: space-between;
+  align-items: center;
   gap: 8px;
-  min-width: 242px;
+  max-width: 240px;
+  width: ${({ $width }) => $width ?? $width}px;
+  height: 40px;
   padding: 8px 12px;
   border-radius: 8px;
   ${({ $state }) => getSelectBoxStateStyle[$state]}

@@ -1,9 +1,6 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
-import { toastActions } from '@/shared/lib/store/modal/toast';
-import { MESSAGES } from '@/shared/constants/messages';
-import { deleteTeam, secessionTeam, updateTeam } from '../services/teamService';
-import * as types from '../services/teamService.type';
+import { deleteTeam, secessionTeam } from '../services/teamService';
 
 export function useTeamSetting(teamId: string) {
   const router = useRouter();

@@ -24,6 +24,17 @@ export interface CreateRetroParams {
   createdAt: string;
   joinUserIds: number[];
 }
+export interface ReadTeamUsersParams {
+  teamId: string;
+}
+export interface DeleteTeamUserParams {
+  teamId: string;
+  userId: string;
+}
+export interface UpdateTeamUserParams {
+  teamId: string;
+  userId: string;
+}
 
 // Payload
 export interface CreateTeamPayload {
@@ -40,6 +51,9 @@ export interface UpdateTeamPayload {
   type: TeamType;
   name: string;
   description: string;
+}
+export interface UpdateTeamUserPayload {
+  role: 'ADMIN' | 'MANAGER' | 'MEMBER';
 }
 
 // response
@@ -59,16 +73,34 @@ export interface ReadTeamListResponse {
   }[];
 }
 
+export interface ReadTeamUsersResponse {
+  count: number;
+  teamMember: {
+    user: {
+      id: string;
+      name: string;
+      email: string;
+      roleInfo: {
+        id: string;
+        name: string;
+        fields: {
+          id: string;
+          name: string;
+        }[];
+      };
+    };
+    teamRole: 'ADMIN' | 'MANAGER' | 'MEMBER';
+    createdAt: string;
+    lastActiveAt: string;
+  }[];
+}
+
 export interface ReadTeamDetailResponse {
   teamId: string;
   type: TeamType;
   name: string;
   description: string;
-  members: {
-    userId: string;
-    picture: string;
-    userRole: string;
-  }[];
+  myRole: 'ADMIN' | 'MANAGER' | 'MEMBER';
 }
 
 export interface CreateTeamResponse {
@@ -93,3 +125,4 @@ export type ReadRetroListResponse = ReadRetroListItem[];
 export type ReadTeamRoleCountResponse = {
   number: number;
 };
+export type UpdateTeamUserResponse = string;

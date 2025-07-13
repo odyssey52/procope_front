@@ -5,6 +5,7 @@ import styled from 'styled-components';
 
 interface PartCellContentProps {
   size?: 44 | 56 | 64 | 80;
+  width?: string;
   children: React.ReactNode;
 }
 
@@ -22,17 +23,23 @@ const getIconSize = (size: PartCellContentProps['size']) => {
       return 36;
   }
 };
-const PartCellContent = ({ size = 56, children }: PartCellContentProps) => {
-  return <Wrapper $size={size}>{children}</Wrapper>;
+const PartCellContent = ({ size = 56, width, children }: PartCellContentProps) => {
+  return (
+    <Wrapper $size={size} $width={width}>
+      {children}
+    </Wrapper>
+  );
 };
 
-const Wrapper = styled.div<{ $size: PartCellContentProps['size'] }>`
+const Wrapper = styled.div<{ $size: PartCellContentProps['size']; $width: PartCellContentProps['width'] }>`
   display: flex;
   align-items: center;
   gap: 8px;
   padding: 4px 12px;
+  width: ${({ $width }) => $width}px;
   height: ${({ $size }) => $size}px;
   border-bottom: 1px solid ${({ theme }) => theme.sementicColors.border.primary};
+  position: relative;
   svg {
     width: ${({ $size }) => getIconSize($size)}px;
     height: ${({ $size }) => getIconSize($size)}px;
@@ -40,11 +47,6 @@ const Wrapper = styled.div<{ $size: PartCellContentProps['size'] }>`
 
   user-select: none;
   cursor: default;
-
-  &:active {
-    border-bottom: 1px solid ${({ theme }) => theme.sementicColors.border.primary_hover_pressed};
-    background: ${({ theme }) => theme.sementicColors.bg.tertiary_hover_pressed};
-  }
 `;
 
 PartCellContent.displayName = 'PartCellContent';

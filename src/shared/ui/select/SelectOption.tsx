@@ -5,9 +5,9 @@ import Text from '../Text';
 export interface SelectOptionProps {
   leftContent?: React.ReactNode;
   state?: 'selected';
-  value: string;
+  value: string | React.ReactNode;
   description?: string;
-  valueHandler: (value: string) => void;
+  valueHandler: (value: string | React.ReactNode) => void;
   width?: number;
   pageName?: string;
   borderRadius?: string;
@@ -46,7 +46,7 @@ const Wrapper = styled.button<{ $state?: 'selected'; $width?: number; $borderRad
   position: relative;
   cursor: pointer;
   display: flex;
-  min-width: 240px;
+  max-width: 240px;
   width: ${({ $width }) => ($width ? `${$width}px` : '240px')};
   gap: 8px;
   align-items: center;

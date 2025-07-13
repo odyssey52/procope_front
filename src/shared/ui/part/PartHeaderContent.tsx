@@ -5,14 +5,15 @@ import styled from 'styled-components';
 import Text from '../Text';
 
 interface PartHeaderContentProps {
+  width?: string;
   size?: 44 | 56 | 64;
   title?: string;
   icon?: React.ReactNode;
 }
 
-const PartHeaderContent = ({ size = 56, title, icon }: PartHeaderContentProps) => {
+const PartHeaderContent = ({ width, size = 56, title, icon }: PartHeaderContentProps) => {
   return (
-    <Wrapper $size={size}>
+    <Wrapper $size={size} $width={width}>
       {title && (
         <Text variant="body_14_medium" color="secondary">
           {title}
@@ -23,10 +24,11 @@ const PartHeaderContent = ({ size = 56, title, icon }: PartHeaderContentProps) =
   );
 };
 
-const Wrapper = styled.div<{ $size: PartHeaderContentProps['size'] }>`
+const Wrapper = styled.div<{ $size: PartHeaderContentProps['size']; $width: PartHeaderContentProps['width'] }>`
   display: flex;
   align-items: center;
   gap: 8px;
+  width: ${({ $width }) => $width}px;
   height: ${({ $size }) => $size}px;
   padding: 3px 12px;
   min-width: 0;

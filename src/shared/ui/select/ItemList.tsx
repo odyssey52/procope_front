@@ -4,15 +4,15 @@ import SelectOption from './SelectOption';
 
 export type SelectOptionList = {
   leftContent?: React.ReactNode;
-  value: string;
+  value: string | React.ReactNode;
   id?: string | number;
   description?: string;
 }[];
 
 interface ItemListProps {
   selectOptionList: SelectOptionList;
-  value?: string;
-  valueHandler: (value: string, id?: string | number) => void;
+  value?: string | React.ReactNode;
+  valueHandler: (value: string | React.ReactNode, id?: string | number) => void;
 }
 
 const ItemList = ({ selectOptionList, value, valueHandler }: ItemListProps) => {
