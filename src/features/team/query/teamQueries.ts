@@ -1,4 +1,10 @@
-import { readTeamList, readTeamDetail, readRetroList, readTeamRoleCount } from '@/features/team/services/teamService';
+import {
+  readTeamList,
+  readTeamDetail,
+  readTeamUser,
+  readRetroList,
+  readTeamRoleCount,
+} from '@/features/team/services/teamService';
 import { createQueryKeys } from '@lukemorales/query-key-factory';
 import * as types from '@/features/team/services/teamService.type';
 
@@ -18,6 +24,10 @@ const teamQueries = createQueryKeys('team', {
   readTeamRoleCount: (params: types.ReadTeamRoleCountParams) => ({
     queryKey: [params.role],
     queryFn: () => readTeamRoleCount(params),
+    readTeamUser: (params: types.ReadTeamUsersParams) => ({
+      queryKey: [params.teamId],
+      queryFn: () => readTeamUser(params),
+    }),
   }),
 });
 

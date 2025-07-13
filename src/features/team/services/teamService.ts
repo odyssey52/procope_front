@@ -8,14 +8,16 @@ const URLS = {
   READ_RETRO_LIST: (teamId: string) => `/retrospectives/${teamId}`,
   READ_TEAM_ROLE_COUNT: (role: UserRole) => `/teams/count?role=${role}`,
 
+  READ_TEAM_USERS: (teamId: string) => `/teams/users/${teamId}`,
   CREATE_TEAM: '/teams',
   CREATE_INVITE_TEAM: '/teams/invite', // 초대 링크를 통해 팀 합류
   CREATE_RETRO: '/retrospective',
 
   UPDATE_TEAM: (teamId: string) => `/teams/${teamId}`,
-
   DELETE_TEAM: (teamId: string) => `/teams/${teamId}`,
   SECESSION_TEAM: (teamId: string) => `/teams/users/${teamId}`,
+  DELETE_TEAM_USERS: (teamId: string, userId: string) => `/teams/users/${teamId}/${userId}`,
+  UPDATE_TEAM_USERS: (teamId: string, userId: string) => `/teams/users/${teamId}/${userId}`,
 };
 
 const api = new ApiClient({ isPublic: false });
@@ -35,6 +37,10 @@ export async function readTeamRoleCount(
   params: types.ReadTeamRoleCountParams,
 ): Promise<types.ReadTeamRoleCountResponse> {
   const { data } = await api.get<types.ReadTeamRoleCountResponse>(URLS.READ_TEAM_ROLE_COUNT(params.role));
+  return data;
+}
+export async function readTeamUser(params: types.ReadTeamUsersParams): Promise<types.ReadTeamUsersResponse> {
+  const { data } = await api.get<types.ReadTeamUsersResponse>(URLS.READ_TEAM_USERS(params.teamId));
   return data;
 }
 
@@ -75,5 +81,20 @@ export async function readRetroList(params: types.ReadRetroListParams): Promise<
 
 export async function createRetro(params: types.CreateRetroParams) {
   const { data } = await testApi.post(URLS.CREATE_RETRO, params);
+  return data;
+}
+export async function deleteTeamUser(params: types.DeleteTeamUserParams) {
+  const { data } = await api.delete(URLS.DELETE_TEAM_USERS(params.teamId, params.userId));
+  return data;
+}
+
+export async function updateTeamUser(
+  payload: types.UpdateTeamUserPayload,
+  params: types.UpdateTeamUserParams,
+): Promise<types.UpdateTeamUserResponse> {
+  const { data } = await api.patch<types.UpdateTeamUserResponse>(
+    URLS.UPDATE_TEAM_USERS(params.teamId, params.userId),
+    payload,
+  );
   return data;
 }

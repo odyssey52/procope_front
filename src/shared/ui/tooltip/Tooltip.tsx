@@ -45,7 +45,7 @@ const Tooltip = ({ text, direction, location, icon }: TooltipProps) => {
     <>
       <Wrapper>
         {text}
-        <img src={icon} alt="툴팁이미지" />
+        {icon && <img src={icon} alt="툴팁이미지" />}
       </Wrapper>
       <Point text={text} direction={direction} location={location} />
     </>
