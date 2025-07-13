@@ -50,11 +50,10 @@ const RetroPage = () => {
   const [isMemberListOpen, setIsMemberListOpen] = useState(false);
 
   useEffect(() => {
-    if (isSuccess) {
+    if (data) {
       setTitle(data?.title ?? '');
     }
   }, [isSuccess]);
-
   return (
     <Wrapper>
       <Head>
