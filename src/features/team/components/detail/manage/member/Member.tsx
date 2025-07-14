@@ -20,15 +20,23 @@ const Member = () => {
     enabled: !!teamId,
   });
 
-  const path = {
-    '팀 관리': '/team',
-    참여관리: `/team/${teamId}/manage/member`,
-  };
+  const path = [
+    {
+      name: '팀 관리',
+      path: '/team',
+    },
+    {
+      name: '참여관리',
+      path: `/team/${teamId}/manage/member`,
+    },
+  ];
+
   const teamImage =
     teamData?.type === 'SQUAD'
       ? '/assets/icons/graphic/glass/user-on.png'
       : '/assets/icons/graphic/glass/setting-on.png';
-  if (!teamUser || !teamData) return;
+
+  if (!teamUser || !teamData) return null;
 
   return (
     <Wrapper>

@@ -3,6 +3,7 @@
 import teamQueries from '@/features/team/query/teamQueries';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
+import { ReactNode } from 'react';
 import styled from 'styled-components';
 import ItemList from '../select/ItemList';
 
@@ -16,7 +17,7 @@ const TeamListDropdownContent = () => {
       id: team.teamId,
     })) || [];
 
-  const handleTeamSelect = (value: string, id?: string | number) => {
+  const handleTeamSelect = (value: string | ReactNode, id?: string | number) => {
     if (id) {
       router.push(`/team/${id}/dashboard`);
     }
