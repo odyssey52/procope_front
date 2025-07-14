@@ -49,6 +49,10 @@ const RetroPage = () => {
   const [title, setTitle] = useState<string>('');
   const [isMemberListOpen, setIsMemberListOpen] = useState(false);
 
+  const handleMemberListOpen = () => {
+    setIsMemberListOpen(!isMemberListOpen);
+  };
+
   useEffect(() => {
     if (data) {
       setTitle(data?.title ?? '');
@@ -63,7 +67,7 @@ const RetroPage = () => {
             <PageTitle title={title} setTitle={setTitle} placeholder="제목을 작성해 주세요" />
             <MemberWrapper>
               <AvatarGroup profileList={members} size={32} />
-              <Button $type="outline" pressed={isMemberListOpen} onClick={() => setIsMemberListOpen(!isMemberListOpen)}>
+              <Button $type="outline" pressed={isMemberListOpen} onClick={handleMemberListOpen}>
                 Member
               </Button>
               <MoreButton size={40} />
