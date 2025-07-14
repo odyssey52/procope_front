@@ -1,6 +1,7 @@
 import * as React from 'react';
 import type { SVGProps } from 'react';
 import { Ref, forwardRef } from 'react';
+// prettier-ignore
 type Props = {
   size?: number | string;
 };

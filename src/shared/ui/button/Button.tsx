@@ -8,13 +8,19 @@ interface ButtonProps {
   size?: '36' | '48'; // default : 40
   leftIcon?: ReactNode;
   rightIcon?: ReactNode;
+  pressed?: boolean;
 }
 
-const getButtonTypeStyles = (type: ButtonProps['$type']) => {
+const getButtonTypeStyles = (type: ButtonProps['$type'], pressed?: boolean) => {
   switch (type) {
     case 'secondary':
       return css`
         background-color: ${({ theme }) => theme.sementicColors.bg.primary};
+        ${pressed &&
+        css`
+          background-color: ${({ theme }) => theme.sementicColors.bg.primary_hover_pressed};
+          box-shadow: 0px 0px 0px 2px rgba(47, 78, 118, 0.3);
+        `}
         &:hover,
         &:active {
           background-color: ${({ theme }) => theme.sementicColors.bg.primary_hover_pressed};
@@ -31,7 +37,11 @@ const getButtonTypeStyles = (type: ButtonProps['$type']) => {
         background-color: ${({ theme }) => theme.sementicColors.bg.inverse};
         border: 1px solid ${({ theme }) => theme.sementicColors.border.primary};
         color: ${({ theme }) => theme.sementicColors.text.primary};
-
+        ${pressed &&
+        css`
+          background-color: ${({ theme }) => theme.sementicColors.bg.tertiary};
+          box-shadow: 0px 0px 0px 2px rgba(47, 78, 118, 0.3);
+        `}
         &:hover,
         &:active {
           background-color: ${({ theme }) => theme.sementicColors.bg.tertiary};
@@ -47,6 +57,11 @@ const getButtonTypeStyles = (type: ButtonProps['$type']) => {
     case 'error':
       return css`
         background-color: ${({ theme }) => theme.sementicColors.bg.danger};
+        ${pressed &&
+        css`
+          background-color: ${({ theme }) => theme.sementicColors.bg.danger_hover_pressed};
+          box-shadow: 0px 0px 0px 2px rgba(248, 113, 113, 0.4);
+        `}
         &:hover,
         &:active {
           background-color: ${({ theme }) => theme.sementicColors.bg.danger_hover_pressed};
@@ -62,6 +77,12 @@ const getButtonTypeStyles = (type: ButtonProps['$type']) => {
       return css`
         background-color: ${({ theme }) => theme.sementicColors.bg.tertiary_hover_pressed};
         color: ${({ theme }) => theme.sementicColors.text.primary};
+        ${pressed &&
+        css`
+          background-color: ${({ theme }) => theme.sementicColors.bg.tertiary_hover_pressed};
+          box-shadow: 0px 0px 0px 2px rgba(47, 78, 118, 0.3);
+          color: ${({ theme }) => theme.sementicColors.text.primary_hover_pressed};
+        `}
         &:hover,
         &:active {
           background-color: ${({ theme }) => theme.sementicColors.bg.tertiary_hover_pressed};
@@ -78,6 +99,11 @@ const getButtonTypeStyles = (type: ButtonProps['$type']) => {
     default:
       return css`
         background-color: ${({ theme }) => theme.sementicColors.bg.brand};
+        ${pressed &&
+        css`
+          background-color: ${({ theme }) => theme.sementicColors.bg.brand_hover_pressed};
+          box-shadow: 0px 0px 0px 2px rgba(94, 164, 255, 0.4);
+        `}
         &:hover,
         &:active {
           background-color: ${({ theme }) => theme.sementicColors.bg.brand_hover_pressed};
@@ -121,10 +147,11 @@ const Button = ({
   leftIcon,
   rightIcon,
   children,
+  pressed,
   ...props
 }: React.ButtonHTMLAttributes<HTMLButtonElement> & ButtonProps) => {
   return (
-    <StyledButton $type={$type} size={size} {...props}>
+    <StyledButton $type={$type} size={size} $pressed={pressed} {...props}>
       {leftIcon && leftIcon}
       {children}
       {rightIcon && rightIcon}
@@ -135,6 +162,7 @@ const Button = ({
 interface StyledButtonProps {
   $type?: ButtonProps['$type'];
   size?: ButtonProps['size'];
+  $pressed?: boolean;
 }
 
 const StyledButton = styled.button<StyledButtonProps>`
@@ -159,7 +187,7 @@ const StyledButton = styled.button<StyledButtonProps>`
     width: 20px;
     height: 20px;
   }
-  ${({ $type }) => getButtonTypeStyles($type)}
+  ${({ $type, $pressed }) => getButtonTypeStyles($type, $pressed)}
   ${({ size }) => getButtonSizeStyles(size)}
 `;
 

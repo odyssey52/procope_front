@@ -1,3 +1,4 @@
+import { useMember } from '@/features/team/hooks/useMember';
 import { useTeamSetting } from '@/features/team/hooks/useTeamSetting';
 import Button from '@/shared/ui/button/Button';
 import Modal from '@/shared/ui/modal/common/Modal';
@@ -6,13 +7,15 @@ import Image from 'next/image';
 import styled from 'styled-components';
 
 interface Props {
-  name: 'secession' | 'delete';
+  name: 'secession' | 'deleteTeam' | 'deleteUser';
   teamId: string;
   onClose: () => void;
+  userId?: string;
 }
 
-const SubModal = ({ name, teamId, onClose }: Props) => {
+const SubModal = ({ name, teamId, onClose, userId }: Props) => {
   const { secessionHandle, deleteHandle } = useTeamSetting(teamId);
+  const { deleteUserHandle } = useMember(teamId);
 
   const errorIcon = '/assets/icons/graphic/fill/error.svg';
   const data = {
@@ -21,10 +24,18 @@ const SubModal = ({ name, teamId, onClose }: Props) => {
       description: '팀을 탈퇴한 이후 작성하신 내용은 보존됩니다.',
       onClick: secessionHandle,
     },
-    delete: {
+    deleteTeam: {
       title: '팀을 삭제하시겠습니까?',
       description: '삭제시 복구가 불가능합니다.',
       onClick: deleteHandle,
+    },
+    deleteUser: {
+      title: '참여자를 퇴출하시겠습니까?',
+      description: '퇴출시 복구가 불가능합니다.',
+      onClick: () => {
+        if (!userId) return;
+        deleteUserHandle(userId);
+      },
     },
   };
   return (

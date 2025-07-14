@@ -19,9 +19,10 @@ import Placeholder from '@/shared/ui/placeholder/Placeholder';
 import TextArea from '@/shared/ui/textarea/TextArea';
 import PageTitle from '@/shared/ui/title/PageTitle';
 import { useMutation } from '@tanstack/react-query';
+import { useParams } from 'next/navigation';
 import { useState } from 'react';
 import styled from 'styled-components';
-import SubModal from './SubModal';
+import SubModal from '../SubModal';
 
 interface Props {
   teamData: ReadTeamDetailResponse;
@@ -29,11 +30,20 @@ interface Props {
 }
 
 const SettingSection = ({ teamData, teamId }: Props) => {
-  const path = {
-    '팀 관리': '/team',
-    설정: '/team/setting',
-  };
-  const [isModalOpen, setIsModalOpen] = useState<{ name: 'secession' | 'delete' | null; type: boolean }>({
+  const params = useParams();
+  const path = [
+    {
+      name: '팀 관리',
+      path: '/team',
+      clickable: false,
+    },
+    {
+      name: '설정',
+      path: `/team/${params.teamId}/manage/setting`,
+      clickable: true,
+    },
+  ];
+  const [isModalOpen, setIsModalOpen] = useState<{ name: 'secession' | 'deleteTeam' | null; type: boolean }>({
     name: null,
     type: false,
   });
@@ -52,7 +62,7 @@ const SettingSection = ({ teamData, teamId }: Props) => {
     setIsModalOpen({ name: 'secession', type: true });
   };
   const teamDelete = () => {
-    setIsModalOpen({ name: 'delete', type: false });
+    setIsModalOpen({ name: 'deleteTeam', type: false });
   };
   const closeModal = () => {
     setIsModalOpen({ name: null, type: false });
@@ -137,10 +147,10 @@ const SettingSection = ({ teamData, teamId }: Props) => {
         <ButtonSection>
           <ButtonTitle>탈퇴 및 삭제</ButtonTitle>
           <Buttons>
-            <Button onClick={teamSecession} $type="tertiary">
+            <Button onClick={teamSecession} $type="tertiary" disabled={teamData.myRole === 'MEMBER'}>
               팀 탈퇴
             </Button>
-            <Button onClick={teamDelete} $type="error">
+            <Button onClick={teamDelete} $type="error" disabled={teamData.myRole === 'MEMBER'}>
               팀 삭제
             </Button>
           </Buttons>

@@ -24,12 +24,33 @@ export interface CreateRetroParams {
   createdAt: string;
   joinUserIds: number[];
 }
+export interface ReadTeamUsersParams {
+  teamId: string;
+}
+export interface DeleteTeamUserParams {
+  teamId: string;
+  userId: string;
+}
+export interface UpdateTeamUserParams {
+  teamId: string;
+  userId: string;
+}
+
+export interface ReadRetroParams {
+  teamId: string;
+  retroId: string;
+}
 
 // Payload
 export interface CreateTeamPayload {
   type: string;
   name: string;
   description: string;
+}
+
+export interface CreateRetroPayload {
+  title: string;
+  teamId: string;
 }
 
 export interface CreateInviteTeamPayload {
@@ -40,6 +61,9 @@ export interface UpdateTeamPayload {
   type: TeamType;
   name: string;
   description: string;
+}
+export interface UpdateTeamUserPayload {
+  role: 'ADMIN' | 'MANAGER' | 'MEMBER';
 }
 
 // response
@@ -59,21 +83,40 @@ export interface ReadTeamListResponse {
   }[];
 }
 
+export interface ReadTeamUsersResponse {
+  count: number;
+  teamMember: {
+    user: {
+      id: string;
+      name: string;
+      email: string;
+      roleInfo: {
+        id: string;
+        name: string;
+        fields: {
+          id: string;
+          name: string;
+        }[];
+      };
+    };
+    teamRole: 'ADMIN' | 'MANAGER' | 'MEMBER';
+    createdAt: string;
+    lastActiveAt: string;
+  }[];
+}
+
 export interface ReadTeamDetailResponse {
   teamId: string;
   type: TeamType;
   name: string;
   description: string;
-  members: {
-    userId: string;
-    picture: string;
-    userRole: string;
-  }[];
+  myRole: 'ADMIN' | 'MANAGER' | 'MEMBER';
 }
 
 export interface CreateTeamResponse {
   url: string;
 }
+export type CreateRetroResponse = number;
 
 export type CreateInviteTeamResponse = string;
 
@@ -93,3 +136,22 @@ export type ReadRetroListResponse = ReadRetroListItem[];
 export type ReadTeamRoleCountResponse = {
   number: number;
 };
+export type UpdateTeamUserResponse = string;
+
+export interface ReadRetroResponse {
+  id: number;
+  title: string;
+  createUserInfo: {
+    id: string;
+    name: string;
+    profileImageUrl: string;
+  };
+  createdAt: string;
+  joinUserInfos: [
+    {
+      id: string;
+      name: string;
+      profileImageUrl: string;
+    },
+  ];
+}

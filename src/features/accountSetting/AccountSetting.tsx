@@ -26,10 +26,7 @@ const AccountSetting = () => {
       </HeaderLayout>
     );
   }
-
-  if (!user) {
-    return null;
-  }
+  if (!user) return null;
 
   return (
     <HeaderLayout>

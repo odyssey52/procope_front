@@ -2,7 +2,7 @@ const template = (variables, { tpl }) => {
   const IconComponentName = variables.componentName.slice(3);
   return tpl`
     ${variables.imports};
-    
+    // prettier-ignore
     type Props = { size?: number | string; }
 
     const ${IconComponentName} = (
