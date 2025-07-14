@@ -7,6 +7,7 @@ import { handleLogout } from '@/shared/lib/utils/auth';
 import { elevation } from '@/shared/styles/mixin';
 import { useMutation } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
+import { ReactNode } from 'react';
 import styled from 'styled-components';
 import Avatar from '../avatar/Avatar';
 import SelectOption from '../select/SelectOption';
@@ -37,7 +38,7 @@ const UserArea = ({ userData, closeUserArea }: UserAreaProps) => {
     }
   };
 
-  const valueHandler = (value: string) => {
+  const valueHandler = (value: string | ReactNode) => {
     closeUserArea();
     if (value === '홈') router.push('/team');
     else if (value === '계정 설정') router.push('/accountSetting');

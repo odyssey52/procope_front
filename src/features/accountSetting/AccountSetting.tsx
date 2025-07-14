@@ -26,7 +26,7 @@ const AccountSetting = () => {
       </HeaderLayout>
     );
   }
-  if (!user) return;
+  if (!user) return null;
 
   return (
     <HeaderLayout>
