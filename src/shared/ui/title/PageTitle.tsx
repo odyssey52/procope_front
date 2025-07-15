@@ -36,6 +36,7 @@ const PageTitle = ({ hasBack, title, setTitle, placeholder, description, childre
 const Wrapper = styled.div`
   position: relative;
   display: flex;
+  width: 100%;
   gap: 8px;
 `;
 
