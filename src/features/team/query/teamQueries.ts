@@ -24,10 +24,10 @@ const teamQueries = createQueryKeys('team', {
   readTeamRoleCount: (params: types.ReadTeamRoleCountParams) => ({
     queryKey: [params.role],
     queryFn: () => readTeamRoleCount(params),
-    readTeamUser: (params: types.ReadTeamUsersParams) => ({
-      queryKey: [params.teamId],
-      queryFn: () => readTeamUser(params),
-    }),
+  }),
+  readTeamUser: (params: types.ReadTeamUsersParams) => ({
+    queryKey: [params.teamId],
+    queryFn: () => readTeamUser(params),
   }),
 });
 
