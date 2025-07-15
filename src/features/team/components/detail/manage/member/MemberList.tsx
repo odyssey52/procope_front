@@ -151,7 +151,7 @@ const MemberList = ({ teamUser, teamData }: MemberListProps) => {
             task(data.user.roleInfo.fields),
             formatDateToDotAndSlice(data.createdAt),
             formatDateToDotAndSlice(data.lastActiveAt),
-            teamData.myRole !== 'ADMIN' ? (
+            teamData.myRole === 'ADMIN' ? (
               <Select
                 placeholder="권한을 선택하세요"
                 value={role && selectAuth(role)}
@@ -173,7 +173,7 @@ const MemberList = ({ teamUser, teamData }: MemberListProps) => {
             ) : (
               selectAuth(data.teamRole)
             ),
-            teamData.myRole !== 'ADMIN' && (
+            teamData.myRole === 'ADMIN' && (
               <>
                 <Image
                   src="/assets/icons/line/menu-circle-vertical.svg"
