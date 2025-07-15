@@ -1,8 +1,8 @@
 'use client';
 
-import teamQueries from '@/features/team/query/teamQueries';
-import { createRetro } from '@/features/team/services/teamService';
-import { ReadRetroListItem } from '@/features/team/services/teamService.type';
+import retroQueries from '@/features/team/query/retroQueries';
+import { createRetro } from '@/features/team/services/retroService';
+import { ReadRetroListItem } from '@/features/team/services/retroService.type';
 import { IconSortArrow } from '@/shared/assets/icons/line';
 import { toastActions } from '@/shared/lib/store/modal/toast';
 import Avatar from '@/shared/ui/avatar/Avatar';
@@ -118,7 +118,7 @@ const createColumns = (teamId: string): ColumnConfig[] => [
 const RetroList = () => {
   const router = useRouter();
   const params = useParams();
-  const { data, isError } = useQuery({ ...teamQueries.readRetroList({ teamId: params.teamId as string }) });
+  const { data, isError } = useQuery({ ...retroQueries.readRetroList({ teamId: params.teamId as string }) });
 
   const createRetroMutation = useMutation({
     mutationFn: createRetro,

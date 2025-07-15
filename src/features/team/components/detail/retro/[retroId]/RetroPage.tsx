@@ -1,6 +1,6 @@
 'use client';
 
-import teamQueries from '@/features/team/query/teamQueries';
+import retroQueries from '@/features/team/query/retroQueries';
 import AvatarGroup from '@/shared/ui/avatar/AvatarGroup';
 import Breadcrumbs from '@/shared/ui/breadcrumbs/Breadcrumbs';
 import Button from '@/shared/ui/button/Button';
@@ -44,7 +44,7 @@ const RetroPage = () => {
     },
   ];
   const { data, isSuccess } = useQuery({
-    ...teamQueries.readRetro({ teamId: params.teamId as string, retroId: params.retroId as string }),
+    ...retroQueries.readRetro({ teamId: params.teamId as string, retroId: params.retroId as string }),
   });
   const [title, setTitle] = useState<string>('');
   const [isMemberListOpen, setIsMemberListOpen] = useState(false);
