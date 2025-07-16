@@ -1,14 +1,17 @@
+'use client';
+
 import React from 'react';
 import styled from 'styled-components';
 import Text from '../Text';
 
 export interface SelectOptionProps {
   leftContent?: React.ReactNode;
+  rightContent?: React.ReactNode;
   state?: 'selected';
   value: string | React.ReactNode;
   description?: string;
   valueHandler: (value: string | React.ReactNode) => void;
-  width?: number;
+  width?: string;
   pageName?: string;
   borderRadius?: string;
 }
@@ -19,9 +22,10 @@ const SelectOption = ({
   state,
   value,
   description,
-  width,
+  width = '240px',
   pageName,
   borderRadius,
+  rightContent,
 }: SelectOptionProps) => {
   return (
     <Wrapper $state={state} $width={width} $borderRadius={borderRadius} onClick={() => valueHandler(value)}>
@@ -38,16 +42,16 @@ const SelectOption = ({
           )}
         </TextBox>
       )}
+      {rightContent && rightContent}
     </Wrapper>
   );
 };
 
-const Wrapper = styled.button<{ $state?: 'selected'; $width?: number; $borderRadius?: string }>`
+const Wrapper = styled.button<{ $state?: 'selected'; $width?: string; $borderRadius?: string }>`
   position: relative;
   cursor: pointer;
   display: flex;
-  max-width: 240px;
-  width: ${({ $width }) => ($width ? `${$width}px` : '240px')};
+  width: ${({ $width }) => $width};
   gap: 8px;
   align-items: center;
   padding: 8px 12px;
