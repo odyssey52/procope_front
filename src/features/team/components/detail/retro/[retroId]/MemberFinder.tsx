@@ -62,7 +62,12 @@ const MemberFinder = ({ teamId }: MemberFinderProps) => {
 
   return (
     <Wrapper>
-      <Placeholder value={keyword} valueHandler={setKeyword} placeholder="멤버 검색" leftIcon={<IconSearch />} />
+      <Placeholder
+        value={keyword}
+        valueHandler={setKeyword}
+        placeholder="멤버 검색"
+        leftIcon={<IconSearch size={20} />}
+      />
       {filteredUserList.length > 0 && (
         <Content>
           {filteredUserList.map((user) => (
