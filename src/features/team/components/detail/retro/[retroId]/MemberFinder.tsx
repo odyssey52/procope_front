@@ -11,18 +11,20 @@ interface MemberFinderProps {
 }
 
 const MemberFinder = ({ teamId }: MemberFinderProps) => {
+  // TODO : 프로필 이미지 추가되어야함
   const { data: userList } = useQuery({
     ...teamQueries.readTeamUser({ teamId }),
     enabled: !!teamId,
   });
-  console.log(userList);
   return (
     <Wrapper>
       <Placeholder value="" valueHandler={() => {}} placeholder="팀원 이름을 입력해 주세요" />
       <Content>
-        <SelectOption value="팀원 이름" valueHandler={() => {}} />
+        <SelectOption value="홍길동" valueHandler={() => {}} />
+        <SelectOption value="홍길동" valueHandler={() => {}} />
+        <SelectOption value="홍길동" valueHandler={() => {}} />
+        <SelectOption value="홍길동" valueHandler={() => {}} />
       </Content>
-      {/* TODO :selectoption 들어가야 하는데 컴포넌트 호환이 안될 것 같음 */}
     </Wrapper>
   );
 };
@@ -31,13 +33,17 @@ const Wrapper = styled.div`
   position: absolute;
   display: flex;
   flex-direction: column;
-  top: 100%;
+  top: calc(100% + 8px);
+  right: 0;
   padding: 12px;
   border-radius: 12px;
   width: 380px;
   gap: 8px;
-
   background-color: ${({ theme }) => theme.sementicColors.bg.inverse};
+  border: 1px solid ${({ theme }) => theme.sementicColors.border.primary};
+  box-shadow:
+    0px 2px 4px 0px rgba(0, 0, 0, 0.16),
+    0px 0px 2px 0px rgba(0, 0, 0, 0.12);
 `;
 
 const Content = styled.div`

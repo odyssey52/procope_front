@@ -85,6 +85,7 @@ const TitleWrapper = styled.div`
 `;
 
 const MemberWrapper = styled.div`
+  position: relative;
   display: flex;
   gap: 12px;
   flex-shrink: 0;
