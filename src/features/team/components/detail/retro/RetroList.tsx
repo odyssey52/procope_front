@@ -13,7 +13,7 @@ import Table from '@/shared/ui/table/Table';
 import Text from '@/shared/ui/Text';
 import PageSubTitle from '@/shared/ui/title/PageSubTitle';
 import PageTitle from '@/shared/ui/title/PageTitle';
-import { formatToDotDate } from '@/shared/utils/date';
+import { formatDateToDot } from '@/shared/utils/date';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
@@ -60,7 +60,7 @@ const renderMembers = (item: ReadRetroListItem, index: number) => (
 
 const renderDate = (date: string) => (
   <Text variant="body_14_medium" color="primary">
-    {formatToDotDate(date)}
+    {formatDateToDot(date)}
   </Text>
 );
 

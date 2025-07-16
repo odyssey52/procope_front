@@ -4,7 +4,6 @@ import retroQueries from '@/features/team/query/retroQueries';
 import Breadcrumbs from '@/shared/ui/breadcrumbs/Breadcrumbs';
 import { useQuery } from '@tanstack/react-query';
 import { useParams } from 'next/navigation';
-import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import RetroInfoWrapper from './RetroInfoWrapper';
 

@@ -3,7 +3,7 @@
  * @param isoDateString - ISO 8601 형식의 날짜 문자열 (예: '2025-06-01T10:56:35.33010582')
  * @returns YYYY.MM.DD 형식의 날짜 문자열 (예: '2025.06.01')
  */
-export const formatToDotDate = (isoDateString: string): string => {
+export const formatDateToDot = (isoDateString: string): string => {
   const date = new Date(isoDateString);
 
   if (Number.isNaN(date.getTime())) {
