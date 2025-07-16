@@ -13,6 +13,7 @@ import PageTitle from '@/shared/ui/title/PageTitle';
 import { formatDateToDot } from '@/shared/utils/date';
 import { useState } from 'react';
 import styled from 'styled-components';
+import MemberFinder from './MemberFinder';
 
 interface RetroInfoWrapperProps {
   data: ReadRetroResponse;
@@ -41,6 +42,7 @@ const RetroInfoWrapper = ({ data }: RetroInfoWrapperProps) => {
           <Button $type="outline" pressed={isMemberListOpen} onClick={handleMemberListOpen}>
             Member
           </Button>
+          {isMemberListOpen && <MemberFinder />}
           <MoreButton size={40} />
         </MemberWrapper>
       </TitleWrapper>
