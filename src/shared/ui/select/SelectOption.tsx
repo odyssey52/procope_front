@@ -32,7 +32,7 @@ const SelectOption = ({
       {leftContent && leftContent}
       {value && (
         <TextBox>
-          <Text variant="body_14_semibold" color={pageName === value ? 'brand' : 'primary'} ellipsis>
+          <Text variant="body_14_medium" color={pageName === value ? 'brand' : 'primary'} ellipsis>
             {value}
           </Text>
           {description && (

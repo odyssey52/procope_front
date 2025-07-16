@@ -56,7 +56,6 @@ const MemberFinder = ({ teamId }: MemberFinderProps) => {
     enabled: !!teamId,
   });
 
-  // 300ms 디바운스 적용
   const debouncedKeyword = useDebounce(keyword, 300);
 
   const filteredUserList = filterByHangulSearch(MOCK_USER_LIST, debouncedKeyword, (user) => user.name);
@@ -72,7 +71,7 @@ const MemberFinder = ({ teamId }: MemberFinderProps) => {
               value={user.name}
               valueHandler={() => {}}
               width="100%"
-              leftContent={<Avatar image={user.profileImage} size={24} />}
+              leftContent={<Avatar image={user.profileImage} size={32} />}
               rightContent={
                 <Toggle
                   onClick={() => {
@@ -109,7 +108,7 @@ const Wrapper = styled.div`
 const Content = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 2px;
 `;
 
 MemberFinder.displayName = 'MemberFinder';
