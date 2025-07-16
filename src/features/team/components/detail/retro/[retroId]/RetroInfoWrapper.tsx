@@ -1,7 +1,6 @@
 'use client';
 
 import { ReadRetroResponse } from '@/features/team/services/retroService.type';
-import { formatDateToDotAndSlice } from '@/features/team/utils/data';
 import { IconCalendar } from '@/shared/assets/icons/line';
 import Avatar from '@/shared/ui/avatar/Avatar';
 import AvatarGroup from '@/shared/ui/avatar/AvatarGroup';
@@ -11,6 +10,7 @@ import TextButton from '@/shared/ui/button/TextButton';
 import Text from '@/shared/ui/Text';
 import PageTitle from '@/shared/ui/title/PageTitle';
 import { formatDateToDot } from '@/shared/utils/date';
+import { useParams } from 'next/navigation';
 import { useState } from 'react';
 import styled from 'styled-components';
 import MemberFinder from './MemberFinder';
@@ -20,9 +20,10 @@ interface RetroInfoWrapperProps {
 }
 
 const RetroInfoWrapper = ({ data }: RetroInfoWrapperProps) => {
+  const params = useParams();
+  const teamId = params.teamId as string;
   const [currentTitle, setCurrentTitle] = useState<string>(data.title ?? '');
   const [isMemberListOpen, setIsMemberListOpen] = useState(false);
-
   const handleMemberListOpen = () => {
     setIsMemberListOpen(!isMemberListOpen);
   };
@@ -42,7 +43,7 @@ const RetroInfoWrapper = ({ data }: RetroInfoWrapperProps) => {
           <Button $type="outline" pressed={isMemberListOpen} onClick={handleMemberListOpen}>
             Member
           </Button>
-          {isMemberListOpen && <MemberFinder />}
+          {isMemberListOpen && <MemberFinder teamId={teamId} />}
           <MoreButton size={40} />
         </MemberWrapper>
       </TitleWrapper>
