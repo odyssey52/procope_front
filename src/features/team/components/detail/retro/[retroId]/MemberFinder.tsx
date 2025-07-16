@@ -1,13 +1,16 @@
 'use client';
 
+import teamQueries from '@/features/team/query/teamQueries';
+import { IconSearch } from '@/shared/assets/icons/line';
+import useDebounce from '@/shared/hooks/useDebounce';
+import Avatar from '@/shared/ui/avatar/Avatar';
 import Placeholder from '@/shared/ui/placeholder/Placeholder';
 import SelectOption from '@/shared/ui/select/SelectOption';
-import { useQuery } from '@tanstack/react-query';
-import styled from 'styled-components';
-import teamQueries from '@/features/team/query/teamQueries';
-import { useState } from 'react';
-import { IconSearch } from '@/shared/assets/icons/line';
 import Toggle from '@/shared/ui/toggle/Toggle';
+import { filterByHangulSearch } from '@/shared/utils/hangulSearch';
+import { useQuery } from '@tanstack/react-query';
+import { useState } from 'react';
+import styled from 'styled-components';
 
 interface MemberFinderProps {
   teamId: string;
@@ -17,50 +20,71 @@ const MOCK_USER_LIST = [
   {
     id: '1',
     name: '홍길동',
-    profileImage: 'https://via.placeholder.com/150',
+    profileImage: '/assets/icons/graphic/profile/photo01.svg',
+    join: true,
   },
   {
     id: '2',
-    name: '홍길동',
-    profileImage: 'https://via.placeholder.com/150',
+    name: '김철수',
+    profileImage: '/assets/icons/graphic/profile/photo02.svg',
+    join: true,
   },
   {
     id: '3',
-    name: '홍길동',
-    profileImage: 'https://via.placeholder.com/150',
+    name: '이영희',
+    profileImage: '/assets/icons/graphic/profile/photo03.svg',
+    join: true,
   },
   {
     id: '4',
-    name: '홍길동',
-    profileImage: 'https://via.placeholder.com/150',
+    name: '김보경',
+    profileImage: '/assets/icons/graphic/profile/photo04.svg',
+    join: false,
   },
   {
     id: '5',
-    name: '홍길동',
-    profileImage: 'https://via.placeholder.com/150',
+    name: '이수민',
+    profileImage: '/assets/icons/graphic/profile/photo05.svg',
+    join: false,
   },
 ];
+
 const MemberFinder = ({ teamId }: MemberFinderProps) => {
   const [keyword, setKeyword] = useState('');
-  // TODO : 프로필 이미지 추가되어야함
   const { data: userList } = useQuery({
     ...teamQueries.readTeamUser({ teamId }),
     enabled: !!teamId,
   });
+
+  // 300ms 디바운스 적용
+  const debouncedKeyword = useDebounce(keyword, 300);
+
+  const filteredUserList = filterByHangulSearch(MOCK_USER_LIST, debouncedKeyword, (user) => user.name);
+
   return (
     <Wrapper>
       <Placeholder value={keyword} valueHandler={setKeyword} placeholder="멤버 검색" leftIcon={<IconSearch />} />
-      <Content>
-        {MOCK_USER_LIST.map((user) => (
-          <SelectOption
-            key={user.id}
-            value={user.name}
-            valueHandler={() => {}}
-            width="100%"
-            rightContent={<Toggle />}
-          />
-        ))}
-      </Content>
+      {filteredUserList.length > 0 && (
+        <Content>
+          {filteredUserList.map((user) => (
+            <SelectOption
+              key={user.id}
+              value={user.name}
+              valueHandler={() => {}}
+              width="100%"
+              leftContent={<Avatar image={user.profileImage} size={24} />}
+              rightContent={
+                <Toggle
+                  onClick={() => {
+                    console.log('해당 유저 초대 토글 클릭');
+                  }}
+                  checked={user.join}
+                />
+              }
+            />
+          ))}
+        </Content>
+      )}
     </Wrapper>
   );
 };
