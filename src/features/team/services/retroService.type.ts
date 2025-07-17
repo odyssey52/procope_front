@@ -34,6 +34,7 @@ export type CreateRetroResponse = number;
 export type ReadRetroListItem = {
   id: number;
   title: string;
+  picture: string;
   createUserName: string;
   joinedUserIds: string[];
   createdAt: string;

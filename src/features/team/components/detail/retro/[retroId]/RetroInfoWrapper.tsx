@@ -9,7 +9,7 @@ import AvatarGroup from '@/shared/ui/avatar/AvatarGroup';
 import Button from '@/shared/ui/button/Button';
 import MoreButton from '@/shared/ui/button/MoreButton';
 import TextButton from '@/shared/ui/button/TextButton';
-import CalendarModal from '@/shared/ui/calendar/CalendarModal';
+import Calendar from '@/shared/ui/calendar/Calendar';
 import Text from '@/shared/ui/Text';
 import PageTitle from '@/shared/ui/title/PageTitle';
 import { formatDateToDot } from '@/shared/utils/date';
@@ -27,11 +27,11 @@ const RetroInfoWrapper = ({ data }: RetroInfoWrapperProps) => {
   const params = useParams();
   const teamId = params.teamId as string;
   const retroId = params.retroId as string;
-  console.log(data.title);
   const queryClient = useQueryClient();
 
   const { handleError } = useApiError();
 
+  // TODO : 소켓 연결 시 데이터 업데이트 처리 필요
   const [currentTitle, setCurrentTitle] = useState<string>(data.title ?? '');
   const [isMemberListOpen, setIsMemberListOpen] = useState(false);
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
@@ -111,11 +111,11 @@ const RetroInfoWrapper = ({ data }: RetroInfoWrapperProps) => {
             {selectedDate}
           </TextButton>
           {isCalendarOpen && (
-            <CalendarModal
-              isOpen={isCalendarOpen}
+            <Calendar
               selectedDate={selectedDate}
-              onSelect={handleSelectDate}
+              onChange={handleSelectDate}
               onClose={closeCalendar}
+              format="YYYY.MM.DD"
             />
           )}
         </DateWrapper>
