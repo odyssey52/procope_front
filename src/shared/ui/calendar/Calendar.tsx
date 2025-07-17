@@ -4,7 +4,7 @@ import { IconDirectionLeft, IconDirectionRight } from '@/shared/assets/icons/lin
 import { theme } from '@/shared/styles/theme';
 import dayjs from 'dayjs';
 import { useEffect, useState } from 'react';
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 import Text from '../Text';
 import CalendarItem from './CalendarItem';
 
@@ -24,29 +24,12 @@ export default function Calendar({ selectedDate, onChange }: CalendarProps) {
   const [currentDate, setCurrentDate] = useState(dayjs());
   const [selected, setSelected] = useState<SelectedDateInfo | null>(null);
 
-  // 선택된 날짜가 있으면 해당 월로 이동하고 날짜 선택
-  useEffect(() => {
-    if (selectedDate) {
-      const date = dayjs(selectedDate);
-      setCurrentDate(date);
-      setSelected({
-        month: date.month(),
-        date: date.date(),
-      });
-    }
-  }, [selectedDate]);
-
-  // 현재 달의 첫 날의 요일을 구함 (0: 일요일, 1: 월요일, ...)
   const firstDayOfMonth = currentDate.startOf('month').day();
-  // 현재 달의 마지막 날짜를 구함
   const lastDateOfMonth = currentDate.endOf('month').date();
-  // 이전 달의 마지막 날짜를 구함
   const lastDateOfPrevMonth = currentDate.subtract(1, 'month').endOf('month').date();
 
-  // 달력에 표시할 날짜 배열 생성
   const dates = Array.from({ length: 35 }, (_, i) => {
     if (i < firstDayOfMonth) {
-      // 이전 달의 날짜
       return {
         date: lastDateOfPrevMonth - (firstDayOfMonth - i - 1),
         type: 'prev' as const,
@@ -55,7 +38,6 @@ export default function Calendar({ selectedDate, onChange }: CalendarProps) {
     }
 
     if (i >= firstDayOfMonth && i < firstDayOfMonth + lastDateOfMonth) {
-      // 현재 달의 날짜
       return {
         date: i - firstDayOfMonth + 1,
         type: 'current' as const,
@@ -63,7 +45,6 @@ export default function Calendar({ selectedDate, onChange }: CalendarProps) {
       };
     }
 
-    // 다음 달의 날짜
     return {
       date: i - (firstDayOfMonth + lastDateOfMonth) + 1,
       type: 'next' as const,
@@ -101,7 +82,16 @@ export default function Calendar({ selectedDate, onChange }: CalendarProps) {
       onChange(selectedFullDate);
     }
   };
-
+  useEffect(() => {
+    if (selectedDate) {
+      const date = dayjs(selectedDate);
+      setCurrentDate(date);
+      setSelected({
+        month: date.month(),
+        date: date.date(),
+      });
+    }
+  }, [selectedDate]);
   return (
     <Wrapper>
       <Header>
@@ -145,6 +135,7 @@ export default function Calendar({ selectedDate, onChange }: CalendarProps) {
 }
 
 export const Wrapper = styled.div`
+  position: absolute;
   display: flex;
   flex-direction: column;
   align-items: flex-start;

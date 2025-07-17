@@ -7,6 +7,7 @@ import AvatarGroup from '@/shared/ui/avatar/AvatarGroup';
 import Button from '@/shared/ui/button/Button';
 import MoreButton from '@/shared/ui/button/MoreButton';
 import TextButton from '@/shared/ui/button/TextButton';
+import CalendarModal from '@/shared/ui/calendar/CalendarModal';
 import Text from '@/shared/ui/Text';
 import PageTitle from '@/shared/ui/title/PageTitle';
 import { formatDateToDot } from '@/shared/utils/date';
@@ -22,11 +23,25 @@ interface RetroInfoWrapperProps {
 const RetroInfoWrapper = ({ data }: RetroInfoWrapperProps) => {
   const params = useParams();
   const teamId = params.teamId as string;
+
   const [currentTitle, setCurrentTitle] = useState<string>(data.title ?? '');
   const [isMemberListOpen, setIsMemberListOpen] = useState(false);
+  const [isCalendarOpen, setIsCalendarOpen] = useState(false);
+  const [selectedDate, setSelectedDate] = useState<string>(formatDateToDot(data.createdAt));
+
   const handleMemberListOpen = () => {
     setIsMemberListOpen(!isMemberListOpen);
   };
+
+  const handleSelectDate = (date: string) => {
+    setSelectedDate(date);
+    setIsCalendarOpen(false);
+  };
+
+  const closeCalendar = () => {
+    setIsCalendarOpen(false);
+  };
+
   return (
     <Wrapper>
       <TitleWrapper>
@@ -64,9 +79,17 @@ const RetroInfoWrapper = ({ data }: RetroInfoWrapperProps) => {
           <Text variant="body_16_medium" color="tertiary">
             회고 날짜
           </Text>
-          <TextButton $type="24" rightIcon={<IconCalendar />}>
-            {formatDateToDot(data.createdAt)}
+          <TextButton $type="24" rightIcon={<IconCalendar />} onClick={() => setIsCalendarOpen(!isCalendarOpen)}>
+            {selectedDate}
           </TextButton>
+          {isCalendarOpen && (
+            <CalendarModal
+              isOpen={isCalendarOpen}
+              selectedDate={selectedDate}
+              onSelect={handleSelectDate}
+              onClose={closeCalendar}
+            />
+          )}
         </DateWrapper>
       </DetailInfoWrapper>
     </Wrapper>
@@ -104,6 +127,7 @@ const CreatorWrapper = styled.div`
 `;
 
 const DateWrapper = styled.div`
+  position: relative;
   display: flex;
   gap: 4px;
   align-items: center;

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useRef } from 'react';
+import { useClickOutside } from '@/shared/lib/hooks/useClickOutside';
 import styled from 'styled-components';
 import Calendar from './Calendar';
 
@@ -17,7 +17,6 @@ import Calendar from './Calendar';
  * ```tsx
  * const [isOpen, setIsOpen] = useState(false);
  * const [selectedDate, setSelectedDate] = useState('');
- * const buttonRef = useRef<HTMLButtonElement>(null);
  *
  * <button ref={buttonRef} onClick={() => setIsOpen(!isOpen)}>
  *   {selectedDate || '날짜 선택'}
@@ -27,57 +26,26 @@ import Calendar from './Calendar';
  *   selectedDate={selectedDate}
  *   onSelect={setSelectedDate}
  *   onClose={() => setIsOpen(false)}
- *   buttonRef={buttonRef}
  * />
  * ```
  */
 interface CalendarModalProps {
-  /** 모달의 열림/닫힘 상태 */
   isOpen: boolean;
-  /** 선택된 날짜 (YYYY-MM-DD 형식) */
   selectedDate?: string;
-  /** 날짜 선택 시 호출되는 콜백 함수 */
   onSelect: (date: string) => void;
-  /** 모달 닫기 콜백 함수 */
   onClose: () => void;
-  /** 달력을 여는 버튼의 ref */
-  buttonRef: React.RefObject<HTMLButtonElement | null>;
 }
 
-export default function CalendarModal({ isOpen, selectedDate, onSelect, onClose, buttonRef }: CalendarModalProps) {
-  const modalRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      // 버튼을 클릭한 경우는 무시
-      if (buttonRef.current?.contains(event.target as Node)) {
-        return;
-      }
-
-      // 모달 외부를 클릭한 경우에만 닫기
-      if (modalRef.current && !modalRef.current.contains(event.target as Node)) {
-        onClose();
-      }
-    };
-
-    if (isOpen) {
-      document.addEventListener('mousedown', handleClickOutside);
-    }
-
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, [isOpen, onClose, buttonRef]);
-
-  if (!isOpen) return null;
-
+export default function CalendarModal({ isOpen, selectedDate, onSelect, onClose }: CalendarModalProps) {
+  const ref = useClickOutside<HTMLDivElement>(onClose);
   const handleDateSelect = (date: string) => {
     onSelect(date);
     onClose();
   };
 
+  if (!isOpen) return null;
   return (
-    <ModalContent ref={modalRef}>
+    <ModalContent ref={ref}>
       <Calendar selectedDate={selectedDate} onChange={handleDateSelect} />
     </ModalContent>
   );
