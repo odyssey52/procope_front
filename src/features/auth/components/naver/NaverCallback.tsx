@@ -7,6 +7,7 @@ import useUserStore from '@/shared/lib/store/user/user';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect } from 'react';
+import LogoPlace from '@/features/login/continue/LogoPlace';
 
 const NaverCallback = () => {
   const { isAuthenticated, setAccessToken } = useAuthStore();
@@ -62,7 +63,7 @@ const NaverCallback = () => {
       router.replace('/');
     }
   }, [router]);
-  return null;
+  return <LogoPlace />;
 };
 
 export default NaverCallback;

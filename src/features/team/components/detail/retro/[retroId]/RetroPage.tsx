@@ -1,30 +1,21 @@
 'use client';
 
-import teamQueries from '@/features/team/query/teamQueries';
-import AvatarGroup from '@/shared/ui/avatar/AvatarGroup';
+import retroQueries from '@/features/team/query/retroQueries';
+import useAuthStore from '@/shared/lib/store/auth/auth';
 import Breadcrumbs from '@/shared/ui/breadcrumbs/Breadcrumbs';
-import Button from '@/shared/ui/button/Button';
-import MoreButton from '@/shared/ui/button/MoreButton';
-import PageTitle from '@/shared/ui/title/PageTitle';
+import { CompatClient, Stomp } from '@stomp/stompjs';
 import { useQuery } from '@tanstack/react-query';
 import { useParams } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import SockJS from 'sockjs-client';
 import styled from 'styled-components';
-
-const members = [
-  { nickname: '홍길동', image: '/assets/icons/graphic/profile/photo01.svg', isOnline: true },
-  { nickname: '홍길동', image: '/assets/icons/graphic/profile/photo02.svg', isOnline: true },
-  { nickname: '홍길동', image: '/assets/icons/graphic/profile/photo03.svg', isOnline: true },
-  { nickname: '홍길동', image: '/assets/icons/graphic/profile/photo04.svg', isOnline: false },
-  { nickname: '홍길동', image: '/assets/icons/graphic/profile/photo05.svg', isOnline: false },
-  { nickname: '홍길동', image: '/assets/icons/graphic/profile/photo06.svg', isOnline: false },
-  { nickname: '홍길동', image: '/assets/icons/graphic/profile/photo06.svg', isOnline: false },
-  { nickname: '홍길동', image: '/assets/icons/graphic/profile/photo06.svg', isOnline: false },
-  { nickname: '홍길동', image: '/assets/icons/graphic/profile/photo06.svg', isOnline: false },
-  { nickname: '홍길동', image: '/assets/icons/graphic/profile/photo06.svg', isOnline: false },
-];
+import RetroInfoWrapper from './RetroInfoWrapper';
 
 const RetroPage = () => {
+  const { accessToken } = useAuthStore();
+  const client = useRef<CompatClient | null>(null);
+
+  const [isConnected, setIsConnected] = useState(false);
   const params = useParams();
   const paths = [
     {
@@ -44,36 +35,49 @@ const RetroPage = () => {
     },
   ];
   const { data, isSuccess } = useQuery({
-    ...teamQueries.readRetro({ teamId: params.teamId as string, retroId: params.retroId as string }),
+    ...retroQueries.readRetro({ teamId: params.teamId as string, retroId: params.retroId as string }),
   });
-  const [title, setTitle] = useState<string>('');
-  const [isMemberListOpen, setIsMemberListOpen] = useState(false);
 
-  const handleMemberListOpen = () => {
-    setIsMemberListOpen(!isMemberListOpen);
+  const connectHandler = () => {
+    const socket = new SockJS(`http://192.168.0.17:8081/websocket?token=${accessToken}&retroId=${params.retroId}`);
+    client.current = Stomp.over(socket);
+    client.current.connect(
+      {
+        Authorization: `Bearer ${accessToken}`,
+        'Content-Type': 'application/json',
+      },
+      () => {
+        console.log('✅ STOMP 연결 성공');
+        setIsConnected(true);
+
+        client.current?.subscribe(`/topic/${params.retroId}`, (message) => {
+          console.log('📨 메시지 수신:', message.body);
+        });
+      },
+      (error: any) => {
+        console.error('❌ STOMP 에러:', error);
+        setIsConnected(false);
+      },
+    );
   };
 
   useEffect(() => {
-    if (data) {
-      setTitle(data?.title ?? '');
-    }
-  }, [isSuccess]);
+    connectHandler();
+
+    // 컴포넌트 언마운트 시 연결 해제
+    return () => {
+      if (client.current && client.current.connected) {
+        client.current.disconnect();
+      }
+    };
+  }, []);
+
+  if (!isSuccess) return null;
   return (
     <Wrapper>
       <Head>
         <Breadcrumbs paths={paths} />
-        <RetroInfoWrapper>
-          <TitleWrapper>
-            <PageTitle title={title} setTitle={setTitle} placeholder="제목을 작성해 주세요" />
-            <MemberWrapper>
-              <AvatarGroup profileList={members} size={32} />
-              <Button $type="outline" pressed={isMemberListOpen} onClick={handleMemberListOpen}>
-                Member
-              </Button>
-              <MoreButton size={40} />
-            </MemberWrapper>
-          </TitleWrapper>
-        </RetroInfoWrapper>
+        <RetroInfoWrapper data={data} />
       </Head>
     </Wrapper>
   );
@@ -94,24 +98,6 @@ const Head = styled.div`
   display: flex;
   flex-direction: column;
   gap: 8px;
-`;
-
-const RetroInfoWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-`;
-
-const TitleWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-`;
-
-const MemberWrapper = styled.div`
-  display: flex;
-  gap: 12px;
-  align-items: center;
 `;
 
 RetroPage.displayName = 'RetroPage';

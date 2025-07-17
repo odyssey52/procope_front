@@ -30,6 +30,7 @@ interface TextStyledProps {
 
 const Wrapper = styled.div<TextStyledProps>`
   ${({ theme, $variant }) => theme.fontStyle[$variant]};
+  height: fit-content;
   color: ${({ theme, $color }) => ($color ? theme.sementicColors.text[$color] : theme.sementicColors.text.primary)};
 
   /* 기본 동작: 줄바꿈 처리 */

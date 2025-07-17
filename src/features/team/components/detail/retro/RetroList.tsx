@@ -1,8 +1,8 @@
 'use client';
 
-import teamQueries from '@/features/team/query/teamQueries';
-import { createRetro } from '@/features/team/services/teamService';
-import { ReadRetroListItem } from '@/features/team/services/teamService.type';
+import retroQueries from '@/features/team/query/retroQueries';
+import { createRetro } from '@/features/team/services/retroService';
+import { ReadRetroListItem } from '@/features/team/services/retroService.type';
 import { IconSortArrow } from '@/shared/assets/icons/line';
 import { toastActions } from '@/shared/lib/store/modal/toast';
 import Avatar from '@/shared/ui/avatar/Avatar';
@@ -13,7 +13,7 @@ import Table from '@/shared/ui/table/Table';
 import Text from '@/shared/ui/Text';
 import PageSubTitle from '@/shared/ui/title/PageSubTitle';
 import PageTitle from '@/shared/ui/title/PageTitle';
-import { formatToDotDate } from '@/shared/utils/date';
+import { formatDateToDot } from '@/shared/utils/date';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
@@ -45,7 +45,7 @@ const renderTitle = (item: ReadRetroListItem, index: number, teamId: string) => 
 
 const renderCreator = (item: ReadRetroListItem, index: number) => (
   <CreatorWrapper>
-    <Avatar nickname={item.createUserName} />
+    <Avatar nickname={item.createUserName} image={item.picture} />
     <Text variant="body_14_regular" color="secondary" ellipsis>
       {item.createUserName}
     </Text>
@@ -60,7 +60,7 @@ const renderMembers = (item: ReadRetroListItem, index: number) => (
 
 const renderDate = (date: string) => (
   <Text variant="body_14_medium" color="primary">
-    {formatToDotDate(date)}
+    {formatDateToDot(date)}
   </Text>
 );
 
@@ -68,7 +68,6 @@ const renderCreatedAt = (item: ReadRetroListItem, index: number) => renderDate(i
 
 const renderUpdatedAt = (item: ReadRetroListItem, index: number) => renderDate(item.updatedAt);
 
-// 컬럼 정의를 더 명확하게 타입화
 type ColumnConfig = {
   key: string;
   title: string;
@@ -118,7 +117,7 @@ const createColumns = (teamId: string): ColumnConfig[] => [
 const RetroList = () => {
   const router = useRouter();
   const params = useParams();
-  const { data, isError } = useQuery({ ...teamQueries.readRetroList({ teamId: params.teamId as string }) });
+  const { data, isError } = useQuery({ ...retroQueries.readRetroList({ teamId: params.teamId as string }) });
 
   const createRetroMutation = useMutation({
     mutationFn: createRetro,

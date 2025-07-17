@@ -7,16 +7,23 @@ interface PageTitleProps {
   hasBack?: boolean;
   title: string;
   setTitle?: (title: string) => void;
+  onBlur?: () => void;
   placeholder?: string;
   description?: string;
   children?: React.ReactNode;
 }
-const PageTitle = ({ hasBack, title, setTitle, placeholder, description, children }: PageTitleProps) => {
+const PageTitle = ({ hasBack, title, setTitle, onBlur, placeholder, description, children }: PageTitleProps) => {
   return (
     <Wrapper>
       {hasBack && <Back />}
       {setTitle && (
-        <Input type="text" value={title} onChange={(e) => setTitle(e.target.value)} placeholder={placeholder} />
+        <Input
+          type="text"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          onBlur={onBlur}
+          placeholder={placeholder}
+        />
       )}
       {!setTitle && (
         <Text variant="heading_24" color="primary">
@@ -36,6 +43,7 @@ const PageTitle = ({ hasBack, title, setTitle, placeholder, description, childre
 const Wrapper = styled.div`
   position: relative;
   display: flex;
+  width: 100%;
   gap: 8px;
 `;
 

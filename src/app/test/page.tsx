@@ -1,17 +1,17 @@
 'use client';
 
 import { IconCheckMarkRectangle } from '@/shared/assets/icons/line';
-import CalendarModal from '@/shared/ui/calendar/CalendarModal';
+import useAuthStore from '@/shared/lib/store/auth/auth';
+import Calendar from '@/shared/ui/calendar/Calendar';
 import RetroCard from '@/shared/ui/card/RetroCard';
 import TaskCard from '@/shared/ui/card/TaskCard';
-import Tab2 from '@/shared/ui/tab/Tab2';
 import SegmentedTabs from '@/shared/ui/tab/SegmentedTabs';
+import Tab2 from '@/shared/ui/tab/Tab2';
 import Toggle from '@/shared/ui/toggle/Toggle';
-import { useState, useRef, useEffect } from 'react';
-import styled from 'styled-components';
-import { Stomp, CompatClient } from '@stomp/stompjs';
+import { CompatClient, Stomp } from '@stomp/stompjs';
+import { useEffect, useRef, useState } from 'react';
 import SockJS from 'sockjs-client';
-import useAuthStore from '@/shared/lib/store/auth/auth';
+import styled from 'styled-components';
 
 interface Mock {
   role: 'development' | 'planning' | 'data' | 'design' | 'marketing' | 'sales' | 'operations';
@@ -51,7 +51,6 @@ const page = () => {
   const [selectedDate, setSelectedDate] = useState<string>('');
   const [isToggleChecked, setIsToggleChecked] = useState(false);
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
-  const buttonRef = useRef<HTMLButtonElement>(null);
 
   // STOMP 웹소켓 관련 상태
   const [isConnected, setIsConnected] = useState(false);
@@ -230,16 +229,10 @@ const page = () => {
       <Tab2 name="탭1" selected />
       <Tab2 name="탭1" />
       <ButtonWrapper>
-        <button type="button" ref={buttonRef} onClick={handleOpenCalendar}>
+        <button type="button" onClick={handleOpenCalendar}>
           {selectedDate || '날짜 선택'}
         </button>
-        <CalendarModal
-          isOpen={isCalendarOpen}
-          selectedDate={selectedDate}
-          onSelect={handleDateSelect}
-          onClose={() => setIsCalendarOpen(false)}
-          buttonRef={buttonRef}
-        />
+        <Calendar selectedDate={selectedDate} onChange={handleDateSelect} onClose={() => setIsCalendarOpen(false)} />
       </ButtonWrapper>
       <Content>
         <TaskCard

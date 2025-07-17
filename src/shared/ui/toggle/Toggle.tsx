@@ -1,3 +1,5 @@
+'use client';
+
 import React from 'react';
 import styled, { css } from 'styled-components';
 
@@ -50,9 +52,9 @@ const Toggle = ({
   disabled,
   checked,
   ...props
-}: React.ButtonHTMLAttributes<HTMLButtonElement> & ToggleProps) => {
+}: React.HTMLAttributes<HTMLDivElement> & ToggleProps) => {
   return (
-    <Wrapper $size={size} $disabled={disabled} {...props} disabled={disabled}>
+    <Wrapper $size={size} $disabled={disabled} {...props}>
       {label}
       <ToggleSwitch $size={size} $disabled={disabled} $checked={checked}>
         <Circle $checked={checked} $size={size} />
@@ -67,7 +69,7 @@ interface ToggleStyledProps {
   $checked?: boolean;
 }
 
-const Wrapper = styled.button<{ $size: 20 | 24; $disabled?: boolean }>`
+const Wrapper = styled.div<{ $size: 20 | 24; $disabled?: boolean }>`
   display: flex;
   justify-content: center;
   align-items: center;

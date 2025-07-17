@@ -6,7 +6,7 @@ import Select from '@/shared/ui/select/Select';
 import TagWrapper from '@/shared/ui/tag/Tag';
 import TagJob from '@/shared/ui/tag/TagJob';
 import Button from '@/shared/ui/button/Button';
-import { formatDateToDot, jobList } from '@/features/team/utils/data';
+import { formatDateToDotAndSlice, jobList } from '@/features/team/utils/data';
 import Tooltip from '@/shared/ui/tooltip/Tooltip';
 // import { useMutation } from '@tanstack/react-query';
 // import { updateTeamUser } from '@/features/team/services/teamService';
@@ -149,8 +149,8 @@ const MemberList = ({ teamUser, teamData }: MemberListProps) => {
             data.user.email,
             roleInfoName(data.user.roleInfo.name),
             task(data.user.roleInfo.fields),
-            formatDateToDot(data.createdAt),
-            formatDateToDot(data.lastActiveAt),
+            formatDateToDotAndSlice(data.createdAt),
+            formatDateToDotAndSlice(data.lastActiveAt),
             teamData.myRole !== 'ADMIN' ? (
               <Select
                 placeholder="권한을 선택하세요"
