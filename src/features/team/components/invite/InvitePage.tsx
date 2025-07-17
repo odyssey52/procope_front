@@ -3,11 +3,17 @@
 import { createInviteTeam } from '@/features/team/services/teamService';
 import { MESSAGES } from '@/shared/constants/messages';
 import { toastActions } from '@/shared/lib/store/modal/toast';
+import useAuthStore from '@/shared/lib/store/auth/auth';
 import { useMutation } from '@tanstack/react-query';
-import { useRouter } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import { useEffect } from 'react';
-const InvitePage = ({ code }: { code: string }) => {
+
+const InvitePage = () => {
   const router = useRouter();
+  const params = useParams();
+  const code = params.code as string;
+
+  const { isAuthenticated } = useAuthStore();
 
   const createInviteTeamMutation = useMutation({
     mutationFn: createInviteTeam,
@@ -29,7 +35,14 @@ const InvitePage = ({ code }: { code: string }) => {
   });
 
   useEffect(() => {
-    createInviteTeamMutation.mutate({ url: code });
+    if (code) {
+      if (isAuthenticated) {
+        createInviteTeamMutation.mutate({ url: code });
+      } else {
+        localStorage.setItem('previousPath', `/invite/${code}`);
+        router.push('/login');
+      }
+    }
   }, [code]);
 
   return <div>팀에 합류 중입니다...</div>;
