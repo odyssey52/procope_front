@@ -1,7 +1,9 @@
 'use client';
 
-import { ReadRetroResponse } from '@/features/team/services/retroService.type';
+import { updateRetroTitle } from '@/features/team/services/retroService';
+import { ReadRetroResponse, UpdateRetroTitlePayload } from '@/features/team/services/retroService.type';
 import { IconCalendar } from '@/shared/assets/icons/line';
+import useApiError from '@/shared/lib/hooks/useApiError';
 import Avatar from '@/shared/ui/avatar/Avatar';
 import AvatarGroup from '@/shared/ui/avatar/AvatarGroup';
 import Button from '@/shared/ui/button/Button';
@@ -11,6 +13,7 @@ import CalendarModal from '@/shared/ui/calendar/CalendarModal';
 import Text from '@/shared/ui/Text';
 import PageTitle from '@/shared/ui/title/PageTitle';
 import { formatDateToDot } from '@/shared/utils/date';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useParams } from 'next/navigation';
 import { useState } from 'react';
 import styled from 'styled-components';
@@ -23,11 +26,23 @@ interface RetroInfoWrapperProps {
 const RetroInfoWrapper = ({ data }: RetroInfoWrapperProps) => {
   const params = useParams();
   const teamId = params.teamId as string;
+  const retroId = params.retroId as string;
+  console.log(data.title);
+  const queryClient = useQueryClient();
+
+  const { handleError } = useApiError();
 
   const [currentTitle, setCurrentTitle] = useState<string>(data.title ?? '');
   const [isMemberListOpen, setIsMemberListOpen] = useState(false);
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
   const [selectedDate, setSelectedDate] = useState<string>(formatDateToDot(data.createdAt));
+
+  const updateRetroTitleMutation = useMutation({
+    mutationFn: (payload: UpdateRetroTitlePayload) => updateRetroTitle({ teamId, retroId }, payload),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['retro', teamId, retroId] });
+    },
+  });
 
   const handleMemberListOpen = () => {
     setIsMemberListOpen(!isMemberListOpen);
@@ -42,10 +57,23 @@ const RetroInfoWrapper = ({ data }: RetroInfoWrapperProps) => {
     setIsCalendarOpen(false);
   };
 
+  const handleUpdateRetroTitle = async () => {
+    try {
+      await updateRetroTitleMutation.mutateAsync({ title: currentTitle });
+    } catch (error) {
+      handleError(error);
+    }
+  };
+
   return (
     <Wrapper>
       <TitleWrapper>
-        <PageTitle title={currentTitle} setTitle={setCurrentTitle} placeholder="제목을 작성해 주세요" />
+        <PageTitle
+          title={currentTitle}
+          setTitle={setCurrentTitle}
+          placeholder="제목을 작성해 주세요"
+          onBlur={handleUpdateRetroTitle}
+        />
         <MemberWrapper>
           <AvatarGroup
             profileList={data.joinUserInfos.map((user) => ({
