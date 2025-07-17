@@ -3,6 +3,7 @@
 import teamQueries from '@/features/team/query/teamQueries';
 import { IconSearch } from '@/shared/assets/icons/line';
 import useDebounce from '@/shared/hooks/useDebounce';
+import { useClickOutside } from '@/shared/lib/hooks/useClickOutside';
 import Avatar from '@/shared/ui/avatar/Avatar';
 import Placeholder from '@/shared/ui/placeholder/Placeholder';
 import SelectOption from '@/shared/ui/select/SelectOption';
@@ -14,6 +15,7 @@ import styled from 'styled-components';
 
 interface MemberFinderProps {
   teamId: string;
+  onClose: () => void;
 }
 
 const MOCK_USER_LIST = [
@@ -49,7 +51,7 @@ const MOCK_USER_LIST = [
   },
 ];
 
-const MemberFinder = ({ teamId }: MemberFinderProps) => {
+const MemberFinder = ({ teamId, onClose }: MemberFinderProps) => {
   const [keyword, setKeyword] = useState('');
   const { data: userList } = useQuery({
     ...teamQueries.readTeamUser({ teamId }),
@@ -57,11 +59,12 @@ const MemberFinder = ({ teamId }: MemberFinderProps) => {
   });
 
   const debouncedKeyword = useDebounce(keyword, 300);
+  const ref = useClickOutside<HTMLDivElement>(onClose);
 
   const filteredUserList = filterByHangulSearch(MOCK_USER_LIST, debouncedKeyword, (user) => user.name);
 
   return (
-    <Wrapper>
+    <Wrapper ref={ref}>
       <Placeholder
         value={keyword}
         valueHandler={setKeyword}

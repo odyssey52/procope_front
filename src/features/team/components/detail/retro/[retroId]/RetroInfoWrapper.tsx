@@ -43,7 +43,7 @@ const RetroInfoWrapper = ({ data }: RetroInfoWrapperProps) => {
           <Button $type="outline" pressed={isMemberListOpen} onClick={handleMemberListOpen}>
             Member
           </Button>
-          {isMemberListOpen && <MemberFinder teamId={teamId} />}
+          {isMemberListOpen && <MemberFinder teamId={teamId} onClose={handleMemberListOpen} />}
           <MoreButton size={40} />
         </MemberWrapper>
       </TitleWrapper>
