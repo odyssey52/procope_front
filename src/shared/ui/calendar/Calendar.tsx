@@ -15,6 +15,7 @@ interface CalendarProps {
   selectedDate?: string; // YYYY-MM-DD 형식
   onChange?: (date: string) => void;
   onClose: () => void;
+  format?: 'YYYY-MM-DD' | 'YYYY-MM-DD HH:mm:ss' | 'YYYY.MM.DD' | 'YYYY.MM.DD HH:mm:ss';
 }
 
 interface SelectedDateInfo {
@@ -22,7 +23,7 @@ interface SelectedDateInfo {
   date: number;
 }
 
-export default function Calendar({ selectedDate, onChange, onClose }: CalendarProps) {
+export default function Calendar({ selectedDate, onChange, onClose, format = 'YYYY-MM-DD' }: CalendarProps) {
   const ref = useClickOutside<HTMLDivElement>(onClose);
   const [currentDate, setCurrentDate] = useState(dayjs());
   const [selected, setSelected] = useState<SelectedDateInfo | null>(null);
@@ -81,7 +82,7 @@ export default function Calendar({ selectedDate, onChange, onClose }: CalendarPr
         selectedDate = currentDate.add(1, 'month');
       }
 
-      const selectedFullDate = selectedDate.date(date).format('YYYY-MM-DD');
+      const selectedFullDate = selectedDate.date(date).format(format);
       onChange(selectedFullDate);
     }
   };
