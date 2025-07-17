@@ -1,6 +1,7 @@
 'use client';
 
 import { IconDirectionLeft, IconDirectionRight } from '@/shared/assets/icons/line';
+import { useClickOutside } from '@/shared/lib/hooks/useClickOutside';
 import { theme } from '@/shared/styles/theme';
 import dayjs from 'dayjs';
 import { useEffect, useState } from 'react';
@@ -13,6 +14,7 @@ const days = ['일', '월', '화', '수', '목', '금', '토'];
 interface CalendarProps {
   selectedDate?: string; // YYYY-MM-DD 형식
   onChange?: (date: string) => void;
+  onClose: () => void;
 }
 
 interface SelectedDateInfo {
@@ -20,7 +22,8 @@ interface SelectedDateInfo {
   date: number;
 }
 
-export default function Calendar({ selectedDate, onChange }: CalendarProps) {
+export default function Calendar({ selectedDate, onChange, onClose }: CalendarProps) {
+  const ref = useClickOutside<HTMLDivElement>(onClose);
   const [currentDate, setCurrentDate] = useState(dayjs());
   const [selected, setSelected] = useState<SelectedDateInfo | null>(null);
 
@@ -93,7 +96,7 @@ export default function Calendar({ selectedDate, onChange }: CalendarProps) {
     }
   }, [selectedDate]);
   return (
-    <Wrapper>
+    <Wrapper ref={ref}>
       <Header>
         <NavButton onClick={handlePrevMonth}>
           <IconDirectionLeft size={24} color={theme.sementicColors.icon.primary} />
@@ -136,6 +139,9 @@ export default function Calendar({ selectedDate, onChange }: CalendarProps) {
 
 export const Wrapper = styled.div`
   position: absolute;
+  top: calc(100% + 10px);
+  left: 0;
+  z-index: 1000;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
