@@ -36,13 +36,16 @@ const InvitePage = () => {
 
   useEffect(() => {
     if (code) {
-      if (isAuthenticated) {
-        createInviteTeamMutation.mutate({ url: code });
-      } else {
-        localStorage.setItem('previousPath', `/invite/${code}`);
-        router.push('/login');
-      }
+      createInviteTeamMutation.mutate({ url: code });
     }
+    // if (code) {
+    //   if (isAuthenticated) {
+    //     createInviteTeamMutation.mutate({ url: code });
+    //   } else {
+    //     localStorage.setItem('previousPath', `/invite/${code}`);
+    //     router.push('/login');
+    //   }
+    // }
   }, [code]);
 
   return <div>팀에 합류 중입니다...</div>;
