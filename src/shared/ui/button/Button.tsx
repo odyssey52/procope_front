@@ -170,7 +170,7 @@ const StyledButton = styled.button<StyledButtonProps>`
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  gap: 4px;
   padding: 12px 16px;
   border: none;
   cursor: pointer;
