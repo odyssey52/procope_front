@@ -40,7 +40,7 @@ const AccountSetting = () => {
                 valueHandler={() => valueHandler(value.value)}
                 value={value.value}
                 pageName={page}
-                width={134}
+                width="134px"
                 borderRadius="8px"
               />
             ))}

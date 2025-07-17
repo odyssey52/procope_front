@@ -13,17 +13,10 @@ export interface SecessionTeamParams {
 export interface UpdateTeamParams {
   teamId: string;
 }
-export interface ReadRetroListParams {
-  teamId: string;
-}
 export interface ReadTeamRoleCountParams {
   role: UserRole;
 }
-export interface CreateRetroParams {
-  title: string;
-  createdAt: string;
-  joinUserIds: number[];
-}
+
 export interface ReadTeamUsersParams {
   teamId: string;
 }
@@ -36,21 +29,11 @@ export interface UpdateTeamUserParams {
   userId: string;
 }
 
-export interface ReadRetroParams {
-  teamId: string;
-  retroId: string;
-}
-
 // Payload
 export interface CreateTeamPayload {
   type: string;
   name: string;
   description: string;
-}
-
-export interface CreateRetroPayload {
-  title: string;
-  teamId: string;
 }
 
 export interface CreateInviteTeamPayload {
@@ -116,42 +99,12 @@ export interface ReadTeamDetailResponse {
 export interface CreateTeamResponse {
   url: string;
 }
-export type CreateRetroResponse = number;
 
 export type CreateInviteTeamResponse = string;
 
 export type UpdateTeamResponse = string;
 
-export type ReadRetroListItem = {
-  id: number;
-  title: string;
-  createUserName: string;
-  joinedUserIds: string[];
-  createdAt: string;
-  updatedAt: string;
-};
-
-export type ReadRetroListResponse = ReadRetroListItem[];
-
 export type ReadTeamRoleCountResponse = {
   number: number;
 };
 export type UpdateTeamUserResponse = string;
-
-export interface ReadRetroResponse {
-  id: number;
-  title: string;
-  createUserInfo: {
-    id: string;
-    name: string;
-    profileImageUrl: string;
-  };
-  createdAt: string;
-  joinUserInfos: [
-    {
-      id: string;
-      name: string;
-      profileImageUrl: string;
-    },
-  ];
-}

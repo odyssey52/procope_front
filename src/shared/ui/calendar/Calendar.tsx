@@ -1,10 +1,11 @@
 'use client';
 
 import { IconDirectionLeft, IconDirectionRight } from '@/shared/assets/icons/line';
+import { useClickOutside } from '@/shared/lib/hooks/useClickOutside';
 import { theme } from '@/shared/styles/theme';
 import dayjs from 'dayjs';
 import { useEffect, useState } from 'react';
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 import Text from '../Text';
 import CalendarItem from './CalendarItem';
 
@@ -13,6 +14,8 @@ const days = ['일', '월', '화', '수', '목', '금', '토'];
 interface CalendarProps {
   selectedDate?: string; // YYYY-MM-DD 형식
   onChange?: (date: string) => void;
+  onClose: () => void;
+  format?: 'YYYY-MM-DD' | 'YYYY-MM-DD HH:mm:ss' | 'YYYY.MM.DD' | 'YYYY.MM.DD HH:mm:ss';
 }
 
 interface SelectedDateInfo {
@@ -20,33 +23,17 @@ interface SelectedDateInfo {
   date: number;
 }
 
-export default function Calendar({ selectedDate, onChange }: CalendarProps) {
+export default function Calendar({ selectedDate, onChange, onClose, format = 'YYYY-MM-DD' }: CalendarProps) {
+  const ref = useClickOutside<HTMLDivElement>(onClose);
   const [currentDate, setCurrentDate] = useState(dayjs());
   const [selected, setSelected] = useState<SelectedDateInfo | null>(null);
 
-  // 선택된 날짜가 있으면 해당 월로 이동하고 날짜 선택
-  useEffect(() => {
-    if (selectedDate) {
-      const date = dayjs(selectedDate);
-      setCurrentDate(date);
-      setSelected({
-        month: date.month(),
-        date: date.date(),
-      });
-    }
-  }, [selectedDate]);
-
-  // 현재 달의 첫 날의 요일을 구함 (0: 일요일, 1: 월요일, ...)
   const firstDayOfMonth = currentDate.startOf('month').day();
-  // 현재 달의 마지막 날짜를 구함
   const lastDateOfMonth = currentDate.endOf('month').date();
-  // 이전 달의 마지막 날짜를 구함
   const lastDateOfPrevMonth = currentDate.subtract(1, 'month').endOf('month').date();
 
-  // 달력에 표시할 날짜 배열 생성
   const dates = Array.from({ length: 35 }, (_, i) => {
     if (i < firstDayOfMonth) {
-      // 이전 달의 날짜
       return {
         date: lastDateOfPrevMonth - (firstDayOfMonth - i - 1),
         type: 'prev' as const,
@@ -55,7 +42,6 @@ export default function Calendar({ selectedDate, onChange }: CalendarProps) {
     }
 
     if (i >= firstDayOfMonth && i < firstDayOfMonth + lastDateOfMonth) {
-      // 현재 달의 날짜
       return {
         date: i - firstDayOfMonth + 1,
         type: 'current' as const,
@@ -63,7 +49,6 @@ export default function Calendar({ selectedDate, onChange }: CalendarProps) {
       };
     }
 
-    // 다음 달의 날짜
     return {
       date: i - (firstDayOfMonth + lastDateOfMonth) + 1,
       type: 'next' as const,
@@ -97,13 +82,22 @@ export default function Calendar({ selectedDate, onChange }: CalendarProps) {
         selectedDate = currentDate.add(1, 'month');
       }
 
-      const selectedFullDate = selectedDate.date(date).format('YYYY-MM-DD');
+      const selectedFullDate = selectedDate.date(date).format(format);
       onChange(selectedFullDate);
     }
   };
-
+  useEffect(() => {
+    if (selectedDate) {
+      const date = dayjs(selectedDate);
+      setCurrentDate(date);
+      setSelected({
+        month: date.month(),
+        date: date.date(),
+      });
+    }
+  }, [selectedDate]);
   return (
-    <Wrapper>
+    <Wrapper ref={ref}>
       <Header>
         <NavButton onClick={handlePrevMonth}>
           <IconDirectionLeft size={24} color={theme.sementicColors.icon.primary} />
@@ -145,6 +139,10 @@ export default function Calendar({ selectedDate, onChange }: CalendarProps) {
 }
 
 export const Wrapper = styled.div`
+  position: absolute;
+  top: calc(100% + 10px);
+  left: 0;
+  z-index: 1000;
   display: flex;
   flex-direction: column;
   align-items: flex-start;

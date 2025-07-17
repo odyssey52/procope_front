@@ -174,6 +174,7 @@ const StyledButton = styled.button<StyledButtonProps>`
   padding: 12px 16px;
   border: none;
   cursor: pointer;
+  white-space: nowrap;
   color: ${({ theme }) => theme.sementicColors.text.inverse};
   ${({ theme }) => theme.fontStyle.body_14_medium};
   border-radius: 12px;

@@ -1,7 +1,7 @@
 import { IconDirectionRight } from '@/shared/assets/icons/line';
 import { useRouter } from 'next/navigation';
 import React from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import TextButton from '../button/TextButton';
 
 interface BreadcrumbItem {
@@ -21,14 +21,12 @@ const Breadcrumbs: React.FC<BreadcrumbProps> = ({ paths }) => {
     <Wrapper aria-label="breadcrumb">
       <ol>
         {paths.map((item, index) => (
-          <Breadcrumb key={index}>
+          <Breadcrumb key={index} $hover={item.clickable}>
             <TextButton
               $type="16"
               $disabled={index < paths.length - 1}
               rightIcon={index < paths.length - 1 ? <IconDirectionRight /> : undefined}
-              style={{
-                cursor: item.clickable ? 'pointer' : 'default',
-              }}
+              $clickable={item.clickable}
               onClick={() => item.clickable && router.push(item.path)}
             >
               {item.name}
@@ -44,12 +42,16 @@ const Wrapper = styled.nav`
     display: flex;
   }
 `;
-const Breadcrumb = styled.li`
+const Breadcrumb = styled.li<{ $hover?: boolean }>`
   padding: 2px 0;
-  &:hover {
-    background-color: ${({ theme }) => theme.sementicColors.bg.tertiary_hover_pressed};
-    cursor: pointer;
-  }
+  ${({ $hover }) =>
+    $hover &&
+    css`
+      &:hover {
+        background-color: ${({ theme }) => theme.sementicColors.bg.tertiary_hover_pressed};
+        cursor: pointer;
+      }
+    `}
   border-radius: 4px;
 `;
 export default Breadcrumbs;
