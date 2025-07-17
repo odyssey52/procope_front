@@ -14,10 +14,19 @@ export interface ReadRetroParams {
   retroId: string;
 }
 
+export interface UpdateRetroTitleParams {
+  teamId: string;
+  retroId: string;
+}
+
 // Payload
 export interface CreateRetroPayload {
   title: string;
   teamId: string;
+}
+
+export interface UpdateRetroTitlePayload {
+  title: string;
 }
 
 // response

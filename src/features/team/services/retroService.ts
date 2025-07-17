@@ -5,6 +5,7 @@ const URLS = {
   READ_RETRO_LIST: (teamId: string) => `/retrospectives/${teamId}`,
   CREATE_RETRO: (teamId: string) => `/retrospectives/${teamId}`,
   READ_RETRO: (teamId: string, retroId: string) => `/retrospectives/${teamId}/${retroId}`,
+  UPDATE_RETRO_TITLE: (teamId: string, retroId: string) => `/retrospectives/${teamId}/${retroId}`,
 };
 
 const api = new ApiClient({ isPublic: false });
@@ -22,5 +23,10 @@ export async function createRetro(payload: types.CreateRetroPayload): Promise<ty
 }
 export async function readRetro(params: types.ReadRetroParams): Promise<types.ReadRetroResponse> {
   const { data } = await api.get<types.ReadRetroResponse>(URLS.READ_RETRO(params.teamId, params.retroId));
+  return data;
+}
+
+export async function updateRetroTitle(params: types.UpdateRetroTitleParams, payload: types.UpdateRetroTitlePayload) {
+  const { data } = await api.put(URLS.UPDATE_RETRO_TITLE(params.teamId, params.retroId), payload);
   return data;
 }
