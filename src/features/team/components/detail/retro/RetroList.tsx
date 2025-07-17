@@ -45,7 +45,7 @@ const renderTitle = (item: ReadRetroListItem, index: number, teamId: string) => 
 
 const renderCreator = (item: ReadRetroListItem, index: number) => (
   <CreatorWrapper>
-    <Avatar nickname={item.createUserName} />
+    <Avatar nickname={item.createUserName} image={item.picture} />
     <Text variant="body_14_regular" color="secondary" ellipsis>
       {item.createUserName}
     </Text>
@@ -68,7 +68,6 @@ const renderCreatedAt = (item: ReadRetroListItem, index: number) => renderDate(i
 
 const renderUpdatedAt = (item: ReadRetroListItem, index: number) => renderDate(item.updatedAt);
 
-// 컬럼 정의를 더 명확하게 타입화
 type ColumnConfig = {
   key: string;
   title: string;
