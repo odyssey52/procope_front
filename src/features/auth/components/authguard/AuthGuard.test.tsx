@@ -32,7 +32,7 @@ describe('AuthGuard', () => {
     // useAuth 모의 구현
     (useAuth as jest.Mock).mockReturnValue({
       isLoading: true,
-      isAuthenticated: false,
+      accessToken: null,
       user: null,
     });
 
@@ -49,7 +49,7 @@ describe('AuthGuard', () => {
     // useAuth 모의 구현
     (useAuth as jest.Mock).mockReturnValue({
       isLoading: false,
-      isAuthenticated: false,
+      accessToken: null,
       user: null,
     });
 
@@ -68,7 +68,7 @@ describe('AuthGuard', () => {
     // useAuth 모의 구현
     (useAuth as jest.Mock).mockReturnValue({
       isLoading: false,
-      isAuthenticated: true,
+      accessToken: 'test-token',
       user: { id: 1, name: 'Test User' },
     });
 

@@ -2,8 +2,9 @@
 
 import { createInviteTeam } from '@/features/team/services/teamService';
 import { MESSAGES } from '@/shared/constants/messages';
-import { toastActions } from '@/shared/lib/store/modal/toast';
+import useApiError from '@/shared/lib/hooks/useApiError';
 import useAuthStore from '@/shared/lib/store/auth/auth';
+import { toastActions } from '@/shared/lib/store/modal/toast';
 import { useMutation } from '@tanstack/react-query';
 import { useParams, useRouter } from 'next/navigation';
 import { useEffect } from 'react';
@@ -13,8 +14,7 @@ const InvitePage = () => {
   const params = useParams();
   const code = params.code as string;
 
-  const { isAuthenticated } = useAuthStore();
-
+  const { handleError } = useApiError();
   const createInviteTeamMutation = useMutation({
     mutationFn: createInviteTeam,
     onSuccess: () => {
@@ -24,22 +24,22 @@ const InvitePage = () => {
       });
       router.push('/team');
     },
-    onError: () => {
-      toastActions.open({
-        state: 'error',
-        title: MESSAGES.TEAM_JOIN_FAILED,
-        description: MESSAGES.CODE_EXPIRED,
-      });
-      router.push('/team');
-    },
   });
+
+  const inviteTeam = async () => {
+    try {
+      await createInviteTeamMutation.mutateAsync({ url: code });
+    } catch (error) {
+      handleError(error);
+    }
+  };
 
   useEffect(() => {
     if (code) {
-      createInviteTeamMutation.mutate({ url: code });
+      inviteTeam();
     }
     // if (code) {
-    //   if (isAuthenticated) {
+    //   if (accessToken) {
     //     createInviteTeamMutation.mutate({ url: code });
     //   } else {
     //     localStorage.setItem('previousPath', `/invite/${code}`);
