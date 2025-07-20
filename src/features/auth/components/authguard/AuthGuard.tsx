@@ -1,10 +1,12 @@
 'use client';
 
-import React, { useEffect } from 'react';
-import { LoadingSpinner } from '@/shared/ui/LoadingSpinner';
 import { useAuth } from '@/shared/hooks/useAuth';
-import { handleLogout } from '@/shared/lib/utils/auth';
 import useAuthStore from '@/shared/lib/store/auth/auth';
+import { handleLogout } from '@/shared/lib/utils/auth';
+import { LoadingSpinner } from '@/shared/ui/LoadingSpinner';
+import { useQuery } from '@tanstack/react-query';
+import React, { useEffect, useState } from 'react';
+import { refreshTokenQueries } from '../../query/refresh/refreshTokenQueries';
 
 /**
  * 인증이 필요한 페이지를 보호하는 컴포넌트
@@ -21,26 +23,43 @@ import useAuthStore from '@/shared/lib/store/auth/auth';
  *
  * @param {React.ReactNode} children - 보호할 컴포넌트/페이지
  */
+
 export function AuthGuard({ children }: { children: React.ReactNode }) {
-  // useAuth 훅에서 인증 관련 상태 가져오기
-  const { isAuthenticated, isLoading, user } = useAuth();
-  const { logoutType } = useAuthStore();
+  const { accessToken } = useAuth();
+  const { setAccessToken, logoutType } = useAuthStore();
+  const [isRefreshing, setIsRefreshing] = useState(true);
 
-  // 인증 상태 모니터링 및 리다이렉트 처리
+  const {
+    data: accessTokenWithRefreshToken,
+    isSuccess,
+    isError,
+  } = useQuery({
+    ...refreshTokenQueries.accessTokenWithRefreshToken,
+    enabled: !accessToken, // accessToken 없을 때만 실행
+    retry: false,
+  });
+
   useEffect(() => {
-    if (!isLoading && !isAuthenticated) {
-      // 수동 로그아웃인 경우 이전 페이지를 저장하지 않음
-      const savePreviousPath = logoutType !== 'manual';
-      handleLogout({ savePreviousPath });
+    if (accessToken) {
+      setIsRefreshing(false);
     }
-  }, [isLoading, isAuthenticated, logoutType]);
-
-  // 로딩 중일 때 스피너 표시
-  if (isLoading) {
+    if (isSuccess && accessTokenWithRefreshToken) {
+      setAccessToken(accessTokenWithRefreshToken); // 상태에 저장
+    }
+    if (isSuccess || isError) {
+      setIsRefreshing(false); // 리프레시 완료
+    }
+  }, [isSuccess, isError, accessTokenWithRefreshToken, setAccessToken, accessToken]);
+  if (isRefreshing) {
     return <LoadingSpinner />;
   }
 
-  // 인증된 경우에만 자식 컴포넌트 렌더링
-  // 인증되지 않은 경우 null 반환 (리다이렉트 처리될 때까지)
-  return isAuthenticated ? <>{children}</> : null;
+  if (!accessToken) {
+    if (isError && !isSuccess) {
+      const savePreviousPath = logoutType !== 'manual';
+      handleLogout({ savePreviousPath });
+    }
+    return null;
+  }
+  return <>{children}</>;
 }

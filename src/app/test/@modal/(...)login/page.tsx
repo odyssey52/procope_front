@@ -9,17 +9,17 @@ import styled from 'styled-components';
 
 // 로그인 모달 컨텐츠 컴포넌트
 function LoginModalContent() {
-  const { isAuthenticated, isLoading } = useAuth();
+  const { accessToken, isLoading } = useAuth();
   const router = useRouter();
   const searchParams = useSearchParams();
   const from = searchParams.get('from') || '/';
 
   useEffect(() => {
     // 인증된 상태라면 원래 페이지로 리다이렉트
-    if (!isLoading && isAuthenticated) {
+    if (!isLoading && accessToken) {
       router.replace(from);
     }
-  }, [isLoading, isAuthenticated, router, from]);
+  }, [isLoading, accessToken, router, from]);
 
   return (
     <Modal portalId="confirm-dialog">

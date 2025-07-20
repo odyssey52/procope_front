@@ -64,7 +64,6 @@ const RetroPage = () => {
   useEffect(() => {
     connectHandler();
 
-    // 컴포넌트 언마운트 시 연결 해제
     return () => {
       if (client.current && client.current.connected) {
         client.current.disconnect();
