@@ -3,6 +3,7 @@ import propertiesRolesQueries from '@/features/properties/query/roles/properties
 import { updateUserInfo } from '@/features/user/services/info/userInfoService';
 import { ReadUserInfoResponse } from '@/features/user/services/info/userInfoService.type';
 import { MESSAGES } from '@/shared/constants/messages';
+import useAuthStore from '@/shared/lib/store/auth/auth';
 import { toastActions } from '@/shared/lib/store/modal/toast';
 import Avatar from '@/shared/ui/avatar/Avatar';
 import Button from '@/shared/ui/button/Button';
@@ -15,14 +16,15 @@ import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { JobMain } from '../onboarding/FirstStep';
 import { JobSub } from '../onboarding/SecondStep';
-import DeleteModal from './DeleteModal';
 import userInfoQueries from '../user/query/info/userInfoQueries';
+import DeleteModal from './DeleteModal';
 interface Props {
   data: ReadUserInfoResponse;
 }
 
 const ProfileSetting = ({ data }: Props) => {
   const queryClient = useQueryClient();
+  const { accessToken } = useAuthStore();
   const [avatar, setAvatar] = useState<{
     type: 'profile' | 'initial';
     image: string;
@@ -39,7 +41,7 @@ const ProfileSetting = ({ data }: Props) => {
   const updateUserInfoMutation = useMutation({
     mutationFn: updateUserInfo,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: userInfoQueries.readUserInfo.queryKey });
+      queryClient.invalidateQueries({ queryKey: userInfoQueries.readUserInfo(accessToken || '').queryKey });
     },
   });
 

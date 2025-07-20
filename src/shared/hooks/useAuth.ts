@@ -5,7 +5,7 @@ import userInfoQueries from '@/features/user/query/info/userInfoQueries';
 import type { ReadUserInfoResponse } from '@/features/user/services/info/userInfoService.type';
 
 interface UseAuthReturn {
-  isAuthenticated: boolean;
+  accessToken: string | null;
   isLoading: boolean;
   user: ReadUserInfoResponse | null;
 }
@@ -15,48 +15,42 @@ interface UseAuthReturn {
  *
  * @description
  * 이 훅은 다음과 같은 기능을 제공합니다:
- * 1. 인증 상태 확인 (isAuthenticated)
+ * 1. 인증 상태 확인 (accessToken)
  * 2. 로딩 상태 관리 (isLoading)
  * 3. 사용자 정보 조회 및 캐싱 (React Query 사용)
  *
  * @example
  * ```tsx
  * const MyProtectedComponent = () => {
- *   const { isAuthenticated, isLoading, user } = useAuth();
+ *   const { accessToken, isLoading, user } = useAuth();
  *
  *   if (isLoading) return <LoadingSpinner />;
- *   if (!isAuthenticated) return null;
+ *   if (!accessToken) return null;
  *
  *   return <div>Welcome, {user?.userContext.name}!</div>;
  * };
  * ```
  *
  * @returns {Object} 인증 관련 상태와 데이터
- * @property {boolean} isAuthenticated - 사용자의 인증 여부
+ * @property {string | null} accessToken - 사용자의 인증 토큰
  * @property {boolean} isLoading - 인증 상태 확인 중 여부
  * @property {ReadUserInfoResponse | null} user - 전체 사용자 정보
  */
 export function useAuth(): UseAuthReturn {
-  const { isAuthenticated, accessToken } = useAuthStore();
+  const { accessToken } = useAuthStore();
   const [isLoading, setIsLoading] = useState(true);
 
   const { data: userInfo, isSuccess } = useQuery({
-    ...userInfoQueries.readUserInfo,
+    ...userInfoQueries.readUserInfo(accessToken || ''),
     enabled: !!accessToken,
   });
 
   useEffect(() => {
-    if (accessToken) {
-      if (isSuccess) {
-        setIsLoading(false);
-      }
-    } else {
-      setIsLoading(false);
-    }
-  }, [accessToken, isSuccess]);
+    setIsLoading(!isSuccess && !!accessToken);
+  }, [isSuccess, accessToken]);
 
   return {
-    isAuthenticated,
+    accessToken,
     isLoading,
     user: userInfo || null,
   };

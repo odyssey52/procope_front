@@ -6,16 +6,16 @@ import { useEffect } from 'react';
 
 const Home = () => {
   const router = useRouter();
-  const { isAuthenticated, isLoading } = useAuth();
+  const { accessToken, isLoading } = useAuth();
 
   useEffect(() => {
-    if (!isLoading && !isAuthenticated) {
+    if (!isLoading && !accessToken) {
       router.replace('/login');
     }
-    if (!isLoading && isAuthenticated) {
+    if (!isLoading && accessToken) {
       router.replace('/team');
     }
-  }, [router, isLoading, isAuthenticated]);
+  }, [router, isLoading, accessToken]);
 
   return null;
 };

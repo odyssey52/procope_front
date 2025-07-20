@@ -1,6 +1,7 @@
 'use client';
 
 import userInfoQueries from '@/features/user/query/info/userInfoQueries';
+import useAuthStore from '@/shared/lib/store/auth/auth';
 import useUserStore from '@/shared/lib/store/user/user';
 import { useQuery } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
@@ -8,7 +9,8 @@ import { useEffect } from 'react';
 import LogoPlace from './LogoPlace';
 
 const LoginContinuePage = () => {
-  const { data, isSuccess } = useQuery({ ...userInfoQueries.readUserInfo });
+  const { accessToken } = useAuthStore();
+  const { data, isSuccess } = useQuery({ ...userInfoQueries.readUserInfo(accessToken || '') });
   const { setUser } = useUserStore();
   const router = useRouter();
 

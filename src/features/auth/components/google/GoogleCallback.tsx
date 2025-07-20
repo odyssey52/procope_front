@@ -10,14 +10,14 @@ import { useEffect } from 'react';
 import LogoPlace from '@/features/login/continue/LogoPlace';
 
 const GoogleCallback = () => {
-  const { isAuthenticated, setAccessToken } = useAuthStore();
+  const { accessToken, setAccessToken } = useAuthStore();
   const { setUser } = useUserStore();
   const router = useRouter();
   const search = useSearchParams();
   const authorizationCode = search.get('code');
   const { data: userInfoData, isSuccess: isSuccessReadUserInfo } = useQuery({
-    ...userInfoQueries.readUserInfo,
-    enabled: isAuthenticated,
+    ...userInfoQueries.readUserInfo(accessToken || ''),
+    enabled: !!accessToken,
   });
 
   const createTokenWithGoogleMutation = useMutation({ mutationFn: createTokenWithGoogle });
