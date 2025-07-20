@@ -49,17 +49,18 @@ export function AuthGuard({ children }: { children: React.ReactNode }) {
     if (isSuccess || isError) {
       setIsRefreshing(false); // 리프레시 완료
     }
+    if (!accessToken) {
+      if (isError && !isSuccess) {
+        const savePreviousPath = logoutType !== 'manual';
+        console.log(logoutType);
+        handleLogout({ savePreviousPath });
+      }
+    }
   }, [isSuccess, isError, accessTokenWithRefreshToken, setAccessToken, accessToken]);
+
   if (isRefreshing) {
     return <LoadingSpinner />;
   }
 
-  if (!accessToken) {
-    if (isError && !isSuccess) {
-      const savePreviousPath = logoutType !== 'manual';
-      handleLogout({ savePreviousPath });
-    }
-    return null;
-  }
   return <>{children}</>;
 }
