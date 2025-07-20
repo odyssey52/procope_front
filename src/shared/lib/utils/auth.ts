@@ -21,7 +21,6 @@ export const handleLogout = async (options: LogoutOptions = {}) => {
       window.location.href = redirectPath;
     }
   } catch (error) {
-    console.error('로그아웃 처리 중 에러 발생:', error);
     toastActions.open({ title: MESSAGES.ERROR.LOGOUT_FAILED, description: MESSAGES.ERROR.RETRY, state: 'error' });
   }
 };
