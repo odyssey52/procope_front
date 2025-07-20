@@ -1,48 +1,28 @@
-import { AxiosError } from 'axios';
-
-export type ApiError = {
-  status: number;
-  code: string;
-  message: string;
-};
-
-export type ErrorType =
-  | 'BAD_REQUEST'
-  | 'UNAUTHORIZED'
-  | 'FORBIDDEN'
-  | 'NOT_FOUND'
-  | 'CONFLICT'
-  | 'SERVER_ERROR'
-  | 'NETWORK_ERROR'
-  | 'UNKNOWN_ERROR';
-
-export interface ErrorHandlerConfig {
-  showToast: (message: string, description?: string) => void;
-  logout: () => Promise<void>;
-  redirect: (path: string) => void;
-  logError: (error: unknown) => void;
+export enum ErrorCode {
+  // 인증 관련
+  AUTHENTICATION_FAILED = 'AUTH001',
+  TOKEN_EXPIRED = 'AUTH002',
 }
 
-export const determineErrorType = (error: AxiosError): ErrorType => {
-  if (!error.response) {
-    return 'NETWORK_ERROR';
-  }
+export interface ErrorMessage {
+  title: string;
+  description?: string;
+  status: 'success' | 'warning' | 'danger' | 'error';
+}
 
-  const { status } = error.response;
-  switch (status) {
-    case 400:
-      return 'BAD_REQUEST';
-    case 401:
-      return 'UNAUTHORIZED';
-    case 403:
-      return 'FORBIDDEN';
-    case 404:
-      return 'NOT_FOUND';
-    case 409:
-      return 'CONFLICT';
-    case 500:
-      return 'SERVER_ERROR';
-    default:
-      return 'UNKNOWN_ERROR';
-  }
+export type ErrorMessages = {
+  [key in ErrorCode]: ErrorMessage;
+};
+
+export const ERROR_MESSAGES: ErrorMessages = {
+  [ErrorCode.AUTHENTICATION_FAILED]: {
+    title: '로그인 실패',
+    description: '아이디 또는 비밀번호가 일치하지 않습니다.',
+    status: 'danger',
+  },
+  [ErrorCode.TOKEN_EXPIRED]: {
+    title: '토큰 만료',
+    description: '로그인이 만료되었습니다. 다시 로그인해주세요.',
+    status: 'warning',
+  },
 };
