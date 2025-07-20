@@ -1,8 +1,8 @@
 import { MESSAGES } from '@/shared/constants/messages';
 import { toastActions } from '@/shared/lib/store/modal/toast';
-import { handleLogout } from '@/shared/lib/utils/auth';
 import { AxiosError } from 'axios';
 import { useCallback } from 'react';
+import { ErrorCode, ERROR_MESSAGES } from '@/shared/types/error';
 
 const useApiError = () => {
   const handleError = useCallback(async (error: unknown) => {
@@ -10,18 +10,15 @@ const useApiError = () => {
       const errorCode = error.response?.data?.code;
       const errorMessage = error.response?.data?.message;
 
-      // 토큰 만료는 HTTPProvider에서 처리하므로 무시
-      if (errorCode === 'AUTH002') return;
+      if (errorCode === ErrorCode.TOKEN_EXPIRED) return;
 
-      // 인증 실패
-      if (errorCode === 'AUTH001' || error.response?.status === 401) {
-        await handleLogout({ savePreviousPath: true });
-        return;
-      }
-
-      // 권한 없음
-      if (errorCode === 'FORBIDDEN' || error.response?.status === 403) {
-        toastActions.open({ title: MESSAGES.ERROR.FORBIDDEN, state: 'error' });
+      if (errorCode && ERROR_MESSAGES[errorCode as ErrorCode]) {
+        const message = ERROR_MESSAGES[errorCode as ErrorCode];
+        toastActions.open({
+          title: message.title,
+          description: message.description,
+          state: message.status === 'danger' ? 'error' : message.status,
+        });
         return;
       }
 
