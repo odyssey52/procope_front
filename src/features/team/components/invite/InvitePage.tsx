@@ -1,9 +1,9 @@
 'use client';
 
+import LogoPlace from '@/features/login/continue/LogoPlace';
 import { createInviteTeam } from '@/features/team/services/teamService';
 import { MESSAGES } from '@/shared/constants/messages';
 import useApiError from '@/shared/lib/hooks/useApiError';
-import useAuthStore from '@/shared/lib/store/auth/auth';
 import { toastActions } from '@/shared/lib/store/modal/toast';
 import { useMutation } from '@tanstack/react-query';
 import { useParams, useRouter } from 'next/navigation';
@@ -48,7 +48,7 @@ const InvitePage = () => {
     // }
   }, [code]);
 
-  return <div>팀에 합류 중입니다...</div>;
+  return <LogoPlace />;
 };
 
 InvitePage.displayName = 'InvitePage';
