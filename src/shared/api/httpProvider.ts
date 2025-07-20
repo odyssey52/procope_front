@@ -42,7 +42,7 @@ export default class HTTPProvider {
     this.client.interceptors.response.use(
       (response) => response,
       async (error) => {
-        if (error.response?.status === 403 || error.response?.status === 401) {
+        if (error.response?.data?.code === 'AUTH002') {
           try {
             const refreshResponse = await axios.get(`${USER_URL}auth/refresh`, { withCredentials: true });
             const newAccessToken = refreshResponse.data;
