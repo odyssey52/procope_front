@@ -12,16 +12,18 @@ export type SelectOptionList = {
 interface ItemListProps {
   selectOptionList: SelectOptionList;
   value?: string | React.ReactNode;
+  width?: string;
   valueHandler: (value: string | React.ReactNode, id?: string | number) => void;
 }
 
-const ItemList = ({ selectOptionList, value, valueHandler }: ItemListProps) => {
+const ItemList = ({ selectOptionList, value, width, valueHandler }: ItemListProps) => {
   return (
     <Wrapper>
       {selectOptionList.map((item, index) => (
         <SelectOption
           key={index}
           leftContent={item.leftContent}
+          width={width}
           valueHandler={() => valueHandler(item.value, item.id)}
           value={item.value}
           state={item.value === value ? 'selected' : undefined}

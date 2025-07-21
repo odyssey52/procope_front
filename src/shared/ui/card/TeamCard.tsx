@@ -103,6 +103,7 @@ const TeamInfo = styled.div`
   gap: 12px;
 `;
 const TextBox = styled.div`
+  height: 46px;
   display: flex;
   flex-direction: column;
   gap: 8px;

@@ -15,7 +15,7 @@ const URLS = {
 
   SECESSION_TEAM: (teamId: string) => `/teams/users/${teamId}`,
   DELETE_TEAM_USERS: (teamId: string, userId: string) => `/teams/users/${teamId}/${userId}`,
-  UPDATE_TEAM_USERS: (teamId: string, userId: string) => `/teams/users/${teamId}/${userId}`,
+  UPDATE_TEAM_USERS: (teamId: string) => `/teams/users/role/${teamId}`,
 };
 
 const api = new ApiClient({ isPublic: false });
@@ -81,9 +81,6 @@ export async function updateTeamUser(
   payload: types.UpdateTeamUserPayload,
   params: types.UpdateTeamUserParams,
 ): Promise<types.UpdateTeamUserResponse> {
-  const { data } = await api.patch<types.UpdateTeamUserResponse>(
-    URLS.UPDATE_TEAM_USERS(params.teamId, params.userId),
-    payload,
-  );
+  const { data } = await api.patch<types.UpdateTeamUserResponse>(URLS.UPDATE_TEAM_USERS(params.teamId), payload);
   return data;
 }
