@@ -1,7 +1,7 @@
 'use client';
 
 import { IconDirectionLeft, IconDirectionRight } from '@/shared/assets/icons/line';
-import { useClickOutside } from '@/shared/lib/hooks/useClickOutside';
+import { useClickOutside } from '@/shared/hooks/useClickOutside';
 import { theme } from '@/shared/styles/theme';
 import dayjs from 'dayjs';
 import { useEffect, useState } from 'react';

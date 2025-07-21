@@ -3,7 +3,7 @@
 import { updateUserInfo } from '@/features/user/services/info/userInfoService';
 import { MESSAGES } from '@/shared/constants/messages';
 import { TENDENCY_TITLE_LIST } from '@/shared/constants/stepper';
-import { toastActions } from '@/shared/lib/store/modal/toast';
+import { toastActions } from '@/shared/store/modal/toast';
 import Container from '@/shared/ui/Container';
 import Text from '@/shared/ui/Text';
 import ProgressBar from '@/shared/ui/progress/ProgressBar';

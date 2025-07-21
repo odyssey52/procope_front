@@ -1,9 +1,9 @@
 import { invalidateRefreshToken } from '@/features/auth/services/refresh/refreshTokenService';
 import { IconHome, IconOut, IconSetting } from '@/shared/assets/icons/line';
-import useApiError from '@/shared/lib/hooks/useApiError';
-import { useClickOutside } from '@/shared/lib/hooks/useClickOutside';
-import useAuthStore from '@/shared/lib/store/auth/auth';
-import { handleLogout } from '@/shared/lib/utils/auth';
+import useApiError from '@/shared/hooks/useApiError';
+import { useClickOutside } from '@/shared/hooks/useClickOutside';
+import useAuthStore from '@/shared/store/auth/auth';
+import { handleLogout } from '@/shared/utils/auth';
 import { elevation } from '@/shared/styles/mixin';
 import { useMutation } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';

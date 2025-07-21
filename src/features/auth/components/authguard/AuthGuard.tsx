@@ -1,8 +1,10 @@
 'use client';
 
+import { MESSAGES } from '@/shared/constants/messages';
 import { useAuth } from '@/shared/hooks/useAuth';
-import useAuthStore from '@/shared/lib/store/auth/auth';
-import { handleLogout } from '@/shared/lib/utils/auth';
+import useAuthStore from '@/shared/store/auth/auth';
+import { toastActions } from '@/shared/store/modal/toast';
+import { handleLogout } from '@/shared/utils/auth';
 import { LoadingSpinner } from '@/shared/ui/LoadingSpinner';
 import { useQuery } from '@tanstack/react-query';
 import React, { useEffect, useState } from 'react';
@@ -52,7 +54,10 @@ export function AuthGuard({ children }: { children: React.ReactNode }) {
     if (!accessToken) {
       if (isError && !isSuccess) {
         const savePreviousPath = logoutType !== 'manual';
-        console.log(logoutType);
+        toastActions.open({
+          state: 'error',
+          title: MESSAGES.ERROR.UNAUTHORIZED_TITLE,
+        });
         handleLogout({ savePreviousPath });
       }
     }

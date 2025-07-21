@@ -1,8 +1,8 @@
 /* eslint-disable no-param-reassign */
 import { MESSAGES } from '@/shared/constants/messages';
-import useAuthStore from '@/shared/lib/store/auth/auth';
-import { toastActions } from '@/shared/lib/store/modal/toast';
-import { handleLogout } from '@/shared/lib/utils/auth';
+import useAuthStore from '@/shared/store/auth/auth';
+import { toastActions } from '@/shared/store/modal/toast';
+import { handleLogout } from '@/shared/utils/auth';
 import axios from 'axios';
 
 import type { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';

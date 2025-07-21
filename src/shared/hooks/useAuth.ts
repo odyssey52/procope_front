@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import useAuthStore from '@/shared/lib/store/auth/auth';
+import useAuthStore from '@/shared/store/auth/auth';
 import { useQuery } from '@tanstack/react-query';
 import userInfoQueries from '@/features/user/query/info/userInfoQueries';
 import type { ReadUserInfoResponse } from '@/features/user/services/info/userInfoService.type';
