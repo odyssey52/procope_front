@@ -47,14 +47,6 @@ const InvitePage = () => {
     if (code) {
       inviteTeam();
     }
-    // if (code) {
-    //   if (accessToken) {
-    //     createInviteTeamMutation.mutate({ url: code });
-    //   } else {
-    //     localStorage.setItem('previousPath', `/invite/${code}`);
-    //     router.push('/login');
-    //   }
-    // }
   }, [code]);
 
   return <LogoPlace />;

@@ -19,6 +19,7 @@ const Team = () => {
 
 const TeamContainer = styled(Container)`
   flex-grow: 1;
+  padding-bottom: 80px;
 `;
 
 Team.displayName = 'Team';
