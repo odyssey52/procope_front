@@ -3,7 +3,7 @@
 import { updateRetroTitle } from '@/features/team/services/retroService';
 import { ReadRetroResponse, UpdateRetroTitlePayload } from '@/features/team/services/retroService.type';
 import { IconCalendar } from '@/shared/assets/icons/line';
-import useApiError from '@/shared/lib/hooks/useApiError';
+import useApiError from '@/shared/hooks/useApiError';
 import Avatar from '@/shared/ui/avatar/Avatar';
 import AvatarGroup from '@/shared/ui/avatar/AvatarGroup';
 import Button from '@/shared/ui/button/Button';

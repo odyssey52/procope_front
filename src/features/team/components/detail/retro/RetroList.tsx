@@ -4,7 +4,7 @@ import retroQueries from '@/features/team/query/retroQueries';
 import { createRetro } from '@/features/team/services/retroService';
 import { ReadRetroListItem } from '@/features/team/services/retroService.type';
 import { IconSortArrow } from '@/shared/assets/icons/line';
-import { toastActions } from '@/shared/lib/store/modal/toast';
+import { toastActions } from '@/shared/store/modal/toast';
 import Avatar from '@/shared/ui/avatar/Avatar';
 import Breadcrumbs from '@/shared/ui/breadcrumbs/Breadcrumbs';
 import Button from '@/shared/ui/button/Button';

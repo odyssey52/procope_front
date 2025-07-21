@@ -10,7 +10,7 @@ import {
   teamNameValid,
 } from '@/features/team/utils/data';
 import { MESSAGES } from '@/shared/constants/messages';
-import { toastActions } from '@/shared/lib/store/modal/toast';
+import { toastActions } from '@/shared/store/modal/toast';
 import { TeamType } from '@/shared/types/team';
 import Breadcrumbs from '@/shared/ui/breadcrumbs/Breadcrumbs';
 import Button from '@/shared/ui/button/Button';

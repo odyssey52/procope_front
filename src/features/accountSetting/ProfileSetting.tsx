@@ -3,8 +3,8 @@ import propertiesRolesQueries from '@/features/properties/query/roles/properties
 import { updateUserInfo } from '@/features/user/services/info/userInfoService';
 import { ReadUserInfoResponse } from '@/features/user/services/info/userInfoService.type';
 import { MESSAGES } from '@/shared/constants/messages';
-import useAuthStore from '@/shared/lib/store/auth/auth';
-import { toastActions } from '@/shared/lib/store/modal/toast';
+import useAuthStore from '@/shared/store/auth/auth';
+import { toastActions } from '@/shared/store/modal/toast';
 import Avatar from '@/shared/ui/avatar/Avatar';
 import Button from '@/shared/ui/button/Button';
 import Chip from '@/shared/ui/chip/Chip';

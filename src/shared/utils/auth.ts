@@ -1,6 +1,6 @@
 import { MESSAGES } from '@/shared/constants/messages';
-import useAuthStore from '@/shared/lib/store/auth/auth';
-import { toastActions } from '@/shared/lib/store/modal/toast';
+import useAuthStore from '@/shared/store/auth/auth';
+import { toastActions } from '@/shared/store/modal/toast';
 
 interface LogoutOptions {
   savePreviousPath?: boolean;

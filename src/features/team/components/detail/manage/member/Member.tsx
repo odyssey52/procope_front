@@ -5,7 +5,7 @@ import { useParams } from 'next/navigation';
 import styled from 'styled-components';
 import { useQuery } from '@tanstack/react-query';
 import teamQueries from '@/features/team/query/teamQueries';
-import { toastActions } from '@/shared/lib/store/modal/toast';
+import { toastActions } from '@/shared/store/modal/toast';
 import { MESSAGES } from '@/shared/constants/messages';
 import MemberList from './MemberList';
 

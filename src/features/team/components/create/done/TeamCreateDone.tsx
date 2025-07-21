@@ -6,7 +6,7 @@ import Container from '@/shared/ui/Container';
 import Placeholder from '@/shared/ui/placeholder/Placeholder';
 import HeaderLayout from '@/features/layout/HeaderLayout';
 import Text from '@/shared/ui/Text';
-import { toastActions } from '@/shared/lib/store/modal/toast';
+import { toastActions } from '@/shared/store/modal/toast';
 import { useRouter } from 'next/navigation';
 import styled from 'styled-components';
 import { MESSAGES } from '@/shared/constants/messages';

@@ -6,7 +6,7 @@ import { TEAM_SIDE_NAV_TABS } from '@/shared/constants/sideNavTab';
 import { useParams } from 'next/navigation';
 import { ReactNode, useEffect } from 'react';
 import styled from 'styled-components';
-import useTeamStore from '@/shared/lib/store/team/team';
+import useTeamStore from '@/shared/store/team/team';
 import { useQuery } from '@tanstack/react-query';
 import teamQueries from '@/features/team/query/teamQueries';
 

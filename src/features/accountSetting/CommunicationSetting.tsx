@@ -1,7 +1,7 @@
 import { updateUserInfo } from '@/features/user/services/info/userInfoService';
 import { ReadUserInfoResponse } from '@/features/user/services/info/userInfoService.type';
 import { MESSAGES } from '@/shared/constants/messages';
-import { toastActions } from '@/shared/lib/store/modal/toast';
+import { toastActions } from '@/shared/store/modal/toast';
 import Button from '@/shared/ui/button/Button';
 import RadioSurvey from '@/shared/ui/radio/RadioSurvey';
 import Text from '@/shared/ui/Text';

@@ -1,4 +1,4 @@
-import { useConfirmModalStore } from '@/shared/lib/store/modal/confirmModal';
+import { useConfirmModalStore } from '@/shared/store/modal/confirmModal';
 import { elevation, zIndex } from '@/shared/styles/mixin';
 import Image from 'next/image';
 import styled from 'styled-components';

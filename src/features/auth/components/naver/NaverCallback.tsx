@@ -2,8 +2,8 @@
 
 import userInfoQueries from '@/features/user/query/info/userInfoQueries';
 import { createTokenWithNaver } from '@/features/auth/services/callback/socialAuthService';
-import useAuthStore from '@/shared/lib/store/auth/auth';
-import useUserStore from '@/shared/lib/store/user/user';
+import useAuthStore from '@/shared/store/auth/auth';
+import useUserStore from '@/shared/store/user/user';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect } from 'react';

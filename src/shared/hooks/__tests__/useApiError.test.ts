@@ -1,5 +1,5 @@
-import useAuthStore from '@/shared/lib/store/auth/auth';
-import { toastActions } from '@/shared/lib/store/modal/toast';
+import useAuthStore from '@/shared/store/auth/auth';
+import { toastActions } from '@/shared/store/modal/toast';
 import { ErrorType } from '@/shared/types/error';
 import { renderHook } from '@testing-library/react';
 import { AxiosError } from 'axios';

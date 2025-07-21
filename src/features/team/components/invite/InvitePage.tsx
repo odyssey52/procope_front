@@ -3,9 +3,10 @@
 import LogoPlace from '@/features/login/continue/LogoPlace';
 import { createInviteTeam } from '@/features/team/services/teamService';
 import { MESSAGES } from '@/shared/constants/messages';
-import useApiError from '@/shared/lib/hooks/useApiError';
-import { toastActions } from '@/shared/lib/store/modal/toast';
+import useApiError from '@/shared/hooks/useApiError';
+import { toastActions } from '@/shared/store/modal/toast';
 import { useMutation } from '@tanstack/react-query';
+import { AxiosError } from 'axios';
 import { useParams, useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 
@@ -30,6 +31,14 @@ const InvitePage = () => {
     try {
       await createInviteTeamMutation.mutateAsync({ url: code });
     } catch (error) {
+      if (error instanceof AxiosError && error.response?.status === 400) {
+        toastActions.open({
+          state: 'error',
+          title: MESSAGES.TEAM_JOIN_ALREADY_MEMBER,
+        });
+        router.replace('/team');
+        return;
+      }
       handleError(error);
     }
   };

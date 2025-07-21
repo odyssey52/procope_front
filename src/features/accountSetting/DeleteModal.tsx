@@ -2,9 +2,9 @@
 
 import { IconRemove } from '@/shared/assets/icons/line';
 import { MESSAGES } from '@/shared/constants/messages';
-import useAuthStore from '@/shared/lib/store/auth/auth';
-import { toastActions } from '@/shared/lib/store/modal/toast';
-import useUserStore from '@/shared/lib/store/user/user';
+import useAuthStore from '@/shared/store/auth/auth';
+import { toastActions } from '@/shared/store/modal/toast';
+import useUserStore from '@/shared/store/user/user';
 import Button from '@/shared/ui/button/Button';
 import Modal from '@/shared/ui/modal/common/Modal';
 import Placeholder from '@/shared/ui/placeholder/Placeholder';
