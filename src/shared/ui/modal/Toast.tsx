@@ -1,6 +1,6 @@
 'use client';
 
-import { toastActions, useToastStore } from '@/shared/lib/store/modal/toast';
+import { toastActions, useToastStore } from '@/shared/store/modal/toast';
 import { zIndex } from '@/shared/styles/mixin';
 import { AnimatePresence, motion } from 'framer-motion';
 import Image from 'next/image';

@@ -1,7 +1,7 @@
 'use client';
 
 import retroQueries from '@/features/team/query/retroQueries';
-import useAuthStore from '@/shared/lib/store/auth/auth';
+import useAuthStore from '@/shared/store/auth/auth';
 import Breadcrumbs from '@/shared/ui/breadcrumbs/Breadcrumbs';
 import { CompatClient, Stomp } from '@stomp/stompjs';
 import { useQuery } from '@tanstack/react-query';

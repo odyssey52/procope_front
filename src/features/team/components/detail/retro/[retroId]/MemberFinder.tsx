@@ -3,7 +3,7 @@
 import teamQueries from '@/features/team/query/teamQueries';
 import { IconSearch } from '@/shared/assets/icons/line';
 import useDebounce from '@/shared/hooks/useDebounce';
-import { useClickOutside } from '@/shared/lib/hooks/useClickOutside';
+import { useClickOutside } from '@/shared/hooks/useClickOutside';
 import Avatar from '@/shared/ui/avatar/Avatar';
 import Placeholder from '@/shared/ui/placeholder/Placeholder';
 import SelectOption from '@/shared/ui/select/SelectOption';

@@ -1,7 +1,7 @@
 'use client';
 
 import { IconCheckMarkRectangle } from '@/shared/assets/icons/line';
-import useAuthStore from '@/shared/lib/store/auth/auth';
+import useAuthStore from '@/shared/store/auth/auth';
 import Calendar from '@/shared/ui/calendar/Calendar';
 import RetroCard from '@/shared/ui/card/RetroCard';
 import TaskCard from '@/shared/ui/card/TaskCard';

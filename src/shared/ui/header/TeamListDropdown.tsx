@@ -1,6 +1,6 @@
 'use client';
 
-import { useClickOutside } from '@/shared/lib/hooks/useClickOutside';
+import { useClickOutside } from '@/shared/hooks/useClickOutside';
 import { Suspense } from 'react';
 import styled from 'styled-components';
 import { LoadingSpinner } from '../LoadingSpinner';

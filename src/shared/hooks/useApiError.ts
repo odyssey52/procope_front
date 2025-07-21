@@ -1,5 +1,5 @@
 import { MESSAGES } from '@/shared/constants/messages';
-import { toastActions } from '@/shared/lib/store/modal/toast';
+import { toastActions } from '@/shared/store/modal/toast';
 import { AxiosError } from 'axios';
 import { useCallback } from 'react';
 import { ErrorCode, ERROR_MESSAGES } from '@/shared/types/error';
