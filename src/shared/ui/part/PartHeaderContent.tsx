@@ -28,7 +28,7 @@ const Wrapper = styled.div<{ $size: PartHeaderContentProps['size']; $width: Part
   display: flex;
   align-items: center;
   gap: 8px;
-  width: ${({ $width }) => $width}px;
+  width: ${({ $width }) => $width}%;
   height: ${({ $size }) => $size}px;
   padding: 3px 12px;
   min-width: 0;
