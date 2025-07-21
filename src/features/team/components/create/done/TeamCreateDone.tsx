@@ -12,28 +12,30 @@ import styled from 'styled-components';
 import { MESSAGES } from '@/shared/constants/messages';
 
 const TeamCreateDone = ({ code }: { code: string }) => {
-  const inviteUrl = `${process.env.NEXT_PUBLIC_APP_URL}invite/${code}`;
+  const inviteUrl = `${process.env.NEXT_PUBLIC_APP_URL}team/invite/${code}`;
   const router = useRouter();
+
   const handleToast = () => {
     toastActions.open({
       state: 'success',
       title: MESSAGES.CLIPBOARD_COPY_SUCCESS,
     });
   };
+
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text).then(
       () => {
         handleToast();
       },
-      (err) => {
+      () => {
         toastActions.open({
           state: 'error',
           title: MESSAGES.CLIPBOARD_COPY_ERROR,
         });
-        console.error('클립보드 복사 실패:', err);
       },
     );
   };
+
   return (
     <HeaderLayout>
       <Container>
