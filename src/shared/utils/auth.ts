@@ -6,7 +6,7 @@ interface LogoutOptions {
   savePreviousPath?: boolean;
   redirectPath?: string;
 }
-
+// server component에서 사용하는 경우 사용
 export const handleLogout = async (options: LogoutOptions = {}) => {
   const { savePreviousPath = false, redirectPath = '/login' } = options;
 
