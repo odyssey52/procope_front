@@ -2,10 +2,11 @@
 
 import { MESSAGES } from '@/shared/constants/messages';
 import { useAuth } from '@/shared/hooks/useAuth';
+import { useLogout } from '@/shared/hooks/useLogout';
 import useAuthStore from '@/shared/store/auth/auth';
 import { toastActions } from '@/shared/store/modal/toast';
-import { handleLogout } from '@/shared/utils/auth';
 import { LoadingSpinner } from '@/shared/ui/LoadingSpinner';
+import { handleLogout } from '@/shared/utils/auth';
 import { useQuery } from '@tanstack/react-query';
 import React, { useEffect, useState } from 'react';
 import { refreshTokenQueries } from '../../query/refresh/refreshTokenQueries';
@@ -29,6 +30,7 @@ import { refreshTokenQueries } from '../../query/refresh/refreshTokenQueries';
 export function AuthGuard({ children }: { children: React.ReactNode }) {
   const { accessToken } = useAuth();
   const { setAccessToken, logoutType } = useAuthStore();
+  const { clientAutoLogout } = useLogout();
   const [isRefreshing, setIsRefreshing] = useState(true);
 
   const {
@@ -58,7 +60,7 @@ export function AuthGuard({ children }: { children: React.ReactNode }) {
           state: 'error',
           title: MESSAGES.ERROR.UNAUTHORIZED_TITLE,
         });
-        handleLogout({ savePreviousPath });
+        clientAutoLogout({ savePreviousPath });
       }
     }
   }, [isSuccess, isError, accessTokenWithRefreshToken, setAccessToken, accessToken]);
