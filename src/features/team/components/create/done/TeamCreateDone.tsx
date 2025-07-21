@@ -12,7 +12,7 @@ import styled from 'styled-components';
 import { MESSAGES } from '@/shared/constants/messages';
 
 const TeamCreateDone = ({ code }: { code: string }) => {
-  const inviteUrl = `${process.env.NEXT_PUBLIC_APP_URL}invite/${code}`;
+  const inviteUrl = `${process.env.NEXT_PUBLIC_APP_URL}team/invite/${code}`;
   const router = useRouter();
   const handleToast = () => {
     toastActions.open({
