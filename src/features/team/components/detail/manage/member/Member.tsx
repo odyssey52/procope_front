@@ -5,11 +5,14 @@ import { useParams } from 'next/navigation';
 import styled from 'styled-components';
 import { useQuery } from '@tanstack/react-query';
 import teamQueries from '@/features/team/query/teamQueries';
+import { toastActions } from '@/shared/lib/store/modal/toast';
+import { MESSAGES } from '@/shared/constants/messages';
 import MemberList from './MemberList';
 
 const Member = () => {
   const params = useParams();
   const teamId = params.teamId as string;
+  const inviteUrl = `${process.env.NEXT_PUBLIC_APP_URL}team/invite/${teamId}`;
 
   const { data: teamUser } = useQuery({
     ...teamQueries.readTeamUser({ teamId }),
@@ -21,20 +24,32 @@ const Member = () => {
   });
 
   const path = [
-    {
-      name: '팀 관리',
-      path: '/team',
-    },
-    {
-      name: '참여관리',
-      path: `/team/${teamId}/manage/member`,
-    },
+    { name: '팀 관리', path: '/team' },
+    { name: '참여관리', path: `/team/${teamId}/manage/member` },
   ];
 
   const teamImage =
     teamData?.type === 'SQUAD'
       ? '/assets/icons/graphic/glass/user-on.png'
       : '/assets/icons/graphic/glass/setting-on.png';
+
+  const copyToLink = (text: string) => {
+    navigator.clipboard.writeText(text).then(
+      () => {
+        toastActions.open({
+          state: 'success',
+          title: MESSAGES.CLIPBOARD_COPY_SUCCESS,
+        });
+      },
+      (err) => {
+        toastActions.open({
+          state: 'error',
+          title: MESSAGES.CLIPBOARD_COPY_ERROR,
+        });
+        console.error('클립보드 복사 실패:', err);
+      },
+    );
+  };
 
   if (!teamUser || !teamData) return null;
 
@@ -59,10 +74,10 @@ const Member = () => {
               </Icon>
               <TeamText>
                 <Title>{teamData?.name}</Title>
-                {/* <TeamLink></TeamLink> */}
+                <TeamLink>{inviteUrl}</TeamLink>
               </TeamText>
             </TeamInfo>
-            <Button>링크 복사</Button>
+            <Button onClick={() => copyToLink(inviteUrl)}>링크 복사</Button>
           </Team>
           <MemberList teamUser={teamUser} teamData={teamData} />
         </BottomSection>
@@ -79,7 +94,7 @@ const Wrapper = styled.div`
   background-color: ${({ theme }) => theme.sementicColors.bg.inverse};
 `;
 const Container = styled.div`
-  width: 1556px;
+  width: 100%;
   margin: 0 auto;
   padding: 24px;
   display: flex;
@@ -113,9 +128,9 @@ const Team = styled.div`
   padding: 24px;
   box-sizing: border-box;
   background-color: ${({ theme }) => theme.sementicColors.bg.tertiary};
+  gap: 32px;
 `;
 const TeamInfo = styled.div`
-  width: 337px;
   display: flex;
   gap: 20px;
   align-items: center;

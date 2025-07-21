@@ -26,7 +26,6 @@ export interface DeleteTeamUserParams {
 }
 export interface UpdateTeamUserParams {
   teamId: string;
-  userId: string;
 }
 
 // Payload
@@ -45,9 +44,11 @@ export interface UpdateTeamPayload {
   name: string;
   description: string;
 }
-export interface UpdateTeamUserPayload {
+export type UpdateTeamUserItem = {
+  userId: string;
   role: 'ADMIN' | 'MANAGER' | 'MEMBER';
-}
+};
+export type UpdateTeamUserPayload = UpdateTeamUserItem[];
 
 // response
 export interface ReadTeamListResponse {

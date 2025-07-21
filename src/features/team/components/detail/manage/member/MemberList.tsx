@@ -30,7 +30,7 @@ const MemberList = ({ teamUser, teamData }: MemberListProps) => {
   const [role, setRole] = useState<'ADMIN' | 'MANAGER' | 'MEMBER'>('ADMIN');
   const arrowIcon = '/assets/icons/line//sort-arrow.svg';
   const title = ['참여자', '이메일', '직무', '담당업무', '참여 일자', '마지막 활성 일자', '권한', ''];
-  const width = ['120', '280', '140', '342', '160', '160', '246', '60'];
+  const width = ['8', '18', '9', '23', '11', '11', '16', '4'];
 
   const roleInfoName = (name: string) => {
     return <TagJob type={jobList[name as keyof typeof jobList]} />;
@@ -82,25 +82,23 @@ const MemberList = ({ teamUser, teamData }: MemberListProps) => {
   //   },
   // });
 
-  // const saveTeamUserHandle = async (userRole: string) => {
+  // const saveTeamUserHandle = async () => {
   //   try {
-  //     const payload = {
-  //       role: userRole,
-  //     };
-  //     const params = { teamData.teamId };
+  //     const payload = {};
+  //     const params = { teamId: teamData.teamId };
 
-  //     await saveTeamUserMutation.mutateAsync({payload, params});
-  //       toastActions.open({
-  //           state: 'success',
-  //           title: MESSAGES.UPDATE_SAVE_SUCCESS,
-  //         });
-  //       } catch (err) {
-  //           toastActions.open({
-  //             state: 'error',
-  //             title: MESSAGES.ACCOUNT_SAVE_ERROR,
-  //           });
-  //         }
-  // }
+  //     await saveTeamUserMutation.mutateAsync({ payload, params });
+  //     toastActions.open({
+  //       state: 'success',
+  //       title: MESSAGES.UPDATE_SAVE_SUCCESS,
+  //     });
+  //   } catch (err) {
+  //     toastActions.open({
+  //       state: 'error',
+  //       title: MESSAGES.ACCOUNT_SAVE_ERROR,
+  //     });
+  //   }
+  // };
 
   return (
     <Wrapper>
@@ -108,9 +106,11 @@ const MemberList = ({ teamUser, teamData }: MemberListProps) => {
         <Count>
           총 <span>{teamUser.count}</span> 명
         </Count>
-        <Button size="36" onClick={() => {}}>
-          변경
-        </Button>
+        {teamData.myRole === 'ADMIN' && (
+          <Button size="36" onClick={() => {}}>
+            변경
+          </Button>
+        )}
       </Top>
       <UserTable>
         <TableTitle>
@@ -151,7 +151,7 @@ const MemberList = ({ teamUser, teamData }: MemberListProps) => {
             task(data.user.roleInfo.fields),
             formatDateToDotAndSlice(data.createdAt),
             formatDateToDotAndSlice(data.lastActiveAt),
-            teamData.myRole !== 'ADMIN' ? (
+            teamData.myRole === 'ADMIN' ? (
               <Select
                 placeholder="권한을 선택하세요"
                 value={role && selectAuth(role)}
@@ -173,7 +173,7 @@ const MemberList = ({ teamUser, teamData }: MemberListProps) => {
             ) : (
               selectAuth(data.teamRole)
             ),
-            teamData.myRole !== 'ADMIN' && (
+            teamData.myRole === 'ADMIN' && (
               <>
                 <Image
                   src="/assets/icons/line/menu-circle-vertical.svg"
@@ -185,7 +185,11 @@ const MemberList = ({ teamUser, teamData }: MemberListProps) => {
                 />
                 {isExit && (
                   <div style={{ position: 'absolute', top: '100%', right: '0' }}>
-                    <ItemList selectOptionList={[{ value: '퇴출' }]} valueHandler={() => setIsModalOpen(true)} />
+                    <ItemList
+                      selectOptionList={[{ value: '퇴출' }]}
+                      width="112px"
+                      valueHandler={() => setIsModalOpen(true)}
+                    />
                     {isModalOpen && (
                       <SubModal
                         name="deleteUser"
