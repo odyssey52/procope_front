@@ -26,13 +26,13 @@ const UserArea = ({ userData, closeUserArea }: UserAreaProps) => {
   const router = useRouter();
   const { handleError } = useApiError();
   const ref = useClickOutside<HTMLDivElement>(closeUserArea);
-  const { clientAutoLogout } = useLogout();
+  const { logout } = useLogout();
   const invalidateRefreshTokenMutation = useMutation({ mutationFn: invalidateRefreshToken });
 
   const handleLogoutClick = async () => {
     try {
       await invalidateRefreshTokenMutation.mutateAsync();
-      clientAutoLogout({ savePreviousPath: false });
+      logout({ savePreviousPath: false });
       toastActions.open({
         state: 'success',
         title: MESSAGES.LOGOUT_SUCCESS,

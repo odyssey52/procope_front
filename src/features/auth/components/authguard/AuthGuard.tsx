@@ -29,7 +29,7 @@ import { refreshTokenQueries } from '../../query/refresh/refreshTokenQueries';
 export function AuthGuard({ children }: { children: React.ReactNode }) {
   const { accessToken } = useAuth();
   const { setAccessToken, logoutType } = useAuthStore();
-  const { clientAutoLogout } = useLogout();
+  const { logout } = useLogout();
   const [isRefreshing, setIsRefreshing] = useState(true);
 
   const isEnabled = useMemo(() => {
@@ -58,7 +58,7 @@ export function AuthGuard({ children }: { children: React.ReactNode }) {
           state: 'error',
           title: MESSAGES.ERROR.UNAUTHORIZED_TITLE,
         });
-        clientAutoLogout({ savePreviousPath });
+        logout({ savePreviousPath });
       }
     }
   }, [isSuccess, isError, accessTokenWithRefreshToken, setAccessToken, accessToken]);
