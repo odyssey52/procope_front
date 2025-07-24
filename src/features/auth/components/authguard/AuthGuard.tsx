@@ -6,9 +6,8 @@ import { useLogout } from '@/shared/hooks/useLogout';
 import useAuthStore from '@/shared/store/auth/auth';
 import { toastActions } from '@/shared/store/modal/toast';
 import { LoadingSpinner } from '@/shared/ui/LoadingSpinner';
-import { handleLogout } from '@/shared/utils/auth';
 import { useQuery } from '@tanstack/react-query';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { refreshTokenQueries } from '../../query/refresh/refreshTokenQueries';
 
 /**
@@ -33,26 +32,25 @@ export function AuthGuard({ children }: { children: React.ReactNode }) {
   const { clientAutoLogout } = useLogout();
   const [isRefreshing, setIsRefreshing] = useState(true);
 
+  const isEnabled = useMemo(() => {
+    return !accessToken && logoutType !== 'manual';
+  }, [accessToken, logoutType]);
+
   const {
     data: accessTokenWithRefreshToken,
     isSuccess,
     isError,
   } = useQuery({
     ...refreshTokenQueries.accessTokenWithRefreshToken,
-    enabled: !accessToken, // accessToken 없을 때만 실행
+    enabled: isEnabled,
     retry: false,
   });
 
   useEffect(() => {
-    if (accessToken) {
-      setIsRefreshing(false);
-    }
-    if (isSuccess && accessTokenWithRefreshToken) {
-      setAccessToken(accessTokenWithRefreshToken); // 상태에 저장
-    }
-    if (isSuccess || isError) {
-      setIsRefreshing(false); // 리프레시 완료
-    }
+    if (accessToken) setIsRefreshing(false);
+    if (isSuccess && accessTokenWithRefreshToken) setAccessToken(accessTokenWithRefreshToken);
+    if (isSuccess || isError) setIsRefreshing(false);
+
     if (!accessToken) {
       if (isError && !isSuccess) {
         const savePreviousPath = logoutType !== 'manual';
