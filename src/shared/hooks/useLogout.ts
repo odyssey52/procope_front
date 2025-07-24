@@ -21,10 +21,9 @@ export const useLogout = () => {
         localStorage.setItem('previousPath', window.location.pathname);
       }
 
-      logout();
-
       if (typeof window !== 'undefined') {
         router.replace(redirectPath);
+        logout();
       }
     } catch (error) {
       toastActions.open({ title: MESSAGES.ERROR.LOGOUT_FAILED, description: MESSAGES.ERROR.RETRY, state: 'error' });
