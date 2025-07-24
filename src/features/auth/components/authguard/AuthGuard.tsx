@@ -66,6 +66,8 @@ export function AuthGuard({ children }: { children: React.ReactNode }) {
   if (isRefreshing) {
     return <LoadingSpinner />;
   }
-
+  if (isError) {
+    return null;
+  }
   return <>{children}</>;
 }
