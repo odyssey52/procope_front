@@ -6,9 +6,10 @@ import { toastActions } from '@/shared/store/modal/toast';
 import { useRouter } from 'next/navigation';
 
 interface LogoutOptions {
-  savePreviousPath?: boolean;
-  redirectPath?: string;
+  savePreviousPath?: boolean; // 이전 경로 저장 여부
+  redirectPath?: string; // 리다이렉트 경로
 }
+
 // client component에서 사용하는 경우 사용
 export const useLogout = () => {
   const { resetAccessToken } = useAuthStore();
@@ -16,7 +17,6 @@ export const useLogout = () => {
 
   const logout = async (options: LogoutOptions) => {
     const { savePreviousPath = false, redirectPath = '/login' } = options;
-    // save? path 하나로 관리하면되지않나?
     try {
       if (savePreviousPath && typeof window !== 'undefined') {
         localStorage.setItem('previousPath', window.location.pathname);

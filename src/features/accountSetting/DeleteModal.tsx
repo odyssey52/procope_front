@@ -2,7 +2,7 @@
 
 import { IconRemove } from '@/shared/assets/icons/line';
 import { MESSAGES } from '@/shared/constants/messages';
-import useAuthStore from '@/shared/store/auth/auth';
+import { useLogout } from '@/shared/hooks/useLogout';
 import { toastActions } from '@/shared/store/modal/toast';
 import useUserStore from '@/shared/store/user/user';
 import Button from '@/shared/ui/button/Button';
@@ -13,16 +13,16 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 import Image from 'next/image';
 import { useState } from 'react';
 import styled from 'styled-components';
+import { invalidateRefreshToken } from '../auth/services/refresh/refreshTokenService';
 import teamQueries from '../team/query/teamQueries';
 import { deleteUser } from '../user/services/delete/userDeleteService';
-import { invalidateRefreshToken } from '../auth/services/refresh/refreshTokenService';
 
 interface DeleteModalProps {
   onClose: () => void;
 }
 
 const DeleteModal = ({ onClose }: DeleteModalProps) => {
-  const { resetAccessToken } = useAuthStore();
+  const { logout } = useLogout();
   const { id, email } = useUserStore();
 
   const [inputEmailValue, setInputEmailValue] = useState('');
@@ -31,9 +31,7 @@ const DeleteModal = ({ onClose }: DeleteModalProps) => {
     ...teamQueries.readTeamRoleCount({ role: 'ADMIN' }),
   });
 
-  const deleteUserMutation = useMutation({
-    mutationFn: deleteUser,
-  });
+  const deleteUserMutation = useMutation({ mutationFn: deleteUser });
   const invalidateRefreshTokenMutation = useMutation({ mutationFn: invalidateRefreshToken });
 
   const isEmailValid = inputEmailValue === email;
@@ -47,7 +45,8 @@ const DeleteModal = ({ onClose }: DeleteModalProps) => {
           title: MESSAGES.TITLE_DELETE_ACCOUNT_SUCCESS,
           description: MESSAGES.DELETE_ACCOUNT_SUCCESS,
         });
-        await invalidateRefreshTokenMutation.mutateAsync();
+        // await invalidateRefreshTokenMutation.mutateAsync();
+        logout({ savePreviousPath: false });
       } catch (error) {
         toastActions.open({
           state: 'error',
