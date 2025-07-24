@@ -11,11 +11,12 @@ interface LogoutOptions {
 }
 // client component에서 사용하는 경우 사용
 export const useLogout = () => {
-  const { logout } = useAuthStore();
+  const { resetAccessToken } = useAuthStore();
   const router = useRouter();
 
-  const clientAutoLogout = async (options: LogoutOptions) => {
+  const logout = async (options: LogoutOptions) => {
     const { savePreviousPath = false, redirectPath = '/login' } = options;
+    // save? path 하나로 관리하면되지않나?
     try {
       if (savePreviousPath && typeof window !== 'undefined') {
         localStorage.setItem('previousPath', window.location.pathname);
@@ -23,12 +24,12 @@ export const useLogout = () => {
 
       if (typeof window !== 'undefined') {
         router.replace(redirectPath);
-        logout();
+        resetAccessToken();
       }
     } catch (error) {
       toastActions.open({ title: MESSAGES.ERROR.LOGOUT_FAILED, description: MESSAGES.ERROR.RETRY, state: 'error' });
     }
   };
 
-  return { clientAutoLogout };
+  return { logout };
 };

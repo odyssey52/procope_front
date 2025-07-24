@@ -2,7 +2,7 @@ import { readRetroList, readRetro } from '@/features/team/services/retroService'
 import { createQueryKeys } from '@lukemorales/query-key-factory';
 import * as types from '@/features/team/services/retroService.type';
 
-const teamQueries = createQueryKeys('team', {
+const retroQueries = createQueryKeys('retro', {
   readRetroList: (params: types.ReadRetroListParams) => ({
     queryKey: [params.teamId],
     queryFn: () => readRetroList(params),
@@ -13,4 +13,4 @@ const teamQueries = createQueryKeys('team', {
   }),
 });
 
-export default teamQueries;
+export default retroQueries;

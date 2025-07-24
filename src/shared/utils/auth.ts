@@ -15,7 +15,7 @@ export const handleLogout = async (options: LogoutOptions = {}) => {
       localStorage.setItem('previousPath', window.location.pathname);
     }
 
-    useAuthStore.getState().logout();
+    useAuthStore.getState().resetAccessToken();
 
     if (typeof window !== 'undefined') {
       window.location.href = redirectPath;
