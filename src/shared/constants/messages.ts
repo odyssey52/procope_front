@@ -15,6 +15,7 @@ export const MESSAGES = {
   TITLE_DELETE_ACCOUNT_SUCCESS: '계정이 삭제되었습니다.',
   DELETE_ACCOUNT_SUCCESS: '로그인 페이지로 이동합니다.',
   DELETE_ACCOUNT_FAILED: '계정 삭제에 실패했습니다.',
+  LOGIN_FAILED: '로그인에 실패했습니다.',
 
   ERROR: {
     RETRY: '잠시 후 다시 시도해주세요.',

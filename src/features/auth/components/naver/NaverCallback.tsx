@@ -1,13 +1,15 @@
 'use client';
 
-import userInfoQueries from '@/features/user/query/info/userInfoQueries';
 import { createTokenWithNaver } from '@/features/auth/services/callback/socialAuthService';
+import LogoPlace from '@/features/login/continue/LogoPlace';
+import userInfoQueries from '@/features/user/query/info/userInfoQueries';
+import { MESSAGES } from '@/shared/constants/messages';
 import useAuthStore from '@/shared/store/auth/auth';
+import { toastActions } from '@/shared/store/modal/toast';
 import useUserStore from '@/shared/store/user/user';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect } from 'react';
-import LogoPlace from '@/features/login/continue/LogoPlace';
 
 const NaverCallback = () => {
   const { accessToken, setAccessToken } = useAuthStore();
@@ -32,7 +34,10 @@ const NaverCallback = () => {
         },
       });
     } catch (error) {
-      alert('로그인에 실패했습니다.');
+      toastActions.open({
+        state: 'error',
+        title: MESSAGES.LOGIN_FAILED,
+      });
       router.replace('/');
     }
   };
@@ -59,7 +64,10 @@ const NaverCallback = () => {
     if (authorizationCode && state) {
       requestAccessToken(authorizationCode, state);
     } else {
-      alert('로그인에 실패했습니다.');
+      toastActions.open({
+        state: 'error',
+        title: MESSAGES.LOGIN_FAILED,
+      });
       router.replace('/');
     }
   }, [router]);
