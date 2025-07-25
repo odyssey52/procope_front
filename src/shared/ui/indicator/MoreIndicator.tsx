@@ -16,19 +16,6 @@ const MoreIndicator = ({ count, size = 24, type }: MoreIndicatorProps) => {
   );
 };
 
-const getMarginLeft = (size?: number) => {
-  switch (size) {
-    case 16:
-      return '-4px';
-    case 24:
-      return '-8px';
-    case 48:
-      return '-12px';
-    default:
-      return '-10px';
-  }
-};
-
 const getTypeStyles = (type?: 'transparent') => {
   if (type === 'transparent') {
     return css`
@@ -80,7 +67,6 @@ const Wrapper = styled.div<{ $size?: 16 | 24 | 32 | 48; $type?: 'transparent' }>
   ${({ theme }) => theme.fontStyle.body_16_medium};
   ${({ $type }) => getTypeStyles($type)}
   ${({ $size }) => getSizeStyles($size)}
-  margin-left: ${({ $size }) => getMarginLeft($size)};
 `;
 
 MoreIndicator.displayName = 'MoreIndicator';

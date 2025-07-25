@@ -10,6 +10,7 @@ import { useEffect, useRef, useState } from 'react';
 import SockJS from 'sockjs-client';
 import styled from 'styled-components';
 import RetroInfoWrapper from './RetroInfoWrapper';
+import KeepWrapper from './KeepWrapper';
 
 const RetroPage = () => {
   const { accessToken } = useAuthStore();
@@ -34,6 +35,7 @@ const RetroPage = () => {
       clickable: true,
     },
   ];
+
   const { data, isSuccess } = useQuery({
     ...retroQueries.readRetro({ teamId: params.teamId as string, retroId: params.retroId as string }),
   });
@@ -78,6 +80,9 @@ const RetroPage = () => {
         <Breadcrumbs paths={paths} />
         <RetroInfoWrapper data={data} />
       </Head>
+      <Content>
+        <KeepWrapper />
+      </Content>
     </Wrapper>
   );
 };
@@ -97,6 +102,12 @@ const Head = styled.div`
   display: flex;
   flex-direction: column;
   gap: 8px;
+`;
+
+const Content = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 48px;
 `;
 
 RetroPage.displayName = 'RetroPage';
