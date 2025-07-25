@@ -18,6 +18,7 @@ const RetroPage = () => {
 
   const [isConnected, setIsConnected] = useState(false);
   const params = useParams();
+  const { retroId, teamId } = params;
   const paths = [
     {
       name: '회고 관리',
@@ -37,7 +38,7 @@ const RetroPage = () => {
   ];
 
   const { data, isSuccess } = useQuery({
-    ...retroQueries.readRetro({ teamId: params.teamId as string, retroId: params.retroId as string }),
+    ...retroQueries.readRetro({ teamId: teamId as string, retroId: retroId as string }),
   });
 
   const connectHandler = () => {
@@ -81,7 +82,7 @@ const RetroPage = () => {
         <RetroInfoWrapper data={data} />
       </Head>
       <Content>
-        <KeepWrapper />
+        <KeepWrapper retroId={retroId as string} />
       </Content>
     </Wrapper>
   );
@@ -92,8 +93,8 @@ const Wrapper = styled.div`
   flex-direction: column;
   width: 100%;
   gap: 40px;
-  margin: 24px;
-  padding: 24px;
+  margin: 24px 0;
+  padding: 24px 0;
   background-color: ${({ theme }) => theme.sementicColors.bg.inverse};
 `;
 
@@ -101,13 +102,15 @@ const Head = styled.div`
   position: relative;
   display: flex;
   flex-direction: column;
+  margin: 0 24px;
+  padding: 0 24px;
   gap: 8px;
 `;
 
 const Content = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 48px;
+  gap: 40px;
 `;
 
 RetroPage.displayName = 'RetroPage';
