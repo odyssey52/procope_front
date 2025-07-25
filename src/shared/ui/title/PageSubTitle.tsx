@@ -50,7 +50,6 @@ const TitleBox = styled.div`
   position: relative;
   display: flex;
   gap: 4px;
-  flex-grow: 1;
 `;
 PageSubTitle.displayName = 'PageTitle';
 
