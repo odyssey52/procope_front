@@ -197,7 +197,6 @@ const Tag = styled.span<TagProps>`
   > svg {
     width: 16px;
     height: 16px;
-    stroke: ${({ theme }) => theme.sementicColors.text.primary};
   }
   ${({ theme }) => theme.fontStyle.caption_12_regular};
   &:disabled {
