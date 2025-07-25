@@ -19,6 +19,11 @@ export interface UpdateRetroTitleParams {
   retroId: string;
 }
 
+export interface ReadRetroProblemListParams {
+  retroId: string;
+  kanbanStatus: KanbanStatus;
+}
+
 // Payload
 export interface CreateRetroPayload {
   title: string;
@@ -60,3 +65,24 @@ export interface ReadRetroResponse {
     },
   ];
 }
+
+export type ReadRetroProblemListResponse = {
+  count: number;
+  payload: [
+    {
+      id: number;
+      userRole: string;
+      createUserInfo: {
+        id: string;
+        name: string;
+        profileImageUrl: string;
+      };
+      title: string;
+      content: string;
+      kanbanStatus: KanbanStatus;
+      updatedAt: string;
+    },
+  ];
+};
+// interface
+export type KanbanStatus = 'RCG' | 'PRG' | 'OK' | 'KEP';
