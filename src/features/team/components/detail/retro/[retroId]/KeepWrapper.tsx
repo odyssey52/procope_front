@@ -11,6 +11,8 @@ import PageSubTitle from '@/shared/ui/title/PageSubTitle';
 import { useQuery } from '@tanstack/react-query';
 import styled from 'styled-components';
 import Tag from '@/shared/ui/tag/Tag';
+import { IconCheckMarkRectangle } from '@/shared/assets/icons/line';
+import { theme } from '@/shared/styles/theme';
 
 interface KeepWrapperProps {
   retroId: string;
@@ -18,6 +20,9 @@ interface KeepWrapperProps {
 
 const EMPTY_TITLE = '등록된 회고 내용이 없습니다.';
 const EMPTY_DESCRIPTION = '회고 내용을 추가하여 회고를 진행해 주세요.';
+
+const ERROR_TITLE = '회고 내용 로딩 실패';
+const ERROR_DESCRIPTION = '회고 내용을 불러오는 중 문제가 발생했습니다.';
 
 const mockData: ReadRetroProblemListResponse = {
   count: 4,
@@ -106,11 +111,7 @@ const KeepWrapper = ({ retroId }: KeepWrapperProps) => {
         </PageSubTitle>
       </Head>
       {isSuccess && data.count === 0 && <Empty title={EMPTY_TITLE} description={EMPTY_DESCRIPTION} onClick={addKeep} />}
-      <ErrorBoundary
-        title="회고 내용 로딩 실패"
-        description="회고 내용을 불러오는 중 문제가 발생했습니다."
-        onRetry={refetch}
-      >
+      <ErrorBoundary title={ERROR_TITLE} description={ERROR_DESCRIPTION} onRetry={refetch}>
         {isSuccess && data.count > 0 && (
           <Content>
             <CardList>
@@ -120,7 +121,12 @@ const KeepWrapper = ({ retroId }: KeepWrapperProps) => {
                   <TaskCard
                     key={item.id}
                     tags={[
-                      <Tag key={item.cardId} $size="large" $style="transparent">
+                      <Tag
+                        key={item.cardId}
+                        $size="large"
+                        $style="transparent"
+                        $leftIcon={<IconCheckMarkRectangle color={theme.sementicColors.icon.brand} />}
+                      >
                         {item.cardId}
                       </Tag>,
                     ]}
