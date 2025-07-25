@@ -6,7 +6,8 @@ const URLS = {
   CREATE_RETRO: (teamId: string) => `/retrospectives/${teamId}`,
   READ_RETRO: (teamId: string, retroId: string) => `/retrospectives/${teamId}/${retroId}`,
   UPDATE_RETRO_TITLE: (teamId: string, retroId: string) => `/retrospectives/${teamId}/${retroId}`,
-  READ_RETRO_PROBLEM_LIST: (retroId: string, kanbanStatus: types.KanbanStatus) => `/retrospectives/problems/${retroId}`,
+  READ_RETRO_PROBLEM_LIST: (retroId: string, kanbanStatus: types.KanbanStatus) =>
+    `/retrospectives/problems/${retroId}?kanbanStatus=${kanbanStatus}`,
 };
 
 const api = new ApiClient({ isPublic: false });

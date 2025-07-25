@@ -3,12 +3,12 @@
 import styled, { css } from 'styled-components';
 
 interface MoreIndicatorProps {
-  count: number;
+  count?: number;
   size?: 16 | 24 | 32 | 48;
   type?: 'transparent';
 }
 
-const MoreIndicator = ({ count, size = 24, type }: MoreIndicatorProps) => {
+const MoreIndicator = ({ count = 0, size = 24, type }: MoreIndicatorProps) => {
   return (
     <Wrapper $size={size} $type={type}>
       {count}

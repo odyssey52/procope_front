@@ -18,16 +18,14 @@ export type UserContext = {
   credentialsNonExpired: boolean;
   accountNonLocked: boolean;
 };
-
+export type FieldInfo = {
+  id: number;
+  name: string;
+};
 export type RoleInfo = {
   id: number;
   name: string;
-  fields: [
-    {
-      id: number;
-      name: string;
-    },
-  ];
+  fields: FieldInfo[];
 };
 
 export type PreferenceInfoList = {
@@ -47,11 +45,7 @@ export type PreferenceInfoList = {
 /** payload */
 export interface UpdateUserInfoPayload {
   name?: string;
-  role: {
-    id: number;
-    name: string;
-    fields: JobSub[];
-  };
+  role: RoleInfo;
   preferences?: Preference[];
 }
 

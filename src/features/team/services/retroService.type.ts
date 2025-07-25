@@ -1,3 +1,7 @@
+import { JobSub } from '@/features/onboarding/SecondStep';
+import { RoleInfo } from '@/features/user/services/info/userInfoService.type';
+import { UserRole } from '@/shared/types/team';
+
 // Params
 export interface ReadRetroListParams {
   teamId: string;
@@ -68,21 +72,22 @@ export interface ReadRetroResponse {
 
 export type ReadRetroProblemListResponse = {
   count: number;
-  payload: [
-    {
-      id: number;
-      userRole: string;
-      createUserInfo: {
-        id: string;
-        name: string;
-        profileImageUrl: string;
-      };
-      title: string;
-      content: string;
-      kanbanStatus: KanbanStatus;
-      updatedAt: string;
-    },
-  ];
+  payload: RetroProblemListItem[];
 };
 // interface
 export type KanbanStatus = 'RCG' | 'PRG' | 'OK' | 'KEP';
+export interface RetroProblemListItem {
+  id: number;
+  userRole: UserRole;
+  cardId: string;
+  createUserInfo: {
+    id: string;
+    name: string;
+    role: string;
+    profileImageUrl: string;
+  };
+  title: string;
+  content: string;
+  kanbanStatus: KanbanStatus;
+  updatedAt: string;
+}
