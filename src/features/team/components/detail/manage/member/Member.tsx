@@ -12,7 +12,6 @@ import MemberList from './MemberList';
 const Member = () => {
   const params = useParams();
   const teamId = params.teamId as string;
-  const inviteUrl = `${process.env.NEXT_PUBLIC_APP_URL}team/invite/${teamId}`;
 
   const { data: teamUser } = useQuery({
     ...teamQueries.readTeamUser({ teamId }),
@@ -22,6 +21,8 @@ const Member = () => {
     ...teamQueries.readTeamDetail({ teamId }),
     enabled: !!teamId,
   });
+
+  const inviteUrl = `${process.env.NEXT_PUBLIC_APP_URL}team/invite/${teamData?.inviteUrl}`;
 
   const path = [
     { name: '팀 관리', path: '/team' },
