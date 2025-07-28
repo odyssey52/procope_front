@@ -43,7 +43,7 @@ const Wrapper = styled.div`
   position: relative;
   display: flex;
   align-items: center;
-
+  justify-content: space-between;
   gap: 8px;
 `;
 const TitleBox = styled.div`
