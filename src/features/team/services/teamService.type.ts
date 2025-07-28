@@ -95,6 +95,7 @@ export interface ReadTeamDetailResponse {
   name: string;
   description: string;
   myRole: 'ADMIN' | 'MANAGER' | 'MEMBER';
+  inviteUrl: string;
 }
 
 export interface CreateTeamResponse {

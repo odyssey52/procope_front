@@ -8,13 +8,13 @@ import TagJob from '@/shared/ui/tag/TagJob';
 import Button from '@/shared/ui/button/Button';
 import { formatDateToDotAndSlice, jobList } from '@/features/team/utils/data';
 import Tooltip from '@/shared/ui/tooltip/Tooltip';
-// import { useMutation } from '@tanstack/react-query';
-// import { updateTeamUser } from '@/features/team/services/teamService';
-// import * as types from '@/features/team/services/teamService.type';
-// import { toastActions } from '@/shared/lib/store/modal/toast';
-// import { MESSAGES } from '@/shared/constants/messages';
+import { useMutation } from '@tanstack/react-query';
+import { updateTeamUser } from '@/features/team/services/teamService';
+import { toastActions } from '@/shared/store/modal/toast';
+import * as types from '@/features/team/services/teamService.type';
+import { MESSAGES } from '@/shared/constants/messages';
 import Image from 'next/image';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import SubModal from '../SubModal';
 
@@ -24,13 +24,23 @@ interface MemberListProps {
 }
 
 const MemberList = ({ teamUser, teamData }: MemberListProps) => {
-  const [isExit, setIsExit] = useState(false);
+  const [openExitIndex, setOpenExitIndex] = useState<number | null>(null);
+  const [roles, setRoles] = useState<Record<string, 'ADMIN' | 'MANAGER' | 'MEMBER'>>({});
+  const [initialRoles, setInitialRoles] = useState<Record<string, 'ADMIN' | 'MANAGER' | 'MEMBER'>>({});
+  const [tooltipIndex, setTooltipIndex] = useState<number | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isTooltip, setIsTooltip] = useState(false);
-  const [role, setRole] = useState<'ADMIN' | 'MANAGER' | 'MEMBER'>('ADMIN');
+
   const arrowIcon = '/assets/icons/line//sort-arrow.svg';
   const title = ['참여자', '이메일', '직무', '담당업무', '참여 일자', '마지막 활성 일자', '권한', ''];
   const width = ['8', '18', '9', '23', '11', '11', '16', '4'];
+
+  useEffect(() => {
+    if (teamUser?.teamMember) {
+      const map = Object.fromEntries(teamUser.teamMember.map((member) => [member.user.id, member.teamRole]));
+      setRoles(map);
+      setInitialRoles(map);
+    }
+  }, [teamUser]);
 
   const roleInfoName = (name: string) => {
     return <TagJob type={jobList[name as keyof typeof jobList]} />;
@@ -69,36 +79,44 @@ const MemberList = ({ teamUser, teamData }: MemberListProps) => {
   };
 
   const task = (value: { id: string; name: string }[]) => {
-    const response: string[] = [];
-    value.forEach((ele) => {
-      response.push(ele.name);
-    });
-    return response;
+    return value.map((ele) => ele.name);
   };
 
-  // const saveTeamUserMutation = useMutation({
-  //   mutationFn: ({ payload, params }: { payload: types.UpdateTeamUserPayload; params: types.UpdateTeamUserParams }) => {
-  //     return updateTeamUser(payload, params);
-  //   },
-  // });
+  const saveTeamUserMutation = useMutation({
+    mutationFn: ({ payload, params }: { payload: types.UpdateTeamUserPayload; params: types.UpdateTeamUserParams }) =>
+      updateTeamUser(payload, params),
+  });
 
-  // const saveTeamUserHandle = async () => {
-  //   try {
-  //     const payload = {};
-  //     const params = { teamId: teamData.teamId };
+  const saveTeamUserHandle = async () => {
+    try {
+      const changedUsers: types.UpdateTeamUserPayload = Object.entries(roles)
+        .filter(([userId, role]) => initialRoles[userId] !== role)
+        .map(([userId, role]) => ({
+          userId,
+          role,
+        }));
 
-  //     await saveTeamUserMutation.mutateAsync({ payload, params });
-  //     toastActions.open({
-  //       state: 'success',
-  //       title: MESSAGES.UPDATE_SAVE_SUCCESS,
-  //     });
-  //   } catch (err) {
-  //     toastActions.open({
-  //       state: 'error',
-  //       title: MESSAGES.ACCOUNT_SAVE_ERROR,
-  //     });
-  //   }
-  // };
+      if (changedUsers.length === 0) {
+        toastActions.open({ state: 'info', title: '변경된 멤버가 없습니다.' });
+        return;
+      }
+
+      const params = { teamId: teamData.teamId };
+      await saveTeamUserMutation.mutateAsync({ payload: changedUsers, params });
+
+      toastActions.open({
+        state: 'success',
+        title: MESSAGES.UPDATE_SAVE_SUCCESS,
+      });
+
+      setInitialRoles(roles);
+    } catch (err) {
+      toastActions.open({
+        state: 'error',
+        title: MESSAGES.ACCOUNT_SAVE_ERROR,
+      });
+    }
+  };
 
   return (
     <Wrapper>
@@ -107,41 +125,43 @@ const MemberList = ({ teamUser, teamData }: MemberListProps) => {
           총 <span>{teamUser.count}</span> 명
         </Count>
         {teamData.myRole === 'ADMIN' && (
-          <Button size="36" onClick={() => {}}>
+          <Button size="36" onClick={saveTeamUserHandle}>
             변경
           </Button>
         )}
       </Top>
       <UserTable>
         <TableTitle>
-          {title.map((value, index) => {
-            return (
-              <PartHeaderContent
-                size={44}
-                title={value}
-                width={width[index]}
-                key={index}
-                icon={
-                  (index === 4 || index === 5) && (
-                    <>
-                      <Image
-                        src={arrowIcon}
-                        width={24}
-                        height={24}
-                        alt="아이콘"
-                        onClick={() => setIsTooltip(!isTooltip)}
-                      />
-                      {isTooltip && (
-                        <div style={{ position: 'absolute' }}>
-                          <Tooltip text="참여 일자 최신순" direction="right" />
-                        </div>
-                      )}
-                    </>
-                  )
-                }
-              />
-            );
-          })}
+          {title.map((value, index) => (
+            <PartHeaderContent
+              size={44}
+              title={value}
+              width={width[index]}
+              key={index}
+              icon={
+                (index === 4 || index === 5) && (
+                  <>
+                    <Image
+                      src={arrowIcon}
+                      width={24}
+                      height={24}
+                      alt="아이콘"
+                      onClick={() => setTooltipIndex((prev) => (prev === index ? null : index))}
+                    />
+                    {tooltipIndex === index && (
+                      <div style={{ position: 'absolute' }}>
+                        <Tooltip
+                          text={index === 4 ? '참여 일자 최신순' : '마지막 활성 일자 최신순'}
+                          position="top"
+                          align="end"
+                        />
+                      </div>
+                    )}
+                  </>
+                )
+              }
+            />
+          ))}
         </TableTitle>
         {teamUser?.teamMember.map((data, index) => {
           const content = [
@@ -154,7 +174,7 @@ const MemberList = ({ teamUser, teamData }: MemberListProps) => {
             teamData.myRole === 'ADMIN' ? (
               <Select
                 placeholder="권한을 선택하세요"
-                value={role && selectAuth(role)}
+                value={selectAuth(roles[data.user.id])}
                 width={222}
                 valueHandler={(e) => {
                   if (!e || typeof e !== 'object' || !('props' in e)) return;
@@ -165,7 +185,10 @@ const MemberList = ({ teamUser, teamData }: MemberListProps) => {
                     return itemLabel === selectedLabel;
                   });
                   if (matched) {
-                    setRole(matched.id);
+                    setRoles((prev) => ({
+                      ...prev,
+                      [data.user.id]: matched.id,
+                    }));
                   }
                 }}
                 selectOptionList={authorityTag}
@@ -180,11 +203,11 @@ const MemberList = ({ teamUser, teamData }: MemberListProps) => {
                   width={36}
                   height={36}
                   alt="아이콘"
-                  onClick={() => setIsExit(!isExit)}
+                  onClick={() => setOpenExitIndex(openExitIndex === index ? null : index)}
                   style={{ position: 'relative' }}
                 />
-                {isExit && (
-                  <div style={{ position: 'absolute', top: '100%', right: '0' }}>
+                {openExitIndex === index && (
+                  <div style={{ position: 'absolute', top: '100%', right: '0', zIndex: 10 }}>
                     <ItemList
                       selectOptionList={[{ value: '퇴출' }]}
                       width="112px"
@@ -195,7 +218,7 @@ const MemberList = ({ teamUser, teamData }: MemberListProps) => {
                         name="deleteUser"
                         teamId={teamData.teamId}
                         userId={data.user.id}
-                        onClose={() => setIsExit(false)}
+                        onClose={() => setOpenExitIndex(null)}
                       />
                     )}
                   </div>
@@ -203,18 +226,17 @@ const MemberList = ({ teamUser, teamData }: MemberListProps) => {
               </>
             ),
           ];
+
           return (
             <TableContent key={index}>
               {content.map((value, index) => {
                 return index === 3 && Array.isArray(value) ? (
                   <PartCellContent size={56} width={width[index]} key={index}>
-                    {value.map((ele, index) => {
-                      return (
-                        <TagWrapper key={index} $style="transparent" $size="large">
-                          {ele}
-                        </TagWrapper>
-                      );
-                    })}
+                    {value.map((ele, index) => (
+                      <TagWrapper key={index} $style="transparent" $size="large">
+                        {ele}
+                      </TagWrapper>
+                    ))}
                   </PartCellContent>
                 ) : (
                   <PartCellContent size={56} width={width[index]} key={index}>

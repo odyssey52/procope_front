@@ -1,71 +1,119 @@
-import styled, { DefaultTheme } from 'styled-components';
+import styled from 'styled-components';
 
 interface TooltipProps {
   text: string;
-  direction: 'left' | 'right' | 'center';
-  location?: 'top' | 'bottom';
+  position?: 'top' | 'bottom' | 'left' | 'right';
+  align?: 'start' | 'center' | 'end';
   icon?: string;
 }
 
-const tooltipPoint = (direction: 'left' | 'right' | 'center') => (location?: 'top' | 'bottom') => {
-  if (location === 'top') {
-    return `
-    &::before {
-      content: '';
-      position: absolute;
-      bottom: 100%;
-      left: ${direction === 'left' ? '0%' : direction === 'right' ? '100%' : '50%'};
-      transform: translateX(${direction === 'center' ? '-50%' : '0'});
-      border-width: 0 5px 5px 5px;
-      border-color: transparent transparent black transparent;
-    }
-  `;
+const verticalPoint = (align?: string) => {
+  if (align === 'start') {
+    return {
+      left: '10px',
+      transform: 'none',
+    };
   }
-  if (location === 'bottom') {
-    return `
-    &::before {
-      content: '';
-      position: absolute;
-      top: 100%;
-      left: ${direction === 'left' ? '0%' : direction === 'right' ? '100%' : '50%'};
-      transform: translateX(${direction === 'center' ? '-50%' : '0'});
-      border-width: 5px 5px 0 5px;
-      border-color: black transparent transparent transparent;
-    }
-  `;
+  if (align === 'center') {
+    return {
+      left: '50%',
+      transform: 'translateX(-50%)',
+    };
+  }
+  if (align === 'end') {
+    return {
+      right: '10px',
+      left: 'auto',
+      transform: 'none',
+    };
   }
 };
 
-const tooltipColor = (theme: DefaultTheme) => {
-  return `background-color: ${theme.sementicColors.bg.primary}; color: ${theme.sementicColors.text.inverse}`;
+const horizontalPoint = (align?: string) => {
+  if (align === 'start') {
+    return {
+      top: '10px',
+      transform: 'none',
+    };
+  }
+  if (align === 'center') {
+    return {
+      top: '50%',
+      transform: 'translateY(-50%)',
+    };
+  }
+  if (align === 'end') {
+    return {
+      bottom: '10px',
+      top: 'auto',
+      transform: 'none',
+    };
+  }
 };
 
-const Tooltip = ({ text, direction, location, icon }: TooltipProps) => {
+const Tooltip = ({ text, position, align = 'center', icon }: TooltipProps) => {
   return (
-    <>
-      <Wrapper>
-        {text}
-        {icon && <img src={icon} alt="툴팁이미지" />}
-      </Wrapper>
-      <Point text={text} direction={direction} location={location} />
-    </>
+    <Wrapper position={position} align={align}>
+      {text}
+      {icon && <img src={icon} alt="툴팁이미지" />}
+    </Wrapper>
   );
 };
 
-const Wrapper = styled.div`
-  height: 32px;
-  padding: 8px;
-  display: flex;
+const Wrapper = styled.div<{ position?: string; align?: string }>`
+  position: relative;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
+  padding: 8px;
   border-radius: 4px;
-  ${({ theme }) => tooltipColor(theme)}
-`;
-const Point = styled.div<TooltipProps>`
-  border-left: 4px solid transparent;
-  border-right: 4px solid transparent;
-  border-top: 4px solid ${({ theme }) => theme.sementicColors.bg.primary};
-  ${({ direction, location }) => tooltipPoint(direction)(location)}
+  z-index: 9999;
+  ${({ align }) =>
+    align === 'start'
+      ? 'transform: translateX(0);'
+      : align === 'center'
+        ? 'transform: translateX(-50%);'
+        : align === 'end'
+          ? 'transform: translateX(-100%);'
+          : ''}
+  ${({ theme }) => theme.fontStyle.caption_10_regular};
+  ${({ theme }) => `
+    background-color: ${theme.sementicColors.bg.primary};
+    color: ${theme.sementicColors.text.inverse};
+  `}
+
+  &::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 0;
+    border-style: solid;
+    display: ${({ position: pos }) => (pos ? 'block' : 'none')};
+  }
+  &[position='bottom']::after {
+    bottom: -4px;
+    border-width: 4px 4px 0 4px;
+    border-color: ${({ theme }) => `${theme.sementicColors.bg.primary} transparent transparent transparent`};
+    ${({ align }) => verticalPoint(align)}
+  }
+  &[position='top']::after {
+    top: -4px;
+    border-width: 0 4px 4px 4px;
+    border-color: ${({ theme }) => `transparent transparent ${theme.sementicColors.bg.primary} transparent`};
+    ${({ align }) => verticalPoint(align)}
+  }
+  &[position='left']::after {
+    right: -4px;
+    border-width: 4px 0 4px 4px;
+    border-color: ${({ theme }) => `transparent transparent transparent ${theme.sementicColors.bg.primary}`};
+    ${({ align }) => horizontalPoint(align)}
+  }
+  &[position='right']::after {
+    left: -4px;
+    border-width: 4px 4px 4px 0;
+    border-color: ${({ theme }) => `transparent ${theme.sementicColors.bg.primary} transparent transparent`};
+    ${({ align }) => horizontalPoint(align)}
+  }
 `;
 
 export default Tooltip;
