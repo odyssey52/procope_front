@@ -16,8 +16,12 @@ import UserArea from './UserArea';
 const Header = () => {
   const { accessToken } = useAuthStore();
   const { setUser } = useUserStore();
+  const { logoutType } = useAuthStore();
   const { teamInfo } = useTeamStore();
-  const { data, isSuccess } = useQuery({ ...userInfoQueries.readUserInfo(accessToken || '') });
+  const { data, isSuccess } = useQuery({
+    ...userInfoQueries.readUserInfo(accessToken || ''),
+    enabled: logoutType !== 'manual',
+  });
 
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isUserAreaOpen, setIsUserAreaOpen] = useState(false);

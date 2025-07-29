@@ -6,16 +6,8 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import Avatar from '../avatar/Avatar';
 import Divider from '../line/Divider';
-import Tag from '../tag/Tag';
 import TagJob from '../tag/TagJob';
 import Text from '../Text';
-
-interface TagData {
-  id: string | number;
-  leftIcon?: React.ReactNode;
-  rightIcon?: React.ReactNode;
-  label: string;
-}
 
 interface MenuItem {
   id: string | number;
@@ -24,7 +16,7 @@ interface MenuItem {
 }
 
 interface TaskCardProps {
-  tags: TagData[];
+  tags?: React.ReactNode[];
   tagJob: 'development' | 'planning' | 'data' | 'design' | 'marketing' | 'sales' | 'operations';
   title: string;
   startDate: string;
@@ -67,11 +59,7 @@ const TaskCard = ({
       <Top>
         <TagBox>
           <TagList>
-            {tags.map((tag) => (
-              <Tag key={tag.id} $size="large" $leftIcon={tag.leftIcon} $rightIcon={tag.rightIcon} $style="transparent">
-                {tag.label}
-              </Tag>
-            ))}
+            {tags?.map((tag) => tag)}
             <TagJob type={tagJob} bgColor={theme.sementicColors.bg.tertiary_hover_pressed} />
           </TagList>
           {showMenu && (
@@ -136,6 +124,7 @@ const Wrapper = styled.div`
   position: relative;
   display: flex;
   flex-direction: column;
+  min-width: 444px;
   gap: 12px;
   border-radius: 12px;
   padding: 24px;

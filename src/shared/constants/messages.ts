@@ -2,6 +2,7 @@
 export const MESSAGES = {
   CLIPBOARD_COPY_SUCCESS: '클립보드에 복사되었습니다.',
   CLIPBOARD_COPY_ERROR: '클립보드 복사 실패:',
+  LOGOUT_SUCCESS: '로그아웃 되었습니다.',
   ACCOUNT_SAVE_SUCCESS: '계정 정보가 성공적으로 수정되었습니다.',
   ACCOUNT_SAVE_ERROR: '다시 시도해 주세요.',
   TITLE_SAVE_FAILED: '저장 실패',
@@ -14,6 +15,7 @@ export const MESSAGES = {
   TITLE_DELETE_ACCOUNT_SUCCESS: '계정이 삭제되었습니다.',
   DELETE_ACCOUNT_SUCCESS: '로그인 페이지로 이동합니다.',
   DELETE_ACCOUNT_FAILED: '계정 삭제에 실패했습니다.',
+  LOGIN_FAILED: '로그인에 실패했습니다.',
 
   ERROR: {
     RETRY: '잠시 후 다시 시도해주세요.',

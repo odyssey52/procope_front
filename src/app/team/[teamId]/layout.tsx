@@ -45,6 +45,7 @@ const Content = styled.div`
   position: relative;
   display: flex;
   justify-content: center;
+  overflow: hidden;
   flex-grow: 1;
 `;
 

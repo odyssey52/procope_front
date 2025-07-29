@@ -236,7 +236,6 @@ const page = () => {
       </ButtonWrapper>
       <Content>
         <TaskCard
-          tags={tagData}
           tagJob="development"
           title="타이틀"
           startDate="2025-01-01"
