@@ -6,6 +6,8 @@ const URLS = {
   CREATE_RETRO: (teamId: string) => `/retrospectives/${teamId}`,
   READ_RETRO: (teamId: string, retroId: string) => `/retrospectives/${teamId}/${retroId}`,
   UPDATE_RETRO_TITLE: (teamId: string, retroId: string) => `/retrospectives/${teamId}/${retroId}`,
+  READ_RETRO_PROBLEM_LIST: (retroId: string, kanbanStatus: types.KanbanStatus) =>
+    `/retrospectives/problems/${retroId}?kanbanStatus=${kanbanStatus}`,
 };
 
 const api = new ApiClient({ isPublic: false });
@@ -28,5 +30,12 @@ export async function readRetro(params: types.ReadRetroParams): Promise<types.Re
 
 export async function updateRetroTitle(params: types.UpdateRetroTitleParams, payload: types.UpdateRetroTitlePayload) {
   const { data } = await api.put(URLS.UPDATE_RETRO_TITLE(params.teamId, params.retroId), payload);
+  return data;
+}
+
+export async function readRetroProblemList(params: types.ReadRetroProblemListParams) {
+  const { data } = await api.get<types.ReadRetroProblemListResponse>(
+    URLS.READ_RETRO_PROBLEM_LIST(params.retroId, params.kanbanStatus),
+  );
   return data;
 }

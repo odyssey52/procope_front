@@ -2,7 +2,7 @@
 
 import { IconRemove } from '@/shared/assets/icons/line';
 import { MESSAGES } from '@/shared/constants/messages';
-import useAuthStore from '@/shared/store/auth/auth';
+import { useLogout } from '@/shared/hooks/useLogout';
 import { toastActions } from '@/shared/store/modal/toast';
 import useUserStore from '@/shared/store/user/user';
 import Button from '@/shared/ui/button/Button';
@@ -13,26 +13,28 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 import Image from 'next/image';
 import { useState } from 'react';
 import styled from 'styled-components';
+import { invalidateRefreshToken } from '../auth/services/refresh/refreshTokenService';
+import teamQueries from '../team/query/teamQueries';
 import { deleteUser } from '../user/services/delete/userDeleteService';
-import { readTeamRoleCount } from '../team/services/teamService';
 
 interface DeleteModalProps {
   onClose: () => void;
 }
 
 const DeleteModal = ({ onClose }: DeleteModalProps) => {
-  const [email, setEmail] = useState('');
-  const { id } = useUserStore();
-  const { logout } = useAuthStore();
+  const { logout } = useLogout();
+  const { id, email } = useUserStore();
+
+  const [inputEmailValue, setInputEmailValue] = useState('');
+
   const { data: teamRoleCount } = useQuery({
-    queryKey: ['teamRoleCount'],
-    queryFn: () => readTeamRoleCount({ role: 'ADMIN' }),
+    ...teamQueries.readTeamRoleCount({ role: 'ADMIN' }),
   });
-  const { email: userEmail } = useUserStore();
-  const deleteUserMutation = useMutation({
-    mutationFn: deleteUser,
-  });
-  const isEmailValid = email === userEmail;
+
+  const deleteUserMutation = useMutation({ mutationFn: deleteUser });
+  const invalidateRefreshTokenMutation = useMutation({ mutationFn: invalidateRefreshToken });
+
+  const isEmailValid = inputEmailValue === email;
 
   const deleteAccount = async () => {
     if (isEmailValid && id) {
@@ -43,11 +45,8 @@ const DeleteModal = ({ onClose }: DeleteModalProps) => {
           title: MESSAGES.TITLE_DELETE_ACCOUNT_SUCCESS,
           description: MESSAGES.DELETE_ACCOUNT_SUCCESS,
         });
-
-        setTimeout(() => {
-          logout();
-          onClose();
-        }, 2000);
+        // await invalidateRefreshTokenMutation.mutateAsync();
+        logout({ savePreviousPath: false });
       } catch (error) {
         toastActions.open({
           state: 'error',
@@ -95,9 +94,9 @@ const DeleteModal = ({ onClose }: DeleteModalProps) => {
               <Text variant="heading_18">의 최고관리자로 참여하고 있는 팀이 있습니다.</Text>
             </BottomTextBox>
             <Placeholder
-              value={email}
-              valueHandler={setEmail}
-              validation={email.length > 0 ? isEmailValid : undefined}
+              value={inputEmailValue}
+              valueHandler={setInputEmailValue}
+              validation={inputEmailValue.length > 0 ? isEmailValid : undefined}
               errorDescription="이메일이 일치하지 않습니다."
               placeholder="usermail@procope.kr"
               label={{ text: '이메일을 입력하여 삭제를 진행해 주세요.', required: true }}

@@ -43,14 +43,13 @@ const Wrapper = styled.div`
   position: relative;
   display: flex;
   align-items: center;
-
+  justify-content: space-between;
   gap: 8px;
 `;
 const TitleBox = styled.div`
   position: relative;
   display: flex;
   gap: 4px;
-  flex-grow: 1;
 `;
 PageSubTitle.displayName = 'PageTitle';
 

@@ -1,9 +1,10 @@
 import { invalidateRefreshToken } from '@/features/auth/services/refresh/refreshTokenService';
 import { IconHome, IconOut, IconSetting } from '@/shared/assets/icons/line';
+import { MESSAGES } from '@/shared/constants/messages';
 import useApiError from '@/shared/hooks/useApiError';
 import { useClickOutside } from '@/shared/hooks/useClickOutside';
-import useAuthStore from '@/shared/store/auth/auth';
-import { handleLogout } from '@/shared/utils/auth';
+import { useLogout } from '@/shared/hooks/useLogout';
+import { toastActions } from '@/shared/store/modal/toast';
 import { elevation } from '@/shared/styles/mixin';
 import { useMutation } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
@@ -25,14 +26,17 @@ const UserArea = ({ userData, closeUserArea }: UserAreaProps) => {
   const router = useRouter();
   const { handleError } = useApiError();
   const ref = useClickOutside<HTMLDivElement>(closeUserArea);
-
+  const { logout } = useLogout();
   const invalidateRefreshTokenMutation = useMutation({ mutationFn: invalidateRefreshToken });
 
   const handleLogoutClick = async () => {
     try {
       await invalidateRefreshTokenMutation.mutateAsync();
-      useAuthStore.getState().logout('manual');
-      handleLogout({ savePreviousPath: false });
+      logout({ savePreviousPath: false });
+      toastActions.open({
+        state: 'success',
+        title: MESSAGES.LOGOUT_SUCCESS,
+      });
     } catch (error) {
       handleError(error);
     }
