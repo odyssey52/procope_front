@@ -14,6 +14,7 @@ import Text from '@/shared/ui/Text';
 import PageSubTitle from '@/shared/ui/title/PageSubTitle';
 import PageSubTitleSkeleton from '@/shared/ui/title/PageSubTitleSkeleton';
 import PageTitle from '@/shared/ui/title/PageTitle';
+import PageTitleSkeleton from '@/shared/ui/title/PageTitleSkeleton';
 import { formatDateToDot } from '@/shared/utils/date';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import Link from 'next/link';
@@ -162,7 +163,7 @@ const RetroList = () => {
       <Head>
         <TitleBox>
           <Breadcrumbs paths={paths} />
-          <PageTitle title="회고 목록" />
+          {isLoading ? <PageTitleSkeleton /> : <PageTitle title="회고 목록" />}
         </TitleBox>
       </Head>
       <Content>
