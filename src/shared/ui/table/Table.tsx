@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import Error from '../error/Error';
 import PartCellContent from '../part/PartCellContent';
 import PartHeaderContent from '../part/PartHeaderContent';
-import TableSkeleton from './TableSkeleton';
+import BoxSkeleton from '../skeleton/BoxSkeleton';
 
 export interface TableColumn<T> {
   key: string;
@@ -43,7 +43,7 @@ const Table = <T extends Record<string, any>>({
   const isEmpty = !data || data.length === 0;
 
   if (isLoading) {
-    return <TableSkeleton />;
+    return <BoxSkeleton />;
   }
   return (
     <Wrapper>
