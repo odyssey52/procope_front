@@ -2,18 +2,18 @@
 
 import styled from 'styled-components';
 
-const PageSubTitleSkeleton = () => {
+const PageTitleSkeleton = () => {
   return <Skeleton />;
 };
 
 const Skeleton = styled.div`
-  width: 146px;
-  height: 24px;
   padding: 8px 12px;
-  border-radius: 12px;
+  width: 118px;
+  height: 34px;
+  border-radius: 17px;
   background: ${({ theme }) => theme.sementicColors.bg.tertiary};
 `;
 
-PageSubTitleSkeleton.displayName = 'PageSubTitleSkeleton';
+PageTitleSkeleton.displayName = 'PageTitleSkeleton';
 
-export default PageSubTitleSkeleton;
+export default PageTitleSkeleton;

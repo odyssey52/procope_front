@@ -3,10 +3,10 @@
 import styled from 'styled-components';
 
 const TableSkeleton = () => {
-  return <Wrapper />;
+  return <Skeleton />;
 };
 
-const Wrapper = styled.div`
+const Skeleton = styled.div`
   width: 100%;
   height: 324px;
   padding: 24px;
