@@ -12,6 +12,7 @@ import Empty from '@/shared/ui/empty/Empty';
 import Table from '@/shared/ui/table/Table';
 import Text from '@/shared/ui/Text';
 import PageSubTitle from '@/shared/ui/title/PageSubTitle';
+import PageSubTitleSkeleton from '@/shared/ui/title/PageSubTitleSkeleton';
 import PageTitle from '@/shared/ui/title/PageTitle';
 import { formatDateToDot } from '@/shared/utils/date';
 import { useMutation, useQuery } from '@tanstack/react-query';
@@ -117,7 +118,9 @@ const createColumns = (teamId: string): ColumnConfig[] => [
 const RetroList = () => {
   const router = useRouter();
   const params = useParams();
-  const { data, isError } = useQuery({ ...retroQueries.readRetroList({ teamId: params.teamId as string }) });
+  const { data, isError, isLoading } = useQuery({
+    ...retroQueries.readRetroList({ teamId: params.teamId as string }),
+  });
 
   const createRetroMutation = useMutation({
     mutationFn: createRetro,
@@ -163,15 +166,20 @@ const RetroList = () => {
         </TitleBox>
       </Head>
       <Content>
-        <PageSubTitle first="총" point={`${data?.length || 0}`} last="개">
-          <Button onClick={addRetro}>추가</Button>
-        </PageSubTitle>
+        {isLoading ? (
+          <PageSubTitleSkeleton />
+        ) : (
+          <PageSubTitle first="총" point={`${data?.length || 0}`} last="개">
+            <Button onClick={addRetro}>추가</Button>
+          </PageSubTitle>
+        )}
         <Table
           data={data}
           columns={columns}
           keyExtractor={(item) => item.title}
           caption="회고 목록"
           isError={isError}
+          isLoading={isLoading}
           emptyNode={<Empty title={EMPTY_TITLE} description={EMPTY_DESCRIPTION} onClick={addRetro} />}
         />
       </Content>
