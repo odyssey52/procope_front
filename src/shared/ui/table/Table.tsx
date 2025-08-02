@@ -2,9 +2,10 @@
 
 import { ReactNode } from 'react';
 import styled from 'styled-components';
+import Error from '../error/Error';
 import PartCellContent from '../part/PartCellContent';
 import PartHeaderContent from '../part/PartHeaderContent';
-import Error from '../error/Error';
+import BoxSkeleton from '../skeleton/BoxSkeleton';
 
 export interface TableColumn<T> {
   key: string;
@@ -24,6 +25,7 @@ interface TableProps<T> {
   caption?: string;
   emptyNode?: ReactNode;
   isError?: boolean;
+  isLoading?: boolean;
 }
 
 const ERROR_TITLE = 'Error';
@@ -36,9 +38,13 @@ const Table = <T extends Record<string, any>>({
   caption,
   emptyNode,
   isError,
+  isLoading,
 }: TableProps<T>) => {
   const isEmpty = !data || data.length === 0;
 
+  if (isLoading) {
+    return <BoxSkeleton />;
+  }
   return (
     <Wrapper>
       {caption && <caption>{caption}</caption>}
@@ -56,26 +62,27 @@ const Table = <T extends Record<string, any>>({
       </colgroup>
       <thead>
         <tr>
-          {columns.map((column, index) => (
-            <TableHeader key={`th-${index}`}>
-              <PartHeaderContent
-                title={column.title || ''}
-                size={44}
-                icon={column.sortable ? column.icon : undefined}
-              />
-            </TableHeader>
-          ))}
+          {!isLoading &&
+            columns.map((column, index) => (
+              <TableHeader key={`th-${index}`}>
+                <PartHeaderContent
+                  title={column.title || ''}
+                  size={44}
+                  icon={column.sortable ? column.icon : undefined}
+                />
+              </TableHeader>
+            ))}
         </tr>
       </thead>
 
-      {isEmpty && (
+      {isEmpty && !isLoading && (
         <tbody>
           <tr>
             <EmptyBox colSpan={columns.length}>{emptyNode}</EmptyBox>
           </tr>
         </tbody>
       )}
-      {isError && (
+      {isError && !isLoading && (
         <tbody>
           <tr>
             <EmptyBox colSpan={columns.length}>
@@ -84,7 +91,7 @@ const Table = <T extends Record<string, any>>({
           </tr>
         </tbody>
       )}
-      {!isError && !isEmpty && (
+      {!isError && !isEmpty && !isLoading && (
         <tbody>
           {data.map((item, rowIndex) => (
             <tr key={`tr-${keyExtractor(item)}-${rowIndex}`}>
