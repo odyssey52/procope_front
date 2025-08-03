@@ -40,37 +40,6 @@ const RetroInfoWrapper = ({ data, client }: RetroInfoWrapperProps) => {
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
   const [selectedDate, setSelectedDate] = useState<string>(formatDateToDot(data.createdAt));
 
-  // STOMP 구독 설정
-  useEffect(() => {
-    if (client && client.connected) {
-      // 회고 제목 실시간 구독
-      subscriptionRef.current = client.subscribe('/user/topic/retrospectives', (message) => {
-        try {
-          const titleData = JSON.parse(message.body);
-          console.log('📨 실시간 회고 제목 수신:', titleData);
-
-          // 추후 편집 중일 때 업데이트 되는 것 방지
-          // if (!document.activeElement?.classList.contains('editing-title')) {
-          //   setCurrentTitle(titleData.title || '');
-          // }
-
-          setCurrentTitle(titleData.title || '');
-        } catch (error) {
-          console.error('❌ 회고 제목 파싱 에러:', error);
-        }
-      });
-
-      console.log('✅ 회고 제목 구독 완료');
-    }
-
-    return () => {
-      if (subscriptionRef.current) {
-        subscriptionRef.current.unsubscribe();
-        console.log('🔌 회고 제목 구독 해제');
-      }
-    };
-  }, [client]);
-
   const updateRetroTitleMutation = useMutation({
     mutationFn: (payload: UpdateRetroTitlePayload) => updateRetroTitle({ teamId, retroId }, payload),
     onSuccess: () => {
@@ -99,6 +68,34 @@ const RetroInfoWrapper = ({ data, client }: RetroInfoWrapperProps) => {
     }
   };
 
+  useEffect(() => {
+    if (client && client.connected) {
+      subscriptionRef.current = client.subscribe('/user/topic/retrospectives', (message) => {
+        try {
+          const titleData = JSON.parse(message.body);
+          console.log('📨 실시간 회고 제목 수신:', titleData);
+
+          // 추후 편집 중일 때 업데이트 되는 것 방지
+          // if (!document.activeElement?.classList.contains('editing-title')) {
+          //   setCurrentTitle(titleData.title || '');
+          // }
+
+          setCurrentTitle(titleData.title || '');
+        } catch (error) {
+          console.error('❌ 회고 제목 파싱 에러:', error);
+        }
+      });
+
+      console.log('✅ 회고 제목 구독 완료');
+    }
+
+    return () => {
+      if (subscriptionRef.current) {
+        subscriptionRef.current.unsubscribe();
+        console.log('🔌 회고 제목 구독 해제');
+      }
+    };
+  }, [client]);
   return (
     <Wrapper>
       <TitleWrapper>

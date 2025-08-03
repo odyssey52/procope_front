@@ -8,6 +8,9 @@ const URLS = {
   UPDATE_RETRO_TITLE: (teamId: string, retroId: string) => `/retrospectives/${teamId}/${retroId}`,
   READ_RETRO_PROBLEM_LIST: (retroId: string, kanbanStatus: types.KanbanStatus) =>
     `/retrospectives/problems/${retroId}?kanbanStatus=${kanbanStatus}`,
+  READ_RETRO_MEMBER_LIST: (teamId: string, retroId: string) => `/retrospectives/${teamId}/${retroId}/participants`,
+  CREATE_RETRO_MEMBER: (teamId: string, retroId: string) => `/retrospectives/${teamId}/${retroId}/participants`,
+  DELETE_RETRO_MEMBER: (teamId: string, retroId: string) => `/retrospectives/${teamId}/${retroId}/participants`,
 };
 
 const api = new ApiClient({ isPublic: false });
@@ -37,5 +40,25 @@ export async function readRetroProblemList(params: types.ReadRetroProblemListPar
   const { data } = await api.get<types.ReadRetroProblemListResponse>(
     URLS.READ_RETRO_PROBLEM_LIST(params.retroId, params.kanbanStatus),
   );
+  return data;
+}
+
+export async function readRetroMemberList(params: types.ReadRetroMemberListParams) {
+  const { data } = await api.get<types.ReadRetroMemberListResponse>(
+    URLS.READ_RETRO_MEMBER_LIST(params.teamId, params.retroId),
+  );
+  return data;
+}
+
+export async function createRetroMember(
+  params: types.CreateRetroMemberParams,
+  payload: types.CreateRetroMemberPayload,
+) {
+  const { data } = await api.post(URLS.CREATE_RETRO_MEMBER(params.teamId, params.retroId), payload);
+  return data;
+}
+
+export async function deleteRetroMember(params: types.DeleteRetroMemberParams) {
+  const { data } = await api.delete(URLS.DELETE_RETRO_MEMBER(params.teamId, params.retroId));
   return data;
 }

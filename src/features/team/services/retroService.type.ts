@@ -28,6 +28,21 @@ export interface ReadRetroProblemListParams {
   kanbanStatus: KanbanStatus;
 }
 
+export interface ReadRetroMemberListParams {
+  teamId: string;
+  retroId: string;
+}
+
+export interface CreateRetroMemberParams {
+  teamId: string;
+  retroId: string;
+}
+
+export interface DeleteRetroMemberParams {
+  teamId: string;
+  retroId: string;
+}
+
 // Payload
 export interface CreateRetroPayload {
   title: string;
@@ -36,6 +51,10 @@ export interface CreateRetroPayload {
 
 export interface UpdateRetroTitlePayload {
   title: string;
+}
+
+export interface CreateRetroMemberPayload {
+  targetUserId: string;
 }
 
 // response
@@ -74,6 +93,11 @@ export type ReadRetroProblemListResponse = {
   count: number;
   payload: RetroProblemListItem[];
 };
+
+export type ReadRetroMemberListResponse = {
+  payload: RetroMemberListItem[];
+};
+
 // interface
 export type KanbanStatus = 'RCG' | 'PRG' | 'OK' | 'KEP';
 export interface RetroProblemListItem {
@@ -91,3 +115,10 @@ export interface RetroProblemListItem {
   kanbanStatus: KanbanStatus;
   updatedAt: string;
 }
+
+export type RetroMemberListItem = {
+  userId: string;
+  name: string;
+  profileImage: string;
+  inviteStatus: boolean;
+};
