@@ -54,10 +54,6 @@ const RetroPage = () => {
         onConnect: () => {
           console.log('✅ STOMP 연결 성공');
           setIsConnected(true);
-
-          client.current?.subscribe(`/topic/${retroId}`, (message) => {
-            console.log('📨 메시지 수신:', message.body);
-          });
         },
         onStompError: (frame) => {
           console.error('❌ STOMP 에러:', frame);
@@ -87,10 +83,14 @@ const RetroPage = () => {
     <Wrapper>
       <Head>
         <Breadcrumbs paths={paths} />
-        {isLoading ? <RetroInfoSkeleton /> : <RetroInfoWrapper data={data as ReadRetroResponse} />}
+        {isLoading ? (
+          <RetroInfoSkeleton />
+        ) : (
+          <RetroInfoWrapper data={data as ReadRetroResponse} client={client.current} />
+        )}
       </Head>
       <Content>
-        <KeepWrapper retroId={retroId as string} />
+        <KeepWrapper retroId={retroId as string} client={client.current} />
       </Content>
     </Wrapper>
   );

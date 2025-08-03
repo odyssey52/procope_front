@@ -13,9 +13,11 @@ import styled from 'styled-components';
 import Tag from '@/shared/ui/tag/Tag';
 import { IconCheckMarkRectangle } from '@/shared/assets/icons/line';
 import { theme } from '@/shared/styles/theme';
+import { Client } from '@stomp/stompjs';
 
 interface KeepWrapperProps {
   retroId: string;
+  client: Client | null;
 }
 
 const EMPTY_TITLE = '등록된 회고 내용이 없습니다.';
@@ -90,7 +92,7 @@ const mockData: ReadRetroProblemListResponse = {
   ],
 };
 
-const KeepWrapper = ({ retroId }: KeepWrapperProps) => {
+const KeepWrapper = ({ retroId, client }: KeepWrapperProps) => {
   const { data, isSuccess, refetch } = useQuery({
     ...retroQueries.readRetroProblemList({ retroId, kanbanStatus: 'KEP' }),
   });

@@ -13,21 +13,24 @@ import Calendar from '@/shared/ui/calendar/Calendar';
 import Text from '@/shared/ui/Text';
 import PageTitle from '@/shared/ui/title/PageTitle';
 import { formatDateToDot } from '@/shared/utils/date';
+import { Client } from '@stomp/stompjs';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useParams } from 'next/navigation';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import MemberFinder from './MemberFinder';
 
 interface RetroInfoWrapperProps {
   data: ReadRetroResponse;
+  client: Client | null;
 }
 
-const RetroInfoWrapper = ({ data }: RetroInfoWrapperProps) => {
+const RetroInfoWrapper = ({ data, client }: RetroInfoWrapperProps) => {
   const params = useParams();
   const teamId = params.teamId as string;
   const retroId = params.retroId as string;
   const queryClient = useQueryClient();
+  const subscriptionRef = useRef<any>(null);
 
   const { handleError } = useApiError();
 
@@ -36,6 +39,37 @@ const RetroInfoWrapper = ({ data }: RetroInfoWrapperProps) => {
   const [isMemberListOpen, setIsMemberListOpen] = useState(false);
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
   const [selectedDate, setSelectedDate] = useState<string>(formatDateToDot(data.createdAt));
+
+  // STOMP 구독 설정
+  useEffect(() => {
+    if (client && client.connected) {
+      // 회고 제목 실시간 구독
+      subscriptionRef.current = client.subscribe('/user/topic/retrospectives', (message) => {
+        try {
+          const titleData = JSON.parse(message.body);
+          console.log('📨 실시간 회고 제목 수신:', titleData);
+
+          // 추후 편집 중일 때 업데이트 되는 것 방지
+          // if (!document.activeElement?.classList.contains('editing-title')) {
+          //   setCurrentTitle(titleData.title || '');
+          // }
+
+          setCurrentTitle(titleData.title || '');
+        } catch (error) {
+          console.error('❌ 회고 제목 파싱 에러:', error);
+        }
+      });
+
+      console.log('✅ 회고 제목 구독 완료');
+    }
+
+    return () => {
+      if (subscriptionRef.current) {
+        subscriptionRef.current.unsubscribe();
+        console.log('🔌 회고 제목 구독 해제');
+      }
+    };
+  }, [client]);
 
   const updateRetroTitleMutation = useMutation({
     mutationFn: (payload: UpdateRetroTitlePayload) => updateRetroTitle({ teamId, retroId }, payload),
@@ -141,6 +175,8 @@ const MemberWrapper = styled.div`
   gap: 12px;
   flex-shrink: 0;
   align-items: center;
+
+  z-index: 1000;
 `;
 
 const DetailInfoWrapper = styled.div`
