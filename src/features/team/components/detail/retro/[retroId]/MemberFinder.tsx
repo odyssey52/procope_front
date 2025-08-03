@@ -1,6 +1,6 @@
 'use client';
 
-import teamQueries from '@/features/team/query/teamQueries';
+import retroQueries from '@/features/team/query/retroQueries';
 import { IconSearch } from '@/shared/assets/icons/line';
 import useDebounce from '@/shared/hooks/useDebounce';
 import { useClickOutside } from '@/shared/hooks/useClickOutside';
@@ -15,6 +15,7 @@ import styled from 'styled-components';
 
 interface MemberFinderProps {
   teamId: string;
+  retroId: string;
   onClose: () => void;
 }
 
@@ -51,17 +52,17 @@ const MOCK_USER_LIST = [
   },
 ];
 
-const MemberFinder = ({ teamId, onClose }: MemberFinderProps) => {
+const MemberFinder = ({ teamId, retroId, onClose }: MemberFinderProps) => {
   const [keyword, setKeyword] = useState('');
   const { data: userList } = useQuery({
-    ...teamQueries.readTeamUser({ teamId }),
+    ...retroQueries.readRetroMemberList({ teamId, retroId }),
     enabled: !!teamId,
   });
 
   const debouncedKeyword = useDebounce(keyword, 300);
   const ref = useClickOutside<HTMLDivElement>(onClose);
 
-  const filteredUserList = filterByHangulSearch(MOCK_USER_LIST, debouncedKeyword, (user) => user.name);
+  const filteredUserList = filterByHangulSearch(userList?.payload || [], debouncedKeyword, (user) => user.name);
 
   return (
     <Wrapper ref={ref}>
@@ -75,7 +76,7 @@ const MemberFinder = ({ teamId, onClose }: MemberFinderProps) => {
         <Content>
           {filteredUserList.map((user) => (
             <SelectOption
-              key={user.id}
+              key={user.userId}
               value={user.name}
               valueHandler={() => {}}
               width="100%"
@@ -85,7 +86,7 @@ const MemberFinder = ({ teamId, onClose }: MemberFinderProps) => {
                   onClick={() => {
                     console.log('해당 유저 초대 토글 클릭');
                   }}
-                  checked={user.join}
+                  checked={user.inviteStatus}
                 />
               }
             />
@@ -111,6 +112,8 @@ const Wrapper = styled.div`
   box-shadow:
     0px 2px 4px 0px rgba(0, 0, 0, 0.16),
     0px 0px 2px 0px rgba(0, 0, 0, 0.12);
+
+  z-index: 1000;
 `;
 
 const Content = styled.div`
