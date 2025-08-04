@@ -58,7 +58,12 @@ export async function createRetroMember(
   return data;
 }
 
-export async function deleteRetroMember(params: types.DeleteRetroMemberParams) {
-  const { data } = await api.delete(URLS.DELETE_RETRO_MEMBER(params.teamId, params.retroId));
+export async function deleteRetroMember(
+  params: types.DeleteRetroMemberParams,
+  payload: types.DeleteRetroMemberPayload,
+) {
+  const { data } = await api.delete(URLS.DELETE_RETRO_MEMBER(params.teamId, params.retroId), {
+    data: payload,
+  });
   return data;
 }

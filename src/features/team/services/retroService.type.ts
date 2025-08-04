@@ -57,6 +57,10 @@ export interface CreateRetroMemberPayload {
   targetUserId: string;
 }
 
+export interface DeleteRetroMemberPayload {
+  targetUserId: string;
+}
+
 // response
 export type CreateRetroResponse = number;
 export type ReadRetroListItem = {
