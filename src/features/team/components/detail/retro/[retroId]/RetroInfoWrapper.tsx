@@ -1,5 +1,6 @@
 'use client';
 
+import retroQueries from '@/features/team/query/retroQueries';
 import { deleteRetro, updateRetroTitle } from '@/features/team/services/retroService';
 import { ReadRetroResponse, UpdateRetroTitlePayload } from '@/features/team/services/retroService.type';
 import { IconCalendar } from '@/shared/assets/icons/line';
@@ -52,7 +53,7 @@ const RetroInfoWrapper = ({ data, client }: RetroInfoWrapperProps) => {
   const deleteRetroMutation = useMutation({
     mutationFn: () => deleteRetro({ teamId, retroId }),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['retro', teamId, retroId] });
+      queryClient.invalidateQueries({ queryKey: retroQueries.readRetroList({ teamId }).queryKey });
       router.push(`/team/${teamId}/retro`);
     },
   });

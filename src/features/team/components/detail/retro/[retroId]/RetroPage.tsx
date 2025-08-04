@@ -15,12 +15,14 @@ import RetroInfoSkeleton from './RetroInfoSkeleton';
 import RetroInfoWrapper from './RetroInfoWrapper';
 
 const RetroPage = () => {
+  const params = useParams();
+  const { retroId, teamId } = params;
+
   const { accessToken } = useAuthStore();
   const client = useRef<Client | null>(null);
 
   const [isConnected, setIsConnected] = useState(false);
-  const params = useParams();
-  const { retroId, teamId } = params;
+
   const paths = [
     {
       name: '회고 관리',

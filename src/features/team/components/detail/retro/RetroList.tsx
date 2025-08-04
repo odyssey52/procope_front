@@ -96,7 +96,9 @@ const RetroList = () => {
   const deleteRetroMutation = useMutation({
     mutationFn: (retroId: string | number) => deleteRetro({ teamId, retroId }),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['retro', teamId] });
+      queryClient.invalidateQueries({
+        queryKey: retroQueries.readRetroList({ teamId }).queryKey,
+      });
     },
   });
 
