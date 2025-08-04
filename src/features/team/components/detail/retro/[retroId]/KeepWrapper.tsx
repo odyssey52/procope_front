@@ -14,6 +14,7 @@ import Tag from '@/shared/ui/tag/Tag';
 import { IconCheckMarkRectangle } from '@/shared/assets/icons/line';
 import { theme } from '@/shared/styles/theme';
 import { Client } from '@stomp/stompjs';
+import { RetroCardRole } from '@/shared/ui/card/RetroCard';
 
 interface KeepWrapperProps {
   retroId: string;
@@ -132,16 +133,7 @@ const KeepWrapper = ({ retroId, client }: KeepWrapperProps) => {
                         {item.cardId}
                       </Tag>,
                     ]}
-                    tagJob={
-                      item.createUserInfo.role as
-                        | 'development'
-                        | 'planning'
-                        | 'data'
-                        | 'design'
-                        | 'marketing'
-                        | 'sales'
-                        | 'operations'
-                    }
+                    tagJob={item.createUserInfo.role as RetroCardRole}
                     title={item.title}
                     startDate={item.updatedAt}
                     user={{

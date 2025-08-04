@@ -18,9 +18,10 @@ import Tiptap from '../tiptap/Tiptap';
 const MAX_LINES = 9;
 const MAX_CHARS = 170;
 
+export type RetroCardRole = 'development' | 'planning' | 'data' | 'design' | 'marketing' | 'sales' | 'operations';
 interface RetroCardProps {
   item: {
-    role: 'development' | 'planning' | 'data' | 'design' | 'marketing' | 'sales' | 'operations';
+    role: RetroCardRole;
     title: string;
     content: string;
     user: {
