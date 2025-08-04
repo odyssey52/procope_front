@@ -21,7 +21,7 @@ import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import MoreArea from '@/shared/ui/button/MoreButton';
+import MoreArea from '@/shared/ui/button/MoreArea';
 import ItemList from '@/shared/ui/select/ItemList';
 
 export interface RetroItem {

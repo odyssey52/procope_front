@@ -1,6 +1,7 @@
 'use client';
 
 import { useClickOutside } from '@/shared/hooks/useClickOutside';
+import { zIndex } from '@/shared/styles/mixin';
 import { Suspense } from 'react';
 import styled from 'styled-components';
 import { LoadingSpinner } from '../LoadingSpinner';
@@ -27,7 +28,7 @@ const TeamListDropdown = ({ closeDropdown }: { closeDropdown: () => void }) => {
 const Wrapper = styled.div`
   position: absolute;
   top: calc(100% + 4px);
-  z-index: 1000;
+  ${zIndex.layer3};
 `;
 
 const LoadingContainer = styled.div`

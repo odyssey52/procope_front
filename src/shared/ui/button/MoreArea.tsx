@@ -2,6 +2,7 @@
 
 import { IconMenuCircleVertical } from '@/shared/assets/icons/line';
 import { useClickOutside } from '@/shared/hooks/useClickOutside';
+import { zIndex } from '@/shared/styles/mixin';
 import React, { useState } from 'react';
 import styled from 'styled-components';
 
@@ -26,7 +27,7 @@ const MoreArea = ({ size = 24, menuList, ...props }: MoreAreaProps) => {
 const Wrapper = styled.div<{ $isOpen: boolean }>`
   position: relative;
   cursor: pointer;
-  ${({ $isOpen }) => $isOpen && 'z-index: 1000;'}
+  ${({ $isOpen }) => $isOpen && zIndex.layer3};
 `;
 
 const MoreButton = styled.button`

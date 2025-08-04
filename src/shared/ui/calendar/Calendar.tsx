@@ -2,6 +2,7 @@
 
 import { IconDirectionLeft, IconDirectionRight } from '@/shared/assets/icons/line';
 import { useClickOutside } from '@/shared/hooks/useClickOutside';
+import { elevation, zIndex } from '@/shared/styles/mixin';
 import { theme } from '@/shared/styles/theme';
 import dayjs from 'dayjs';
 import { useEffect, useState } from 'react';
@@ -142,7 +143,6 @@ export const Wrapper = styled.div`
   position: absolute;
   top: calc(100% + 10px);
   left: 0;
-  z-index: 1000;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -151,9 +151,8 @@ export const Wrapper = styled.div`
   gap: 4px;
   border-radius: 12px;
   background: ${theme.sementicColors.bg.inverse};
-  box-shadow:
-    0px 2px 4px rgba(0, 0, 0, 0.16),
-    0px 0px 2px rgba(0, 0, 0, 0.12);
+  ${zIndex.layer3};
+  ${elevation.shadow4};
 `;
 
 export const Header = styled.div`

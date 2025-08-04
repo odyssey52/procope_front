@@ -9,7 +9,7 @@ import { useEditor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import styled from 'styled-components';
 import Avatar from '../avatar/Avatar';
-import MoreArea from '../button/MoreButton';
+import MoreArea from '../button/MoreArea';
 import Divider from '../line/Divider';
 import TagJob from '../tag/TagJob';
 import Text from '../Text';

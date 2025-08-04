@@ -2,18 +2,14 @@
 
 import retroQueries from '@/features/team/query/retroQueries';
 import { IconSearch } from '@/shared/assets/icons/line';
-import useDebounce from '@/shared/hooks/useDebounce';
 import { useClickOutside } from '@/shared/hooks/useClickOutside';
-import Avatar from '@/shared/ui/avatar/Avatar';
+import useDebounce from '@/shared/hooks/useDebounce';
+import { zIndex } from '@/shared/styles/mixin';
 import Placeholder from '@/shared/ui/placeholder/Placeholder';
-import SelectOption from '@/shared/ui/select/SelectOption';
-import Toggle from '@/shared/ui/toggle/Toggle';
 import { filterByHangulSearch } from '@/shared/utils/hangulSearch';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
 import styled from 'styled-components';
-import { createRetroMember } from '@/features/team/services/retroService';
-import useApiError from '@/shared/hooks/useApiError';
 import MemberFinderItem from './MemberFinderItem';
 
 interface MemberFinderProps {
@@ -102,7 +98,7 @@ const Wrapper = styled.div`
     0px 2px 4px 0px rgba(0, 0, 0, 0.16),
     0px 0px 2px 0px rgba(0, 0, 0, 0.12);
 
-  z-index: 1000;
+  ${zIndex.layer3};
 `;
 
 const Content = styled.div`

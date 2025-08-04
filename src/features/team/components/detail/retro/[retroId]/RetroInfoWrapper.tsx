@@ -8,7 +8,7 @@ import useApiError from '@/shared/hooks/useApiError';
 import Avatar from '@/shared/ui/avatar/Avatar';
 import AvatarGroup from '@/shared/ui/avatar/AvatarGroup';
 import Button from '@/shared/ui/button/Button';
-import MoreArea from '@/shared/ui/button/MoreButton';
+import MoreArea from '@/shared/ui/button/MoreArea';
 import TextButton from '@/shared/ui/button/TextButton';
 import Calendar from '@/shared/ui/calendar/Calendar';
 import ItemList from '@/shared/ui/select/ItemList';
@@ -45,9 +45,6 @@ const RetroInfoWrapper = ({ data, client }: RetroInfoWrapperProps) => {
 
   const updateRetroTitleMutation = useMutation({
     mutationFn: (payload: UpdateRetroTitlePayload) => updateRetroTitle({ teamId, retroId }, payload),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['retro', teamId, retroId] });
-    },
   });
 
   const deleteRetroMutation = useMutation({
@@ -74,6 +71,9 @@ const RetroInfoWrapper = ({ data, client }: RetroInfoWrapperProps) => {
   const handleUpdateRetroTitle = async () => {
     try {
       await updateRetroTitleMutation.mutateAsync({ title: currentTitle });
+      if (!client?.connected) {
+        queryClient.invalidateQueries({ queryKey: retroQueries.readRetro({ teamId, retroId }).queryKey });
+      }
     } catch (error) {
       handleError(error);
     }

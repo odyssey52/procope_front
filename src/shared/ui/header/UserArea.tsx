@@ -5,7 +5,7 @@ import useApiError from '@/shared/hooks/useApiError';
 import { useClickOutside } from '@/shared/hooks/useClickOutside';
 import { useLogout } from '@/shared/hooks/useLogout';
 import { toastActions } from '@/shared/store/modal/toast';
-import { elevation } from '@/shared/styles/mixin';
+import { elevation, zIndex } from '@/shared/styles/mixin';
 import { useMutation } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import { ReactNode } from 'react';
@@ -101,7 +101,7 @@ const SettingOption = styled.div`
   background-color: white;
   border-radius: 12px;
   padding: 12px 0px;
-  z-index: 1000;
+  ${zIndex.layer3};
   ${elevation.shadow4}
 `;
 
