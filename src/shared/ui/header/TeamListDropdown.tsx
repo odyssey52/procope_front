@@ -1,6 +1,5 @@
 'use client';
 
-import { useClickOutside } from '@/shared/hooks/useClickOutside';
 import { zIndex } from '@/shared/styles/mixin';
 import { Suspense } from 'react';
 import styled from 'styled-components';

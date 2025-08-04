@@ -8,7 +8,7 @@ import { toastActions } from '@/shared/store/modal/toast';
 import { elevation, zIndex } from '@/shared/styles/mixin';
 import { useMutation } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
-import { ReactNode } from 'react';
+import { ReactNode, useState } from 'react';
 import styled from 'styled-components';
 import Avatar from '../avatar/Avatar';
 import SelectOption from '../select/SelectOption';
@@ -22,9 +22,13 @@ interface UserAreaProps {
 }
 
 const UserArea = ({ userData }: UserAreaProps) => {
+  const ref = useClickOutside<HTMLDivElement>(() => setIsOpen(false));
   const router = useRouter();
   const { handleError } = useApiError();
   const { logout } = useLogout();
+
+  const [isOpen, setIsOpen] = useState(false);
+
   const invalidateRefreshTokenMutation = useMutation({ mutationFn: invalidateRefreshToken });
 
   const handleLogoutClick = async () => {
@@ -71,21 +75,35 @@ const UserArea = ({ userData }: UserAreaProps) => {
   ];
 
   return (
-    <SettingOption onClick={(e) => e.stopPropagation()} data-testid="setting-option">
-      {selectOptionList.map((value) => (
-        <div key={value.value}>
-          <SelectOption
-            leftContent={value.leftContent}
-            description={value.description}
-            value={value.value}
-            valueHandler={valueHandler}
-          />
-          {value.size && <Line $size={value.size} />}
-        </div>
-      ))}
-    </SettingOption>
+    <Wrapper ref={ref}>
+      <Avatar
+        type={userData.picture ? 'profile' : 'initial'}
+        image={userData.picture}
+        nickname={userData.name}
+        onClick={() => setIsOpen(!isOpen)}
+      />
+      {isOpen && (
+        <SettingOption onClick={(e) => e.stopPropagation()} data-testid="setting-option">
+          {selectOptionList.map((value) => (
+            <div key={value.value}>
+              <SelectOption
+                leftContent={value.leftContent}
+                description={value.description}
+                value={value.value}
+                valueHandler={valueHandler}
+              />
+              {value.size && <Line $size={value.size} />}
+            </div>
+          ))}
+        </SettingOption>
+      )}
+    </Wrapper>
   );
 };
+
+const Wrapper = styled.div`
+  position: relative;
+`;
 
 const SettingOption = styled.div`
   position: absolute;
