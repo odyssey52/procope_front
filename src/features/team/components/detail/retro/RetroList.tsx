@@ -76,6 +76,8 @@ type ColumnConfig = {
   key: string;
   title: string;
   width: string;
+  minWidth?: string;
+  maxWidth?: string;
   sortable?: boolean;
   icon?: React.ReactNode;
   render: (item: ReadRetroListItem, index: number) => React.ReactNode;
@@ -169,7 +171,8 @@ const RetroList = () => {
     {
       key: 'more',
       title: '',
-      width: '40px',
+      width: '60px',
+      minWidth: '60px',
       render: (item) => (
         <MoreArea
           size={40}

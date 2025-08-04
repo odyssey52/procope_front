@@ -36,7 +36,7 @@ const Wrapper = styled.div<{ $size: PartCellContentProps['size']; $width: PartCe
   align-items: center;
   gap: 8px;
   padding: 4px 12px;
-  width: ${({ $width }) => $width}%;
+  width: ${({ $width }) => $width};
   height: ${({ $size }) => $size}px;
   border-bottom: 1px solid ${({ theme }) => theme.sementicColors.border.primary};
   position: relative;
