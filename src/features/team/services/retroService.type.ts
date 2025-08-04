@@ -18,6 +18,11 @@ export interface ReadRetroParams {
   retroId: string;
 }
 
+export interface DeleteRetroParams {
+  teamId: string;
+  retroId: string;
+}
+
 export interface UpdateRetroTitleParams {
   teamId: string;
   retroId: string;
