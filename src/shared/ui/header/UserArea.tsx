@@ -19,13 +19,11 @@ interface UserAreaProps {
     picture?: string;
     roleName?: string;
   };
-  closeUserArea: () => void;
 }
 
-const UserArea = ({ userData, closeUserArea }: UserAreaProps) => {
+const UserArea = ({ userData }: UserAreaProps) => {
   const router = useRouter();
   const { handleError } = useApiError();
-  const ref = useClickOutside<HTMLDivElement>(closeUserArea);
   const { logout } = useLogout();
   const invalidateRefreshTokenMutation = useMutation({ mutationFn: invalidateRefreshToken });
 
@@ -43,7 +41,6 @@ const UserArea = ({ userData, closeUserArea }: UserAreaProps) => {
   };
 
   const valueHandler = (value: string | ReactNode) => {
-    closeUserArea();
     if (value === '홈') router.push('/team');
     else if (value === '계정 설정') router.push('/accountSetting');
     else if (value === '로그아웃') handleLogoutClick();
@@ -74,7 +71,7 @@ const UserArea = ({ userData, closeUserArea }: UserAreaProps) => {
   ];
 
   return (
-    <SettingOption ref={ref} onClick={(e) => e.stopPropagation()} data-testid="setting-option">
+    <SettingOption onClick={(e) => e.stopPropagation()} data-testid="setting-option">
       {selectOptionList.map((value) => (
         <div key={value.value}>
           <SelectOption

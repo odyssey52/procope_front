@@ -1,6 +1,7 @@
 'use client';
 
 import userInfoQueries from '@/features/user/query/info/userInfoQueries';
+import { useClickOutside } from '@/shared/hooks/useClickOutside';
 import useAuthStore from '@/shared/store/auth/auth';
 import useTeamStore from '@/shared/store/team/team';
 import useUserStore from '@/shared/store/user/user';
@@ -18,6 +19,12 @@ const Header = () => {
   const { setUser } = useUserStore();
   const { logoutType } = useAuthStore();
   const { teamInfo } = useTeamStore();
+
+  const ref = useClickOutside<HTMLDivElement>(() => {
+    setIsDropdownOpen(false);
+    setIsUserAreaOpen(false);
+  });
+
   const { data, isSuccess } = useQuery({
     ...userInfoQueries.readUserInfo(accessToken || ''),
     enabled: logoutType !== 'manual',
@@ -40,12 +47,18 @@ const Header = () => {
     setIsDropdownOpen(false);
   };
 
-  const closeUserArea = useCallback(() => {
-    setIsUserAreaOpen(false);
-  }, []);
-
   const handleUserAreaClick = () => {
-    setIsUserAreaOpen((prev) => !prev);
+    setIsUserAreaOpen((prev) => {
+      setIsDropdownOpen(false); // 다른 팝업 닫기
+      return !prev;
+    });
+  };
+
+  const handleDropdownClick = () => {
+    setIsDropdownOpen((prev) => {
+      setIsUserAreaOpen(false); // 다른 팝업 닫기
+      return !prev;
+    });
   };
 
   useEffect(() => {
@@ -61,11 +74,11 @@ const Header = () => {
   }, [data?.userContext.picture, isSuccess, setUser]);
 
   return (
-    <Wrapper>
+    <Wrapper ref={ref}>
       <LeftBox>
         <Logo type="icon" size={36} />
-        {teamInfo && <Tab2 name={teamInfo.name} onClick={() => setIsDropdownOpen((prev) => !prev)} />}
-        {isDropdownOpen && <TeamListDropdown closeDropdown={closeDropdown} />}
+        {teamInfo && <Tab2 name={teamInfo.name} onClick={handleDropdownClick} />}
+        {isDropdownOpen && <TeamListDropdown />}
       </LeftBox>
       {isSuccess && (
         <Avatar
@@ -82,7 +95,6 @@ const Header = () => {
             picture: data?.userContext.picture,
             roleName: data?.roleInfo?.name,
           }}
-          closeUserArea={closeUserArea}
         />
       )}
     </Wrapper>

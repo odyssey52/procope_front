@@ -7,11 +7,9 @@ import styled from 'styled-components';
 import { LoadingSpinner } from '../LoadingSpinner';
 import TeamListDropdownContent from './TeamListDropdownContent';
 
-const TeamListDropdown = ({ closeDropdown }: { closeDropdown: () => void }) => {
-  const ref = useClickOutside<HTMLDivElement>(closeDropdown);
-
+const TeamListDropdown = () => {
   return (
-    <Wrapper ref={ref}>
+    <Wrapper>
       <Suspense
         fallback={
           <LoadingContainer>
