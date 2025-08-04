@@ -52,8 +52,6 @@ const MOCK_USER_LIST = [
 ];
 
 const MemberFinder = ({ teamId, retroId, onClose }: MemberFinderProps) => {
-  const ref = useClickOutside<HTMLDivElement>(onClose);
-
   const { data: userList } = useQuery({
     ...retroQueries.readRetroMemberList({ teamId, retroId }),
     enabled: !!teamId,
@@ -66,7 +64,7 @@ const MemberFinder = ({ teamId, retroId, onClose }: MemberFinderProps) => {
   const filteredUserList = filterByHangulSearch(userList?.payload || [], debouncedKeyword, (user) => user.name);
 
   return (
-    <Wrapper ref={ref}>
+    <Wrapper>
       <Placeholder
         value={keyword}
         valueHandler={setKeyword}

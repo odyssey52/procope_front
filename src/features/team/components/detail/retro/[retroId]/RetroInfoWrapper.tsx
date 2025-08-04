@@ -3,14 +3,12 @@
 import retroQueries from '@/features/team/query/retroQueries';
 import { deleteRetro, updateRetroTitle } from '@/features/team/services/retroService';
 import { ReadRetroResponse, UpdateRetroTitlePayload } from '@/features/team/services/retroService.type';
-import { IconCalendar } from '@/shared/assets/icons/line';
 import useApiError from '@/shared/hooks/useApiError';
+import { useClickOutside } from '@/shared/hooks/useClickOutside';
 import Avatar from '@/shared/ui/avatar/Avatar';
 import AvatarGroup from '@/shared/ui/avatar/AvatarGroup';
-import Button from '@/shared/ui/button/Button';
 import MoreArea from '@/shared/ui/button/MoreArea';
 import TextButton from '@/shared/ui/button/TextButton';
-import Calendar from '@/shared/ui/calendar/Calendar';
 import ItemList from '@/shared/ui/select/ItemList';
 import Text from '@/shared/ui/Text';
 import PageTitle from '@/shared/ui/title/PageTitle';
@@ -20,7 +18,8 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useParams, useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
-import MemberFinder from './MemberFinder';
+import CalendarArea from './CalendarArea';
+import MemberArea from './MemberArea';
 
 interface RetroInfoWrapperProps {
   data: ReadRetroResponse;
@@ -39,8 +38,6 @@ const RetroInfoWrapper = ({ data, client }: RetroInfoWrapperProps) => {
 
   // TODO : 소켓 연결 시 데이터 업데이트 처리 필요
   const [currentTitle, setCurrentTitle] = useState<string>(data.title ?? '');
-  const [isMemberListOpen, setIsMemberListOpen] = useState(false);
-  const [isCalendarOpen, setIsCalendarOpen] = useState(false);
   const [selectedDate, setSelectedDate] = useState<string>(formatDateToDot(data.createdAt));
 
   const updateRetroTitleMutation = useMutation({
@@ -55,17 +52,8 @@ const RetroInfoWrapper = ({ data, client }: RetroInfoWrapperProps) => {
     },
   });
 
-  const handleMemberListOpen = () => {
-    setIsMemberListOpen(!isMemberListOpen);
-  };
-
   const handleSelectDate = (date: string) => {
     setSelectedDate(date);
-    setIsCalendarOpen(false);
-  };
-
-  const closeCalendar = () => {
-    setIsCalendarOpen(false);
   };
 
   const handleUpdateRetroTitle = async () => {
@@ -125,10 +113,7 @@ const RetroInfoWrapper = ({ data, client }: RetroInfoWrapperProps) => {
             }))}
             size={32}
           />
-          <Button $type="outline" pressed={isMemberListOpen} onClick={handleMemberListOpen}>
-            Member
-          </Button>
-          {isMemberListOpen && <MemberFinder teamId={teamId} retroId={retroId} onClose={handleMemberListOpen} />}
+          <MemberArea teamId={teamId} retroId={retroId} />
           <MoreArea
             size={40}
             menuList={
@@ -158,17 +143,7 @@ const RetroInfoWrapper = ({ data, client }: RetroInfoWrapperProps) => {
           <Text variant="body_16_medium" color="tertiary">
             회고 날짜
           </Text>
-          <TextButton $type="24" rightIcon={<IconCalendar />} onClick={() => setIsCalendarOpen(!isCalendarOpen)}>
-            {selectedDate}
-          </TextButton>
-          {isCalendarOpen && (
-            <Calendar
-              selectedDate={selectedDate}
-              onChange={handleSelectDate}
-              onClose={closeCalendar}
-              format="YYYY.MM.DD"
-            />
-          )}
+          <CalendarArea selectedDate={selectedDate} onChange={handleSelectDate} />
         </DateWrapper>
       </DetailInfoWrapper>
     </Wrapper>

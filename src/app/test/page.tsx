@@ -232,7 +232,7 @@ const page = () => {
         <button type="button" onClick={handleOpenCalendar}>
           {selectedDate || '날짜 선택'}
         </button>
-        <Calendar selectedDate={selectedDate} onChange={handleDateSelect} onClose={() => setIsCalendarOpen(false)} />
+        <Calendar selectedDate={selectedDate} onChange={handleDateSelect} />
       </ButtonWrapper>
       <Content>
         <TaskCard

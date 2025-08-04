@@ -13,10 +13,16 @@ interface MoreAreaProps extends React.HTMLAttributes<HTMLDivElement> {
 
 const MoreArea = ({ size = 24, menuList, ...props }: MoreAreaProps) => {
   const [isOpen, setIsOpen] = useState(false);
+
   const ref = useClickOutside<HTMLDivElement>(() => setIsOpen(false));
+
+  const handleMoreButtonClick = () => {
+    setIsOpen(!isOpen);
+  };
+
   return (
-    <Wrapper {...props} ref={ref} $isOpen={isOpen} onClick={() => setIsOpen(!isOpen)}>
-      <MoreButton>
+    <Wrapper {...props} ref={ref} $isOpen={isOpen}>
+      <MoreButton onClick={handleMoreButtonClick}>
         <IconMenuCircleVertical size={size} />
       </MoreButton>
       {isOpen && <MenuList>{menuList}</MenuList>}
@@ -27,7 +33,7 @@ const MoreArea = ({ size = 24, menuList, ...props }: MoreAreaProps) => {
 const Wrapper = styled.div<{ $isOpen: boolean }>`
   position: relative;
   cursor: pointer;
-  ${({ $isOpen }) => $isOpen && zIndex.layer3};
+  ${({ $isOpen }) => $isOpen && zIndex.layer1};
 `;
 
 const MoreButton = styled.button`
