@@ -1,26 +1,47 @@
 'use client';
 
 import { IconMenuCircleVertical } from '@/shared/assets/icons/line';
-import React from 'react';
+import { useClickOutside } from '@/shared/hooks/useClickOutside';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 
-interface MoreButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+interface MoreAreaProps extends React.HTMLAttributes<HTMLDivElement> {
   size?: number | string;
+  menuList?: React.ReactNode;
 }
 
-const MoreButton = ({ size = 24, ...props }: MoreButtonProps) => {
+const MoreArea = ({ size = 24, menuList, ...props }: MoreAreaProps) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const ref = useClickOutside<HTMLDivElement>(() => setIsOpen(false));
   return (
-    <Wrapper {...props}>
-      <IconMenuCircleVertical size={size} />
+    <Wrapper {...props} ref={ref} $isOpen={isOpen} onClick={() => setIsOpen(!isOpen)}>
+      <MoreButton>
+        <IconMenuCircleVertical size={size} />
+      </MoreButton>
+      {isOpen && <MenuList>{menuList}</MenuList>}
     </Wrapper>
   );
 };
 
-const Wrapper = styled.button`
-  font-size: 0;
+const Wrapper = styled.div<{ $isOpen: boolean }>`
+  position: relative;
   cursor: pointer;
+  ${({ $isOpen }) => $isOpen && 'z-index: 1000;'}
 `;
 
-MoreButton.displayName = 'MoreButton';
+const MoreButton = styled.button`
+  font-size: 0;
+`;
 
-export default MoreButton;
+const MenuList = styled.div`
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  background-color: ${({ theme }) => theme.sementicColors.bg.inverse};
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+`;
+
+MoreArea.displayName = 'MoreButton';
+
+export default MoreArea;

@@ -1,21 +1,22 @@
 'use client';
 
-import { updateRetroTitle } from '@/features/team/services/retroService';
+import { deleteRetro, updateRetroTitle } from '@/features/team/services/retroService';
 import { ReadRetroResponse, UpdateRetroTitlePayload } from '@/features/team/services/retroService.type';
 import { IconCalendar } from '@/shared/assets/icons/line';
 import useApiError from '@/shared/hooks/useApiError';
 import Avatar from '@/shared/ui/avatar/Avatar';
 import AvatarGroup from '@/shared/ui/avatar/AvatarGroup';
 import Button from '@/shared/ui/button/Button';
-import MoreButton from '@/shared/ui/button/MoreButton';
+import MoreArea from '@/shared/ui/button/MoreButton';
 import TextButton from '@/shared/ui/button/TextButton';
 import Calendar from '@/shared/ui/calendar/Calendar';
+import ItemList from '@/shared/ui/select/ItemList';
 import Text from '@/shared/ui/Text';
 import PageTitle from '@/shared/ui/title/PageTitle';
 import { formatDateToDot } from '@/shared/utils/date';
 import { Client } from '@stomp/stompjs';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import MemberFinder from './MemberFinder';
@@ -27,11 +28,12 @@ interface RetroInfoWrapperProps {
 
 const RetroInfoWrapper = ({ data, client }: RetroInfoWrapperProps) => {
   const params = useParams();
+  const router = useRouter();
   const teamId = params.teamId as string;
   const retroId = params.retroId as string;
+
   const queryClient = useQueryClient();
   const subscriptionRef = useRef<any>(null);
-
   const { handleError } = useApiError();
 
   // TODO : 소켓 연결 시 데이터 업데이트 처리 필요
@@ -44,6 +46,14 @@ const RetroInfoWrapper = ({ data, client }: RetroInfoWrapperProps) => {
     mutationFn: (payload: UpdateRetroTitlePayload) => updateRetroTitle({ teamId, retroId }, payload),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['retro', teamId, retroId] });
+    },
+  });
+
+  const deleteRetroMutation = useMutation({
+    mutationFn: () => deleteRetro({ teamId, retroId }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['retro', teamId, retroId] });
+      router.push(`/team/${teamId}/retro`);
     },
   });
 
@@ -118,7 +128,16 @@ const RetroInfoWrapper = ({ data, client }: RetroInfoWrapperProps) => {
             Member
           </Button>
           {isMemberListOpen && <MemberFinder teamId={teamId} retroId={retroId} onClose={handleMemberListOpen} />}
-          <MoreButton size={40} />
+          <MoreArea
+            size={40}
+            menuList={
+              <ItemList
+                selectOptionList={[{ value: '삭제' }]}
+                valueHandler={() => deleteRetroMutation.mutate()}
+                width="112px"
+              />
+            }
+          />
         </MemberWrapper>
       </TitleWrapper>
       <DetailInfoWrapper>

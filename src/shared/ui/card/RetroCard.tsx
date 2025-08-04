@@ -9,7 +9,7 @@ import { useEditor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import styled from 'styled-components';
 import Avatar from '../avatar/Avatar';
-import MoreButton from '../button/MoreButton';
+import MoreArea from '../button/MoreButton';
 import Divider from '../line/Divider';
 import TagJob from '../tag/TagJob';
 import Text from '../Text';
@@ -55,7 +55,7 @@ const RetroCard = ({ item }: RetroCardProps) => {
               {editor.isEditable ? '업데이트' : '편집'}
             </button>
           </div>
-          <MoreButton />
+          <MoreArea />
         </TagBox>
         <TextBox>
           <Text variant="body_16_semibold" color="primary">
