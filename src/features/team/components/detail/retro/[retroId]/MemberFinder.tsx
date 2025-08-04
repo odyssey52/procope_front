@@ -9,9 +9,12 @@ import Placeholder from '@/shared/ui/placeholder/Placeholder';
 import SelectOption from '@/shared/ui/select/SelectOption';
 import Toggle from '@/shared/ui/toggle/Toggle';
 import { filterByHangulSearch } from '@/shared/utils/hangulSearch';
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
 import styled from 'styled-components';
+import { createRetroMember } from '@/features/team/services/retroService';
+import useApiError from '@/shared/hooks/useApiError';
+import MemberFinderItem from './MemberFinderItem';
 
 interface MemberFinderProps {
   teamId: string;
@@ -75,21 +78,7 @@ const MemberFinder = ({ teamId, retroId, onClose }: MemberFinderProps) => {
       {filteredUserList.length > 0 && (
         <Content>
           {filteredUserList.map((user) => (
-            <SelectOption
-              key={user.userId}
-              value={user.name}
-              valueHandler={() => {}}
-              width="100%"
-              leftContent={<Avatar image={user.profileImage} size={32} />}
-              rightContent={
-                <Toggle
-                  onClick={() => {
-                    console.log('해당 유저 초대 토글 클릭');
-                  }}
-                  checked={user.inviteStatus}
-                />
-              }
-            />
+            <MemberFinderItem key={`MemberFinderItem-${user.userId}`} user={user} teamId={teamId} retroId={retroId} />
           ))}
         </Content>
       )}
