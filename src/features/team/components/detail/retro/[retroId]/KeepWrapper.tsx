@@ -15,6 +15,7 @@ import { IconCheckMarkRectangle } from '@/shared/assets/icons/line';
 import { theme } from '@/shared/styles/theme';
 import { Client } from '@stomp/stompjs';
 import { RetroCardRole } from '@/shared/ui/card/RetroCard';
+import { sidePanelActions } from '@/shared/store/sidePanel/sidePanel';
 
 interface KeepWrapperProps {
   retroId: string;
@@ -99,7 +100,9 @@ const KeepWrapper = ({ retroId, client }: KeepWrapperProps) => {
   });
 
   const addKeep = () => {
-    alert('좋았던 점 생성 준비 중입니다.');
+    sidePanelActions.open({
+      content: <div>좋았던 점 생성 준비 중입니다.</div>,
+    });
   };
   return (
     <Wrapper>

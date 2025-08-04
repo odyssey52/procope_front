@@ -5,10 +5,12 @@ export type SidePanelState = {
   content: React.ReactNode;
   isOpen: boolean;
   onClose?: () => void;
+  moreMenu?: React.ReactNode;
 };
 
 export const initialState: SidePanelState = {
   content: null,
+  moreMenu: null,
   isOpen: false,
   onClose: undefined,
 };
@@ -17,6 +19,7 @@ const open = (options: Omit<SidePanelState, 'isOpen'>) => {
   set({
     isOpen: true,
     content: options.content,
+    moreMenu: options.moreMenu,
     onClose() {
       options.onClose?.();
       close();
