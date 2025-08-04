@@ -4,15 +4,18 @@ import * as types from './retroService.type';
 const URLS = {
   READ_RETRO_LIST: (teamId: string) => `/retrospectives/${teamId}`,
   CREATE_RETRO: (teamId: string) => `/retrospectives/${teamId}`,
-  READ_RETRO: (teamId: string, retroId: string) => `/retrospectives/${teamId}/${retroId}`,
-  DELETE_RETRO: (teamId: string, retroId: string) => `/retrospectives/${teamId}/${retroId}`,
+  READ_RETRO: (teamId: string, retroId: string | number) => `/retrospectives/${teamId}/${retroId}`,
+  DELETE_RETRO: (teamId: string, retroId: string | number) => `/retrospectives/${teamId}/${retroId}`,
 
-  UPDATE_RETRO_TITLE: (teamId: string, retroId: string) => `/retrospectives/${teamId}/${retroId}`,
-  READ_RETRO_PROBLEM_LIST: (retroId: string, kanbanStatus: types.KanbanStatus) =>
+  UPDATE_RETRO_TITLE: (teamId: string, retroId: string | number) => `/retrospectives/${teamId}/${retroId}`,
+  READ_RETRO_PROBLEM_LIST: (retroId: string | number, kanbanStatus: types.KanbanStatus) =>
     `/retrospectives/problems/${retroId}?kanbanStatus=${kanbanStatus}`,
-  READ_RETRO_MEMBER_LIST: (teamId: string, retroId: string) => `/retrospectives/${teamId}/${retroId}/participants`,
-  CREATE_RETRO_MEMBER: (teamId: string, retroId: string) => `/retrospectives/${teamId}/${retroId}/participants`,
-  DELETE_RETRO_MEMBER: (teamId: string, retroId: string) => `/retrospectives/${teamId}/${retroId}/participants`,
+  READ_RETRO_MEMBER_LIST: (teamId: string, retroId: string | number) =>
+    `/retrospectives/${teamId}/${retroId}/participants`,
+  CREATE_RETRO_MEMBER: (teamId: string, retroId: string | number) =>
+    `/retrospectives/${teamId}/${retroId}/participants`,
+  DELETE_RETRO_MEMBER: (teamId: string, retroId: string | number) =>
+    `/retrospectives/${teamId}/${retroId}/participants`,
 };
 
 const api = new ApiClient({ isPublic: false });

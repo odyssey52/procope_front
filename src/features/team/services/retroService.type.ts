@@ -15,37 +15,37 @@ export interface CreateRetroParams {
 
 export interface ReadRetroParams {
   teamId: string;
-  retroId: string;
+  retroId: string | number;
 }
 
 export interface DeleteRetroParams {
   teamId: string;
-  retroId: string;
+  retroId: string | number;
 }
 
 export interface UpdateRetroTitleParams {
   teamId: string;
-  retroId: string;
+  retroId: string | number;
 }
 
 export interface ReadRetroProblemListParams {
-  retroId: string;
+  retroId: string | number;
   kanbanStatus: KanbanStatus;
 }
 
 export interface ReadRetroMemberListParams {
   teamId: string;
-  retroId: string;
+  retroId: string | number;
 }
 
 export interface CreateRetroMemberParams {
   teamId: string;
-  retroId: string;
+  retroId: string | number;
 }
 
 export interface DeleteRetroMemberParams {
   teamId: string;
-  retroId: string;
+  retroId: string | number;
 }
 
 // Payload
@@ -67,7 +67,10 @@ export interface DeleteRetroMemberPayload {
 }
 
 // response
-export type CreateRetroResponse = number;
+export type CreateRetroResponse = {
+  retroId: string | number;
+};
+
 export type ReadRetroListItem = {
   id: number;
   title: string;
