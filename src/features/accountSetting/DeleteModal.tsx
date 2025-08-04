@@ -62,47 +62,49 @@ const DeleteModal = ({ onClose }: DeleteModalProps) => {
     <Modal portalId="confirm-dialog">
       <Wrapper>
         <Content>
-          <TopSection>
-            <Title>
-              <div>
-                <Image src={errorIcon} width={36} height={36} alt="에러 아이콘 이미지" />
-                계정을 영구적으로 삭제하시겠습니까?
-              </div>
-              <button type="button" onClick={onClose} aria-label="닫기" style={{ cursor: 'pointer', fontSize: 0 }}>
-                <IconRemove size={40} />
-              </button>
-            </Title>
-            <TextBox>
-              <Text variant="heading_20" color="danger">
-                탈퇴 전에 주의사항 꼭 확인해 주세요.
-              </Text>
-              <Text variant="body_14_medium" color="tertiary">
-                1. 계정 삭제 작업은 실행 중간에 취소할 수 없습니다.
-                <br />
-                2. 관리자 또는 참여자로 있는 모든 팀은 계정을 삭제하더라도 팀에 작성한 내용은 보존이 됩니다.
-                <br />
-                3. 최고관리자로 있는 모든 팀은 삭제됩니다.
-              </Text>
-            </TextBox>
-          </TopSection>
-          <BottomSection>
-            <BottomTextBox>
-              <Text variant="heading_18">현재</Text>
-              <Text variant="heading_18" color="brand">
-                {teamRoleCount?.number || 0}개
-              </Text>
-              <Text variant="heading_18">의 최고관리자로 참여하고 있는 팀이 있습니다.</Text>
-            </BottomTextBox>
-            <Placeholder
-              value={inputEmailValue}
-              valueHandler={setInputEmailValue}
-              validation={inputEmailValue.length > 0 ? isEmailValid : undefined}
-              errorDescription="이메일이 일치하지 않습니다."
-              placeholder="usermail@procope.kr"
-              label={{ text: '이메일을 입력하여 삭제를 진행해 주세요.', required: true }}
-              maxLength={200}
-            />
-          </BottomSection>
+          <TextContainer>
+            <TopSection>
+              <Title>
+                <div>
+                  <Image src={errorIcon} width={36} height={36} alt="에러 아이콘 이미지" />
+                  계정을 영구적으로 삭제하시겠습니까?
+                </div>
+                <button type="button" onClick={onClose} aria-label="닫기" style={{ cursor: 'pointer', fontSize: 0 }}>
+                  <IconRemove size={40} />
+                </button>
+              </Title>
+              <TextBox>
+                <Text variant="heading_20" color="danger">
+                  탈퇴 전에 주의사항 꼭 확인해 주세요.
+                </Text>
+                <Text variant="body_14_medium" color="tertiary">
+                  1. 계정 삭제 작업은 실행 중간에 취소할 수 없습니다.
+                  <br />
+                  2. 관리자 또는 참여자로 있는 모든 팀은 계정을 삭제하더라도 팀에 작성한 내용은 보존이 됩니다.
+                  <br />
+                  3. 최고관리자로 있는 모든 팀은 삭제됩니다.
+                </Text>
+              </TextBox>
+            </TopSection>
+            <BottomSection>
+              <BottomTextBox>
+                <Text variant="heading_18">현재</Text>
+                <Text variant="heading_18" color="brand">
+                  {teamRoleCount?.number || 0}개
+                </Text>
+                <Text variant="heading_18">의 최고관리자로 참여하고 있는 팀이 있습니다.</Text>
+              </BottomTextBox>
+              <Placeholder
+                value={inputEmailValue}
+                valueHandler={setInputEmailValue}
+                validation={inputEmailValue.length > 0 ? isEmailValid : undefined}
+                errorDescription="이메일이 일치하지 않습니다."
+                placeholder="usermail@procope.kr"
+                label={{ text: '이메일을 입력하여 삭제를 진행해 주세요.', required: true }}
+                maxLength={200}
+              />
+            </BottomSection>
+          </TextContainer>
           <ButtonBox>
             <Button $type="tertiary" onClick={() => onClose()}>
               취소
@@ -139,6 +141,11 @@ const BottomSection = styled.div`
   display: flex;
   flex-direction: column;
   gap: 8px;
+`;
+const TextContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 `;
 const Title = styled.div`
   div {

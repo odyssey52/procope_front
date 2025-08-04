@@ -26,7 +26,7 @@ export const TEAM_SIDE_NAV_TABS = (teamId: string) => [
         path: `/team/${teamId}/manage/setting`,
       },
       {
-        name: '참여 관리',
+        name: '참여관리',
         path: `/team/${teamId}/manage/member`,
       },
     ],
