@@ -18,6 +18,7 @@ import JobSubCard from '@/shared/ui/card/JobSubCard';
 import Placeholder from '@/shared/ui/placeholder/Placeholder';
 import TextArea from '@/shared/ui/textarea/TextArea';
 import PageTitle from '@/shared/ui/title/PageTitle';
+import useTeamStore from '@/shared/store/team/team';
 import { useMutation } from '@tanstack/react-query';
 import { useParams } from 'next/navigation';
 import { useState } from 'react';
@@ -47,9 +48,10 @@ const SettingSection = ({ teamData, teamId }: Props) => {
     name: null,
     type: false,
   });
-  const [teamType, setTeamType] = useState<TeamType | null>(teamData.type);
+  const [teamType, setTeamType] = useState<TeamType>(teamData.type);
   const [teamName, setTeamName] = useState<string>(teamData.name);
   const [teamDescription, setTeamDescription] = useState<string>(teamData.description);
+  const { setTeamInfo } = useTeamStore();
 
   const teamNameHandler = (name: string) => {
     setTeamName(name);
@@ -75,9 +77,9 @@ const SettingSection = ({ teamData, teamId }: Props) => {
   const saveTeamHandle = async () => {
     try {
       const payload = {
-        type: teamData.type,
-        name: teamData.name,
-        description: teamData.description,
+        type: teamType,
+        name: teamName,
+        description: teamDescription,
       };
       const params = { teamId };
 
@@ -86,6 +88,7 @@ const SettingSection = ({ teamData, teamId }: Props) => {
         state: 'success',
         title: MESSAGES.UPDATE_SAVE_SUCCESS,
       });
+      setTeamInfo(payload as ReadTeamDetailResponse);
     } catch (err) {
       toastActions.open({
         state: 'error',
@@ -147,7 +150,7 @@ const SettingSection = ({ teamData, teamId }: Props) => {
         <ButtonSection>
           <ButtonTitle>탈퇴 및 삭제</ButtonTitle>
           <Buttons>
-            <Button onClick={teamSecession} $type="tertiary" disabled={teamData.myRole === 'MEMBER'}>
+            <Button onClick={teamSecession} $type="tertiary" disabled={teamData.myRole === 'ADMIN'}>
               팀 탈퇴
             </Button>
             <Button onClick={teamDelete} $type="error" disabled={teamData.myRole === 'MEMBER'}>
@@ -209,7 +212,10 @@ const ButtonSection = styled.div`
   flex-direction: column;
   gap: 8px;
 `;
-const ButtonTitle = styled.div``;
+const ButtonTitle = styled.div`
+  ${({ theme }) => theme.fontStyle.body_14_semibold};
+  color: ${({ theme }) => theme.sementicColors.text.primary};
+`;
 const Buttons = styled.div`
   display: flex;
   gap: 12px;

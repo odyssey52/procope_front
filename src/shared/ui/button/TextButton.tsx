@@ -86,8 +86,9 @@ const StyledTextButton = styled.button<StyledTextButtonProps>`
   ${({ theme }) => theme.fontStyle.caption_12_regular};
   border-radius: 8px;
 
-  ${({ $clickable }) =>
+  ${({ $clickable, $disabled }) =>
     $clickable &&
+    !$disabled &&
     css`
       &:hover {
         background-color: ${({ theme }) => theme.sementicColors.bg.tertiary_hover_pressed};

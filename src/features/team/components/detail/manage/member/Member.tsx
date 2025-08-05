@@ -62,10 +62,7 @@ const Member = () => {
             <Breadcrumbs paths={path} />
             <PageTitle title="팀 참여관리" />
           </Head>
-          <SubText>
-            초대하고 싶은 사람에게 링크를 전달하여 팀원을 추가할 수 있습니다. 요청승인 탭에서 팀원의 참여 요청을 승인해
-            주세요.
-          </SubText>
+          <SubText>초대하고 싶은 사람에게 링크를 전달하여 팀원을 추가할 수 있습니다.</SubText>
         </TopSection>
         <BottomSection>
           <Team>
@@ -91,13 +88,13 @@ export default Member;
 
 const Wrapper = styled.div`
   width: 100%;
-  padding: 24px 0px;
   background-color: ${({ theme }) => theme.sementicColors.bg.inverse};
 `;
 const Container = styled.div`
   width: 100%;
   margin: 0 auto;
   padding: 24px;
+  margin: 24px;
   display: flex;
   flex-direction: column;
   gap: 40px;
@@ -126,6 +123,7 @@ const Team = styled.div`
   height: 128px;
   display: flex;
   align-items: center;
+  border-radius: 16px;
   padding: 24px;
   box-sizing: border-box;
   background-color: ${({ theme }) => theme.sementicColors.bg.tertiary};
@@ -157,5 +155,5 @@ const Title = styled.div`
 `;
 const TeamLink = styled.div`
   ${({ theme }) => theme.fontStyle.body_16_medium}
-  color: ${({ theme }) => theme.sementicColors.text.primary}
+  color: ${({ theme }) => theme.sementicColors.text.secondary}
 `;
