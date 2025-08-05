@@ -5,6 +5,7 @@ import { updateRetroProblem } from '@/features/team/services/retroService';
 import { UpdateRetroProblemPayload } from '@/features/team/services/retroService.type';
 import { IconApps, IconUser } from '@/shared/assets/icons/line';
 import useApiError from '@/shared/hooks/useApiError';
+import useDebounce from '@/shared/hooks/useDebounce';
 import { theme } from '@/shared/styles/theme';
 import Avatar from '@/shared/ui/avatar/Avatar';
 import TextButton from '@/shared/ui/button/TextButton';
@@ -23,7 +24,7 @@ import ListItem from '@tiptap/extension-list-item';
 import Placeholder from '@tiptap/extension-placeholder';
 import { useEditor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 
 interface KeepSidePanelContentProps {
@@ -35,7 +36,16 @@ const KeepSidePanelContent = ({ retroId, problemId }: KeepSidePanelContentProps)
   const { handleError } = useApiError();
   const [currentTitle, setCurrentTitle] = useState('');
   const [currentContent, setCurrentContent] = useState('');
+  const [isInitialized, setIsInitialized] = useState(false);
   const queryClient = useQueryClient();
+
+  // 최신 값을 참조하기 위한 ref
+  const currentTitleRef = useRef('');
+  const currentContentRef = useRef('');
+
+  // 디바운스된 값들
+  const debouncedTitle = useDebounce(currentTitle, 3000);
+  const debouncedContent = useDebounce(currentContent, 3000);
 
   const editor = useEditor({
     extensions: [
@@ -65,23 +75,13 @@ const KeepSidePanelContent = ({ retroId, problemId }: KeepSidePanelContentProps)
     },
   });
 
-  const handleUpdateRetroProblem = async () => {
+  const handleUpdateRetroProblem = async (title?: string, content?: string) => {
     try {
-      console.log(currentTitle);
-      console.log(currentContent);
       await updateRetroProblemMutation.mutateAsync({
-        title: currentTitle,
-        content: currentContent,
+        title: title ?? currentTitle,
+        content: content ?? currentContent,
         kanbanStatus: 'KEP',
       });
-    } catch (error) {
-      handleError(error);
-    }
-  };
-
-  const onChange = () => {
-    try {
-      handleUpdateRetroProblem();
     } catch (error) {
       handleError(error);
     }
@@ -90,42 +90,73 @@ const KeepSidePanelContent = ({ retroId, problemId }: KeepSidePanelContentProps)
   useEffect(() => {
     if (editor) {
       editor.on('update', ({ editor }) => {
-        setCurrentContent(editor.getHTML());
+        const newContent = editor.getHTML();
+        setCurrentContent(newContent);
+        currentContentRef.current = newContent;
       });
     }
   }, [editor]);
 
+  // title과 content 상태가 변경될 때마다 ref 업데이트
+  useEffect(() => {
+    currentTitleRef.current = currentTitle;
+  }, [currentTitle]);
+
+  useEffect(() => {
+    currentContentRef.current = currentContent;
+  }, [currentContent]);
+
   // 데이터가 로드되면 상태 설정
   useEffect(() => {
-    if (data && editor) {
+    if (data) {
       setCurrentTitle(data.title);
       setCurrentContent(data.content);
-      // 데이터가 있고 내용이 있을 때만 에디터에 설정
-      if (data.content && data.content.trim() !== '') {
-        editor.commands.setContent(data.content);
+      currentTitleRef.current = data.title;
+      currentContentRef.current = data.content;
+      setIsInitialized(true);
+
+      if (editor) {
+        // 데이터가 있고 내용이 있을 때만 에디터에 설정
+        if (data.content && data.content.trim() !== '') {
+          editor.commands.setContent(data.content);
+        }
       }
     }
   }, [data, editor]);
 
+  // 디바운스된 값이 변경되면 자동 저장
+  useEffect(() => {
+    // 초기화가 완료된 후에만 자동 저장 실행
+    // 실제로 값이 변경되었을 때만 저장 (빈 문자열이 아닌 경우)
+    if (
+      isInitialized &&
+      data &&
+      ((debouncedTitle !== data.title && debouncedTitle !== '') ||
+        (debouncedContent !== data.content && debouncedContent !== ''))
+    ) {
+      handleUpdateRetroProblem(debouncedTitle, debouncedContent);
+    }
+  }, [debouncedTitle, debouncedContent, isInitialized, data]);
+
+  // 컴포넌트 언마운트 시 즉시 저장
   useEffect(() => {
     return () => {
-      if (editor) {
-        const finalContent = editor.getHTML();
-        const finalTitle = currentTitle;
+      // 초기화가 완료된 후에만 저장 실행
+      if (isInitialized) {
+        const finalTitle = currentTitleRef.current;
+        const finalContent = currentContentRef.current;
 
+        // 실제로 값이 있고 변경되었을 때만 저장
         if (finalTitle || finalContent) {
-          updateRetroProblem(
-            { retroId, problemId: problemId! },
-            {
-              title: finalTitle,
-              content: finalContent,
-              kanbanStatus: 'KEP',
-            },
-          );
+          updateRetroProblemMutation.mutate({
+            title: finalTitle,
+            content: finalContent,
+            kanbanStatus: 'KEP',
+          });
         }
       }
     };
-  }, [editor, currentTitle, retroId, problemId]);
+  }, [isInitialized, retroId, problemId]);
 
   if (isLoading) return <LoadingSpinner />;
   if (!isSuccess) return <Error title="서버 에러" description="문제를 찾을 수 없습니다." />;
@@ -133,12 +164,7 @@ const KeepSidePanelContent = ({ retroId, problemId }: KeepSidePanelContentProps)
     <Wrapper>
       <TitleWrapper>
         <Checkbox label={`KEP-${problemId}`} id={`KEP-${problemId}`} onClick={() => {}} checked />
-        <PageTitle
-          title={currentTitle}
-          setTitle={setCurrentTitle}
-          placeholder="제목을 작성해 주세요"
-          onBlur={onChange}
-        />
+        <PageTitle title={currentTitle} setTitle={setCurrentTitle} placeholder="제목을 작성해 주세요" />
       </TitleWrapper>
       <ProblemInfo>
         <ProblemInfoItem>
