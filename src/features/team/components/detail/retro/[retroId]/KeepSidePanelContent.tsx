@@ -124,10 +124,7 @@ const KeepSidePanelContent = ({ retroId, problemId }: KeepSidePanelContentProps)
     }
   }, [data, editor]);
 
-  // 디바운스된 값이 변경되면 자동 저장
   useEffect(() => {
-    // 초기화가 완료된 후에만 자동 저장 실행
-    // 실제로 값이 변경되었을 때만 저장 (빈 문자열이 아닌 경우)
     if (
       isInitialized &&
       data &&
@@ -138,16 +135,13 @@ const KeepSidePanelContent = ({ retroId, problemId }: KeepSidePanelContentProps)
     }
   }, [debouncedTitle, debouncedContent, isInitialized, data]);
 
-  // 컴포넌트 언마운트 시 즉시 저장
   useEffect(() => {
     return () => {
-      // 초기화가 완료된 후에만 저장 실행
       if (isInitialized) {
         const finalTitle = currentTitleRef.current;
         const finalContent = currentContentRef.current;
 
-        // 실제로 값이 있고 변경되었을 때만 저장
-        if (finalTitle || finalContent) {
+        if (data && (finalTitle !== data.title || finalContent !== data.content) && (finalTitle || finalContent)) {
           updateRetroProblemMutation.mutate({
             title: finalTitle,
             content: finalContent,
