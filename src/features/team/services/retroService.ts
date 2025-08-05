@@ -12,6 +12,8 @@ const URLS = {
   READ_RETRO_PROBLEM_LIST: (retroId: string | number, kanbanStatus: types.KanbanStatus) =>
     `/retrospectives/problems/${retroId}?kanbanStatus=${kanbanStatus}`,
   CREATE_RETRO_PROBLEM: (retroId: string | number) => `/retrospectives/problems/${retroId}`,
+  UPDATE_RETRO_PROBLEM: (retroId: string | number, problemId: string | number) =>
+    `/retrospectives/problems/${retroId}/${problemId}`,
 
   READ_RETRO_MEMBER_LIST: (teamId: string, retroId: string | number) =>
     `/retrospectives/${teamId}/${retroId}/participants`,
@@ -61,6 +63,14 @@ export async function createRetroProblem(
   payload: types.CreateRetroProblemPayload,
 ) {
   const { data } = await api.post(URLS.CREATE_RETRO_PROBLEM(params.retroId), payload);
+  return data;
+}
+
+export async function updateRetroProblem(
+  params: types.UpdateRetroProblemParams,
+  payload: types.UpdateRetroProblemPayload,
+) {
+  const { data } = await api.put(URLS.UPDATE_RETRO_PROBLEM(params.retroId, params.problemId), payload);
   return data;
 }
 
