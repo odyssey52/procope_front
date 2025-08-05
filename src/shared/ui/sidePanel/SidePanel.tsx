@@ -14,8 +14,8 @@ const SidePanel = () => {
         <Wrapper
           $isOpen={state.isOpen}
           initial={{ right: '-100%' }}
-          animate={{ right: 0, transition: { duration: 0.3, ease: 'easeInOut' } }}
-          exit={{ right: '-100%', transition: { duration: 0.3, ease: 'easeInOut' } }}
+          animate={{ right: 0, transition: { duration: 0.2, ease: 'easeInOut' } }}
+          exit={{ right: '-100%', transition: { duration: 0.2, ease: 'easeInOut' } }}
         >
           <PanelControl>
             <CloseButton onClick={sidePanelActions.close}>
