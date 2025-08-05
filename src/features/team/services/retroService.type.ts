@@ -33,6 +33,10 @@ export interface ReadRetroProblemListParams {
   kanbanStatus: KanbanStatus;
 }
 
+export interface CreateRetroProblemParams {
+  retroId: string | number;
+}
+
 export interface ReadRetroMemberListParams {
   teamId: string;
   retroId: string | number;
@@ -56,6 +60,12 @@ export interface CreateRetroPayload {
 
 export interface UpdateRetroTitlePayload {
   title: string;
+}
+
+export interface CreateRetroProblemPayload {
+  title: string;
+  content: string;
+  kanbanStatus: KanbanStatus;
 }
 
 export interface CreateRetroMemberPayload {

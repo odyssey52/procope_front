@@ -8,8 +8,11 @@ const URLS = {
   DELETE_RETRO: (teamId: string, retroId: string | number) => `/retrospectives/${teamId}/${retroId}`,
 
   UPDATE_RETRO_TITLE: (teamId: string, retroId: string | number) => `/retrospectives/${teamId}/${retroId}`,
+
   READ_RETRO_PROBLEM_LIST: (retroId: string | number, kanbanStatus: types.KanbanStatus) =>
     `/retrospectives/problems/${retroId}?kanbanStatus=${kanbanStatus}`,
+  CREATE_RETRO_PROBLEM: (retroId: string | number) => `/retrospectives/problems/${retroId}`,
+
   READ_RETRO_MEMBER_LIST: (teamId: string, retroId: string | number) =>
     `/retrospectives/${teamId}/${retroId}/participants`,
   CREATE_RETRO_MEMBER: (teamId: string, retroId: string | number) =>
@@ -50,6 +53,14 @@ export async function readRetroProblemList(params: types.ReadRetroProblemListPar
   const { data } = await api.get<types.ReadRetroProblemListResponse>(
     URLS.READ_RETRO_PROBLEM_LIST(params.retroId, params.kanbanStatus),
   );
+  return data;
+}
+
+export async function createRetroProblem(
+  params: types.CreateRetroProblemParams,
+  payload: types.CreateRetroProblemPayload,
+) {
+  const { data } = await api.post(URLS.CREATE_RETRO_PROBLEM(params.retroId), payload);
   return data;
 }
 
