@@ -16,6 +16,7 @@ import { theme } from '@/shared/styles/theme';
 import { Client } from '@stomp/stompjs';
 import { RetroCardRole } from '@/shared/ui/card/RetroCard';
 import { sidePanelActions } from '@/shared/store/sidePanel/sidePanel';
+import KeepSidePanelContent from './KeepSidePanelContent';
 
 interface KeepWrapperProps {
   retroId: string;
@@ -101,9 +102,10 @@ const KeepWrapper = ({ retroId, client }: KeepWrapperProps) => {
 
   const addKeep = () => {
     sidePanelActions.open({
-      content: <div>좋았던 점 생성 준비 중입니다.</div>,
+      content: <KeepSidePanelContent retroId={retroId} />,
     });
   };
+
   return (
     <Wrapper>
       <Head>
