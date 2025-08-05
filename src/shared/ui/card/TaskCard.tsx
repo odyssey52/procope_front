@@ -30,6 +30,7 @@ interface TaskCardProps {
   hasComments?: boolean;
   showMenu?: boolean;
   menuItems?: MenuItem[];
+  onClick?: () => void;
 }
 
 const TaskCard = ({
@@ -43,6 +44,7 @@ const TaskCard = ({
   totalComments = 0,
   showMenu = false,
   menuItems = [],
+  onClick,
 }: TaskCardProps) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
@@ -54,9 +56,9 @@ const TaskCard = ({
     onClick();
     setIsMenuOpen(false);
   };
-  console.log(tagJob);
+
   return (
-    <Wrapper>
+    <Wrapper onClick={onClick}>
       <Top>
         <TagBox>
           <TagList>
