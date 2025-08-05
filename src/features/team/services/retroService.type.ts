@@ -42,6 +42,11 @@ export interface UpdateRetroProblemParams {
   problemId: string | number;
 }
 
+export interface ReadRetroProblemDetailParams {
+  retroId: string | number;
+  problemId: string | number;
+}
+
 export interface ReadRetroMemberListParams {
   teamId: string;
   retroId: string | number;
@@ -77,6 +82,20 @@ export interface UpdateRetroProblemPayload {
   title: string;
   content: string;
   kanbanStatus: KanbanStatus;
+}
+
+export interface ReadRetroProblemDetailResponse {
+  userRole: string;
+  createUserInfo: {
+    id: string;
+    name: string;
+    profileImageUrl: string;
+  };
+  title: string;
+  content: string;
+  kanbanStatus: KanbanStatus;
+  solutions: RetroProblemSolutionListItem[];
+  updatedAt: string;
 }
 
 export interface CreateRetroMemberPayload {
@@ -152,4 +171,15 @@ export type RetroMemberListItem = {
   name: string;
   profileImage: string;
   inviteStatus: boolean;
+};
+
+export type RetroProblemSolutionListItem = {
+  id: number;
+  title: string;
+  updatedAt: string;
+  createUserInfo: {
+    id: string;
+    name: string;
+    profileImageUrl: string;
+  };
 };
