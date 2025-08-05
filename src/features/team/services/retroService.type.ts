@@ -37,6 +37,11 @@ export interface CreateRetroProblemParams {
   retroId: string | number;
 }
 
+export interface DeleteRetroProblemParams {
+  retroId: string | number;
+  problemId: string | number;
+}
+
 export interface UpdateRetroProblemParams {
   retroId: string | number;
   problemId: string | number;
@@ -81,6 +86,10 @@ export interface CreateRetroProblemPayload {
 export interface UpdateRetroProblemPayload {
   title: string;
   content: string;
+  kanbanStatus: KanbanStatus;
+}
+
+export interface DeleteRetroProblemPayload {
   kanbanStatus: KanbanStatus;
 }
 

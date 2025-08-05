@@ -16,6 +16,8 @@ const URLS = {
     `/retrospectives/problems/${retroId}/${problemId}`,
   READ_RETRO_PROBLEM_DETAIL: (retroId: string | number, problemId: string | number) =>
     `/retrospectives/problems/${retroId}/${problemId}`,
+  DELETE_RETRO_PROBLEM: (retroId: string | number, problemId: string | number) =>
+    `/retrospectives/problems/${retroId}/${problemId}`,
 
   READ_RETRO_MEMBER_LIST: (teamId: string, retroId: string | number) =>
     `/retrospectives/${teamId}/${retroId}/participants`,
@@ -65,6 +67,16 @@ export async function createRetroProblem(
   payload: types.CreateRetroProblemPayload,
 ) {
   const { data } = await api.post(URLS.CREATE_RETRO_PROBLEM(params.retroId), payload);
+  return data;
+}
+
+export async function deleteRetroProblem(
+  params: types.DeleteRetroProblemParams,
+  payload: types.DeleteRetroProblemPayload,
+) {
+  const { data } = await api.delete(URLS.DELETE_RETRO_PROBLEM(params.retroId, params.problemId), {
+    data: payload,
+  });
   return data;
 }
 
