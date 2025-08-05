@@ -1,20 +1,24 @@
 'use client';
 
 import retroQueries from '@/features/team/query/retroQueries';
-import { ReadRetroProblemListResponse } from '@/features/team/services/retroService.type';
+import { createRetroProblem, deleteRetroProblem } from '@/features/team/services/retroService';
+import { CreateRetroProblemPayload } from '@/features/team/services/retroService.type';
 import { IconCheckMarkRectangle } from '@/shared/assets/icons/line';
+import useApiError from '@/shared/hooks/useApiError';
 import { sidePanelActions } from '@/shared/store/sidePanel/sidePanel';
 import { theme } from '@/shared/styles/theme';
 import Button from '@/shared/ui/button/Button';
+import MoreArea from '@/shared/ui/button/MoreArea';
 import TaskCard from '@/shared/ui/card/TaskCard';
 import Empty from '@/shared/ui/empty/Empty';
 import ErrorBoundary from '@/shared/ui/errorboundary/ErrorBoundary';
 import MoreIndicator from '@/shared/ui/indicator/MoreIndicator';
+import ItemList from '@/shared/ui/select/ItemList';
 import Tag from '@/shared/ui/tag/Tag';
 import { JobType } from '@/shared/ui/tag/TagJob';
 import PageSubTitle from '@/shared/ui/title/PageSubTitle';
 import { Client } from '@stomp/stompjs';
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import styled from 'styled-components';
 import KeepSidePanelContent from './KeepSidePanelContent';
 
@@ -30,14 +34,48 @@ const ERROR_TITLE = '회고 내용 로딩 실패';
 const ERROR_DESCRIPTION = '회고 내용을 불러오는 중 문제가 발생했습니다.';
 
 const KeepWrapper = ({ retroId, client }: KeepWrapperProps) => {
+  const { handleError } = useApiError();
   const { data, isSuccess, refetch } = useQuery({
     ...retroQueries.readRetroProblemList({ retroId, kanbanStatus: 'KEP' }),
   });
+  const queryClient = useQueryClient();
 
-  const addKeep = () => {
-    sidePanelActions.open({
-      content: <KeepSidePanelContent retroId={retroId} />,
-    });
+  const createRetroProblemMutation = useMutation({
+    mutationFn: (payload: CreateRetroProblemPayload) => createRetroProblem({ retroId }, payload),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: retroQueries.readRetroProblemList({ retroId, kanbanStatus: 'KEP' }).queryKey,
+      });
+    },
+  });
+
+  const deleteRetroProblemMutation = useMutation({
+    mutationFn: (problemId: string | number) => deleteRetroProblem({ retroId, problemId }, { kanbanStatus: 'KEP' }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: retroQueries.readRetroProblemList({ retroId, kanbanStatus: 'KEP' }).queryKey,
+      });
+    },
+  });
+
+  const handleDeleteRetroProblem = async (problemId: string | number) => {
+    try {
+      await deleteRetroProblemMutation.mutateAsync(problemId);
+    } catch (error) {
+      handleError(error);
+    }
+  };
+
+  const addKeep = async () => {
+    try {
+      await createRetroProblemMutation.mutateAsync({
+        title: '새 카드',
+        content: '',
+        kanbanStatus: 'KEP',
+      });
+    } catch (error) {
+      handleError(error);
+    }
   };
 
   return (
@@ -62,6 +100,23 @@ const KeepWrapper = ({ retroId, client }: KeepWrapperProps) => {
                 data.payload.map((item) => (
                   <TaskCard
                     key={item.id}
+                    onClick={() => {
+                      sidePanelActions.open({
+                        content: <KeepSidePanelContent retroId={retroId} problemId={item.id} />,
+                        moreMenu: (
+                          <MoreArea
+                            size={24}
+                            menuList={
+                              <ItemList
+                                width="112px"
+                                selectOptionList={[{ value: '삭제' }]}
+                                valueHandler={() => handleDeleteRetroProblem(item.id)}
+                              />
+                            }
+                          />
+                        ),
+                      });
+                    }}
                     tags={[
                       <Tag
                         key={`KeepTastCard-${item.id}`}

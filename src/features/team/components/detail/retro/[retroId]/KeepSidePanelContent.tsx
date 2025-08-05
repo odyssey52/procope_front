@@ -1,18 +1,34 @@
 'use client';
 
 import retroQueries from '@/features/team/query/retroQueries';
-import { createRetroProblem, updateRetroProblem } from '@/features/team/services/retroService';
-import { CreateRetroProblemPayload, UpdateRetroProblemPayload } from '@/features/team/services/retroService.type';
+import { updateRetroProblem } from '@/features/team/services/retroService';
+import { UpdateRetroProblemPayload } from '@/features/team/services/retroService.type';
+import { IconApps, IconUser } from '@/shared/assets/icons/line';
 import useApiError from '@/shared/hooks/useApiError';
+import { theme } from '@/shared/styles/theme';
+import Avatar from '@/shared/ui/avatar/Avatar';
+import TextButton from '@/shared/ui/button/TextButton';
 import Checkbox from '@/shared/ui/checkbox/Checkbox';
+import Error from '@/shared/ui/error/Error';
+import Divider from '@/shared/ui/line/Divider';
+import { LoadingSpinner } from '@/shared/ui/LoadingSpinner';
+import TagJob, { JobType } from '@/shared/ui/tag/TagJob';
+import Text from '@/shared/ui/Text';
+import Tiptap from '@/shared/ui/tiptap/Tiptap';
 import PageTitle from '@/shared/ui/title/PageTitle';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { useState } from 'react';
+import { formatDateToDot } from '@/shared/utils/date';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import BulletList from '@tiptap/extension-bullet-list';
+import ListItem from '@tiptap/extension-list-item';
+import Placeholder from '@tiptap/extension-placeholder';
+import { useEditor } from '@tiptap/react';
+import StarterKit from '@tiptap/starter-kit';
+import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 
 interface KeepSidePanelContentProps {
-  retroId: string;
-  problemId?: string; // 수정 시에 필요
+  retroId: string | number;
+  problemId: string | number;
 }
 
 const KeepSidePanelContent = ({ retroId, problemId }: KeepSidePanelContentProps) => {
@@ -21,35 +37,38 @@ const KeepSidePanelContent = ({ retroId, problemId }: KeepSidePanelContentProps)
   const [currentContent, setCurrentContent] = useState('');
   const queryClient = useQueryClient();
 
-  const createRetroProblemMutation = useMutation({
-    mutationFn: (payload: CreateRetroProblemPayload) => createRetroProblem({ retroId }, payload),
+  const editor = useEditor({
+    extensions: [
+      BulletList,
+      StarterKit,
+      ListItem,
+      Placeholder.configure({
+        placeholder: '본문을 작성해 주세요',
+      }),
+    ],
+    content: currentContent,
+  });
+
+  const { data, isLoading, isSuccess } = useQuery({
+    ...retroQueries.readRetroProblemDetail({ retroId, problemId }),
+  });
+
+  const updateRetroProblemMutation = useMutation({
+    mutationFn: (payload: UpdateRetroProblemPayload) => updateRetroProblem({ retroId, problemId: problemId! }, payload),
     onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: retroQueries.readRetroProblemDetail({ retroId, problemId }).queryKey,
+      });
       queryClient.invalidateQueries({
         queryKey: retroQueries.readRetroProblemList({ retroId, kanbanStatus: 'KEP' }).queryKey,
       });
     },
   });
 
-  const updateRetroProblemMutation = useMutation({
-    mutationFn: (payload: UpdateRetroProblemPayload) => updateRetroProblem({ retroId, problemId: problemId! }, payload),
-  });
-
-  const handleCreateRetroProblem = async () => {
-    if (problemId || !currentTitle) return;
-    try {
-      await createRetroProblemMutation.mutateAsync({
-        title: currentTitle,
-        content: currentContent,
-        kanbanStatus: 'KEP',
-      });
-    } catch (error) {
-      handleError(error);
-    }
-  };
-
   const handleUpdateRetroProblem = async () => {
-    if (!problemId) return;
     try {
+      console.log(currentTitle);
+      console.log(currentContent);
       await updateRetroProblemMutation.mutateAsync({
         title: currentTitle,
         content: currentContent,
@@ -62,39 +81,112 @@ const KeepSidePanelContent = ({ retroId, problemId }: KeepSidePanelContentProps)
 
   const onChange = () => {
     try {
-      if (!problemId) handleCreateRetroProblem();
-      else handleUpdateRetroProblem();
+      handleUpdateRetroProblem();
     } catch (error) {
       handleError(error);
     }
   };
+
+  useEffect(() => {
+    if (editor) {
+      editor.on('update', ({ editor }) => {
+        setCurrentContent(editor.getHTML());
+      });
+    }
+  }, [editor]);
+
+  // 데이터가 로드되면 상태 설정
+  useEffect(() => {
+    if (data && editor) {
+      setCurrentTitle(data.title);
+      setCurrentContent(data.content);
+      // 데이터가 있고 내용이 있을 때만 에디터에 설정
+      if (data.content && data.content.trim() !== '') {
+        editor.commands.setContent(data.content);
+      }
+    }
+  }, [data, editor]);
+
+  useEffect(() => {
+    return () => {
+      if (editor) {
+        const finalContent = editor.getHTML();
+        const finalTitle = currentTitle;
+
+        if (finalTitle || finalContent) {
+          updateRetroProblem(
+            { retroId, problemId: problemId! },
+            {
+              title: finalTitle,
+              content: finalContent,
+              kanbanStatus: 'KEP',
+            },
+          );
+        }
+      }
+    };
+  }, [editor, currentTitle, retroId, problemId]);
+
+  if (isLoading) return <LoadingSpinner />;
+  if (!isSuccess) return <Error title="서버 에러" description="문제를 찾을 수 없습니다." />;
   return (
     <Wrapper>
-      <Head>
-        <TitleWrapper>
-          <Checkbox label="KEP-1" id="KEP-1" onClick={() => {}} checked />
-          <PageTitle
-            title={currentTitle}
-            setTitle={setCurrentTitle}
-            placeholder="제목을 작성해 주세요"
-            onBlur={onChange}
-          />
-        </TitleWrapper>
-      </Head>
+      <TitleWrapper>
+        <Checkbox label={`KEP-${problemId}`} id={`KEP-${problemId}`} onClick={() => {}} checked />
+        <PageTitle
+          title={currentTitle}
+          setTitle={setCurrentTitle}
+          placeholder="제목을 작성해 주세요"
+          onBlur={onChange}
+        />
+      </TitleWrapper>
+      <ProblemInfo>
+        <ProblemInfoItem>
+          <ProblemInfoItemTitle>
+            <IconApps size={20} color={theme.sementicColors.icon.disabled} />
+            카테고리
+          </ProblemInfoItemTitle>
+          <ProblemInfoItemContent>
+            <TagJob type={data.userRole as JobType} bgColor={theme.sementicColors.bg.tertiary_hover_pressed} />
+          </ProblemInfoItemContent>
+        </ProblemInfoItem>
+        <ProblemInfoItem>
+          <ProblemInfoItemTitle>
+            <IconUser size={20} color={theme.sementicColors.icon.disabled} />
+            만든사람
+          </ProblemInfoItemTitle>
+          <ProblemInfoItemContent>
+            <TextButton
+              $type="24"
+              leftIcon={<Avatar size={24} image={data.createUserInfo.profileImageUrl} />}
+              $clickable={false}
+            >
+              {data.createUserInfo.name}
+            </TextButton>
+          </ProblemInfoItemContent>
+        </ProblemInfoItem>
+        {/* 업데이트 날짜 */}
+        <ProblemInfoItem>
+          <ProblemInfoItemTitle>업데이트 날짜</ProblemInfoItemTitle>
+          <ProblemInfoItemContent>
+            <Text variant="body_16_medium" color="tertiary">
+              {formatDateToDot(data.updatedAt)}
+            </Text>
+          </ProblemInfoItemContent>
+        </ProblemInfoItem>
+      </ProblemInfo>
+      <Divider />
+      {editor && <Tiptap editor={editor} />}
     </Wrapper>
   );
 };
 
 const Wrapper = styled.div`
-  padding: 0 24px;
-  /* color: ${({ theme }) => theme.sementicColors.text.primary}; */
-  /* background-color: ${({ theme }) => theme.sementicColors.bg.inverse}; */
-`;
-
-const Head = styled.div`
   display: flex;
-  gap: 12px;
+  flex-direction: column;
+  gap: 24px;
   padding: 24px;
+  margin: 0 24px;
 `;
 
 const TitleWrapper = styled.div`
@@ -104,6 +196,31 @@ const TitleWrapper = styled.div`
   gap: 8px;
 `;
 
+const ProblemInfo = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+`;
+
+const ProblemInfoItem = styled.div`
+  display: flex;
+  gap: 8px;
+  padding: 2px 0;
+`;
+
+const ProblemInfoItemTitle = styled.div`
+  display: flex;
+  gap: 4px;
+  align-items: center;
+  width: 140px;
+  ${({ theme }) => theme.fontStyle.body_16_medium};
+  color: ${({ theme }) => theme.sementicColors.text.tertiary};
+`;
+
+const ProblemInfoItemContent = styled.div`
+  color: ${({ theme }) => theme.sementicColors.text.secondary};
+  padding: 8px;
+`;
 KeepSidePanelContent.displayName = 'KeepSidePanelContent';
 
 export default KeepSidePanelContent;
