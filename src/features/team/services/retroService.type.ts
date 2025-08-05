@@ -135,12 +135,10 @@ export type ReadRetroMemberListResponse = {
 export type KanbanStatus = 'RCG' | 'PRG' | 'OK' | 'KEP';
 export interface RetroProblemListItem {
   id: number;
-  userRole: UserRole;
-  cardId: string;
+  userRole: string;
   createUserInfo: {
     id: string;
     name: string;
-    role: string;
     profileImageUrl: string;
   };
   title: string;
