@@ -39,11 +39,9 @@ const KeepSidePanelContent = ({ retroId, problemId }: KeepSidePanelContentProps)
   const [isInitialized, setIsInitialized] = useState(false);
   const queryClient = useQueryClient();
 
-  // 최신 값을 참조하기 위한 ref
   const currentTitleRef = useRef('');
   const currentContentRef = useRef('');
 
-  // 디바운스된 값들
   const debouncedTitle = useDebounce(currentTitle, 3000);
   const debouncedContent = useDebounce(currentContent, 3000);
 
@@ -97,7 +95,6 @@ const KeepSidePanelContent = ({ retroId, problemId }: KeepSidePanelContentProps)
     }
   }, [editor]);
 
-  // title과 content 상태가 변경될 때마다 ref 업데이트
   useEffect(() => {
     currentTitleRef.current = currentTitle;
   }, [currentTitle]);
@@ -106,7 +103,6 @@ const KeepSidePanelContent = ({ retroId, problemId }: KeepSidePanelContentProps)
     currentContentRef.current = currentContent;
   }, [currentContent]);
 
-  // 데이터가 로드되면 상태 설정
   useEffect(() => {
     if (data) {
       setCurrentTitle(data.title);
@@ -116,7 +112,6 @@ const KeepSidePanelContent = ({ retroId, problemId }: KeepSidePanelContentProps)
       setIsInitialized(true);
 
       if (editor) {
-        // 데이터가 있고 내용이 있을 때만 에디터에 설정
         if (data.content && data.content.trim() !== '') {
           editor.commands.setContent(data.content);
         }
@@ -185,7 +180,6 @@ const KeepSidePanelContent = ({ retroId, problemId }: KeepSidePanelContentProps)
             </TextButton>
           </ProblemInfoItemContent>
         </ProblemInfoItem>
-        {/* 업데이트 날짜 */}
         <ProblemInfoItem>
           <ProblemInfoItemTitle>업데이트 날짜</ProblemInfoItemTitle>
           <ProblemInfoItemContent>
