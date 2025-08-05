@@ -25,6 +25,6 @@ export default Setting;
 
 const Wrapper = styled.div`
   width: 100%;
-  padding: 24px 0px 86px 0px;
+  padding: 48px 0px;
   background-color: ${({ theme }) => theme.sementicColors.bg.tertiary};
 `;

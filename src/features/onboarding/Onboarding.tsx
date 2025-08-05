@@ -10,7 +10,7 @@ import ProgressBar from '@/shared/ui/progress/ProgressBar';
 import { useMutation } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import { useCallback, useMemo, useState } from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import CheckStep from './CheckStep';
 import FirstStep, { JobMain } from './FirstStep';
 import SecondStep, { JobSub } from './SecondStep';
@@ -185,7 +185,7 @@ const Onboarding = () => {
 
   return (
     <OnBoardingContainer>
-      <Content>
+      <Content step={step}>
         {step !== 4 && (
           <Percent>
             <ProgressBar rate={progressRate} />
@@ -204,18 +204,21 @@ const OnBoardingContainer = styled(Container)`
   position: relative;
   display: flex;
   flex: 1;
-  height: 100%;
-  min-height: 100vh;
-
   align-items: center;
 `;
-const Content = styled.div`
+const Content = styled.div<{ step: number }>`
   position: relative;
   display: flex;
   max-width: 608px;
   width: 100%;
-  margin-top: 12.96vh;
-  margin-bottom: 16px;
+  min-height: 100vh;
+  ${({ step }) =>
+    step === 2 &&
+    css`
+      @media (max-height: 1400px) {
+        margin: 12vh 0;
+      }
+    `}
   flex-direction: column;
   justify-content: center;
 `;
