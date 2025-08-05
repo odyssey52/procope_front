@@ -113,8 +113,6 @@ const Content = styled.div`
   width: 100%;
   overflow: hidden;
   gap: 12px;
-  margin-left: 24px;
-  padding-left: 24px;
 `;
 
 const CardList = styled.div`
@@ -122,8 +120,28 @@ const CardList = styled.div`
   overflow-x: auto;
   flex-grow: 1;
   width: 100%;
-  padding-bottom: 8px;
   gap: 16px;
+  padding: 0 48px;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+  /* &::-webkit-scrollbar {
+    height: 6px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+    margin: 0 48px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: #d1d5db;
+    border-radius: 4px;
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background: #9ca3af;
+  } */
 `;
 
 KeepWrapper.displayName = 'KeepWrapper';
