@@ -4,7 +4,7 @@ import PartHeaderContent from '@/shared/ui/part/PartHeaderContent';
 import ItemList from '@/shared/ui/select/ItemList';
 import Select from '@/shared/ui/select/Select';
 import TagWrapper from '@/shared/ui/tag/Tag';
-import TagJob from '@/shared/ui/tag/TagJob';
+import TagJob, { JobType } from '@/shared/ui/tag/TagJob';
 import Button from '@/shared/ui/button/Button';
 import { formatDateToDotAndSlice, jobList } from '@/features/team/utils/data';
 import Tooltip from '@/shared/ui/tooltip/Tooltip';
@@ -43,7 +43,7 @@ const MemberList = ({ teamUser, teamData }: MemberListProps) => {
   }, [teamUser]);
 
   const roleInfoName = (name: string) => {
-    return <TagJob type={jobList[name as keyof typeof jobList]} />;
+    return <TagJob type={name as JobType} />;
   };
 
   const authorityTag: { id: 'ADMIN' | 'MANAGER' | 'MEMBER'; value: React.JSX.Element }[] = [

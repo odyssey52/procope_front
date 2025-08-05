@@ -3,25 +3,27 @@ import styled from 'styled-components';
 import Text from '../Text';
 
 const JOB_LIST = {
-  development: { title: '개발', src: '/assets/icons/graphic/job/development.svg' },
-  planning: { title: '기획', src: '/assets/icons/graphic/job/planning.svg' },
-  data: { title: '데이터', src: '/assets/icons/graphic/job/data.svg' },
-  design: { title: '디자인', src: '/assets/icons/graphic/job/design.svg' },
-  marketing: { title: '마케팅', src: '/assets/icons/graphic/job/marketing.svg' },
-  sales: { title: '영업', src: '/assets/icons/graphic/job/sales.svg' },
-  operations: { title: '운영', src: '/assets/icons/graphic/job/operations.svg' },
+  개발: { src: '/assets/icons/graphic/job/development.svg' },
+  기획: { src: '/assets/icons/graphic/job/planning.svg' },
+  데이터: { src: '/assets/icons/graphic/job/data.svg' },
+  디자인: { src: '/assets/icons/graphic/job/design.svg' },
+  마케팅: { src: '/assets/icons/graphic/job/marketing.svg' },
+  영업: { src: '/assets/icons/graphic/job/sales.svg' },
+  운영: { src: '/assets/icons/graphic/job/operations.svg' },
 };
 
+export type JobType = '개발' | '기획' | '데이터' | '디자인' | '마케팅' | '영업' | '운영';
+
 interface TagJobProps {
-  type: 'development' | 'planning' | 'data' | 'design' | 'marketing' | 'sales' | 'operations';
+  type: JobType;
   bgColor?: string;
 }
 const TagJob = ({ type, bgColor }: TagJobProps) => {
   return (
     <Wrapper $bgColor={bgColor}>
-      <Image src={JOB_LIST[type].src} width={16} height={16} alt={`${JOB_LIST[type].title}태그아이콘 이미지`} />
+      <Image src={JOB_LIST[type].src} width={16} height={16} alt={`${type}태그아이콘 이미지`} />
       <Text color="primary" variant="body_14_medium">
-        {JOB_LIST[type].title}
+        {type}
       </Text>
     </Wrapper>
   );

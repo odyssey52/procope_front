@@ -6,7 +6,7 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import Avatar from '../avatar/Avatar';
 import Divider from '../line/Divider';
-import TagJob from '../tag/TagJob';
+import TagJob, { JobType } from '../tag/TagJob';
 import Text from '../Text';
 
 interface MenuItem {
@@ -17,7 +17,7 @@ interface MenuItem {
 
 interface TaskCardProps {
   tags?: React.ReactNode[];
-  tagJob: 'development' | 'planning' | 'data' | 'design' | 'marketing' | 'sales' | 'operations';
+  tagJob: JobType;
   title: string;
   startDate: string;
   endDate?: string;
@@ -53,7 +53,7 @@ const TaskCard = ({
     onClick();
     setIsMenuOpen(false);
   };
-
+  console.log(tagJob);
   return (
     <Wrapper>
       <Top>

@@ -3,7 +3,6 @@
 import { IconChat01 } from '@/shared/assets/icons/line';
 import { theme } from '@/shared/styles/theme';
 import BulletList from '@tiptap/extension-bullet-list';
-import History from '@tiptap/extension-history';
 import ListItem from '@tiptap/extension-list-item';
 import { useEditor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
@@ -11,17 +10,16 @@ import styled from 'styled-components';
 import Avatar from '../avatar/Avatar';
 import MoreArea from '../button/MoreArea';
 import Divider from '../line/Divider';
-import TagJob from '../tag/TagJob';
+import TagJob, { JobType } from '../tag/TagJob';
 import Text from '../Text';
 import Tiptap from '../tiptap/Tiptap';
 
 const MAX_LINES = 9;
 const MAX_CHARS = 170;
 
-export type RetroCardRole = 'development' | 'planning' | 'data' | 'design' | 'marketing' | 'sales' | 'operations';
 interface RetroCardProps {
   item: {
-    role: RetroCardRole;
+    role: JobType;
     title: string;
     content: string;
     user: {
