@@ -1,6 +1,7 @@
 'use client';
 
 import { IconDirectionRight1 } from '@/shared/assets/icons/line';
+import { useClickOutside } from '@/shared/hooks/useClickOutside';
 import { sidePanelActions, useSidePanelStore } from '@/shared/store/sidePanel/sidePanel';
 import { elevation, zIndex } from '@/shared/styles/mixin';
 import { AnimatePresence, motion } from 'framer-motion';
@@ -8,10 +9,12 @@ import styled from 'styled-components';
 
 const SidePanel = () => {
   const state = useSidePanelStore();
+  const ref = useClickOutside<HTMLDivElement>(() => sidePanelActions.close());
   return (
     <AnimatePresence mode="wait">
       {state.isOpen && (
         <Wrapper
+          ref={ref}
           $isOpen={state.isOpen}
           initial={{ right: '-100%' }}
           animate={{ right: 0, transition: { duration: 0.2, ease: 'easeInOut' } }}
