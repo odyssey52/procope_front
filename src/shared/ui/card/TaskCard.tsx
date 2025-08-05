@@ -2,6 +2,7 @@
 
 import { IconChat01, IconClockCircle, IconFlag, IconMenuCircleVertical } from '@/shared/assets/icons/line';
 import { theme } from '@/shared/styles/theme';
+import { formatDateToDot } from '@/shared/utils/date';
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import Avatar from '../avatar/Avatar';
@@ -86,7 +87,7 @@ const TaskCard = ({
       <StartDateBox>
         <IconClockCircle size={20} color={theme.sementicColors.icon.disabled} />
         <Text variant="body_14_medium" color="disabled">
-          {startDate}
+          {formatDateToDot(startDate)}
         </Text>
       </StartDateBox>
       <Divider />
@@ -110,7 +111,7 @@ const TaskCard = ({
             <EndDateBox>
               <IconFlag size={24} color={theme.sementicColors.icon.tertiary} />
               <Text variant="body_14_medium" color="disabled">
-                {endDate}
+                {formatDateToDot(endDate)}
               </Text>
             </EndDateBox>
           )}

@@ -2,20 +2,20 @@
 
 import retroQueries from '@/features/team/query/retroQueries';
 import { ReadRetroProblemListResponse } from '@/features/team/services/retroService.type';
+import { IconCheckMarkRectangle } from '@/shared/assets/icons/line';
+import { sidePanelActions } from '@/shared/store/sidePanel/sidePanel';
+import { theme } from '@/shared/styles/theme';
 import Button from '@/shared/ui/button/Button';
 import TaskCard from '@/shared/ui/card/TaskCard';
 import Empty from '@/shared/ui/empty/Empty';
 import ErrorBoundary from '@/shared/ui/errorboundary/ErrorBoundary';
 import MoreIndicator from '@/shared/ui/indicator/MoreIndicator';
+import Tag from '@/shared/ui/tag/Tag';
+import { JobType } from '@/shared/ui/tag/TagJob';
 import PageSubTitle from '@/shared/ui/title/PageSubTitle';
+import { Client } from '@stomp/stompjs';
 import { useQuery } from '@tanstack/react-query';
 import styled from 'styled-components';
-import Tag from '@/shared/ui/tag/Tag';
-import { IconCheckMarkRectangle } from '@/shared/assets/icons/line';
-import { theme } from '@/shared/styles/theme';
-import { Client } from '@stomp/stompjs';
-import { RetroCardRole } from '@/shared/ui/card/RetroCard';
-import { sidePanelActions } from '@/shared/store/sidePanel/sidePanel';
 import KeepSidePanelContent from './KeepSidePanelContent';
 
 interface KeepWrapperProps {
@@ -28,72 +28,6 @@ const EMPTY_DESCRIPTION = '회고 내용을 추가하여 회고를 진행해 주
 
 const ERROR_TITLE = '회고 내용 로딩 실패';
 const ERROR_DESCRIPTION = '회고 내용을 불러오는 중 문제가 발생했습니다.';
-
-const mockData: ReadRetroProblemListResponse = {
-  count: 4,
-  payload: [
-    {
-      id: 1,
-      userRole: 'MEMBER',
-      cardId: 'KEP-01',
-      createUserInfo: {
-        id: '1',
-        name: '홍길동',
-        profileImageUrl: '/assets/icons/graphic/profile/photo01.svg',
-        role: 'development',
-      },
-      title: '좋았던 점 1',
-      content: '좋았던 점 1 내용',
-      kanbanStatus: 'KEP',
-      updatedAt: '2025-07-25T02:32:11.291Z',
-    },
-    {
-      id: 2,
-      userRole: 'MEMBER',
-      cardId: 'KEP-02',
-      createUserInfo: {
-        id: '2',
-        name: '홍길동',
-        profileImageUrl: '/assets/icons/graphic/profile/photo02.svg',
-        role: 'development',
-      },
-      title: '좋았던 점 2',
-      content: '좋았던 점 2 내용',
-      kanbanStatus: 'KEP',
-      updatedAt: '2025-07-25T02:32:11.291Z',
-    },
-    {
-      id: 3,
-      userRole: 'MEMBER',
-      cardId: 'KEP-03',
-      createUserInfo: {
-        id: '3',
-        name: '홍길동',
-        profileImageUrl: '/assets/icons/graphic/profile/photo03.svg',
-        role: 'development',
-      },
-      title: '좋았던 점 3',
-      content: '좋았던 점 3 내용',
-      kanbanStatus: 'KEP',
-      updatedAt: '2025-07-25T02:32:11.291Z',
-    },
-    {
-      id: 4,
-      userRole: 'MEMBER',
-      cardId: 'KEP-04',
-      createUserInfo: {
-        id: '4',
-        name: '홍길동',
-        profileImageUrl: '/assets/icons/graphic/profile/photo04.svg',
-        role: 'development',
-      },
-      title: '좋았던 점 4',
-      content: '좋았던 점 4 내용',
-      kanbanStatus: 'KEP',
-      updatedAt: '2025-07-25T02:32:11.291Z',
-    },
-  ],
-};
 
 const KeepWrapper = ({ retroId, client }: KeepWrapperProps) => {
   const { data, isSuccess, refetch } = useQuery({
@@ -130,15 +64,15 @@ const KeepWrapper = ({ retroId, client }: KeepWrapperProps) => {
                     key={item.id}
                     tags={[
                       <Tag
-                        key={item.cardId}
+                        key={`KeepTastCard-${item.id}`}
                         $size="large"
                         $style="transparent"
                         $leftIcon={<IconCheckMarkRectangle color={theme.sementicColors.icon.brand} />}
                       >
-                        {item.cardId}
+                        KEP-{item.id}
                       </Tag>,
                     ]}
-                    tagJob={item.createUserInfo.role as RetroCardRole}
+                    tagJob={item.userRole as JobType}
                     title={item.title}
                     startDate={item.updatedAt}
                     user={{
