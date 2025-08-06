@@ -9,6 +9,7 @@ import SockJS from 'sockjs-client';
 import styled from 'styled-components';
 import KeepWrapper from './KeepWrapper';
 import RetroInfoWrapper from './RetroInfoWrapper';
+import ProblemWrapper from './ProblemWrapper';
 
 const RetroPage = () => {
   const params = useParams();
@@ -81,6 +82,7 @@ const RetroPage = () => {
       </Head>
       <Content>
         <KeepWrapper retroId={retroId as string} client={client.current} />
+        <ProblemWrapper retroId={retroId as string} client={client.current} />
       </Content>
     </Wrapper>
   );
@@ -108,7 +110,7 @@ const Head = styled.div`
 const Content = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 40px;
+  gap: 48px;
 `;
 
 RetroPage.displayName = 'RetroPage';
