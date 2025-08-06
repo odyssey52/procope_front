@@ -183,7 +183,7 @@ const getTagSizeStyles = (size: TagProps['$size']) => {
   }
 };
 
-const Tag = styled.span<TagProps>`
+const TagWrapper = styled.span<TagProps>`
   position: relative;
   display: flex;
   align-items: center;
@@ -210,7 +210,7 @@ const Tag = styled.span<TagProps>`
 `;
 
 // 아이콘을 렌더링하기 위한 래퍼 컴포넌트
-const TagWrapper = ({
+const Tag = ({
   $leftIcon,
   $rightIcon,
   $status,
@@ -220,14 +220,14 @@ const TagWrapper = ({
   ...props
 }: TagProps & { children: ReactNode }) => {
   return (
-    <Tag $status={$status} $style={$style} $size={$size} {...props}>
+    <TagWrapper $status={$status} $style={$style} $size={$size} {...props}>
       {$leftIcon}
       {children}
       {$rightIcon}
-    </Tag>
+    </TagWrapper>
   );
 };
 
-TagWrapper.displayName = 'Tag';
+Tag.displayName = 'Tag';
 
-export default TagWrapper;
+export default Tag;
