@@ -36,16 +36,15 @@ const SidePanel = () => {
 const Wrapper = styled(motion.div)<{ $isOpen: boolean }>`
   width: 790px;
   max-width: calc(100vw - 316px);
-  padding: 24px 0;
+  padding-top: 24px;
   position: fixed;
   top: 55px;
   display: flex;
   flex-direction: column;
   gap: 24px;
-
   ${elevation.shadow16};
   ${zIndex.layer4};
-  min-height: 100vh;
+  max-height: calc(100vh - 55px);
   background-color: ${({ theme }) => theme.sementicColors.bg.inverse};
   border-left: 1px solid ${({ theme }) => theme.sementicColors.border.primary};
   box-shadow: 0 2px 20px 0 rgba(0, 0, 0, 0.05);

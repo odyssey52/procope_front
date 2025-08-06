@@ -199,8 +199,10 @@ const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
   gap: 24px;
-  padding: 24px;
-  margin: 0 24px;
+  padding: 48px;
+  padding-top: 24px;
+  overflow-y: scroll;
+  flex-grow: 1;
 `;
 
 const TitleWrapper = styled.div`
