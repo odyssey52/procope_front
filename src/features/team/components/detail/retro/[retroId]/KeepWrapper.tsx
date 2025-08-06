@@ -19,6 +19,7 @@ import { JobType } from '@/shared/ui/tag/TagJob';
 import PageSubTitle from '@/shared/ui/title/PageSubTitle';
 import { Client } from '@stomp/stompjs';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useEffect, useRef } from 'react';
 import styled from 'styled-components';
 import KeepSidePanelContent from './KeepSidePanelContent';
 
@@ -35,10 +36,13 @@ const ERROR_DESCRIPTION = '회고 내용을 불러오는 중 문제가 발생했
 
 const KeepWrapper = ({ retroId, client }: KeepWrapperProps) => {
   const { handleError } = useApiError();
+  const queryClient = useQueryClient();
+
   const { data, isSuccess, refetch } = useQuery({
     ...retroQueries.readRetroProblemList({ retroId, kanbanStatus: 'KEP' }),
   });
-  const queryClient = useQueryClient();
+
+  const subscriptionRef = useRef<any>(null);
 
   const createRetroProblemMutation = useMutation({
     mutationFn: (payload: CreateRetroProblemPayload) => createRetroProblem({ retroId }, payload),
@@ -77,6 +81,31 @@ const KeepWrapper = ({ retroId, client }: KeepWrapperProps) => {
       handleError(error);
     }
   };
+
+  useEffect(() => {
+    if (client && client.connected) {
+      subscriptionRef.current = client.subscribe('/user/topic/retrospectives?kanbanStatus=KEP', (message) => {
+        try {
+          const keepData = JSON.parse(message.body);
+          console.log('📨 실시간 KEEP 리스트 수신:', keepData);
+          queryClient.invalidateQueries({
+            queryKey: retroQueries.readRetroProblemList({ retroId, kanbanStatus: 'KEP' }).queryKey,
+          });
+        } catch (error) {
+          handleError(error);
+        }
+      });
+
+      console.log('✅ KEEP 구독 완료');
+    }
+
+    return () => {
+      if (subscriptionRef.current) {
+        subscriptionRef.current.unsubscribe();
+        console.log('🔌 KEEP 구독 해제');
+      }
+    };
+  }, [client]);
 
   return (
     <Wrapper>
