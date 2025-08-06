@@ -42,9 +42,10 @@ const Wrapper = styled(motion.div)<{ $isOpen: boolean }>`
   display: flex;
   flex-direction: column;
   gap: 24px;
+
   ${elevation.shadow16};
   ${zIndex.layer4};
-  max-height: calc(100vh - 55px);
+  height: calc(100vh - 55px);
   background-color: ${({ theme }) => theme.sementicColors.bg.inverse};
   border-left: 1px solid ${({ theme }) => theme.sementicColors.border.primary};
   box-shadow: 0 2px 20px 0 rgba(0, 0, 0, 0.05);
