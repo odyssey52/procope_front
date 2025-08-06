@@ -1,17 +1,13 @@
 'use client';
 
-import retroQueries from '@/features/team/query/retroQueries';
-import { ReadRetroResponse } from '@/features/team/services/retroService.type';
 import useAuthStore from '@/shared/store/auth/auth';
 import Breadcrumbs from '@/shared/ui/breadcrumbs/Breadcrumbs';
 import { Client } from '@stomp/stompjs';
-import { useQuery } from '@tanstack/react-query';
 import { useParams } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 import SockJS from 'sockjs-client';
 import styled from 'styled-components';
 import KeepWrapper from './KeepWrapper';
-import RetroInfoSkeleton from './RetroInfoSkeleton';
 import RetroInfoWrapper from './RetroInfoWrapper';
 
 const RetroPage = () => {
@@ -40,10 +36,6 @@ const RetroPage = () => {
       clickable: true,
     },
   ];
-
-  const { data, isSuccess, isLoading } = useQuery({
-    ...retroQueries.readRetro({ teamId: teamId as string, retroId: retroId as string }),
-  });
 
   useEffect(() => {
     if (!retroId || !accessToken) return;
@@ -85,11 +77,7 @@ const RetroPage = () => {
     <Wrapper>
       <Head>
         <Breadcrumbs paths={paths} />
-        {isLoading ? (
-          <RetroInfoSkeleton />
-        ) : (
-          <RetroInfoWrapper data={data as ReadRetroResponse} client={client.current} />
-        )}
+        <RetroInfoWrapper client={client.current} />
       </Head>
       <Content>
         <KeepWrapper retroId={retroId as string} client={client.current} />
