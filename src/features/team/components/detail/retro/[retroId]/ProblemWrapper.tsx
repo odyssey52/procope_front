@@ -30,18 +30,20 @@ const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
   gap: 12px;
-  margin: 0 24px;
-  padding: 0 24px;
 `;
 
 const Head = styled.div`
   display: flex;
   flex-direction: column;
+  margin: 0 24px;
+  padding: 0 24px;
 `;
 
 const Content = styled.div`
   display: flex;
   gap: 16px;
+  overflow-x: auto;
+  padding: 0 48px;
 `;
 
 ProblemWrapper.displayName = 'ProblemWrapper';

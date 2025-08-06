@@ -93,8 +93,8 @@ const Wrapper = styled.div`
   flex-direction: column;
   width: 100%;
   gap: 40px;
-  margin: 24px 0;
-  padding: 24px 0;
+  margin-top: 24px;
+  padding-top: 24px;
   background-color: ${({ theme }) => theme.sementicColors.bg.inverse};
 `;
 
@@ -111,6 +111,7 @@ const Content = styled.div`
   display: flex;
   flex-direction: column;
   gap: 48px;
+  flex-grow: 1;
 `;
 
 RetroPage.displayName = 'RetroPage';

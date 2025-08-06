@@ -1,7 +1,10 @@
 'use client';
 
 import retroQueries from '@/features/team/query/retroQueries';
+import { createRetroProblem } from '@/features/team/services/retroService';
+import { CreateRetroProblemPayload } from '@/features/team/services/retroService.type';
 import { IconCheckMarkRectangle, IconPlus } from '@/shared/assets/icons/line';
+import useApiError from '@/shared/hooks/useApiError';
 import { theme } from '@/shared/styles/theme';
 import TaskCard from '@/shared/ui/card/TaskCard';
 import MoreIndicator from '@/shared/ui/indicator/MoreIndicator';
@@ -10,7 +13,7 @@ import Tag from '@/shared/ui/tag/Tag';
 import { JobType } from '@/shared/ui/tag/TagJob';
 import Text from '@/shared/ui/Text';
 import { Client } from '@stomp/stompjs';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useEffect, useRef } from 'react';
 import styled from 'styled-components';
 import CreateCardButton from './CreateCardButton';
@@ -27,14 +30,32 @@ const ERROR_TITLE = '회고 내용 로딩 실패';
 const ERROR_DESCRIPTION = '회고 내용을 불러오는 중 문제가 발생했습니다.';
 
 const RCGWrapper = ({ retroId, client }: RCGWrapperProps) => {
+  const { handleError } = useApiError();
   const subscriptionRef = useRef<any>(null);
   const queryClient = useQueryClient();
   const { data, isSuccess, refetch } = useQuery({
     ...retroQueries.readRetroProblemList({ retroId, kanbanStatus: 'RCG' }),
   });
 
-  const handleCreateRCG = () => {
-    console.log('handleCreateRCG');
+  const createRetroProblemMutation = useMutation({
+    mutationFn: (payload: CreateRetroProblemPayload) => createRetroProblem({ retroId }, payload),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: retroQueries.readRetroProblemList({ retroId, kanbanStatus: 'RCG' }).queryKey,
+      });
+    },
+  });
+
+  const handleCreateRCG = async () => {
+    try {
+      await createRetroProblemMutation.mutateAsync({
+        title: '새 카드',
+        content: '',
+        kanbanStatus: 'RCG',
+      });
+    } catch (error) {
+      handleError(error);
+    }
   };
 
   useEffect(() => {
@@ -149,7 +170,6 @@ const TextWrapper = styled.div`
 
 const Content = styled.div`
   display: flex;
-  flex-direction: column;
   gap: 8px;
 `;
 
