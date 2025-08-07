@@ -147,6 +147,7 @@ const Wrapper = styled.div`
   width: 100%;
   border-radius: 16px;
   background: ${({ theme }) => theme.sementicColors.bg.tertiary};
+  height: fit-content;
 `;
 
 const Head = styled.div`
@@ -176,7 +177,8 @@ const Content = styled.div`
 const CardList = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  width: 100%;
+  gap: 16px;
 `;
 
 RCGWrapper.displayName = 'RCGWrapper';

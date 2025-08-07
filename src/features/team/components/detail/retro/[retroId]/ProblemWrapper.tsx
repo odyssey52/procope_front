@@ -29,6 +29,7 @@ const ProblemWrapper = ({ retroId, client }: ProblemWrapperProps) => {
 const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
+  flex-grow: 1;
   gap: 12px;
 `;
 
@@ -36,7 +37,7 @@ const Head = styled.div`
   display: flex;
   flex-direction: column;
   margin: 0 24px;
-  padding: 0 24px;
+  padding: 7px 24px;
 `;
 
 const Content = styled.div`
@@ -44,6 +45,8 @@ const Content = styled.div`
   gap: 16px;
   overflow-x: auto;
   padding: 0 48px;
+  padding-bottom: 24px;
+  flex-grow: 1;
 `;
 
 ProblemWrapper.displayName = 'ProblemWrapper';
