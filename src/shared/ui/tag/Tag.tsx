@@ -7,6 +7,7 @@ interface TagProps {
   $size?: 'large'; // default : small
   $leftIcon?: ReactNode;
   $rightIcon?: ReactNode;
+  children?: ReactNode;
 }
 
 const getTagStatusStyles = (style: TagProps['$style'], status: TagProps['$status']) => {
@@ -183,6 +184,17 @@ const getTagSizeStyles = (size: TagProps['$size']) => {
   }
 };
 
+// 아이콘을 렌더링하기 위한 래퍼 컴포넌트
+const Tag = ({ $leftIcon, $rightIcon, $status, $style, $size, children, ...props }: TagProps) => {
+  return (
+    <TagWrapper $status={$status} $style={$style} $size={$size} {...props}>
+      {$leftIcon}
+      {children}
+      {$rightIcon}
+    </TagWrapper>
+  );
+};
+
 const TagWrapper = styled.span<TagProps>`
   position: relative;
   display: flex;
@@ -208,25 +220,6 @@ const TagWrapper = styled.span<TagProps>`
   ${({ $style, $status }) => getTagStatusStyles($style, $status)}
   ${({ $size }) => getTagSizeStyles($size)}
 `;
-
-// 아이콘을 렌더링하기 위한 래퍼 컴포넌트
-const Tag = ({
-  $leftIcon,
-  $rightIcon,
-  $status,
-  $style,
-  $size,
-  children,
-  ...props
-}: TagProps & { children: ReactNode }) => {
-  return (
-    <TagWrapper $status={$status} $style={$style} $size={$size} {...props}>
-      {$leftIcon}
-      {children}
-      {$rightIcon}
-    </TagWrapper>
-  );
-};
 
 Tag.displayName = 'Tag';
 
