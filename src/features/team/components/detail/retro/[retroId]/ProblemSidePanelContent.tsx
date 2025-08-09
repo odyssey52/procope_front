@@ -258,6 +258,13 @@ const ProblemInfoItemContent = styled.div`
   padding: 8px;
 `;
 
+const ProblemStatusSelectWrapper = styled.div`
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 100%;
+`;
+
 ProblemSidePanelContent.displayName = 'ProblemSidePanelContent';
 
 export default ProblemSidePanelContent;

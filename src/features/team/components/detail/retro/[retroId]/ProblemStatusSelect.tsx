@@ -2,6 +2,7 @@
 
 import { ProblemKanbanStatus } from '@/features/team/services/retroService.type';
 import { useClickOutside } from '@/shared/hooks/useClickOutside';
+import { zIndex } from '@/shared/styles/mixin';
 import ItemList from '@/shared/ui/select/ItemList';
 import StateTag from '@/shared/ui/tag/StateTag';
 import React, { useState } from 'react';
@@ -41,16 +42,22 @@ const ProblemStatusSelect = ({ status, onChange }: ProblemStatusSelectProps) => 
   return (
     <ProblemStatusSelectWrapper ref={ref} $isOpen={isOpen} onClick={() => setIsOpen(!isOpen)}>
       <StateTag $status="error">개선점</StateTag>
-      <ItemList<ProblemKanbanStatus, string>
-        selectOptionList={selectOptionList}
-        valueHandler={handleChange}
-        value={status}
-      />
+      {isOpen && (
+        <ItemListWrapper>
+          <ItemList<ProblemKanbanStatus, string>
+            selectOptionList={selectOptionList}
+            valueHandler={handleChange}
+            value={status}
+            width="100%"
+          />
+        </ItemListWrapper>
+      )}
     </ProblemStatusSelectWrapper>
   );
 };
 
 const ProblemStatusSelectWrapper = styled.div<{ $isOpen: boolean }>`
+  position: relative;
   display: flex;
   align-items: center;
   cursor: pointer;
@@ -69,6 +76,14 @@ const ProblemStatusSelectWrapper = styled.div<{ $isOpen: boolean }>`
       background: ${({ theme }) => theme.sementicColors.bg.tertiary};
       box-shadow: 0 0 0 2px rgba(47, 78, 118, 0.3);
     `}
+`;
+
+const ItemListWrapper = styled.div`
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  width: 100%;
+  ${zIndex.layer1}
 `;
 
 ProblemStatusSelect.displayName = 'ProblemStatusSelect';
