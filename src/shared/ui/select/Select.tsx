@@ -13,7 +13,7 @@ interface SelectProps {
   placeholder: string;
   value: string | React.ReactNode;
   valueHandler: (value: string | React.ReactNode) => void;
-  selectOptionList: SelectOptionList;
+  selectOptionList: SelectOptionList<string | React.ReactNode>;
 }
 
 const Select = ({
@@ -39,7 +39,7 @@ const Select = ({
     setIsOpen(!isOpen);
   };
 
-  const onClickItem = (value: string | React.ReactNode) => {
+  const onClickItem = (value: string | React.ReactNode, id?: string | number) => {
     setIsOpen(false);
     valueHandler(value);
   };

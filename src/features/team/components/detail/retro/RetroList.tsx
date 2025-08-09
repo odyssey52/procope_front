@@ -178,7 +178,7 @@ const RetroList = () => {
           size={40}
           menuList={
             <ItemList
-              selectOptionList={[{ value: '삭제' }]}
+              selectOptionList={[{ value: '삭제', label: '삭제' }]}
               valueHandler={() => deleteRetroMutation.mutate(item.id)}
               width="112px"
             />

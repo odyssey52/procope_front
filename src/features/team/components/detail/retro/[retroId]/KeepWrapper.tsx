@@ -138,7 +138,7 @@ const KeepWrapper = ({ retroId, client }: KeepWrapperProps) => {
                             menuList={
                               <ItemList
                                 width="112px"
-                                selectOptionList={[{ value: '삭제' }]}
+                                selectOptionList={[{ value: '삭제', label: '삭제' }]}
                                 valueHandler={() => handleDeleteRetroProblem(item.id)}
                               />
                             }

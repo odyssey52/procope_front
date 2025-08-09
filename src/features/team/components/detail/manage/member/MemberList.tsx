@@ -209,7 +209,7 @@ const MemberList = ({ teamUser, teamData }: MemberListProps) => {
                 {openExitIndex === index && (
                   <div style={{ position: 'absolute', top: '100%', right: '0', zIndex: 10 }}>
                     <ItemList
-                      selectOptionList={[{ value: '퇴출' }]}
+                      selectOptionList={[{ value: '퇴출', label: '퇴출' }]}
                       width="112px"
                       valueHandler={() => setIsModalOpen(true)}
                     />

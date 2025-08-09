@@ -8,32 +8,30 @@ export interface SelectOptionProps {
   leftContent?: React.ReactNode;
   rightContent?: React.ReactNode;
   state?: 'selected';
-  value: string | React.ReactNode;
+  display: React.ReactNode; // 화면 표시용 라벨
   description?: string;
-  valueHandler: (value: string | React.ReactNode) => void;
+  onClick: () => void; // 클릭 핸들러
   width?: string;
-  pageName?: string;
   borderRadius?: string;
 }
 
 const SelectOption = ({
   leftContent,
-  valueHandler,
+  onClick,
   state,
-  value,
+  display,
   description,
   width = '240px',
-  pageName,
   borderRadius,
   rightContent,
 }: SelectOptionProps) => {
   return (
-    <Wrapper $state={state} $width={width} $borderRadius={borderRadius} onClick={() => valueHandler(value)}>
+    <Wrapper $state={state} $width={width} $borderRadius={borderRadius} onClick={onClick}>
       {leftContent && leftContent}
-      {value && (
+      {display && (
         <TextBox>
-          <Text variant="body_14_medium" color={pageName === value ? 'brand' : 'primary'} ellipsis>
-            {value}
+          <Text variant="body_14_medium" color="primary" ellipsis>
+            {display}
           </Text>
           {description && (
             <Text variant="caption_12_regular" color="secondary" ellipsis>
