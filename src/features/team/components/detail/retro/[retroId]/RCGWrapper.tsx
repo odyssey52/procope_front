@@ -83,7 +83,9 @@ const RCGWrapper = ({ retroId, client }: RCGWrapperProps) => {
             </Text>
             <MoreIndicator count={data?.count} type="transparent" />
           </TextWrapper>
-          <IconPlus size={24} />
+          <PlusButton onClick={handleCreateRCG}>
+            <IconPlus size={24} />
+          </PlusButton>
         </Title>
         <Divider color={theme.sementicColors.bg.danger} padding={0} width={4} radius={2} />
       </Head>
@@ -114,12 +116,12 @@ const RCGWrapper = ({ retroId, client }: RCGWrapperProps) => {
                   }}
                   tags={[
                     <Tag
-                      key={`KeepTastCard-${item.id}`}
+                      key={`PBMTastCard-${item.id}`}
                       $size="large"
                       $style="transparent"
                       $leftIcon={<IconCheckMarkRectangle color={theme.sementicColors.icon.brand} />}
                     >
-                      KEP-{item.id}
+                      PBM-{item.id}
                     </Tag>,
                   ]}
                   tagJob={item.userRole as JobType}
@@ -162,6 +164,12 @@ const Title = styled.div`
   padding: 4px 0;
   gap: 4px;
   justify-content: space-between;
+`;
+
+const PlusButton = styled.button`
+  display: flex;
+  align-items: center;
+  justify-content: center;
 `;
 
 const TextWrapper = styled.div`
