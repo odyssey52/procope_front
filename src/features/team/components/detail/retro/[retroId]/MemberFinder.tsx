@@ -1,20 +1,20 @@
 'use client';
 
-import teamQueries from '@/features/team/query/teamQueries';
+import retroQueries from '@/features/team/query/retroQueries';
 import { IconSearch } from '@/shared/assets/icons/line';
-import useDebounce from '@/shared/hooks/useDebounce';
 import { useClickOutside } from '@/shared/hooks/useClickOutside';
-import Avatar from '@/shared/ui/avatar/Avatar';
+import useDebounce from '@/shared/hooks/useDebounce';
+import { zIndex } from '@/shared/styles/mixin';
 import Placeholder from '@/shared/ui/placeholder/Placeholder';
-import SelectOption from '@/shared/ui/select/SelectOption';
-import Toggle from '@/shared/ui/toggle/Toggle';
 import { filterByHangulSearch } from '@/shared/utils/hangulSearch';
 import { useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
 import styled from 'styled-components';
+import MemberFinderItem from './MemberFinderItem';
 
 interface MemberFinderProps {
   teamId: string;
+  retroId: string;
   onClose: () => void;
 }
 
@@ -51,20 +51,20 @@ const MOCK_USER_LIST = [
   },
 ];
 
-const MemberFinder = ({ teamId, onClose }: MemberFinderProps) => {
-  const [keyword, setKeyword] = useState('');
+const MemberFinder = ({ teamId, retroId, onClose }: MemberFinderProps) => {
   const { data: userList } = useQuery({
-    ...teamQueries.readTeamUser({ teamId }),
+    ...retroQueries.readRetroMemberList({ teamId, retroId }),
     enabled: !!teamId,
   });
 
-  const debouncedKeyword = useDebounce(keyword, 300);
-  const ref = useClickOutside<HTMLDivElement>(onClose);
+  const [keyword, setKeyword] = useState('');
 
-  const filteredUserList = filterByHangulSearch(MOCK_USER_LIST, debouncedKeyword, (user) => user.name);
+  const debouncedKeyword = useDebounce(keyword, 300);
+
+  const filteredUserList = filterByHangulSearch(userList?.payload || [], debouncedKeyword, (user) => user.name);
 
   return (
-    <Wrapper ref={ref}>
+    <Wrapper>
       <Placeholder
         value={keyword}
         valueHandler={setKeyword}
@@ -74,21 +74,7 @@ const MemberFinder = ({ teamId, onClose }: MemberFinderProps) => {
       {filteredUserList.length > 0 && (
         <Content>
           {filteredUserList.map((user) => (
-            <SelectOption
-              key={user.id}
-              value={user.name}
-              valueHandler={() => {}}
-              width="100%"
-              leftContent={<Avatar image={user.profileImage} size={32} />}
-              rightContent={
-                <Toggle
-                  onClick={() => {
-                    console.log('해당 유저 초대 토글 클릭');
-                  }}
-                  checked={user.join}
-                />
-              }
-            />
+            <MemberFinderItem key={`MemberFinderItem-${user.userId}`} user={user} teamId={teamId} retroId={retroId} />
           ))}
         </Content>
       )}
@@ -111,6 +97,8 @@ const Wrapper = styled.div`
   box-shadow:
     0px 2px 4px 0px rgba(0, 0, 0, 0.16),
     0px 0px 2px 0px rgba(0, 0, 0, 0.12);
+
+  ${zIndex.layer3};
 `;
 
 const Content = styled.div`

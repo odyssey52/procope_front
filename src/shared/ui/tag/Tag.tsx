@@ -7,6 +7,7 @@ interface TagProps {
   $size?: 'large'; // default : small
   $leftIcon?: ReactNode;
   $rightIcon?: ReactNode;
+  children?: ReactNode;
 }
 
 const getTagStatusStyles = (style: TagProps['$style'], status: TagProps['$status']) => {
@@ -95,7 +96,7 @@ const getTagStatusStyles = (style: TagProps['$style'], status: TagProps['$status
         case 'transparent':
           return css`
             background-color: ${({ theme }) => theme.sementicColors.bg.success_subtle};
-            color: ${({ theme }) => theme.sementicColors.text.success};
+            color: ${({ theme }) => theme.sementicColors.text.success_bold};
             &::before,
             &::after {
               background-color: ${({ theme }) => theme.sementicColors.icon.success};
@@ -103,7 +104,7 @@ const getTagStatusStyles = (style: TagProps['$style'], status: TagProps['$status
           `;
         default:
           return css`
-            color: ${({ theme }) => theme.sementicColors.text.success};
+            color: ${({ theme }) => theme.sementicColors.text.success_bold};
             padding: 0;
             &::before,
             &::after {
@@ -125,7 +126,7 @@ const getTagStatusStyles = (style: TagProps['$style'], status: TagProps['$status
         case 'transparent':
           return css`
             background-color: ${({ theme }) => theme.sementicColors.bg.warning_subtle};
-            color: ${({ theme }) => theme.sementicColors.text.warning};
+            color: ${({ theme }) => theme.sementicColors.text.warning_bold};
             &::before,
             &::after {
               background-color: ${({ theme }) => theme.sementicColors.icon.warning};
@@ -133,7 +134,7 @@ const getTagStatusStyles = (style: TagProps['$style'], status: TagProps['$status
           `;
         default:
           return css`
-            color: ${({ theme }) => theme.sementicColors.text.warning};
+            color: ${({ theme }) => theme.sementicColors.text.warning_bold};
             padding: 0;
             &::before,
             &::after {
@@ -183,7 +184,18 @@ const getTagSizeStyles = (size: TagProps['$size']) => {
   }
 };
 
-const Tag = styled.span<TagProps>`
+// 아이콘을 렌더링하기 위한 래퍼 컴포넌트
+const Tag = ({ $leftIcon, $rightIcon, $status, $style, $size, children, ...props }: TagProps) => {
+  return (
+    <TagWrapper $status={$status} $style={$style} $size={$size} {...props}>
+      {$leftIcon}
+      {children}
+      {$rightIcon}
+    </TagWrapper>
+  );
+};
+
+const TagWrapper = styled.span<TagProps>`
   position: relative;
   display: flex;
   align-items: center;
@@ -193,6 +205,7 @@ const Tag = styled.span<TagProps>`
   border-radius: 4px;
   border: none;
   cursor: default;
+  white-space: nowrap;
   color: ${({ theme }) => theme.sementicColors.text.inverse};
   > svg {
     width: 16px;
@@ -209,25 +222,6 @@ const Tag = styled.span<TagProps>`
   ${({ $size }) => getTagSizeStyles($size)}
 `;
 
-// 아이콘을 렌더링하기 위한 래퍼 컴포넌트
-const TagWrapper = ({
-  $leftIcon,
-  $rightIcon,
-  $status,
-  $style,
-  $size,
-  children,
-  ...props
-}: TagProps & { children: ReactNode }) => {
-  return (
-    <Tag $status={$status} $style={$style} $size={$size} {...props}>
-      {$leftIcon}
-      {children}
-      {$rightIcon}
-    </Tag>
-  );
-};
+Tag.displayName = 'Tag';
 
-TagWrapper.displayName = 'Tag';
-
-export default TagWrapper;
+export default Tag;

@@ -7,7 +7,7 @@ export const formatDateToDot = (isoDateString: string): string => {
   const date = new Date(isoDateString);
 
   if (Number.isNaN(date.getTime())) {
-    throw new Error('Invalid date string');
+    return '';
   }
 
   const year = date.getFullYear();

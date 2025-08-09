@@ -1,22 +1,35 @@
+'use client';
+
 import React from 'react';
 import styled from 'styled-components';
 import SelectOption from './SelectOption';
 
-export type SelectOptionList = {
+export type SelectOptionItem<TValue, TId = string | number> = {
   leftContent?: React.ReactNode;
-  value: string | React.ReactNode;
-  id?: string | number;
+  label: React.ReactNode; // 표시용 라벨
+  value: TValue; // 실제 선택 값
+  id?: TId; // 식별자(선택)
   description?: string;
-}[];
+};
 
-interface ItemListProps {
-  selectOptionList: SelectOptionList;
-  value?: string | React.ReactNode;
+export type SelectOptionList<TValue, TId = string | number> = SelectOptionItem<TValue, TId>[];
+
+interface ItemListProps<TValue, TId = string | number> {
+  selectOptionList: SelectOptionList<TValue, TId>;
+  value?: TValue;
   width?: string;
-  valueHandler: (value: string | React.ReactNode, id?: string | number) => void;
+  valueHandler: (value: TValue, id?: TId) => void;
+  isSelected?: (a: TValue, b?: TValue) => boolean;
 }
 
-const ItemList = ({ selectOptionList, value, width, valueHandler }: ItemListProps) => {
+const ItemList = <TValue, TId = string | number>({
+  selectOptionList,
+  value,
+  width,
+  valueHandler,
+  isSelected,
+}: ItemListProps<TValue, TId>) => {
+  const equals = isSelected ?? ((a: TValue, b?: TValue) => a === b);
   return (
     <Wrapper>
       {selectOptionList.map((item, index) => (
@@ -24,9 +37,9 @@ const ItemList = ({ selectOptionList, value, width, valueHandler }: ItemListProp
           key={index}
           leftContent={item.leftContent}
           width={width}
-          valueHandler={() => valueHandler(item.value, item.id)}
-          value={item.value}
-          state={item.value === value ? 'selected' : undefined}
+          onClick={() => valueHandler(item.value, item.id)}
+          display={item.label}
+          state={equals(item.value, value) ? 'selected' : undefined}
           description={item.description}
         />
       ))}

@@ -7,6 +7,7 @@ import RetroCard from '@/shared/ui/card/RetroCard';
 import TaskCard from '@/shared/ui/card/TaskCard';
 import SegmentedTabs from '@/shared/ui/tab/SegmentedTabs';
 import Tab2 from '@/shared/ui/tab/Tab2';
+import { JobType } from '@/shared/ui/tag/TagJob';
 import Toggle from '@/shared/ui/toggle/Toggle';
 import { CompatClient, Stomp } from '@stomp/stompjs';
 import { useEffect, useRef, useState } from 'react';
@@ -14,7 +15,7 @@ import SockJS from 'sockjs-client';
 import styled from 'styled-components';
 
 interface Mock {
-  role: 'development' | 'planning' | 'data' | 'design' | 'marketing' | 'sales' | 'operations';
+  role: JobType;
   title: string;
   content: string;
   user: {
@@ -24,7 +25,7 @@ interface Mock {
   totalComments: number;
 }
 const mock: Mock = {
-  role: 'development',
+  role: '개발',
   title: '팀 내부 소통을 하는데 프로코프와 슬랙을 잘 활용하여 업무 소통이 원활하게 이루어지고 있는 것 같아 좋습니다.',
   content: `
             <p>
@@ -232,11 +233,11 @@ const page = () => {
         <button type="button" onClick={handleOpenCalendar}>
           {selectedDate || '날짜 선택'}
         </button>
-        <Calendar selectedDate={selectedDate} onChange={handleDateSelect} onClose={() => setIsCalendarOpen(false)} />
+        <Calendar selectedDate={selectedDate} onChange={handleDateSelect} />
       </ButtonWrapper>
       <Content>
         <TaskCard
-          tagJob="development"
+          tagJob="개발"
           title="타이틀"
           startDate="2025-01-01"
           user={mock.user}

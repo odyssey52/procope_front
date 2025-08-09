@@ -3,15 +3,14 @@
 import { IconChat01 } from '@/shared/assets/icons/line';
 import { theme } from '@/shared/styles/theme';
 import BulletList from '@tiptap/extension-bullet-list';
-import History from '@tiptap/extension-history';
 import ListItem from '@tiptap/extension-list-item';
 import { useEditor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import styled from 'styled-components';
 import Avatar from '../avatar/Avatar';
-import MoreButton from '../button/MoreButton';
+import MoreArea from '../button/MoreArea';
 import Divider from '../line/Divider';
-import TagJob from '../tag/TagJob';
+import TagJob, { JobType } from '../tag/TagJob';
 import Text from '../Text';
 import Tiptap from '../tiptap/Tiptap';
 
@@ -20,7 +19,7 @@ const MAX_CHARS = 170;
 
 interface RetroCardProps {
   item: {
-    role: 'development' | 'planning' | 'data' | 'design' | 'marketing' | 'sales' | 'operations';
+    role: JobType;
     title: string;
     content: string;
     user: {
@@ -55,7 +54,7 @@ const RetroCard = ({ item }: RetroCardProps) => {
               {editor.isEditable ? '업데이트' : '편집'}
             </button>
           </div>
-          <MoreButton />
+          <MoreArea />
         </TagBox>
         <TextBox>
           <Text variant="body_16_semibold" color="primary">

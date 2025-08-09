@@ -1,7 +1,3 @@
-import { JobSub } from '@/features/onboarding/SecondStep';
-import { RoleInfo } from '@/features/user/services/info/userInfoService.type';
-import { UserRole } from '@/shared/types/team';
-
 // Params
 export interface ReadRetroListParams {
   teamId: string;
@@ -15,17 +11,56 @@ export interface CreateRetroParams {
 
 export interface ReadRetroParams {
   teamId: string;
-  retroId: string;
+  retroId: string | number;
+}
+
+export interface DeleteRetroParams {
+  teamId: string;
+  retroId: string | number;
 }
 
 export interface UpdateRetroTitleParams {
   teamId: string;
-  retroId: string;
+  retroId: string | number;
 }
 
 export interface ReadRetroProblemListParams {
-  retroId: string;
+  retroId: string | number;
   kanbanStatus: KanbanStatus;
+}
+
+export interface CreateRetroProblemParams {
+  retroId: string | number;
+}
+
+export interface DeleteRetroProblemParams {
+  retroId: string | number;
+  problemId: string | number;
+}
+
+export interface UpdateRetroProblemParams {
+  retroId: string | number;
+  problemId: string | number;
+}
+
+export interface ReadRetroProblemDetailParams {
+  retroId: string | number;
+  problemId: string | number;
+}
+
+export interface ReadRetroMemberListParams {
+  teamId: string;
+  retroId: string | number;
+}
+
+export interface CreateRetroMemberParams {
+  teamId: string;
+  retroId: string | number;
+}
+
+export interface DeleteRetroMemberParams {
+  teamId: string;
+  retroId: string | number;
 }
 
 // Payload
@@ -38,8 +73,49 @@ export interface UpdateRetroTitlePayload {
   title: string;
 }
 
+export interface CreateRetroProblemPayload {
+  title: string;
+  content: string;
+  kanbanStatus: KanbanStatus;
+}
+
+export interface UpdateRetroProblemPayload {
+  title: string;
+  content: string;
+  kanbanStatus: ProblemKanbanStatus;
+}
+
+export interface DeleteRetroProblemPayload {
+  kanbanStatus: KanbanStatus;
+}
+
+export interface ReadRetroProblemDetailResponse {
+  userRole: string;
+  createUserInfo: {
+    id: string;
+    name: string;
+    profileImageUrl: string;
+  };
+  title: string;
+  content: string;
+  kanbanStatus: KanbanStatus;
+  solutions: RetroProblemSolutionListItem[];
+  updatedAt: string;
+}
+
+export interface CreateRetroMemberPayload {
+  targetUserId: string;
+}
+
+export interface DeleteRetroMemberPayload {
+  targetUserId: string;
+}
+
 // response
-export type CreateRetroResponse = number;
+export type CreateRetroResponse = {
+  retroId: string | number;
+};
+
 export type ReadRetroListItem = {
   id: number;
   title: string;
@@ -74,16 +150,21 @@ export type ReadRetroProblemListResponse = {
   count: number;
   payload: RetroProblemListItem[];
 };
+
+export type ReadRetroMemberListResponse = {
+  payload: RetroMemberListItem[];
+};
+
 // interface
 export type KanbanStatus = 'RCG' | 'PRG' | 'OK' | 'KEP';
+export type ProblemKanbanStatus = Omit<KanbanStatus, 'KEP'>;
+
 export interface RetroProblemListItem {
   id: number;
-  userRole: UserRole;
-  cardId: string;
+  userRole: string;
   createUserInfo: {
     id: string;
     name: string;
-    role: string;
     profileImageUrl: string;
   };
   title: string;
@@ -91,3 +172,21 @@ export interface RetroProblemListItem {
   kanbanStatus: KanbanStatus;
   updatedAt: string;
 }
+
+export type RetroMemberListItem = {
+  userId: string;
+  name: string;
+  profileImage: string;
+  inviteStatus: boolean;
+};
+
+export type RetroProblemSolutionListItem = {
+  id: number;
+  title: string;
+  updatedAt: string;
+  createUserInfo: {
+    id: string;
+    name: string;
+    profileImageUrl: string;
+  };
+};

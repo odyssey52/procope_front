@@ -1,70 +1,98 @@
 'use client';
 
-import { updateRetroTitle } from '@/features/team/services/retroService';
-import { ReadRetroResponse, UpdateRetroTitlePayload } from '@/features/team/services/retroService.type';
-import { IconCalendar } from '@/shared/assets/icons/line';
+import retroQueries from '@/features/team/query/retroQueries';
+import { deleteRetro, updateRetroTitle } from '@/features/team/services/retroService';
+import { UpdateRetroTitlePayload } from '@/features/team/services/retroService.type';
 import useApiError from '@/shared/hooks/useApiError';
 import Avatar from '@/shared/ui/avatar/Avatar';
 import AvatarGroup from '@/shared/ui/avatar/AvatarGroup';
-import Button from '@/shared/ui/button/Button';
-import MoreButton from '@/shared/ui/button/MoreButton';
+import MoreArea from '@/shared/ui/button/MoreArea';
 import TextButton from '@/shared/ui/button/TextButton';
-import Calendar from '@/shared/ui/calendar/Calendar';
+import Error from '@/shared/ui/error/Error';
+import ItemList from '@/shared/ui/select/ItemList';
 import Text from '@/shared/ui/Text';
 import PageTitle from '@/shared/ui/title/PageTitle';
 import { formatDateToDot } from '@/shared/utils/date';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { useParams } from 'next/navigation';
-import { useState } from 'react';
+import { Client } from '@stomp/stompjs';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useParams, useRouter } from 'next/navigation';
+import { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
-import MemberFinder from './MemberFinder';
+import CalendarArea from './CalendarArea';
+import MemberArea from './MemberArea';
+import RetroInfoSkeleton from './RetroInfoSkeleton';
 
 interface RetroInfoWrapperProps {
-  data: ReadRetroResponse;
+  client: Client | null;
 }
 
-const RetroInfoWrapper = ({ data }: RetroInfoWrapperProps) => {
+const RetroInfoWrapper = ({ client }: RetroInfoWrapperProps) => {
   const params = useParams();
+  const router = useRouter();
   const teamId = params.teamId as string;
   const retroId = params.retroId as string;
-  const queryClient = useQueryClient();
 
+  const queryClient = useQueryClient();
+  const subscriptionRef = useRef<any>(null);
   const { handleError } = useApiError();
 
-  // TODO : 소켓 연결 시 데이터 업데이트 처리 필요
-  const [currentTitle, setCurrentTitle] = useState<string>(data.title ?? '');
-  const [isMemberListOpen, setIsMemberListOpen] = useState(false);
-  const [isCalendarOpen, setIsCalendarOpen] = useState(false);
-  const [selectedDate, setSelectedDate] = useState<string>(formatDateToDot(data.createdAt));
+  const { data, isLoading } = useQuery({
+    ...retroQueries.readRetro({ teamId: teamId as string, retroId: retroId as string }),
+  });
+
+  const [currentTitle, setCurrentTitle] = useState<string>('');
+  const [selectedDate, setSelectedDate] = useState<string>('');
 
   const updateRetroTitleMutation = useMutation({
     mutationFn: (payload: UpdateRetroTitlePayload) => updateRetroTitle({ teamId, retroId }, payload),
+  });
+
+  const deleteRetroMutation = useMutation({
+    mutationFn: () => deleteRetro({ teamId, retroId }),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['retro', teamId, retroId] });
+      queryClient.invalidateQueries({ queryKey: retroQueries.readRetroList({ teamId }).queryKey });
+      router.push(`/team/${teamId}/retro`);
     },
   });
 
-  const handleMemberListOpen = () => {
-    setIsMemberListOpen(!isMemberListOpen);
-  };
-
   const handleSelectDate = (date: string) => {
     setSelectedDate(date);
-    setIsCalendarOpen(false);
-  };
-
-  const closeCalendar = () => {
-    setIsCalendarOpen(false);
   };
 
   const handleUpdateRetroTitle = async () => {
     try {
       await updateRetroTitleMutation.mutateAsync({ title: currentTitle });
+      if (!client?.connected) {
+        queryClient.invalidateQueries({ queryKey: retroQueries.readRetro({ teamId, retroId }).queryKey });
+      }
     } catch (error) {
       handleError(error);
     }
   };
 
+  useEffect(() => {
+    if (client && client.connected) {
+      subscriptionRef.current = client.subscribe('/user/topic/retrospectives', (message) => {
+        queryClient.invalidateQueries({ queryKey: retroQueries.readRetro({ teamId, retroId }).queryKey });
+      });
+    }
+
+    return () => {
+      if (subscriptionRef.current) {
+        subscriptionRef.current.unsubscribe();
+      }
+    };
+  }, [client]);
+
+  useEffect(() => {
+    if (data) {
+      setCurrentTitle(data.title ?? '');
+      setSelectedDate(formatDateToDot(data.createdAt) ?? '');
+    }
+  }, [data]);
+
+  if (isLoading) return <RetroInfoSkeleton />;
+  if (!data) return <Error title="에러 발생" description="회고 정보를 불러오는 중 오류가 발생했습니다." />;
   return (
     <Wrapper>
       <TitleWrapper>
@@ -76,18 +104,24 @@ const RetroInfoWrapper = ({ data }: RetroInfoWrapperProps) => {
         />
         <MemberWrapper>
           <AvatarGroup
-            profileList={data.joinUserInfos.map((user) => ({
+            profileList={data?.joinUserInfos?.map((user) => ({
               nickname: user.name,
               image: user.profileImageUrl,
               isOnline: true,
             }))}
             size={32}
           />
-          <Button $type="outline" pressed={isMemberListOpen} onClick={handleMemberListOpen}>
-            Member
-          </Button>
-          {isMemberListOpen && <MemberFinder teamId={teamId} onClose={handleMemberListOpen} />}
-          <MoreButton size={40} />
+          <MemberArea teamId={teamId} retroId={retroId} />
+          <MoreArea
+            size={40}
+            menuList={
+              <ItemList
+                selectOptionList={[{ value: '삭제', label: '삭제' }]}
+                valueHandler={() => deleteRetroMutation.mutate()}
+                width="112px"
+              />
+            }
+          />
         </MemberWrapper>
       </TitleWrapper>
       <DetailInfoWrapper>
@@ -97,27 +131,17 @@ const RetroInfoWrapper = ({ data }: RetroInfoWrapperProps) => {
           </Text>
           <TextButton
             $type="24"
-            leftIcon={<Avatar size={24} image={data.createUserInfo.profileImageUrl} />}
+            leftIcon={<Avatar size={24} image={data?.createUserInfo?.profileImageUrl} />}
             $clickable={false}
           >
-            {data.createUserInfo.name}
+            {data?.createUserInfo?.name}
           </TextButton>
         </CreatorWrapper>
         <DateWrapper>
           <Text variant="body_16_medium" color="tertiary">
             회고 날짜
           </Text>
-          <TextButton $type="24" rightIcon={<IconCalendar />} onClick={() => setIsCalendarOpen(!isCalendarOpen)}>
-            {selectedDate}
-          </TextButton>
-          {isCalendarOpen && (
-            <Calendar
-              selectedDate={selectedDate}
-              onChange={handleSelectDate}
-              onClose={closeCalendar}
-              format="YYYY.MM.DD"
-            />
-          )}
+          <CalendarArea selectedDate={selectedDate} onChange={handleSelectDate} />
         </DateWrapper>
       </DetailInfoWrapper>
     </Wrapper>

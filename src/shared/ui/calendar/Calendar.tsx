@@ -1,7 +1,7 @@
 'use client';
 
 import { IconDirectionLeft, IconDirectionRight } from '@/shared/assets/icons/line';
-import { useClickOutside } from '@/shared/hooks/useClickOutside';
+import { elevation, zIndex } from '@/shared/styles/mixin';
 import { theme } from '@/shared/styles/theme';
 import dayjs from 'dayjs';
 import { useEffect, useState } from 'react';
@@ -13,8 +13,7 @@ const days = ['일', '월', '화', '수', '목', '금', '토'];
 
 interface CalendarProps {
   selectedDate?: string; // YYYY-MM-DD 형식
-  onChange?: (date: string) => void;
-  onClose: () => void;
+  onChange?: (date: string) => void; // onClose 를 포함시켜야 함
   format?: 'YYYY-MM-DD' | 'YYYY-MM-DD HH:mm:ss' | 'YYYY.MM.DD' | 'YYYY.MM.DD HH:mm:ss';
 }
 
@@ -23,8 +22,7 @@ interface SelectedDateInfo {
   date: number;
 }
 
-export default function Calendar({ selectedDate, onChange, onClose, format = 'YYYY-MM-DD' }: CalendarProps) {
-  const ref = useClickOutside<HTMLDivElement>(onClose);
+export default function Calendar({ selectedDate, onChange, format = 'YYYY-MM-DD' }: CalendarProps) {
   const [currentDate, setCurrentDate] = useState(dayjs());
   const [selected, setSelected] = useState<SelectedDateInfo | null>(null);
 
@@ -97,7 +95,7 @@ export default function Calendar({ selectedDate, onChange, onClose, format = 'YY
     }
   }, [selectedDate]);
   return (
-    <Wrapper ref={ref}>
+    <Wrapper>
       <Header>
         <NavButton onClick={handlePrevMonth}>
           <IconDirectionLeft size={24} color={theme.sementicColors.icon.primary} />
@@ -142,7 +140,6 @@ export const Wrapper = styled.div`
   position: absolute;
   top: calc(100% + 10px);
   left: 0;
-  z-index: 1000;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -151,9 +148,8 @@ export const Wrapper = styled.div`
   gap: 4px;
   border-radius: 12px;
   background: ${theme.sementicColors.bg.inverse};
-  box-shadow:
-    0px 2px 4px rgba(0, 0, 0, 0.16),
-    0px 0px 2px rgba(0, 0, 0, 0.12);
+  ${zIndex.layer3};
+  ${elevation.shadow4};
 `;
 
 export const Header = styled.div`
