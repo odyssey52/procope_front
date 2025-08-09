@@ -89,8 +89,8 @@ const UserArea = ({ userData }: UserAreaProps) => {
               <SelectOption
                 leftContent={value.leftContent}
                 description={value.description}
-                value={value.value}
-                valueHandler={valueHandler}
+                onClick={() => valueHandler(value.value)}
+                display={value.value}
               />
               {value.size && <Line $size={value.size} />}
             </div>

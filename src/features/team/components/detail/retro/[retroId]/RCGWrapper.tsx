@@ -1,14 +1,17 @@
 'use client';
 
 import retroQueries from '@/features/team/query/retroQueries';
-import { createRetroProblem } from '@/features/team/services/retroService';
+import { createRetroProblem, deleteRetroProblem } from '@/features/team/services/retroService';
 import { CreateRetroProblemPayload } from '@/features/team/services/retroService.type';
 import { IconCheckMarkRectangle, IconPlus } from '@/shared/assets/icons/line';
 import useApiError from '@/shared/hooks/useApiError';
+import { sidePanelActions } from '@/shared/store/sidePanel/sidePanel';
 import { theme } from '@/shared/styles/theme';
+import MoreArea from '@/shared/ui/button/MoreArea';
 import TaskCard from '@/shared/ui/card/TaskCard';
 import MoreIndicator from '@/shared/ui/indicator/MoreIndicator';
 import Divider from '@/shared/ui/line/Divider';
+import ItemList from '@/shared/ui/select/ItemList';
 import Tag from '@/shared/ui/tag/Tag';
 import { JobType } from '@/shared/ui/tag/TagJob';
 import Text from '@/shared/ui/Text';
@@ -17,17 +20,12 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useEffect, useRef } from 'react';
 import styled from 'styled-components';
 import CreateCardButton from './CreateCardButton';
+import ProblemSidePanelContent from './ProblemSidePanelContent';
 
 interface RCGWrapperProps {
   retroId: string;
   client: Client | null;
 }
-
-const EMPTY_TITLE = '등록된 회고 내용이 없습니다.';
-const EMPTY_DESCRIPTION = '회고 내용을 추가하여 회고를 진행해 주세요.';
-
-const ERROR_TITLE = '회고 내용 로딩 실패';
-const ERROR_DESCRIPTION = '회고 내용을 불러오는 중 문제가 발생했습니다.';
 
 const RCGWrapper = ({ retroId, client }: RCGWrapperProps) => {
   const { handleError } = useApiError();
@@ -46,6 +44,15 @@ const RCGWrapper = ({ retroId, client }: RCGWrapperProps) => {
     },
   });
 
+  const deleteRetroProblemMutation = useMutation({
+    mutationFn: (problemId: string | number) => deleteRetroProblem({ retroId, problemId }, { kanbanStatus: 'RCG' }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: retroQueries.readRetroProblemList({ retroId, kanbanStatus: 'RCG' }).queryKey,
+      });
+    },
+  });
+
   const handleCreateRCG = async () => {
     try {
       await createRetroProblemMutation.mutateAsync({
@@ -53,6 +60,14 @@ const RCGWrapper = ({ retroId, client }: RCGWrapperProps) => {
         content: '',
         kanbanStatus: 'RCG',
       });
+    } catch (error) {
+      handleError(error);
+    }
+  };
+
+  const handleDeleteRetroProblem = async (problemId: string | number) => {
+    try {
+      await deleteRetroProblemMutation.mutateAsync(problemId);
     } catch (error) {
       handleError(error);
     }
@@ -98,21 +113,21 @@ const RCGWrapper = ({ retroId, client }: RCGWrapperProps) => {
                 <TaskCard
                   key={item.id}
                   onClick={() => {
-                    //   sidePanelActions.open({
-                    //     content: <KeepSidePanelContent retroId={retroId} problemId={item.id} />,
-                    //     moreMenu: (
-                    //       <MoreArea
-                    //         size={24}
-                    //         menuList={
-                    //           <ItemList
-                    //             width="112px"
-                    //             selectOptionList={[{ value: '삭제' }]}
-                    //             valueHandler={() => handleDeleteRetroProblem(item.id)}
-                    //           />
-                    //         }
-                    //       />
-                    //     ),
-                    //   });
+                    sidePanelActions.open({
+                      content: <ProblemSidePanelContent retroId={retroId} problemId={item.id} />,
+                      moreMenu: (
+                        <MoreArea
+                          size={24}
+                          menuList={
+                            <ItemList
+                              width="112px"
+                              selectOptionList={[{ value: '삭제', label: '삭제' }]}
+                              valueHandler={() => handleDeleteRetroProblem(item.id)}
+                            />
+                          }
+                        />
+                      ),
+                    });
                   }}
                   tags={[
                     <Tag

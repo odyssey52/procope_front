@@ -54,7 +54,7 @@ const SubModal = ({ name, teamId, onClose, userId }: Props) => {
             </TextBox>
           </TopSection>
           <BottomSection>
-            <Button $type="tertiary" size="48" onClick={() => onClose()}>
+            <Button $type="tertiary" size="48" onClick={onClose}>
               취소
             </Button>
             <Button $type="error" size="48" onClick={data[name].onClick}>

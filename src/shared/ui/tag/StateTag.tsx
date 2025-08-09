@@ -82,6 +82,7 @@ const Wrapper = styled.div<StateTagProps>`
     height: 8px;
     border-radius: 50%;
   }
+  user-select: none;
   ${({ $status }) => getStateTagStatusStyles($status)}
 `;
 

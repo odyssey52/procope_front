@@ -205,6 +205,7 @@ const TagWrapper = styled.span<TagProps>`
   border-radius: 4px;
   border: none;
   cursor: default;
+  white-space: nowrap;
   color: ${({ theme }) => theme.sementicColors.text.inverse};
   > svg {
     width: 16px;

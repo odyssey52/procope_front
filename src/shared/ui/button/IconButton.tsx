@@ -1,7 +1,7 @@
-import { ReactNode } from 'react';
+import { ButtonHTMLAttributes, ReactNode } from 'react';
 import styled, { css, DefaultTheme } from 'styled-components';
 
-interface IconButtonProps {
+interface IconButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   size?: 36 | 40 | 48;
   status?: 'primary' | 'secondary' | 'outline' | 'tertiary';
   leftIcon?: ReactNode;
@@ -74,16 +74,18 @@ const buttonStatusStyle = (status?: IconButtonProps['status']) => (theme: Defaul
   }
 };
 
-const IconButton = ({ size = 40, status = 'primary', leftIcon, rightIcon }: IconButtonProps) => {
+const IconButton = ({ size = 40, status = 'primary', leftIcon, rightIcon, ...rest }: IconButtonProps) => {
   return (
-    <Wrapper size={size} status={status}>
+    <Wrapper size={size} status={status} {...rest}>
       {leftIcon && leftIcon}
       {rightIcon && rightIcon}
     </Wrapper>
   );
 };
 
-const Wrapper = styled.button<IconButtonProps>`
+type WrapperProps = Pick<IconButtonProps, 'size' | 'status'>;
+
+const Wrapper = styled.button<WrapperProps>`
   ${({ status, theme }) => buttonStatusStyle(status)(theme)};
   height: ${({ size }) => size || '40px'};
   border-radius: 12px;

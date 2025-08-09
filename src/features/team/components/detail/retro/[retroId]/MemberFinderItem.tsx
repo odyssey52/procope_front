@@ -88,8 +88,8 @@ const MemberFinderItem = ({ user, teamId, retroId }: MemberFinderItemProps) => {
   return (
     <Wrapper>
       <SelectOption
-        value={user.name}
-        valueHandler={() => {}}
+        display={user.name}
+        onClick={() => {}}
         width="100%"
         leftContent={<Avatar image={user.profileImage} size={32} />}
         rightContent={<Toggle onClick={handleToggleInviteStatus} checked={inviteStatus} />}
