@@ -96,7 +96,7 @@ const getTagStatusStyles = (style: TagProps['$style'], status: TagProps['$status
         case 'transparent':
           return css`
             background-color: ${({ theme }) => theme.sementicColors.bg.success_subtle};
-            color: ${({ theme }) => theme.sementicColors.text.success};
+            color: ${({ theme }) => theme.sementicColors.text.success_bold};
             &::before,
             &::after {
               background-color: ${({ theme }) => theme.sementicColors.icon.success};
@@ -104,7 +104,7 @@ const getTagStatusStyles = (style: TagProps['$style'], status: TagProps['$status
           `;
         default:
           return css`
-            color: ${({ theme }) => theme.sementicColors.text.success};
+            color: ${({ theme }) => theme.sementicColors.text.success_bold};
             padding: 0;
             &::before,
             &::after {
@@ -126,7 +126,7 @@ const getTagStatusStyles = (style: TagProps['$style'], status: TagProps['$status
         case 'transparent':
           return css`
             background-color: ${({ theme }) => theme.sementicColors.bg.warning_subtle};
-            color: ${({ theme }) => theme.sementicColors.text.warning};
+            color: ${({ theme }) => theme.sementicColors.text.warning_bold};
             &::before,
             &::after {
               background-color: ${({ theme }) => theme.sementicColors.icon.warning};
@@ -134,7 +134,7 @@ const getTagStatusStyles = (style: TagProps['$style'], status: TagProps['$status
           `;
         default:
           return css`
-            color: ${({ theme }) => theme.sementicColors.text.warning};
+            color: ${({ theme }) => theme.sementicColors.text.warning_bold};
             padding: 0;
             &::before,
             &::after {

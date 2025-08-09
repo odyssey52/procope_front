@@ -37,7 +37,7 @@ const getStateTagStatusStyles = (status: StateTagProps['$status']) => {
     case 'success':
       return css`
         background: ${({ theme }) => theme.sementicColors.bg.success_subtle};
-        color: ${({ theme }) => theme.sementicColors.text.success};
+        color: ${({ theme }) => theme.sementicColors.text.success_bold};
         &::before {
           background: ${({ theme }) => theme.sementicColors.icon.success};
         }
@@ -50,12 +50,20 @@ const getStateTagStatusStyles = (status: StateTagProps['$status']) => {
           background: ${({ theme }) => theme.sementicColors.icon.primary};
         }
       `;
-    default:
+    case 'warning':
       return css`
         background: ${({ theme }) => theme.sementicColors.bg.warning_subtle};
-        color: ${({ theme }) => theme.sementicColors.text.warning};
+        color: ${({ theme }) => theme.sementicColors.text.warning_bold};
         &::before {
           background: ${({ theme }) => theme.sementicColors.icon.warning};
+        }
+      `;
+    default:
+      return css`
+        background: ${({ theme }) => theme.sementicColors.bg.primary};
+        color: ${({ theme }) => theme.sementicColors.text.primary};
+        &::before {
+          background: ${({ theme }) => theme.sementicColors.icon.primary};
         }
       `;
   }
