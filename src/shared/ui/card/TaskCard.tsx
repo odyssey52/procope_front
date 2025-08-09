@@ -2,11 +2,12 @@
 
 import { IconChat01, IconClockCircle, IconFlag, IconMenuCircleVertical } from '@/shared/assets/icons/line';
 import { theme } from '@/shared/styles/theme';
+import { formatDateToDot } from '@/shared/utils/date';
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import Avatar from '../avatar/Avatar';
 import Divider from '../line/Divider';
-import TagJob from '../tag/TagJob';
+import TagJob, { JobType } from '../tag/TagJob';
 import Text from '../Text';
 
 interface MenuItem {
@@ -17,7 +18,7 @@ interface MenuItem {
 
 interface TaskCardProps {
   tags?: React.ReactNode[];
-  tagJob: 'development' | 'planning' | 'data' | 'design' | 'marketing' | 'sales' | 'operations';
+  tagJob: JobType;
   title: string;
   startDate: string;
   endDate?: string;
@@ -29,6 +30,7 @@ interface TaskCardProps {
   hasComments?: boolean;
   showMenu?: boolean;
   menuItems?: MenuItem[];
+  onClick?: () => void;
 }
 
 const TaskCard = ({
@@ -42,6 +44,7 @@ const TaskCard = ({
   totalComments = 0,
   showMenu = false,
   menuItems = [],
+  onClick,
 }: TaskCardProps) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
@@ -55,7 +58,7 @@ const TaskCard = ({
   };
 
   return (
-    <Wrapper>
+    <Wrapper onClick={onClick}>
       <Top>
         <TagBox>
           <TagList>
@@ -86,7 +89,7 @@ const TaskCard = ({
       <StartDateBox>
         <IconClockCircle size={20} color={theme.sementicColors.icon.disabled} />
         <Text variant="body_14_medium" color="disabled">
-          {startDate}
+          {formatDateToDot(startDate)}
         </Text>
       </StartDateBox>
       <Divider />
@@ -110,7 +113,7 @@ const TaskCard = ({
             <EndDateBox>
               <IconFlag size={24} color={theme.sementicColors.icon.tertiary} />
               <Text variant="body_14_medium" color="disabled">
-                {endDate}
+                {formatDateToDot(endDate)}
               </Text>
             </EndDateBox>
           )}
@@ -132,6 +135,7 @@ const Wrapper = styled.div`
   width: 100%;
   background-color: ${({ theme }) => theme.sementicColors.bg.inverse};
   border: 1px solid ${({ theme }) => theme.sementicColors.border.primary};
+  cursor: pointer;
 `;
 
 const Top = styled.div`

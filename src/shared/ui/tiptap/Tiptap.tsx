@@ -1,31 +1,48 @@
 'use client';
 
-import DragHandle from '@tiptap-pro/extension-drag-handle-react';
+import { Colors, FontStyle } from '@/shared/styles/theme';
 import { Editor, EditorContent } from '@tiptap/react';
 import styled from 'styled-components';
 
-const Tiptap = ({ editor }: { editor: Editor }) => {
+interface TiptapProps {
+  editor: Editor;
+  variant?: keyof FontStyle;
+  color?: keyof Colors['text'];
+}
+
+const Tiptap = ({ editor, variant = 'body_16_regular', color = 'primary' }: TiptapProps) => {
   return (
-    <Wrapper>
-      <DragHandle editor={editor} className={editor?.isEditable ? 'block' : 'hidden'}>
+    <Wrapper $variant={variant} $color={color}>
+      {/* <DragHandle editor={editor} className={editor?.isEditable ? 'block' : 'hidden'}>
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 9h16.5m-16.5 6.75h16.5" />
         </svg>
-      </DragHandle>
+      </DragHandle> */}
       <EditorContent editor={editor} />
     </Wrapper>
   );
 };
 
-const Wrapper = styled.div`
+const Wrapper = styled.div<{ $variant: keyof FontStyle; $color: keyof Colors['text'] }>`
   position: relative;
   .ProseMirror {
-    ${({ theme }) => theme.fontStyle.body_14_regular};
-    color: ${({ theme }) => theme.sementicColors.text.secondary};
+    ${({ theme, $variant }) => theme.fontStyle[$variant]};
+    color: ${({ theme, $color }) => theme.sementicColors.text[$color]};
+    line-height: 1.5;
 
     position: relative;
     &:first-child {
       margin-top: 0;
+    }
+
+    /* Placeholder styles */
+    p.is-editor-empty:first-child::before {
+      content: attr(data-placeholder);
+      float: left;
+      ${({ theme, $variant }) => theme.fontStyle[$variant]};
+      color: ${({ theme }) => theme.sementicColors.text.tertiary};
+      pointer-events: none;
+      height: 0;
     }
 
     /* List styles */
@@ -76,7 +93,7 @@ const Wrapper = styled.div`
       }
     }
   }
-
+  /* 
   .drag-handle {
     align-items: center;
     background: #f0f0f0;
@@ -92,6 +109,6 @@ const Wrapper = styled.div`
       width: 1.25rem;
       height: 1.25rem;
     }
-  }
+  } */
 `;
 export default Tiptap;

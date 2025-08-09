@@ -94,13 +94,13 @@ const Table = <T extends Record<string, any>>({
       {!isError && !isEmpty && !isLoading && (
         <tbody>
           {data.map((item, rowIndex) => (
-            <tr key={`tr-${keyExtractor(item)}-${rowIndex}`}>
+            <TableRow key={`tr-${keyExtractor(item)}-${rowIndex}`}>
               {columns.map((column, colIndex) => (
                 <TableCell key={`td-${rowIndex}-${colIndex}`}>
                   <PartCellContent>{column.render ? column.render(item, rowIndex) : item[column.key]}</PartCellContent>
                 </TableCell>
               ))}
-            </tr>
+            </TableRow>
           ))}
         </tbody>
       )}
@@ -134,6 +134,12 @@ const TableCell = styled.td<{ $width?: string; $minWidth?: string; $maxWidth?: s
 const EmptyBox = styled.td`
   vertical-align: middle;
   height: 50vh;
+`;
+
+const TableRow = styled.tr`
+  &:hover {
+    background-color: ${({ theme }) => theme.sementicColors.bg.tertiary_hover_pressed};
+  }
 `;
 
 export default Table;

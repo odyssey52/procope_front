@@ -5,10 +5,10 @@ import useApiError from '@/shared/hooks/useApiError';
 import { useClickOutside } from '@/shared/hooks/useClickOutside';
 import { useLogout } from '@/shared/hooks/useLogout';
 import { toastActions } from '@/shared/store/modal/toast';
-import { elevation } from '@/shared/styles/mixin';
+import { elevation, zIndex } from '@/shared/styles/mixin';
 import { useMutation } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
-import { ReactNode } from 'react';
+import { ReactNode, useState } from 'react';
 import styled from 'styled-components';
 import Avatar from '../avatar/Avatar';
 import SelectOption from '../select/SelectOption';
@@ -19,14 +19,16 @@ interface UserAreaProps {
     picture?: string;
     roleName?: string;
   };
-  closeUserArea: () => void;
 }
 
-const UserArea = ({ userData, closeUserArea }: UserAreaProps) => {
+const UserArea = ({ userData }: UserAreaProps) => {
+  const ref = useClickOutside<HTMLDivElement>(() => setIsOpen(false));
   const router = useRouter();
   const { handleError } = useApiError();
-  const ref = useClickOutside<HTMLDivElement>(closeUserArea);
   const { logout } = useLogout();
+
+  const [isOpen, setIsOpen] = useState(false);
+
   const invalidateRefreshTokenMutation = useMutation({ mutationFn: invalidateRefreshToken });
 
   const handleLogoutClick = async () => {
@@ -43,7 +45,6 @@ const UserArea = ({ userData, closeUserArea }: UserAreaProps) => {
   };
 
   const valueHandler = (value: string | ReactNode) => {
-    closeUserArea();
     if (value === '홈') router.push('/team');
     else if (value === '계정 설정') router.push('/accountSetting');
     else if (value === '로그아웃') handleLogoutClick();
@@ -74,21 +75,35 @@ const UserArea = ({ userData, closeUserArea }: UserAreaProps) => {
   ];
 
   return (
-    <SettingOption ref={ref} onClick={(e) => e.stopPropagation()} data-testid="setting-option">
-      {selectOptionList.map((value) => (
-        <div key={value.value}>
-          <SelectOption
-            leftContent={value.leftContent}
-            description={value.description}
-            value={value.value}
-            valueHandler={valueHandler}
-          />
-          {value.size && <Line $size={value.size} />}
-        </div>
-      ))}
-    </SettingOption>
+    <Wrapper ref={ref}>
+      <Avatar
+        type={userData.picture ? 'profile' : 'initial'}
+        image={userData.picture}
+        nickname={userData.name}
+        onClick={() => setIsOpen(!isOpen)}
+      />
+      {isOpen && (
+        <SettingOption onClick={(e) => e.stopPropagation()} data-testid="setting-option">
+          {selectOptionList.map((value) => (
+            <div key={value.value}>
+              <SelectOption
+                leftContent={value.leftContent}
+                description={value.description}
+                onClick={() => valueHandler(value.value)}
+                display={value.value}
+              />
+              {value.size && <Line $size={value.size} />}
+            </div>
+          ))}
+        </SettingOption>
+      )}
+    </Wrapper>
   );
 };
+
+const Wrapper = styled.div`
+  position: relative;
+`;
 
 const SettingOption = styled.div`
   position: absolute;
@@ -101,7 +116,7 @@ const SettingOption = styled.div`
   background-color: white;
   border-radius: 12px;
   padding: 12px 0px;
-  z-index: 1000;
+  ${zIndex.layer3};
   ${elevation.shadow4}
 `;
 

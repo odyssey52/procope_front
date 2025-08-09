@@ -1,7 +1,7 @@
 'use client';
 
 import retroQueries from '@/features/team/query/retroQueries';
-import { createRetro } from '@/features/team/services/retroService';
+import { createRetro, deleteRetro } from '@/features/team/services/retroService';
 import { ReadRetroListItem } from '@/features/team/services/retroService.type';
 import { IconSortArrow } from '@/shared/assets/icons/line';
 import { toastActions } from '@/shared/store/modal/toast';
@@ -16,11 +16,13 @@ import PageSubTitleSkeleton from '@/shared/ui/title/PageSubTitleSkeleton';
 import PageTitle from '@/shared/ui/title/PageTitle';
 import TextSkeleton from '@/shared/ui/skeleton/TextSkeleton';
 import { formatDateToDot } from '@/shared/utils/date';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
+import MoreArea from '@/shared/ui/button/MoreArea';
+import ItemList from '@/shared/ui/select/ItemList';
 
 export interface RetroItem {
   title: string;
@@ -74,68 +76,43 @@ type ColumnConfig = {
   key: string;
   title: string;
   width: string;
+  minWidth?: string;
+  maxWidth?: string;
   sortable?: boolean;
   icon?: React.ReactNode;
   render: (item: ReadRetroListItem, index: number) => React.ReactNode;
 };
 
-const createColumns = (teamId: string): ColumnConfig[] => [
-  {
-    key: 'title',
-    title: '제목',
-    width: '700px',
-    render: (item, index) => renderTitle(item, index, teamId),
-  },
-  {
-    key: 'creator',
-    title: '생성자',
-    width: '240px',
-    render: renderCreator,
-  },
-  {
-    key: 'memberCount',
-    title: '참여자',
-    width: '140px',
-    render: renderMembers,
-  },
-  {
-    key: 'createdAt',
-    title: '회고 일자',
-    width: '184px',
-    sortable: true,
-    icon: <IconSortArrow />,
-    render: renderCreatedAt,
-  },
-  {
-    key: 'updatedAt',
-    title: '업데이트 일자',
-    width: '184px',
-    sortable: true,
-    icon: <IconSortArrow />,
-    render: renderUpdatedAt,
-  },
-];
-
 const RetroList = () => {
   const router = useRouter();
   const params = useParams();
+  const teamId = params.teamId as string;
+  const queryClient = useQueryClient();
+
   const { data, isError, isLoading } = useQuery({
-    ...retroQueries.readRetroList({ teamId: params.teamId as string }),
+    ...retroQueries.readRetroList({ teamId }),
   });
 
-  const createRetroMutation = useMutation({
-    mutationFn: createRetro,
+  const createRetroMutation = useMutation({ mutationFn: createRetro });
+
+  const deleteRetroMutation = useMutation({
+    mutationFn: (retroId: string | number) => deleteRetro({ teamId, retroId }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: retroQueries.readRetroList({ teamId }).queryKey,
+      });
+    },
   });
 
   const paths = [
     {
       name: '회고 관리',
-      path: `/team/${params.teamId}`,
+      path: `/team/${teamId}`,
       clickable: false,
     },
     {
       name: '회고 목록',
-      path: `/team/${params.teamId}/retro`,
+      path: `/team/${teamId}/retro`,
       clickable: true,
     },
   ];
@@ -144,10 +121,10 @@ const RetroList = () => {
     try {
       const payload = {
         title: '새 회고',
-        teamId: params.teamId as string,
+        teamId: teamId as string,
       };
-      const id = await createRetroMutation.mutateAsync(payload);
-      router.push(`/team/${params.teamId}/retro/${id}`);
+      const { retroId } = await createRetroMutation.mutateAsync(payload);
+      router.push(`/team/${teamId}/retro/${retroId}`);
     } catch {
       toastActions.open({
         state: 'error',
@@ -156,8 +133,60 @@ const RetroList = () => {
     }
   };
 
-  const columns = createColumns(params.teamId as string);
-
+  const columns: ColumnConfig[] = [
+    {
+      key: 'title',
+      title: '제목',
+      width: '700px',
+      render: (item, index) => renderTitle(item, index, teamId),
+    },
+    {
+      key: 'creator',
+      title: '생성자',
+      width: '240px',
+      render: renderCreator,
+    },
+    {
+      key: 'memberCount',
+      title: '참여자',
+      width: '140px',
+      render: renderMembers,
+    },
+    {
+      key: 'createdAt',
+      title: '회고 일자',
+      width: '184px',
+      sortable: true,
+      icon: <IconSortArrow />,
+      render: renderCreatedAt,
+    },
+    {
+      key: 'updatedAt',
+      title: '업데이트 일자',
+      width: '184px',
+      sortable: true,
+      icon: <IconSortArrow />,
+      render: renderUpdatedAt,
+    },
+    {
+      key: 'more',
+      title: '',
+      width: '60px',
+      minWidth: '60px',
+      render: (item) => (
+        <MoreArea
+          size={40}
+          menuList={
+            <ItemList
+              selectOptionList={[{ value: '삭제', label: '삭제' }]}
+              valueHandler={() => deleteRetroMutation.mutate(item.id)}
+              width="112px"
+            />
+          }
+        />
+      ),
+    },
+  ];
   return (
     <Wrapper>
       <Head>

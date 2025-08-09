@@ -47,6 +47,7 @@ const Content = styled.div`
   justify-content: center;
   overflow: hidden;
   flex-grow: 1;
+  height: calc(100vh - 56px);
 `;
 
 export default layout;

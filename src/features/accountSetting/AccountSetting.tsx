@@ -9,15 +9,16 @@ import ProfileSetting from './ProfileSetting';
 import CommunicationSetting from './CommunicationSetting';
 import HeaderLayout from '../layout/HeaderLayout';
 
-const selectOptionList = [{ value: '프로필 설정' }, { value: '소통 설정' }];
+const selectOptionList = [
+  { value: '프로필 설정', label: '프로필 설정' },
+  { value: '소통 설정', label: '소통 설정' },
+];
 
 const AccountSetting = () => {
   const { user, isLoading } = useAuth();
   const [page, setPage] = useState<'프로필 설정' | '소통 설정'>('프로필 설정');
 
-  const valueHandler = (value: string) => {
-    return value === '프로필 설정' ? setPage('프로필 설정') : setPage('소통 설정');
-  };
+  const handleSelect = (next: '프로필 설정' | '소통 설정') => setPage(next);
 
   if (isLoading) {
     return (
@@ -37,9 +38,9 @@ const AccountSetting = () => {
             {selectOptionList.map((value, index) => (
               <SelectOption
                 key={index}
-                valueHandler={() => valueHandler(value.value)}
-                value={value.value}
-                pageName={page}
+                onClick={() => handleSelect(value.value as '프로필 설정' | '소통 설정')}
+                display={value.value}
+                state={page === value.value ? 'selected' : undefined}
                 width="134px"
                 borderRadius="8px"
               />

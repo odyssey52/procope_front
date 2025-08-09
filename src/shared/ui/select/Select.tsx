@@ -1,22 +1,23 @@
 import { IconDirectionDown, IconDirectionUp } from '@/shared/assets/icons/line';
 import { theme } from '@/shared/styles/theme';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import styled, { css } from 'styled-components';
 import Text from '../Text';
 import ItemList, { SelectOptionList } from './ItemList';
 
-interface SelectProps {
+interface SelectProps<TValue, TId = string | number> {
   label?: React.ReactNode;
   description?: React.ReactNode;
   state?: 'default' | 'error' | 'disabled';
   width?: number;
   placeholder: string;
-  value: string | React.ReactNode;
-  valueHandler: (value: string | React.ReactNode) => void;
-  selectOptionList: SelectOptionList;
+  value?: TValue;
+  valueHandler: (value: TValue, id?: TId) => void;
+  selectOptionList: SelectOptionList<TValue, TId>;
+  isSelected?: (a: TValue, b?: TValue) => boolean;
 }
 
-const Select = ({
+const Select = <TValue, TId = string | number>({
   label,
   placeholder,
   state = 'default',
@@ -25,7 +26,8 @@ const Select = ({
   value,
   valueHandler,
   selectOptionList,
-}: SelectProps) => {
+  isSelected,
+}: SelectProps<TValue, TId>) => {
   const [isOpen, setIsOpen] = useState(false);
   const selectRef = useRef<HTMLDivElement>(null);
 
@@ -39,10 +41,17 @@ const Select = ({
     setIsOpen(!isOpen);
   };
 
-  const onClickItem = (value: string | React.ReactNode) => {
+  const onClickItem = (next: TValue, id?: TId) => {
     setIsOpen(false);
-    valueHandler(value);
+    valueHandler(next, id);
   };
+
+  const equals = useMemo(() => isSelected ?? ((a: TValue, b?: TValue) => a === b), [isSelected]);
+
+  const selectedLabel = useMemo(() => {
+    const matched = selectOptionList.find((opt) => equals(opt.value, value));
+    return matched?.label;
+  }, [selectOptionList, value, equals]);
 
   useEffect(() => {
     document.addEventListener('mousedown', handleClickOutside);
@@ -62,14 +71,19 @@ const Select = ({
           )}
           {value && (
             <Text variant="body_14_regular" color="primary">
-              {value}
+              {selectedLabel}
             </Text>
           )}
           {isOpen ? <IconDirectionUp /> : <IconDirectionDown />}
         </SelectBox>
         {isOpen && (
           <ItemListWrapper>
-            <ItemList selectOptionList={selectOptionList} value={value} valueHandler={onClickItem} />
+            <ItemList<TValue, TId>
+              selectOptionList={selectOptionList}
+              value={value}
+              valueHandler={onClickItem}
+              isSelected={isSelected}
+            />
           </ItemListWrapper>
         )}
       </SelectBoxWrapper>

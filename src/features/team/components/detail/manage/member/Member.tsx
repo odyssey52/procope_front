@@ -89,12 +89,11 @@ export default Member;
 const Wrapper = styled.div`
   width: 100%;
   background-color: ${({ theme }) => theme.sementicColors.bg.inverse};
+  padding: 24px;
+  margin: 24px;
 `;
 const Container = styled.div`
   width: 100%;
-  margin: 0 auto;
-  padding: 24px;
-  margin: 24px;
   display: flex;
   flex-direction: column;
   gap: 40px;
