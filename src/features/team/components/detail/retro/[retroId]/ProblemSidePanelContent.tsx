@@ -2,11 +2,7 @@
 
 import retroQueries from '@/features/team/query/retroQueries';
 import { updateRetroProblem } from '@/features/team/services/retroService';
-import {
-  KanbanStatus,
-  ProblemKanbanStatus,
-  UpdateRetroProblemPayload,
-} from '@/features/team/services/retroService.type';
+import { ProblemKanbanStatus, UpdateRetroProblemPayload } from '@/features/team/services/retroService.type';
 import { IconApps, IconLoading, IconUser } from '@/shared/assets/icons/line';
 import useApiError from '@/shared/hooks/useApiError';
 import useDebounce from '@/shared/hooks/useDebounce';
@@ -17,7 +13,6 @@ import Checkbox from '@/shared/ui/checkbox/Checkbox';
 import Error from '@/shared/ui/error/Error';
 import Divider from '@/shared/ui/line/Divider';
 import { LoadingSpinner } from '@/shared/ui/LoadingSpinner';
-import StateTag from '@/shared/ui/tag/StateTag';
 import TagJob, { JobType } from '@/shared/ui/tag/TagJob';
 import Text from '@/shared/ui/Text';
 import Tiptap from '@/shared/ui/tiptap/Tiptap';
@@ -30,7 +25,7 @@ import Placeholder from '@tiptap/extension-placeholder';
 import { useEditor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import { useEffect, useRef, useState } from 'react';
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 import ProblemStatusSelect from './ProblemStatusSelect';
 
 interface ProblemSidePanelContentProps {
@@ -43,19 +38,14 @@ const ProblemSidePanelContent = ({ retroId, problemId }: ProblemSidePanelContent
   const [currentTitle, setCurrentTitle] = useState('');
   const [currentContent, setCurrentContent] = useState('');
   const [currentKanbanStatus, setCurrentKanbanStatus] = useState<ProblemKanbanStatus>('RCG');
-
-  const handleChangeKanbanStatus = (status: ProblemKanbanStatus) => {
-    setCurrentKanbanStatus(status);
-  };
-
   const [isInitialized, setIsInitialized] = useState(false);
+
   const queryClient = useQueryClient();
+  const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  const currentTitleRef = useRef('');
-  const currentContentRef = useRef('');
-
-  const debouncedTitle = useDebounce(currentTitle, 3000);
-  const debouncedContent = useDebounce(currentContent, 3000);
+  const currentTitleRef = useRef(currentTitle);
+  const currentContentRef = useRef(currentContent);
+  const currentKanbanStatusRef = useRef(currentKanbanStatus);
 
   const { data, isLoading, isSuccess } = useQuery({
     ...retroQueries.readRetroProblemDetail({ retroId, problemId }),
@@ -79,35 +69,91 @@ const ProblemSidePanelContent = ({ retroId, problemId }: ProblemSidePanelContent
       queryClient.invalidateQueries({
         queryKey: retroQueries.readRetroProblemDetail({ retroId, problemId }).queryKey,
       });
-      // 드래그앤드롭 처리 같은것 할때 쿼리초기화 다르게 해줘야할듯 아마 건우님과 소통 필요
-      queryClient.invalidateQueries({
-        queryKey: retroQueries.readRetroProblemList({ retroId, kanbanStatus: 'RCG' }).queryKey,
-      });
+      if (currentKanbanStatusRef.current === data?.kanbanStatus) {
+        queryClient.invalidateQueries({
+          queryKey: retroQueries.readRetroProblemList({ retroId, kanbanStatus: currentKanbanStatusRef.current })
+            .queryKey,
+        });
+      } else {
+        queryClient.invalidateQueries({
+          queryKey: retroQueries.readRetroProblemList({ retroId, kanbanStatus: currentKanbanStatusRef.current })
+            .queryKey,
+        });
+        queryClient.invalidateQueries({
+          queryKey: retroQueries.readRetroProblemList({ retroId, kanbanStatus: data?.kanbanStatus! }).queryKey,
+        });
+      }
     },
   });
 
-  const handleUpdateRetroProblem = async (title?: string, content?: string) => {
+  const handleUpdateRetroProblem = async (title: string, content: string, kanbanStatus: ProblemKanbanStatus) => {
     try {
       await updateRetroProblemMutation.mutateAsync({
-        title: title ?? currentTitle,
-        content: content ?? currentContent,
-        kanbanStatus: currentKanbanStatus,
+        title,
+        content,
+        kanbanStatus,
       });
     } catch (error) {
       handleError(error);
     }
   };
 
-  useEffect(() => {
-    if (editor) {
-      editor.on('update', ({ editor }) => {
-        const newContent = editor.getHTML();
-        setCurrentContent(newContent);
-        currentContentRef.current = newContent;
-      });
+  const triggerSave = (immediate = false) => {
+    if (saveTimer.current) clearTimeout(saveTimer.current);
+
+    if (immediate) {
+      handleUpdateRetroProblem(currentTitle, currentContent, currentKanbanStatus);
+    } else {
+      saveTimer.current = setTimeout(() => {
+        handleUpdateRetroProblem(currentTitle, currentContent, currentKanbanStatus);
+      }, 3000);
     }
+  };
+
+  const handleChangeKanbanStatus = (status: ProblemKanbanStatus) => {
+    setCurrentKanbanStatus(status);
+  };
+
+  // 에디터 내용 변경
+  useEffect(() => {
+    if (!editor) return;
+    editor.on('update', ({ editor }) => {
+      setCurrentContent(editor.getHTML());
+    });
   }, [editor]);
 
+  // 데이터 초기 로드
+  useEffect(() => {
+    if (!data) return;
+    setCurrentTitle(data.title);
+    setCurrentContent(data.content);
+    setCurrentKanbanStatus(data.kanbanStatus);
+    setIsInitialized(true);
+
+    if (editor && data.content?.trim()) {
+      editor.commands.setContent(data.content);
+    }
+  }, [data, editor]);
+
+  // title / content 변경 → 디바운스 저장
+  useEffect(() => {
+    if (!isInitialized) return;
+    if (!data) return;
+    if (currentTitle !== data.title || currentContent !== data.content) {
+      triggerSave(false);
+    }
+  }, [currentTitle, currentContent]);
+
+  // kanbanStatus 변경 → 즉시 저장
+  useEffect(() => {
+    if (!isInitialized) return;
+    if (!data) return;
+    if (currentKanbanStatus !== data.kanbanStatus) {
+      triggerSave(true);
+    }
+  }, [currentKanbanStatus]);
+
+  // 상태 변화 시 ref 업데이트
   useEffect(() => {
     currentTitleRef.current = currentTitle;
   }, [currentTitle]);
@@ -117,51 +163,27 @@ const ProblemSidePanelContent = ({ retroId, problemId }: ProblemSidePanelContent
   }, [currentContent]);
 
   useEffect(() => {
-    if (data) {
-      setCurrentTitle(data.title);
-      setCurrentContent(data.content);
-      currentTitleRef.current = data.title;
-      currentContentRef.current = data.content;
-      setIsInitialized(true);
-
-      if (editor) {
-        if (data.content && data.content.trim() !== '') {
-          editor.commands.setContent(data.content);
-        }
-      }
-    }
-  }, [data, editor]);
-
-  useEffect(() => {
-    if (
-      isInitialized &&
-      data &&
-      ((debouncedTitle !== data.title && debouncedTitle !== '') ||
-        (debouncedContent !== data.content && debouncedContent !== ''))
-    ) {
-      handleUpdateRetroProblem(debouncedTitle, debouncedContent);
-    }
-  }, [debouncedTitle, debouncedContent, isInitialized, data]);
+    currentKanbanStatusRef.current = currentKanbanStatus;
+  }, [currentKanbanStatus]);
 
   useEffect(() => {
     return () => {
-      if (isInitialized) {
-        const finalTitle = currentTitleRef.current;
-        const finalContent = currentContentRef.current;
+      if (!isInitialized) return;
+      if (saveTimer.current) clearTimeout(saveTimer.current);
 
-        if (data && (finalTitle !== data.title || finalContent !== data.content) && (finalTitle || finalContent)) {
-          updateRetroProblemMutation.mutate({
-            title: finalTitle,
-            content: finalContent,
-            kanbanStatus: currentKanbanStatus,
-          });
-        }
+      if (
+        currentTitleRef.current !== data?.title ||
+        currentContentRef.current !== data?.content ||
+        currentKanbanStatusRef.current !== data?.kanbanStatus
+      ) {
+        handleUpdateRetroProblem(currentTitleRef.current, currentContentRef.current, currentKanbanStatusRef.current);
       }
     };
-  }, [isInitialized, retroId, problemId]);
+  }, [isInitialized, data]);
 
   if (isLoading) return <LoadingSpinner />;
   if (!isSuccess) return <Error title="서버 에러" description="문제를 찾을 수 없습니다." />;
+
   return (
     <Wrapper>
       <TitleWrapper>

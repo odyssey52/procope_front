@@ -2,31 +2,35 @@
 
 import { IconDirectionRight1 } from '@/shared/assets/icons/line';
 import { useClickOutside } from '@/shared/hooks/useClickOutside';
-import { sidePanelActions, useSidePanelStore } from '@/shared/store/sidePanel/sidePanel';
+import { useSidePanelStore } from '@/shared/store/sidePanel/sidePanel';
 import { elevation, zIndex } from '@/shared/styles/mixin';
 import { AnimatePresence, motion } from 'framer-motion';
 import styled from 'styled-components';
 
 const SidePanel = () => {
-  const state = useSidePanelStore();
-  const ref = useClickOutside<HTMLDivElement>(() => sidePanelActions.close());
+  const { isOpen, cardId, content, moreMenu, skipExitAnimation, close } = useSidePanelStore();
+  const ref = useClickOutside<HTMLDivElement>(() => close());
+
+  // (옵션) 외부에서 handleSwitchCard 호출해서 카드 전환 가능
+
   return (
     <AnimatePresence mode="wait">
-      {state.isOpen && (
+      {isOpen && (
         <Wrapper
           ref={ref}
-          $isOpen={state.isOpen}
+          key={cardId ?? 'sidepanel'}
+          $isOpen={isOpen}
           initial={{ right: '-100%' }}
           animate={{ right: 0, transition: { duration: 0.2, ease: 'easeInOut' } }}
-          exit={{ right: '-100%', transition: { duration: 0.2, ease: 'easeInOut' } }}
+          exit={skipExitAnimation ? undefined : { right: '-100%', transition: { duration: 0.2, ease: 'easeInOut' } }}
         >
           <PanelControl>
-            <CloseButton onClick={sidePanelActions.close}>
+            <CloseButton onClick={close}>
               <IconDirectionRight1 />
             </CloseButton>
-            {state.moreMenu && state.moreMenu}
+            {moreMenu}
           </PanelControl>
-          {state.content}
+          {content}
         </Wrapper>
       )}
     </AnimatePresence>
