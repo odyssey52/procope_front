@@ -9,7 +9,7 @@ const URLS = {
 
   UPDATE_RETRO_TITLE: (teamId: string, retroId: string | number) => `/retrospectives/${teamId}/${retroId}`,
 
-  READ_RETRO_PROBLEM_LIST: (retroId: string | number, kanbanStatus: types.KanbanStatus) =>
+  READ_RETRO_PROBLEM_LIST: (retroId: string | number, kanbanStatus: types.KanbanStatus | types.ProblemKanbanStatus) =>
     `/retrospectives/problems/${retroId}?kanbanStatus=${kanbanStatus}`,
   CREATE_RETRO_PROBLEM: (retroId: string | number) => `/retrospectives/problems/${retroId}`,
   UPDATE_RETRO_PROBLEM: (retroId: string | number, problemId: string | number) =>
