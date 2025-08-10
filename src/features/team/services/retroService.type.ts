@@ -89,20 +89,6 @@ export interface DeleteRetroProblemPayload {
   kanbanStatus: KanbanStatus;
 }
 
-export interface ReadRetroProblemDetailResponse {
-  userRole: string;
-  createUserInfo: {
-    id: string;
-    name: string;
-    profileImageUrl: string;
-  };
-  title: string;
-  content: string;
-  kanbanStatus: KanbanStatus;
-  solutions: RetroProblemSolutionListItem[];
-  updatedAt: string;
-}
-
 export interface CreateRetroMemberPayload {
   targetUserId: string;
 }
@@ -150,6 +136,20 @@ export type ReadRetroProblemListResponse = {
   count: number;
   payload: RetroProblemListItem[];
 };
+
+export interface ReadRetroProblemDetailResponse {
+  userRole: string;
+  createUserInfo: {
+    id: string;
+    name: string;
+    profileImageUrl: string;
+  };
+  title: string;
+  content: string;
+  kanbanStatus: KanbanStatus;
+  solutions: RetroProblemSolutionListItem[];
+  updatedAt: string;
+}
 
 export type ReadRetroMemberListResponse = {
   payload: RetroMemberListItem[];

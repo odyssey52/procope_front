@@ -41,7 +41,7 @@ const ProblemStatusSelect = ({ status, onChange }: ProblemStatusSelectProps) => 
 
   return (
     <ProblemStatusSelectWrapper ref={ref} $isOpen={isOpen} onClick={() => setIsOpen(!isOpen)}>
-      <StateTag $status="error">개선점</StateTag>
+      {selectOptionList.find((option) => option.value === status)?.label}
       {isOpen && (
         <ItemListWrapper>
           <ItemList<ProblemKanbanStatus, string>
