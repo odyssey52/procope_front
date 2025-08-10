@@ -32,6 +32,7 @@ interface ProblemSidePanelContentProps {
   retroId: string | number;
   problemId: string | number;
 }
+
 const ProblemSidePanelContent = ({ retroId, problemId }: ProblemSidePanelContentProps) => {
   const { handleError } = useApiError();
   const [currentTitle, setCurrentTitle] = useState('');
@@ -41,6 +42,10 @@ const ProblemSidePanelContent = ({ retroId, problemId }: ProblemSidePanelContent
 
   const queryClient = useQueryClient();
   const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const currentTitleRef = useRef(currentTitle);
+  const currentContentRef = useRef(currentContent);
+  const currentKanbanStatusRef = useRef(currentKanbanStatus);
 
   const { data, isLoading, isSuccess } = useQuery({
     ...retroQueries.readRetroProblemDetail({ retroId, problemId }),
@@ -64,9 +69,20 @@ const ProblemSidePanelContent = ({ retroId, problemId }: ProblemSidePanelContent
       queryClient.invalidateQueries({
         queryKey: retroQueries.readRetroProblemDetail({ retroId, problemId }).queryKey,
       });
-      queryClient.invalidateQueries({
-        queryKey: retroQueries.readRetroProblemList({ retroId, kanbanStatus: 'RCG' }).queryKey,
-      });
+      if (currentKanbanStatusRef.current === data?.kanbanStatus) {
+        queryClient.invalidateQueries({
+          queryKey: retroQueries.readRetroProblemList({ retroId, kanbanStatus: currentKanbanStatusRef.current })
+            .queryKey,
+        });
+      } else {
+        queryClient.invalidateQueries({
+          queryKey: retroQueries.readRetroProblemList({ retroId, kanbanStatus: currentKanbanStatusRef.current })
+            .queryKey,
+        });
+        queryClient.invalidateQueries({
+          queryKey: retroQueries.readRetroProblemList({ retroId, kanbanStatus: data?.kanbanStatus! }).queryKey,
+        });
+      }
     },
   });
 
@@ -137,17 +153,30 @@ const ProblemSidePanelContent = ({ retroId, problemId }: ProblemSidePanelContent
     }
   }, [currentKanbanStatus]);
 
-  // 언마운트 시 마지막 저장
+  // 상태 변화 시 ref 업데이트
+  useEffect(() => {
+    currentTitleRef.current = currentTitle;
+  }, [currentTitle]);
+
+  useEffect(() => {
+    currentContentRef.current = currentContent;
+  }, [currentContent]);
+
+  useEffect(() => {
+    currentKanbanStatusRef.current = currentKanbanStatus;
+  }, [currentKanbanStatus]);
+
   useEffect(() => {
     return () => {
       if (!isInitialized) return;
       if (saveTimer.current) clearTimeout(saveTimer.current);
+
       if (
-        currentTitle !== data?.title ||
-        currentContent !== data?.content ||
-        currentKanbanStatus !== data?.kanbanStatus
+        currentTitleRef.current !== data?.title ||
+        currentContentRef.current !== data?.content ||
+        currentKanbanStatusRef.current !== data?.kanbanStatus
       ) {
-        handleUpdateRetroProblem(currentTitle, currentContent, currentKanbanStatus);
+        handleUpdateRetroProblem(currentTitleRef.current, currentContentRef.current, currentKanbanStatusRef.current);
       }
     };
   }, [isInitialized, data]);
