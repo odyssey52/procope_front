@@ -26,7 +26,7 @@ export interface UpdateRetroTitleParams {
 
 export interface ReadRetroProblemListParams {
   retroId: string | number;
-  kanbanStatus: KanbanStatus;
+  kanbanStatus: KanbanStatus | ProblemKanbanStatus;
 }
 
 export interface CreateRetroProblemParams {
@@ -76,31 +76,17 @@ export interface UpdateRetroTitlePayload {
 export interface CreateRetroProblemPayload {
   title: string;
   content: string;
-  kanbanStatus: KanbanStatus;
+  kanbanStatus: ProblemKanbanStatus | KanbanStatus;
 }
 
 export interface UpdateRetroProblemPayload {
   title: string;
   content: string;
-  kanbanStatus: ProblemKanbanStatus;
+  kanbanStatus: ProblemKanbanStatus | KanbanStatus;
 }
 
 export interface DeleteRetroProblemPayload {
-  kanbanStatus: KanbanStatus;
-}
-
-export interface ReadRetroProblemDetailResponse {
-  userRole: string;
-  createUserInfo: {
-    id: string;
-    name: string;
-    profileImageUrl: string;
-  };
-  title: string;
-  content: string;
-  kanbanStatus: KanbanStatus;
-  solutions: RetroProblemSolutionListItem[];
-  updatedAt: string;
+  kanbanStatus: KanbanStatus | ProblemKanbanStatus;
 }
 
 export interface CreateRetroMemberPayload {
@@ -150,6 +136,20 @@ export type ReadRetroProblemListResponse = {
   count: number;
   payload: RetroProblemListItem[];
 };
+
+export interface ReadRetroProblemDetailResponse {
+  userRole: string;
+  createUserInfo: {
+    id: string;
+    name: string;
+    profileImageUrl: string;
+  };
+  title: string;
+  content: string;
+  kanbanStatus: KanbanStatus;
+  solutions: RetroProblemSolutionListItem[];
+  updatedAt: string;
+}
 
 export type ReadRetroMemberListResponse = {
   payload: RetroMemberListItem[];

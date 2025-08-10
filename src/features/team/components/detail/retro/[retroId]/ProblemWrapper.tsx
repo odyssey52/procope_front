@@ -4,7 +4,7 @@ import retroQueries from '@/features/team/query/retroQueries';
 import PageSubTitle from '@/shared/ui/title/PageSubTitle';
 import { Client } from '@stomp/stompjs';
 import styled from 'styled-components';
-import RCGWrapper from './RCGWrapper';
+import ProblemCardList from './ProblemCardList';
 
 interface ProblemWrapperProps {
   retroId: string;
@@ -18,9 +18,9 @@ const ProblemWrapper = ({ retroId, client }: ProblemWrapperProps) => {
         <PageSubTitle first="Q2. 개선할 점은 무엇이고 개선하기 위해 어떤 걸 시도할 수 있나요?" />
       </Head>
       <Content>
-        <RCGWrapper retroId={retroId} client={client} />
-        <RCGWrapper retroId={retroId} client={client} />
-        <RCGWrapper retroId={retroId} client={client} />
+        <ProblemCardList retroId={retroId} kanbanStatus="RCG" client={client} />
+        <ProblemCardList retroId={retroId} kanbanStatus="PRG" client={client} />
+        <ProblemCardList retroId={retroId} kanbanStatus="OK" client={client} />
       </Content>
     </Wrapper>
   );

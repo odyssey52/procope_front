@@ -2,10 +2,10 @@
 
 import retroQueries from '@/features/team/query/retroQueries';
 import { createRetroProblem, deleteRetroProblem } from '@/features/team/services/retroService';
-import { CreateRetroProblemPayload } from '@/features/team/services/retroService.type';
+import { CreateRetroProblemPayload, ProblemKanbanStatus } from '@/features/team/services/retroService.type';
 import { IconCheckMarkRectangle, IconPlus } from '@/shared/assets/icons/line';
 import useApiError from '@/shared/hooks/useApiError';
-import { sidePanelActions } from '@/shared/store/sidePanel/sidePanel';
+import { useSidePanelStore } from '@/shared/store/sidePanel/sidePanel';
 import { theme } from '@/shared/styles/theme';
 import MoreArea from '@/shared/ui/button/MoreArea';
 import TaskCard from '@/shared/ui/card/TaskCard';
@@ -22,33 +22,50 @@ import styled from 'styled-components';
 import CreateCardButton from './CreateCardButton';
 import ProblemSidePanelContent from './ProblemSidePanelContent';
 
-interface RCGWrapperProps {
+interface ProblemCardListProps {
   retroId: string;
+  kanbanStatus: ProblemKanbanStatus;
   client: Client | null;
 }
+// key 는 ProblemKanbanStatus 와 동일
+const KANBAN_STATUS = {
+  RCG: {
+    title: '개선점',
+    color: theme.sementicColors.bg.danger,
+  },
+  PRG: {
+    title: '개선중',
+    color: theme.sementicColors.bg.warning_bold,
+  },
+  OK: {
+    title: '개선완료',
+    color: theme.sementicColors.bg.success_bold,
+  },
+};
 
-const RCGWrapper = ({ retroId, client }: RCGWrapperProps) => {
+const ProblemCardList = ({ retroId, kanbanStatus, client }: ProblemCardListProps) => {
   const { handleError } = useApiError();
   const subscriptionRef = useRef<any>(null);
   const queryClient = useQueryClient();
+  const handleSwitchCard = useSidePanelStore((state) => state.handleSwitchCard);
   const { data, isSuccess, refetch } = useQuery({
-    ...retroQueries.readRetroProblemList({ retroId, kanbanStatus: 'RCG' }),
+    ...retroQueries.readRetroProblemList({ retroId, kanbanStatus }),
   });
 
   const createRetroProblemMutation = useMutation({
     mutationFn: (payload: CreateRetroProblemPayload) => createRetroProblem({ retroId }, payload),
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: retroQueries.readRetroProblemList({ retroId, kanbanStatus: 'RCG' }).queryKey,
+        queryKey: retroQueries.readRetroProblemList({ retroId, kanbanStatus }).queryKey,
       });
     },
   });
 
   const deleteRetroProblemMutation = useMutation({
-    mutationFn: (problemId: string | number) => deleteRetroProblem({ retroId, problemId }, { kanbanStatus: 'RCG' }),
+    mutationFn: (problemId: string | number) => deleteRetroProblem({ retroId, problemId }),
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: retroQueries.readRetroProblemList({ retroId, kanbanStatus: 'RCG' }).queryKey,
+        queryKey: retroQueries.readRetroProblemList({ retroId, kanbanStatus }).queryKey,
       });
     },
   });
@@ -58,7 +75,7 @@ const RCGWrapper = ({ retroId, client }: RCGWrapperProps) => {
       await createRetroProblemMutation.mutateAsync({
         title: '새 카드',
         content: '',
-        kanbanStatus: 'RCG',
+        kanbanStatus,
       });
     } catch (error) {
       handleError(error);
@@ -74,19 +91,22 @@ const RCGWrapper = ({ retroId, client }: RCGWrapperProps) => {
   };
 
   useEffect(() => {
-    if (client && client.connected) {
-      subscriptionRef.current = client.subscribe('/user/topic/retrospectives?kanbanStatus=RCG', (message) => {
-        queryClient.invalidateQueries({
-          queryKey: retroQueries.readRetroProblemList({ retroId, kanbanStatus: 'RCG' }).queryKey,
-        });
-      });
+    if (client && client.connected && kanbanStatus && retroId) {
+      subscriptionRef.current = client.subscribe(
+        `/user/topic/retrospectives?kanbanStatus=${kanbanStatus}`,
+        (message) => {
+          queryClient.invalidateQueries({
+            queryKey: retroQueries.readRetroProblemList({ retroId, kanbanStatus }).queryKey,
+          });
+        },
+      );
     }
     return () => {
       if (subscriptionRef.current) {
         subscriptionRef.current.unsubscribe();
       }
     };
-  }, [client]);
+  }, [client, kanbanStatus, retroId]);
 
   return (
     <Wrapper>
@@ -94,7 +114,7 @@ const RCGWrapper = ({ retroId, client }: RCGWrapperProps) => {
         <Title>
           <TextWrapper>
             <Text variant="body_16_semibold" color="primary">
-              개선점
+              {KANBAN_STATUS[kanbanStatus as keyof typeof KANBAN_STATUS].title}
             </Text>
             <MoreIndicator count={data?.count} type="transparent" />
           </TextWrapper>
@@ -102,7 +122,12 @@ const RCGWrapper = ({ retroId, client }: RCGWrapperProps) => {
             <IconPlus size={24} />
           </PlusButton>
         </Title>
-        <Divider color={theme.sementicColors.bg.danger} padding={0} width={4} radius={2} />
+        <Divider
+          color={KANBAN_STATUS[kanbanStatus as keyof typeof KANBAN_STATUS].color}
+          padding={0}
+          width={4}
+          radius={2}
+        />
       </Head>
       {isSuccess && (
         <Content>
@@ -113,7 +138,8 @@ const RCGWrapper = ({ retroId, client }: RCGWrapperProps) => {
                 <TaskCard
                   key={item.id}
                   onClick={() => {
-                    sidePanelActions.open({
+                    handleSwitchCard({
+                      cardId: `${retroId}-PBM-${item.id}`,
                       content: <ProblemSidePanelContent retroId={retroId} problemId={item.id} />,
                       moreMenu: (
                         <MoreArea
@@ -204,6 +230,6 @@ const CardList = styled.div`
   gap: 16px;
 `;
 
-RCGWrapper.displayName = 'RCGWrapper';
+ProblemCardList.displayName = 'RCGWrapper';
 
-export default RCGWrapper;
+export default ProblemCardList;
