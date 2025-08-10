@@ -5,7 +5,7 @@ import { createRetroProblem, deleteRetroProblem } from '@/features/team/services
 import { CreateRetroProblemPayload } from '@/features/team/services/retroService.type';
 import { IconCheckMarkRectangle } from '@/shared/assets/icons/line';
 import useApiError from '@/shared/hooks/useApiError';
-import { sidePanelActions } from '@/shared/store/sidePanel/sidePanel';
+import { useSidePanelStore } from '@/shared/store/sidePanel/sidePanel';
 import { theme } from '@/shared/styles/theme';
 import Button from '@/shared/ui/button/Button';
 import MoreArea from '@/shared/ui/button/MoreArea';
@@ -37,7 +37,7 @@ const ERROR_DESCRIPTION = '회고 내용을 불러오는 중 문제가 발생했
 const KeepWrapper = ({ retroId, client }: KeepWrapperProps) => {
   const { handleError } = useApiError();
   const queryClient = useQueryClient();
-
+  const handleSwitchCard = useSidePanelStore((state) => state.handleSwitchCard);
   const { data, isSuccess, refetch } = useQuery({
     ...retroQueries.readRetroProblemList({ retroId, kanbanStatus: 'KEP' }),
   });
@@ -54,7 +54,7 @@ const KeepWrapper = ({ retroId, client }: KeepWrapperProps) => {
   });
 
   const deleteRetroProblemMutation = useMutation({
-    mutationFn: (problemId: string | number) => deleteRetroProblem({ retroId, problemId }, { kanbanStatus: 'KEP' }),
+    mutationFn: (problemId: string | number) => deleteRetroProblem({ retroId, problemId }),
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: retroQueries.readRetroProblemList({ retroId, kanbanStatus: 'KEP' }).queryKey,
@@ -130,7 +130,8 @@ const KeepWrapper = ({ retroId, client }: KeepWrapperProps) => {
                   <TaskCard
                     key={item.id}
                     onClick={() => {
-                      sidePanelActions.open({
+                      handleSwitchCard({
+                        cardId: `${retroId}-KEP-${item.id}`,
                         content: <KeepSidePanelContent retroId={retroId} problemId={item.id} />,
                         moreMenu: (
                           <MoreArea

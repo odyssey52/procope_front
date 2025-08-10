@@ -5,7 +5,7 @@ import { createRetroProblem, deleteRetroProblem } from '@/features/team/services
 import { CreateRetroProblemPayload, ProblemKanbanStatus } from '@/features/team/services/retroService.type';
 import { IconCheckMarkRectangle, IconPlus } from '@/shared/assets/icons/line';
 import useApiError from '@/shared/hooks/useApiError';
-import { sidePanelActions } from '@/shared/store/sidePanel/sidePanel';
+import { useSidePanelStore } from '@/shared/store/sidePanel/sidePanel';
 import { theme } from '@/shared/styles/theme';
 import MoreArea from '@/shared/ui/button/MoreArea';
 import TaskCard from '@/shared/ui/card/TaskCard';
@@ -47,6 +47,7 @@ const ProblemCardList = ({ retroId, kanbanStatus, client }: ProblemCardListProps
   const { handleError } = useApiError();
   const subscriptionRef = useRef<any>(null);
   const queryClient = useQueryClient();
+  const handleSwitchCard = useSidePanelStore((state) => state.handleSwitchCard);
   const { data, isSuccess, refetch } = useQuery({
     ...retroQueries.readRetroProblemList({ retroId, kanbanStatus }),
   });
@@ -61,7 +62,7 @@ const ProblemCardList = ({ retroId, kanbanStatus, client }: ProblemCardListProps
   });
 
   const deleteRetroProblemMutation = useMutation({
-    mutationFn: (problemId: string | number) => deleteRetroProblem({ retroId, problemId }, { kanbanStatus }),
+    mutationFn: (problemId: string | number) => deleteRetroProblem({ retroId, problemId }),
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: retroQueries.readRetroProblemList({ retroId, kanbanStatus }).queryKey,
@@ -137,7 +138,8 @@ const ProblemCardList = ({ retroId, kanbanStatus, client }: ProblemCardListProps
                 <TaskCard
                   key={item.id}
                   onClick={() => {
-                    sidePanelActions.open({
+                    handleSwitchCard({
+                      cardId: `${retroId}-PBM-${item.id}`,
                       content: <ProblemSidePanelContent retroId={retroId} problemId={item.id} />,
                       moreMenu: (
                         <MoreArea

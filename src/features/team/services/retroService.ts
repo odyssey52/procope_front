@@ -70,13 +70,8 @@ export async function createRetroProblem(
   return data;
 }
 
-export async function deleteRetroProblem(
-  params: types.DeleteRetroProblemParams,
-  payload: types.DeleteRetroProblemPayload,
-) {
-  const { data } = await api.delete(URLS.DELETE_RETRO_PROBLEM(params.retroId, params.problemId), {
-    data: payload,
-  });
+export async function deleteRetroProblem(params: types.DeleteRetroProblemParams) {
+  const { data } = await api.delete(URLS.DELETE_RETRO_PROBLEM(params.retroId, params.problemId));
   return data;
 }
 
