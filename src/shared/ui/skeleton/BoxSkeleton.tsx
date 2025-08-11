@@ -15,7 +15,6 @@ const BoxSkeleton = ({ width = '100%', height = '324px', borderRadius = 16 }: Bo
 const Skeleton = styled.div<{ $width: string; $height: string; $borderRadius: number }>`
   width: ${({ $width }) => $width};
   height: ${({ $height }) => $height};
-  padding: 24px;
   border-radius: ${({ $borderRadius }) => $borderRadius}px;
   background: ${({ theme }) => theme.sementicColors.bg.tertiary};
 `;

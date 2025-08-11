@@ -11,7 +11,7 @@ const TextSkeleton = ({ width = '118px', height = 34 }: TextSkeletonProps) => {
 };
 
 const Skeleton = styled.div<{ $width: string; $height: number }>`
-  padding: 8px 12px;
+  position: relative;
   width: ${({ $width }) => $width};
   height: ${({ $height }) => $height}px;
   border-radius: ${({ $height }) => $height / 2}px;
