@@ -1,18 +1,22 @@
 'use client';
 
 import retroQueries from '@/features/team/query/retroQueries';
-import { updateRetroProblem } from '@/features/team/services/retroService';
+import { deleteRetroProblem, updateRetroProblem } from '@/features/team/services/retroService';
 import { UpdateRetroProblemPayload } from '@/features/team/services/retroService.type';
-import { IconApps, IconUser } from '@/shared/assets/icons/line';
+import { IconApps, IconDirectionRight1, IconUser } from '@/shared/assets/icons/line';
 import useApiError from '@/shared/hooks/useApiError';
+import { useClickOutside } from '@/shared/hooks/useClickOutside';
 import useDebounce from '@/shared/hooks/useDebounce';
+import { useSidePanelStore } from '@/shared/store/sidePanel/sidePanel';
 import { theme } from '@/shared/styles/theme';
 import Avatar from '@/shared/ui/avatar/Avatar';
+import MoreArea from '@/shared/ui/button/MoreArea';
 import TextButton from '@/shared/ui/button/TextButton';
 import Checkbox from '@/shared/ui/checkbox/Checkbox';
 import Error from '@/shared/ui/error/Error';
 import Divider from '@/shared/ui/line/Divider';
 import { LoadingSpinner } from '@/shared/ui/LoadingSpinner';
+import ItemList from '@/shared/ui/select/ItemList';
 import TagJob, { JobType } from '@/shared/ui/tag/TagJob';
 import Text from '@/shared/ui/Text';
 import Tiptap from '@/shared/ui/tiptap/Tiptap';
@@ -38,7 +42,9 @@ const KeepSidePanelContent = ({ retroId, problemId }: KeepSidePanelContentProps)
   const [currentContent, setCurrentContent] = useState('');
   const [isInitialized, setIsInitialized] = useState(false);
   const queryClient = useQueryClient();
+  const close = useSidePanelStore((state) => state.close);
 
+  const ref = useClickOutside<HTMLDivElement>(close, '.task-card');
   const currentTitleRef = useRef('');
   const currentContentRef = useRef('');
 
@@ -73,6 +79,15 @@ const KeepSidePanelContent = ({ retroId, problemId }: KeepSidePanelContentProps)
     },
   });
 
+  const deleteRetroProblemMutation = useMutation({
+    mutationFn: (problemId: string | number) => deleteRetroProblem({ retroId, problemId }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: retroQueries.readRetroProblemList({ retroId, kanbanStatus: 'KEP' }).queryKey,
+      });
+    },
+  });
+
   const handleUpdateRetroProblem = async (title?: string, content?: string) => {
     try {
       await updateRetroProblemMutation.mutateAsync({
@@ -80,6 +95,14 @@ const KeepSidePanelContent = ({ retroId, problemId }: KeepSidePanelContentProps)
         content: content ?? currentContent,
         kanbanStatus: 'KEP',
       });
+    } catch (error) {
+      handleError(error);
+    }
+  };
+
+  const handleDeleteRetroProblem = async (problemId: string | number) => {
+    try {
+      await deleteRetroProblemMutation.mutateAsync(problemId);
     } catch (error) {
       handleError(error);
     }
@@ -150,50 +173,71 @@ const KeepSidePanelContent = ({ retroId, problemId }: KeepSidePanelContentProps)
   if (isLoading) return <LoadingSpinner />;
   if (!isSuccess) return <Error title="서버 에러" description="문제를 찾을 수 없습니다." />;
   return (
-    <Wrapper>
-      <TitleWrapper>
-        <Checkbox label={`KEP-${problemId}`} id={`KEP-${problemId}`} onClick={() => {}} checked />
-        <PageTitle title={currentTitle} setTitle={setCurrentTitle} placeholder="제목을 작성해 주세요" />
-      </TitleWrapper>
-      <ProblemInfo>
-        <ProblemInfoItem>
-          <ProblemInfoItemTitle>
-            <IconApps size={20} color={theme.sementicColors.icon.disabled} />
-            카테고리
-          </ProblemInfoItemTitle>
-          <ProblemInfoItemContent>
-            <TagJob type={data.userRole as JobType} bgColor={theme.sementicColors.bg.tertiary_hover_pressed} />
-          </ProblemInfoItemContent>
-        </ProblemInfoItem>
-        <ProblemInfoItem>
-          <ProblemInfoItemTitle>
-            <IconUser size={20} color={theme.sementicColors.icon.disabled} />
-            만든사람
-          </ProblemInfoItemTitle>
-          <ProblemInfoItemContent>
-            <TextButton
-              $type="24"
-              leftIcon={<Avatar size={24} image={data.createUserInfo.profileImageUrl} />}
-              $clickable={false}
-            >
-              {data.createUserInfo.name}
-            </TextButton>
-          </ProblemInfoItemContent>
-        </ProblemInfoItem>
-        <ProblemInfoItem>
-          <ProblemInfoItemTitle>업데이트 날짜</ProblemInfoItemTitle>
-          <ProblemInfoItemContent>
-            <Text variant="body_16_medium" color="tertiary">
-              {formatDateToDot(data.updatedAt)}
-            </Text>
-          </ProblemInfoItemContent>
-        </ProblemInfoItem>
-      </ProblemInfo>
-      <Divider />
-      {editor && <Tiptap editor={editor} />}
-    </Wrapper>
+    <RefContainer ref={ref}>
+      <PanelControl>
+        <CloseButton onClick={close}>
+          <IconDirectionRight1 />
+        </CloseButton>
+        <MoreArea
+          size={24}
+          menuList={
+            <ItemList
+              width="112px"
+              selectOptionList={[{ value: '삭제', label: '삭제' }]}
+              valueHandler={() => handleDeleteRetroProblem(problemId)}
+            />
+          }
+        />
+      </PanelControl>
+      <Wrapper>
+        <TitleWrapper>
+          <Checkbox label={`KEP-${problemId}`} id={`KEP-${problemId}`} onClick={() => {}} checked />
+          <PageTitle title={currentTitle} setTitle={setCurrentTitle} placeholder="제목을 작성해 주세요" />
+        </TitleWrapper>
+        <ProblemInfo>
+          <ProblemInfoItem>
+            <ProblemInfoItemTitle>
+              <IconApps size={20} color={theme.sementicColors.icon.disabled} />
+              카테고리
+            </ProblemInfoItemTitle>
+            <ProblemInfoItemContent>
+              <TagJob type={data.userRole as JobType} bgColor={theme.sementicColors.bg.tertiary_hover_pressed} />
+            </ProblemInfoItemContent>
+          </ProblemInfoItem>
+          <ProblemInfoItem>
+            <ProblemInfoItemTitle>
+              <IconUser size={20} color={theme.sementicColors.icon.disabled} />
+              만든사람
+            </ProblemInfoItemTitle>
+            <ProblemInfoItemContent>
+              <TextButton
+                $type="24"
+                leftIcon={<Avatar size={24} image={data.createUserInfo.profileImageUrl} />}
+                $clickable={false}
+              >
+                {data.createUserInfo.name}
+              </TextButton>
+            </ProblemInfoItemContent>
+          </ProblemInfoItem>
+          <ProblemInfoItem>
+            <ProblemInfoItemTitle>업데이트 날짜</ProblemInfoItemTitle>
+            <ProblemInfoItemContent>
+              <Text variant="body_16_medium" color="tertiary">
+                {formatDateToDot(data.updatedAt)}
+              </Text>
+            </ProblemInfoItemContent>
+          </ProblemInfoItem>
+        </ProblemInfo>
+        <Divider />
+        {editor && <Tiptap editor={editor} />}
+      </Wrapper>
+    </RefContainer>
   );
 };
+
+const RefContainer = styled.div`
+  position: relative;
+`;
 
 const Wrapper = styled.div`
   display: flex;
@@ -237,6 +281,20 @@ const ProblemInfoItemContent = styled.div`
   color: ${({ theme }) => theme.sementicColors.text.secondary};
   padding: 8px;
 `;
+
+const PanelControl = styled.div`
+  display: flex;
+  padding: 0 24px;
+  justify-content: space-between;
+`;
+
+const CloseButton = styled.button`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+`;
+
 KeepSidePanelContent.displayName = 'KeepSidePanelContent';
 
 export default KeepSidePanelContent;

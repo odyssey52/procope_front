@@ -4,12 +4,15 @@ import useAuthStore from '@/shared/store/auth/auth';
 import Breadcrumbs from '@/shared/ui/breadcrumbs/Breadcrumbs';
 import { Client } from '@stomp/stompjs';
 import { useParams } from 'next/navigation';
-import { useEffect, useRef, useState } from 'react';
+import { Suspense, useEffect, useRef, useState } from 'react';
 import SockJS from 'sockjs-client';
 import styled from 'styled-components';
 import KeepWrapper from './KeepWrapper';
 import RetroInfoWrapper from './RetroInfoWrapper';
 import ProblemWrapper from './ProblemWrapper';
+import SkeletonProblemWrapper from './SkeletonProblemWrapper';
+import SkeletonKeepWrapper from './SkeletonKeepWrapper';
+import RetroInfoSkeleton from './RetroInfoSkeleton';
 
 const RetroPage = () => {
   const params = useParams();
@@ -78,11 +81,17 @@ const RetroPage = () => {
     <Wrapper>
       <Head>
         <Breadcrumbs paths={paths} />
-        <RetroInfoWrapper client={client.current} />
+        <Suspense fallback={<RetroInfoSkeleton />}>
+          <RetroInfoWrapper client={client.current} />
+        </Suspense>
       </Head>
       <Content>
-        <KeepWrapper retroId={retroId as string} client={client.current} />
-        <ProblemWrapper retroId={retroId as string} client={client.current} />
+        <Suspense fallback={<SkeletonKeepWrapper />}>
+          <KeepWrapper retroId={retroId as string} client={client.current} />
+        </Suspense>
+        <Suspense fallback={<SkeletonProblemWrapper />}>
+          <ProblemWrapper retroId={retroId as string} client={client.current} />
+        </Suspense>
       </Content>
     </Wrapper>
   );

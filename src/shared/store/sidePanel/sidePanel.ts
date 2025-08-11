@@ -4,7 +4,6 @@ import { create } from 'zustand';
 // 데이터만 분리
 export type SidePanelPayload = {
   content: React.ReactNode | null;
-  moreMenu?: React.ReactNode | null;
   cardId?: string | null;
   onClose?: () => void;
 };
@@ -12,26 +11,25 @@ export type SidePanelPayload = {
 // 액션 함수 타입 분리
 export type SidePanelState = SidePanelPayload & {
   isOpen: boolean;
-  skipExitAnimation: boolean;
+  skipEnterAnimation: boolean;
 
   open: (options: SidePanelPayload) => void;
   close: () => void;
   handleSwitchCard: (options: SidePanelPayload) => void;
-  setSkipExitAnimation: (value: boolean) => void;
+  setSkipEnterAnimation: (value: boolean) => void;
 };
 
 export const initialState: SidePanelState = {
   content: null,
-  moreMenu: null,
   isOpen: false,
   onClose: undefined,
   cardId: null,
-  skipExitAnimation: false,
+  skipEnterAnimation: false,
 
   open: () => {},
   close: () => {},
   handleSwitchCard: () => {},
-  setSkipExitAnimation: () => {},
+  setSkipEnterAnimation: () => {},
 };
 
 const sidePanelStore = create<SidePanelState>((set, get) => ({
@@ -41,43 +39,51 @@ const sidePanelStore = create<SidePanelState>((set, get) => ({
     set({
       isOpen: true,
       content: options.content,
-      moreMenu: options.moreMenu ?? null,
       cardId: options.cardId ?? null,
       onClose() {
         options.onClose?.();
         get().close();
       },
-      skipExitAnimation: false,
+      skipEnterAnimation: false,
     }),
 
   close: () =>
     set({
       isOpen: false,
       content: null,
-      moreMenu: null,
       cardId: null,
       onClose: undefined,
-      skipExitAnimation: false,
+      skipEnterAnimation: false,
     }),
 
-  setSkipExitAnimation: (value) => set({ skipExitAnimation: value }),
-
+  setSkipEnterAnimation: (value) => set({ skipEnterAnimation: value }),
   handleSwitchCard: (options) => {
-    set({ skipExitAnimation: true, isOpen: false });
+    const { isOpen } = get();
 
-    setTimeout(() => {
+    if (!isOpen) {
       set({
         isOpen: true,
-        content: options.content,
-        moreMenu: options.moreMenu ?? null,
-        cardId: options.cardId ?? null,
+        skipEnterAnimation: false,
+        ...options,
         onClose() {
           options.onClose?.();
           get().close();
         },
-        skipExitAnimation: false,
       });
-    }, 0);
+    } else {
+      set({
+        skipEnterAnimation: true, // 열림 애니메이션 스킵
+        ...options,
+        onClose() {
+          options.onClose?.();
+          get().close();
+        },
+      });
+
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => set({ skipEnterAnimation: false }));
+      });
+    }
   },
 }));
 
@@ -89,5 +95,5 @@ export const sidePanelActions = {
   open: get().open,
   close: get().close,
   handleSwitchCard: get().handleSwitchCard,
-  setSkipExitAnimation: get().setSkipExitAnimation,
+  setSkipEnterAnimation: get().setSkipEnterAnimation,
 };
