@@ -82,9 +82,11 @@ const TaskCard = ({
             </MenuContainer>
           )}
         </TagBox>
-        <Text variant="heading_18" color="secondary" ellipsis>
-          {title}
-        </Text>
+        <TextWrapper>
+          <Text variant="heading_18" color="secondary" ellipsis>
+            {title}
+          </Text>
+        </TextWrapper>
       </Top>
       <StartDateBox>
         <IconClockCircle size={20} color={theme.sementicColors.icon.disabled} />
@@ -236,6 +238,10 @@ const EndDateBox = styled.div`
   display: flex;
   align-items: center;
   gap: 4px;
+`;
+
+const TextWrapper = styled.div`
+  height: 26px;
 `;
 
 TaskCard.displayName = 'TaskCard';

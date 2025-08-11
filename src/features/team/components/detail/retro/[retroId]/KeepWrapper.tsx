@@ -54,7 +54,7 @@ const KeepWrapper = ({ retroId, client }: KeepWrapperProps) => {
   const addKeep = async () => {
     try {
       await createRetroProblemMutation.mutateAsync({
-        title: '새 카드',
+        title: '',
         content: '',
         kanbanStatus: 'KEP',
       });

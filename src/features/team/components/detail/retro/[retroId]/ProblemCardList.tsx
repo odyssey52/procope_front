@@ -14,7 +14,7 @@ import Tag from '@/shared/ui/tag/Tag';
 import { JobType } from '@/shared/ui/tag/TagJob';
 import Text from '@/shared/ui/Text';
 import { Client } from '@stomp/stompjs';
-import { useMutation, useQuery, useQueryClient, useSuspenseQuery } from '@tanstack/react-query';
+import { useMutation, useQueryClient, useSuspenseQuery } from '@tanstack/react-query';
 import { useEffect, useRef } from 'react';
 import styled from 'styled-components';
 import CreateCardButton from './CreateCardButton';
@@ -46,7 +46,7 @@ const ProblemCardList = ({ retroId, kanbanStatus, client }: ProblemCardListProps
   const subscriptionRef = useRef<any>(null);
   const queryClient = useQueryClient();
   const handleSwitchCard = useSidePanelStore((state) => state.handleSwitchCard);
-  const { data, isSuccess, isLoading } = useSuspenseQuery({
+  const { data, isSuccess } = useSuspenseQuery({
     ...retroQueries.readRetroProblemList({ retroId, kanbanStatus }),
   });
 
@@ -62,7 +62,7 @@ const ProblemCardList = ({ retroId, kanbanStatus, client }: ProblemCardListProps
   const handleCreateRCG = async () => {
     try {
       await createRetroProblemMutation.mutateAsync({
-        title: '새 카드',
+        title: '',
         content: '',
         kanbanStatus,
       });
