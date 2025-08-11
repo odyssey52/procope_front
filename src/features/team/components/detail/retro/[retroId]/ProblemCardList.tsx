@@ -1,22 +1,20 @@
 'use client';
 
 import retroQueries from '@/features/team/query/retroQueries';
-import { createRetroProblem, deleteRetroProblem } from '@/features/team/services/retroService';
+import { createRetroProblem } from '@/features/team/services/retroService';
 import { CreateRetroProblemPayload, ProblemKanbanStatus } from '@/features/team/services/retroService.type';
 import { IconCheckMarkRectangle, IconPlus } from '@/shared/assets/icons/line';
 import useApiError from '@/shared/hooks/useApiError';
 import { useSidePanelStore } from '@/shared/store/sidePanel/sidePanel';
 import { theme } from '@/shared/styles/theme';
-import MoreArea from '@/shared/ui/button/MoreArea';
 import TaskCard from '@/shared/ui/card/TaskCard';
 import MoreIndicator from '@/shared/ui/indicator/MoreIndicator';
 import Divider from '@/shared/ui/line/Divider';
-import ItemList from '@/shared/ui/select/ItemList';
 import Tag from '@/shared/ui/tag/Tag';
 import { JobType } from '@/shared/ui/tag/TagJob';
 import Text from '@/shared/ui/Text';
 import { Client } from '@stomp/stompjs';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQueryClient, useSuspenseQuery } from '@tanstack/react-query';
 import { useEffect, useRef } from 'react';
 import styled from 'styled-components';
 import CreateCardButton from './CreateCardButton';
@@ -28,7 +26,7 @@ interface ProblemCardListProps {
   client: Client | null;
 }
 // key 는 ProblemKanbanStatus 와 동일
-const KANBAN_STATUS = {
+export const KANBAN_STATUS = {
   RCG: {
     title: '개선점',
     color: theme.sementicColors.bg.danger,
@@ -48,7 +46,7 @@ const ProblemCardList = ({ retroId, kanbanStatus, client }: ProblemCardListProps
   const subscriptionRef = useRef<any>(null);
   const queryClient = useQueryClient();
   const handleSwitchCard = useSidePanelStore((state) => state.handleSwitchCard);
-  const { data, isSuccess, refetch } = useQuery({
+  const { data, isSuccess } = useSuspenseQuery({
     ...retroQueries.readRetroProblemList({ retroId, kanbanStatus }),
   });
 
@@ -61,30 +59,13 @@ const ProblemCardList = ({ retroId, kanbanStatus, client }: ProblemCardListProps
     },
   });
 
-  const deleteRetroProblemMutation = useMutation({
-    mutationFn: (problemId: string | number) => deleteRetroProblem({ retroId, problemId }),
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: retroQueries.readRetroProblemList({ retroId, kanbanStatus }).queryKey,
-      });
-    },
-  });
-
   const handleCreateRCG = async () => {
     try {
       await createRetroProblemMutation.mutateAsync({
-        title: '새 카드',
+        title: '',
         content: '',
         kanbanStatus,
       });
-    } catch (error) {
-      handleError(error);
-    }
-  };
-
-  const handleDeleteRetroProblem = async (problemId: string | number) => {
-    try {
-      await deleteRetroProblemMutation.mutateAsync(problemId);
     } catch (error) {
       handleError(error);
     }
@@ -141,18 +122,6 @@ const ProblemCardList = ({ retroId, kanbanStatus, client }: ProblemCardListProps
                     handleSwitchCard({
                       cardId: `${retroId}-PBM-${item.id}`,
                       content: <ProblemSidePanelContent retroId={retroId} problemId={item.id} />,
-                      moreMenu: (
-                        <MoreArea
-                          size={24}
-                          menuList={
-                            <ItemList
-                              width="112px"
-                              selectOptionList={[{ value: '삭제', label: '삭제' }]}
-                              valueHandler={() => handleDeleteRetroProblem(item.id)}
-                            />
-                          }
-                        />
-                      ),
                     });
                   }}
                   tags={[

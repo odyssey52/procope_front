@@ -14,13 +14,12 @@ import Text from '@/shared/ui/Text';
 import PageTitle from '@/shared/ui/title/PageTitle';
 import { formatDateToDot } from '@/shared/utils/date';
 import { Client } from '@stomp/stompjs';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQueryClient, useSuspenseQuery } from '@tanstack/react-query';
 import { useParams, useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import CalendarArea from './CalendarArea';
 import MemberArea from './MemberArea';
-import RetroInfoSkeleton from './RetroInfoSkeleton';
 
 interface RetroInfoWrapperProps {
   client: Client | null;
@@ -36,7 +35,7 @@ const RetroInfoWrapper = ({ client }: RetroInfoWrapperProps) => {
   const subscriptionRef = useRef<any>(null);
   const { handleError } = useApiError();
 
-  const { data, isLoading } = useQuery({
+  const { data } = useSuspenseQuery({
     ...retroQueries.readRetro({ teamId: teamId as string, retroId: retroId as string }),
   });
 
@@ -91,7 +90,6 @@ const RetroInfoWrapper = ({ client }: RetroInfoWrapperProps) => {
     }
   }, [data]);
 
-  if (isLoading) return <RetroInfoSkeleton />;
   if (!data) return <Error title="에러 발생" description="회고 정보를 불러오는 중 오류가 발생했습니다." />;
   return (
     <Wrapper>

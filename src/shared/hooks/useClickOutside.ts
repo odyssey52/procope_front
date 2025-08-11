@@ -1,14 +1,20 @@
-// hooks/useClickOutside.ts
-// 외부 클릭 시 컴포넌트 닫힘
 import { useEffect, useRef } from 'react';
 
-export function useClickOutside<T extends HTMLElement>(handler: () => void) {
+export function useClickOutside<T extends HTMLElement>(
+  handler: () => void,
+  exceptionsSelector?: string, // 예외 처리할 셀렉터
+) {
   const ref = useRef<T>(null);
 
   useEffect(() => {
     const listener = (event: MouseEvent | TouchEvent) => {
       const el = ref.current;
       if (!el || el.contains(event.target as Node)) return;
+
+      if (exceptionsSelector && (event.target as HTMLElement).closest(exceptionsSelector)) {
+        return;
+      }
+
       handler();
     };
 
@@ -18,7 +24,7 @@ export function useClickOutside<T extends HTMLElement>(handler: () => void) {
       document.removeEventListener('mousedown', listener);
       document.removeEventListener('touchstart', listener);
     };
-  }, [handler]);
+  }, [handler, exceptionsSelector]);
 
   return ref;
 }
