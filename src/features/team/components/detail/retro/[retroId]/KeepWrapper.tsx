@@ -53,23 +53,6 @@ const KeepWrapper = ({ retroId, client }: KeepWrapperProps) => {
     },
   });
 
-  const deleteRetroProblemMutation = useMutation({
-    mutationFn: (problemId: string | number) => deleteRetroProblem({ retroId, problemId }),
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: retroQueries.readRetroProblemList({ retroId, kanbanStatus: 'KEP' }).queryKey,
-      });
-    },
-  });
-
-  const handleDeleteRetroProblem = async (problemId: string | number) => {
-    try {
-      await deleteRetroProblemMutation.mutateAsync(problemId);
-    } catch (error) {
-      handleError(error);
-    }
-  };
-
   const addKeep = async () => {
     try {
       await createRetroProblemMutation.mutateAsync({
@@ -133,18 +116,6 @@ const KeepWrapper = ({ retroId, client }: KeepWrapperProps) => {
                       handleSwitchCard({
                         cardId: `${retroId}-KEP-${item.id}`,
                         content: <KeepSidePanelContent retroId={retroId} problemId={item.id} />,
-                        moreMenu: (
-                          <MoreArea
-                            size={24}
-                            menuList={
-                              <ItemList
-                                width="112px"
-                                selectOptionList={[{ value: '삭제', label: '삭제' }]}
-                                valueHandler={() => handleDeleteRetroProblem(item.id)}
-                              />
-                            }
-                          />
-                        ),
                       });
                     }}
                     tags={[

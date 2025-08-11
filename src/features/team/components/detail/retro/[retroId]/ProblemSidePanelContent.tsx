@@ -1,18 +1,21 @@
 'use client';
 
 import retroQueries from '@/features/team/query/retroQueries';
-import { updateRetroProblem } from '@/features/team/services/retroService';
+import { deleteRetroProblem, updateRetroProblem } from '@/features/team/services/retroService';
 import { ProblemKanbanStatus, UpdateRetroProblemPayload } from '@/features/team/services/retroService.type';
-import { IconApps, IconLoading, IconUser } from '@/shared/assets/icons/line';
+import { IconApps, IconDirectionRight1, IconLoading, IconUser } from '@/shared/assets/icons/line';
 import useApiError from '@/shared/hooks/useApiError';
-import useDebounce from '@/shared/hooks/useDebounce';
+import { useClickOutside } from '@/shared/hooks/useClickOutside';
+import { useSidePanelStore } from '@/shared/store/sidePanel/sidePanel';
 import { theme } from '@/shared/styles/theme';
 import Avatar from '@/shared/ui/avatar/Avatar';
+import MoreArea from '@/shared/ui/button/MoreArea';
 import TextButton from '@/shared/ui/button/TextButton';
 import Checkbox from '@/shared/ui/checkbox/Checkbox';
 import Error from '@/shared/ui/error/Error';
 import Divider from '@/shared/ui/line/Divider';
 import { LoadingSpinner } from '@/shared/ui/LoadingSpinner';
+import ItemList from '@/shared/ui/select/ItemList';
 import TagJob, { JobType } from '@/shared/ui/tag/TagJob';
 import Text from '@/shared/ui/Text';
 import Tiptap from '@/shared/ui/tiptap/Tiptap';
@@ -39,6 +42,8 @@ const ProblemSidePanelContent = ({ retroId, problemId }: ProblemSidePanelContent
   const [currentContent, setCurrentContent] = useState('');
   const [currentKanbanStatus, setCurrentKanbanStatus] = useState<ProblemKanbanStatus>('RCG');
   const [isInitialized, setIsInitialized] = useState(false);
+  const close = useSidePanelStore((state) => state.close);
+  const ref = useClickOutside<HTMLDivElement>(close, '.task-card');
 
   const queryClient = useQueryClient();
   const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -86,6 +91,15 @@ const ProblemSidePanelContent = ({ retroId, problemId }: ProblemSidePanelContent
     },
   });
 
+  const deleteRetroProblemMutation = useMutation({
+    mutationFn: (problemId: string | number) => deleteRetroProblem({ retroId, problemId }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: retroQueries.readRetroProblemList({ retroId, kanbanStatus: currentKanbanStatusRef.current }).queryKey,
+      });
+    },
+  });
+
   const handleUpdateRetroProblem = async (title: string, content: string, kanbanStatus: ProblemKanbanStatus) => {
     try {
       await updateRetroProblemMutation.mutateAsync({
@@ -93,6 +107,14 @@ const ProblemSidePanelContent = ({ retroId, problemId }: ProblemSidePanelContent
         content,
         kanbanStatus,
       });
+    } catch (error) {
+      handleError(error);
+    }
+  };
+
+  const handleDeleteRetroProblem = async (problemId: string | number) => {
+    try {
+      await deleteRetroProblemMutation.mutateAsync(problemId);
     } catch (error) {
       handleError(error);
     }
@@ -135,7 +157,6 @@ const ProblemSidePanelContent = ({ retroId, problemId }: ProblemSidePanelContent
     }
   }, [data, editor]);
 
-  // title / content 변경 → 디바운스 저장
   useEffect(() => {
     if (!isInitialized) return;
     if (!data) return;
@@ -144,7 +165,6 @@ const ProblemSidePanelContent = ({ retroId, problemId }: ProblemSidePanelContent
     }
   }, [currentTitle, currentContent]);
 
-  // kanbanStatus 변경 → 즉시 저장
   useEffect(() => {
     if (!isInitialized) return;
     if (!data) return;
@@ -153,7 +173,6 @@ const ProblemSidePanelContent = ({ retroId, problemId }: ProblemSidePanelContent
     }
   }, [currentKanbanStatus]);
 
-  // 상태 변화 시 ref 업데이트
   useEffect(() => {
     currentTitleRef.current = currentTitle;
   }, [currentTitle]);
@@ -185,57 +204,78 @@ const ProblemSidePanelContent = ({ retroId, problemId }: ProblemSidePanelContent
   if (!isSuccess) return <Error title="서버 에러" description="문제를 찾을 수 없습니다." />;
 
   return (
-    <Wrapper>
-      <TitleWrapper>
-        <Checkbox label={`PBM-${problemId}`} id={`PBM-${problemId}`} onClick={() => {}} checked />
-        <PageTitle title={currentTitle} setTitle={setCurrentTitle} placeholder="제목을 작성해 주세요" />
-      </TitleWrapper>
-      <ProblemInfo>
-        <ProblemInfoItem>
-          <ProblemInfoItemTitle>
-            <IconLoading size={20} color={theme.sementicColors.icon.disabled} />
-            진행상태
-          </ProblemInfoItemTitle>
-          <ProblemStatusSelect status={currentKanbanStatus} onChange={handleChangeKanbanStatus} />
-        </ProblemInfoItem>
-        <ProblemInfoItem>
-          <ProblemInfoItemTitle>
-            <IconApps size={20} color={theme.sementicColors.icon.disabled} />
-            카테고리
-          </ProblemInfoItemTitle>
-          <ProblemInfoItemContent>
-            <TagJob type={data.userRole as JobType} bgColor={theme.sementicColors.bg.tertiary_hover_pressed} />
-          </ProblemInfoItemContent>
-        </ProblemInfoItem>
-        <ProblemInfoItem>
-          <ProblemInfoItemTitle>
-            <IconUser size={20} color={theme.sementicColors.icon.disabled} />
-            만든사람
-          </ProblemInfoItemTitle>
-          <ProblemInfoItemContent>
-            <TextButton
-              $type="24"
-              leftIcon={<Avatar size={24} image={data.createUserInfo.profileImageUrl} />}
-              $clickable={false}
-            >
-              {data.createUserInfo.name}
-            </TextButton>
-          </ProblemInfoItemContent>
-        </ProblemInfoItem>
-        <ProblemInfoItem>
-          <ProblemInfoItemTitle>업데이트 날짜</ProblemInfoItemTitle>
-          <ProblemInfoItemContent>
-            <Text variant="body_16_medium" color="tertiary">
-              {formatDateToDot(data.updatedAt)}
-            </Text>
-          </ProblemInfoItemContent>
-        </ProblemInfoItem>
-      </ProblemInfo>
-      <Divider />
-      {editor && <Tiptap editor={editor} />}
-    </Wrapper>
+    <RefContainer ref={ref}>
+      <PanelControl>
+        <CloseButton onClick={close}>
+          <IconDirectionRight1 />
+        </CloseButton>
+        <MoreArea
+          size={24}
+          menuList={
+            <ItemList
+              width="112px"
+              selectOptionList={[{ value: '삭제', label: '삭제' }]}
+              valueHandler={() => handleDeleteRetroProblem(problemId)}
+            />
+          }
+        />
+      </PanelControl>
+      <Wrapper>
+        <TitleWrapper>
+          <Checkbox label={`PBM-${problemId}`} id={`PBM-${problemId}`} onClick={() => {}} checked />
+          <PageTitle title={currentTitle} setTitle={setCurrentTitle} placeholder="제목을 작성해 주세요" />
+        </TitleWrapper>
+        <ProblemInfo>
+          <ProblemInfoItem>
+            <ProblemInfoItemTitle>
+              <IconLoading size={20} color={theme.sementicColors.icon.disabled} />
+              진행상태
+            </ProblemInfoItemTitle>
+            <ProblemStatusSelect status={currentKanbanStatus} onChange={handleChangeKanbanStatus} />
+          </ProblemInfoItem>
+          <ProblemInfoItem>
+            <ProblemInfoItemTitle>
+              <IconApps size={20} color={theme.sementicColors.icon.disabled} />
+              카테고리
+            </ProblemInfoItemTitle>
+            <ProblemInfoItemContent>
+              <TagJob type={data.userRole as JobType} bgColor={theme.sementicColors.bg.tertiary_hover_pressed} />
+            </ProblemInfoItemContent>
+          </ProblemInfoItem>
+          <ProblemInfoItem>
+            <ProblemInfoItemTitle>
+              <IconUser size={20} color={theme.sementicColors.icon.disabled} />
+              만든사람
+            </ProblemInfoItemTitle>
+            <ProblemInfoItemContent>
+              <TextButton
+                $type="24"
+                leftIcon={<Avatar size={24} image={data.createUserInfo.profileImageUrl} />}
+                $clickable={false}
+              >
+                {data.createUserInfo.name}
+              </TextButton>
+            </ProblemInfoItemContent>
+          </ProblemInfoItem>
+          <ProblemInfoItem>
+            <ProblemInfoItemTitle>업데이트 날짜</ProblemInfoItemTitle>
+            <ProblemInfoItemContent>
+              <Text variant="body_16_medium" color="tertiary">
+                {formatDateToDot(data.updatedAt)}
+              </Text>
+            </ProblemInfoItemContent>
+          </ProblemInfoItem>
+        </ProblemInfo>
+        <Divider />
+        {editor && <Tiptap editor={editor} />}
+      </Wrapper>
+    </RefContainer>
   );
 };
+
+const RefContainer = styled.div`
+  position: relative;
+`;
 
 const Wrapper = styled.div`
   display: flex;
@@ -279,12 +319,17 @@ const ProblemInfoItemContent = styled.div`
   color: ${({ theme }) => theme.sementicColors.text.secondary};
   padding: 8px;
 `;
+const PanelControl = styled.div`
+  display: flex;
+  padding: 0 24px;
+  justify-content: space-between;
+`;
 
-const ProblemStatusSelectWrapper = styled.div`
-  position: absolute;
-  right: 0;
-  top: 0;
-  width: 100%;
+const CloseButton = styled.button`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
 `;
 
 ProblemSidePanelContent.displayName = 'ProblemSidePanelContent';

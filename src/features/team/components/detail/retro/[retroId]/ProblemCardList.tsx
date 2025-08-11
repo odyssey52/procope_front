@@ -47,6 +47,7 @@ const ProblemCardList = ({ retroId, kanbanStatus, client }: ProblemCardListProps
   const { handleError } = useApiError();
   const subscriptionRef = useRef<any>(null);
   const queryClient = useQueryClient();
+  const skipEnterAnimation = useSidePanelStore((state) => state.skipEnterAnimation);
   const handleSwitchCard = useSidePanelStore((state) => state.handleSwitchCard);
   const { data, isSuccess, refetch } = useQuery({
     ...retroQueries.readRetroProblemList({ retroId, kanbanStatus }),
@@ -61,15 +62,6 @@ const ProblemCardList = ({ retroId, kanbanStatus, client }: ProblemCardListProps
     },
   });
 
-  const deleteRetroProblemMutation = useMutation({
-    mutationFn: (problemId: string | number) => deleteRetroProblem({ retroId, problemId }),
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: retroQueries.readRetroProblemList({ retroId, kanbanStatus }).queryKey,
-      });
-    },
-  });
-
   const handleCreateRCG = async () => {
     try {
       await createRetroProblemMutation.mutateAsync({
@@ -77,14 +69,6 @@ const ProblemCardList = ({ retroId, kanbanStatus, client }: ProblemCardListProps
         content: '',
         kanbanStatus,
       });
-    } catch (error) {
-      handleError(error);
-    }
-  };
-
-  const handleDeleteRetroProblem = async (problemId: string | number) => {
-    try {
-      await deleteRetroProblemMutation.mutateAsync(problemId);
     } catch (error) {
       handleError(error);
     }
@@ -141,18 +125,6 @@ const ProblemCardList = ({ retroId, kanbanStatus, client }: ProblemCardListProps
                     handleSwitchCard({
                       cardId: `${retroId}-PBM-${item.id}`,
                       content: <ProblemSidePanelContent retroId={retroId} problemId={item.id} />,
-                      moreMenu: (
-                        <MoreArea
-                          size={24}
-                          menuList={
-                            <ItemList
-                              width="112px"
-                              selectOptionList={[{ value: '삭제', label: '삭제' }]}
-                              valueHandler={() => handleDeleteRetroProblem(item.id)}
-                            />
-                          }
-                        />
-                      ),
                     });
                   }}
                   tags={[

@@ -13,7 +13,7 @@ import Text from '../Text';
 interface MenuItem {
   id: string | number;
   label: string;
-  onClick: () => void;
+  onClick: (e?: React.MouseEvent<HTMLDivElement>) => void;
 }
 
 interface TaskCardProps {
@@ -58,7 +58,7 @@ const TaskCard = ({
   };
 
   return (
-    <Wrapper onClick={onClick}>
+    <Wrapper onClick={onClick} className="task-card">
       <Top>
         <TagBox>
           <TagList>
