@@ -1,6 +1,5 @@
 'use client';
 
-import retroQueries from '@/features/team/query/retroQueries';
 import PageSubTitle from '@/shared/ui/title/PageSubTitle';
 import { Client } from '@stomp/stompjs';
 import styled from 'styled-components';

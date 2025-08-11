@@ -16,11 +16,10 @@ import Tag from '@/shared/ui/tag/Tag';
 import { JobType } from '@/shared/ui/tag/TagJob';
 import PageSubTitle from '@/shared/ui/title/PageSubTitle';
 import { Client } from '@stomp/stompjs';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQueryClient, useSuspenseQuery } from '@tanstack/react-query';
 import { useEffect, useRef } from 'react';
 import styled from 'styled-components';
 import KeepSidePanelContent from './KeepSidePanelContent';
-import SkeletonKeepWrapper from './SkeletonKeepWrapper';
 
 interface KeepWrapperProps {
   retroId: string;
@@ -37,7 +36,7 @@ const KeepWrapper = ({ retroId, client }: KeepWrapperProps) => {
   const { handleError } = useApiError();
   const queryClient = useQueryClient();
   const handleSwitchCard = useSidePanelStore((state) => state.handleSwitchCard);
-  const { data, isSuccess, refetch, isLoading } = useQuery({
+  const { data, isSuccess, refetch } = useSuspenseQuery({
     ...retroQueries.readRetroProblemList({ retroId, kanbanStatus: 'KEP' }),
   });
 
@@ -89,7 +88,6 @@ const KeepWrapper = ({ retroId, client }: KeepWrapperProps) => {
     };
   }, [client]);
 
-  if (isLoading) return <SkeletonKeepWrapper />;
   return (
     <Wrapper>
       <Head>

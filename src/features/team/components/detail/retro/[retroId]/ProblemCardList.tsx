@@ -1,22 +1,20 @@
 'use client';
 
 import retroQueries from '@/features/team/query/retroQueries';
-import { createRetroProblem, deleteRetroProblem } from '@/features/team/services/retroService';
+import { createRetroProblem } from '@/features/team/services/retroService';
 import { CreateRetroProblemPayload, ProblemKanbanStatus } from '@/features/team/services/retroService.type';
 import { IconCheckMarkRectangle, IconPlus } from '@/shared/assets/icons/line';
 import useApiError from '@/shared/hooks/useApiError';
 import { useSidePanelStore } from '@/shared/store/sidePanel/sidePanel';
 import { theme } from '@/shared/styles/theme';
-import MoreArea from '@/shared/ui/button/MoreArea';
 import TaskCard from '@/shared/ui/card/TaskCard';
 import MoreIndicator from '@/shared/ui/indicator/MoreIndicator';
 import Divider from '@/shared/ui/line/Divider';
-import ItemList from '@/shared/ui/select/ItemList';
 import Tag from '@/shared/ui/tag/Tag';
 import { JobType } from '@/shared/ui/tag/TagJob';
 import Text from '@/shared/ui/Text';
 import { Client } from '@stomp/stompjs';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient, useSuspenseQuery } from '@tanstack/react-query';
 import { useEffect, useRef } from 'react';
 import styled from 'styled-components';
 import CreateCardButton from './CreateCardButton';
@@ -28,7 +26,7 @@ interface ProblemCardListProps {
   client: Client | null;
 }
 // key 는 ProblemKanbanStatus 와 동일
-const KANBAN_STATUS = {
+export const KANBAN_STATUS = {
   RCG: {
     title: '개선점',
     color: theme.sementicColors.bg.danger,
@@ -47,9 +45,8 @@ const ProblemCardList = ({ retroId, kanbanStatus, client }: ProblemCardListProps
   const { handleError } = useApiError();
   const subscriptionRef = useRef<any>(null);
   const queryClient = useQueryClient();
-  const skipEnterAnimation = useSidePanelStore((state) => state.skipEnterAnimation);
   const handleSwitchCard = useSidePanelStore((state) => state.handleSwitchCard);
-  const { data, isSuccess, refetch } = useQuery({
+  const { data, isSuccess, isLoading } = useSuspenseQuery({
     ...retroQueries.readRetroProblemList({ retroId, kanbanStatus }),
   });
 
