@@ -1,19 +1,17 @@
 'use client';
 
 import retroQueries from '@/features/team/query/retroQueries';
-import { createRetroProblem, deleteRetroProblem } from '@/features/team/services/retroService';
+import { createRetroProblem } from '@/features/team/services/retroService';
 import { CreateRetroProblemPayload } from '@/features/team/services/retroService.type';
 import { IconCheckMarkRectangle } from '@/shared/assets/icons/line';
 import useApiError from '@/shared/hooks/useApiError';
 import { useSidePanelStore } from '@/shared/store/sidePanel/sidePanel';
 import { theme } from '@/shared/styles/theme';
 import Button from '@/shared/ui/button/Button';
-import MoreArea from '@/shared/ui/button/MoreArea';
 import TaskCard from '@/shared/ui/card/TaskCard';
 import Empty from '@/shared/ui/empty/Empty';
 import ErrorBoundary from '@/shared/ui/errorboundary/ErrorBoundary';
 import MoreIndicator from '@/shared/ui/indicator/MoreIndicator';
-import ItemList from '@/shared/ui/select/ItemList';
 import Tag from '@/shared/ui/tag/Tag';
 import { JobType } from '@/shared/ui/tag/TagJob';
 import PageSubTitle from '@/shared/ui/title/PageSubTitle';
@@ -22,6 +20,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useEffect, useRef } from 'react';
 import styled from 'styled-components';
 import KeepSidePanelContent from './KeepSidePanelContent';
+import SkeletonKeepWrapper from './SkeletonKeepWrapper';
 
 interface KeepWrapperProps {
   retroId: string;
@@ -38,7 +37,7 @@ const KeepWrapper = ({ retroId, client }: KeepWrapperProps) => {
   const { handleError } = useApiError();
   const queryClient = useQueryClient();
   const handleSwitchCard = useSidePanelStore((state) => state.handleSwitchCard);
-  const { data, isSuccess, refetch } = useQuery({
+  const { data, isSuccess, refetch, isLoading } = useQuery({
     ...retroQueries.readRetroProblemList({ retroId, kanbanStatus: 'KEP' }),
   });
 
@@ -90,6 +89,7 @@ const KeepWrapper = ({ retroId, client }: KeepWrapperProps) => {
     };
   }, [client]);
 
+  if (isLoading) return <SkeletonKeepWrapper />;
   return (
     <Wrapper>
       <Head>
