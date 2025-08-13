@@ -3,7 +3,14 @@
 import retroQueries from '@/features/team/query/retroQueries';
 import { deleteRetroProblem, updateRetroProblem } from '@/features/team/services/retroService';
 import { ProblemKanbanStatus, UpdateRetroProblemPayload } from '@/features/team/services/retroService.type';
-import { IconApps, IconDirectionRight1, IconLoading, IconUser } from '@/shared/assets/icons/line';
+import {
+  IconApps,
+  IconClockCircle,
+  IconDirectionRight1,
+  IconFlag,
+  IconLoading,
+  IconUser,
+} from '@/shared/assets/icons/line';
 import useApiError from '@/shared/hooks/useApiError';
 import { useClickOutside } from '@/shared/hooks/useClickOutside';
 import { useSidePanelStore } from '@/shared/store/sidePanel/sidePanel';
@@ -31,6 +38,7 @@ import { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import ProblemStatusSelect from './ProblemStatusSelect';
 import SolveWrapper from './SolveWrapper';
+import CalendarArea from './CalendarArea';
 
 interface ProblemSidePanelContentProps {
   retroId: string | number;
@@ -259,13 +267,26 @@ const ProblemSidePanelContent = ({ retroId, problemId }: ProblemSidePanelContent
             </ProblemInfoItemContent>
           </ProblemInfoItem>
           <ProblemInfoItem>
-            <ProblemInfoItemTitle>업데이트 날짜</ProblemInfoItemTitle>
+            <ProblemInfoItemTitle>
+              <IconClockCircle size={20} color={theme.sementicColors.icon.disabled} />
+              업데이트 날짜
+            </ProblemInfoItemTitle>
             <ProblemInfoItemContent>
               <Text variant="body_16_medium" color="tertiary">
                 {formatDateToDot(data.updatedAt)}
               </Text>
             </ProblemInfoItemContent>
           </ProblemInfoItem>
+          {currentKanbanStatus === 'OK' && (
+            <ProblemInfoItem>
+              <ProblemInfoItemTitle>
+                <IconFlag size={20} color={theme.sementicColors.icon.disabled} />
+                개선완료 날짜
+              </ProblemInfoItemTitle>
+              {/* 추후 개선완료 날짜 수정 기능 추가 */}
+              <CalendarArea selectedDate={formatDateToDot(data.updatedAt)} onChange={() => {}} />
+            </ProblemInfoItem>
+          )}
         </ProblemInfo>
         <Divider color={theme.sementicColors.border.primary} />
         <SolveWrapper />
@@ -278,6 +299,9 @@ const ProblemSidePanelContent = ({ retroId, problemId }: ProblemSidePanelContent
 
 const RefContainer = styled.div`
   position: relative;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
 `;
 
 const Wrapper = styled.div`
