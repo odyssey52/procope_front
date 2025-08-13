@@ -12,6 +12,7 @@ interface PageTitleProps {
   description?: string;
   children?: React.ReactNode;
 }
+
 const PageTitle = ({ hasBack, title, setTitle, onBlur, placeholder, description, children }: PageTitleProps) => {
   return (
     <Wrapper>
