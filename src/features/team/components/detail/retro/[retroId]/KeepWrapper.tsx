@@ -118,7 +118,7 @@ const KeepWrapper = ({ retroId, client }: KeepWrapperProps) => {
                     }}
                     tags={[
                       <Tag
-                        key={`KeepTastCard-${item.id}`}
+                        key={`KeepTaskCard-${item.id}`}
                         $size="large"
                         $style="transparent"
                         $leftIcon={<IconCheckMarkRectangle color={theme.sementicColors.icon.brand} />}
