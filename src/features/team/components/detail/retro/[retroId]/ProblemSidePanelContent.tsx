@@ -30,6 +30,7 @@ import StarterKit from '@tiptap/starter-kit';
 import { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import ProblemStatusSelect from './ProblemStatusSelect';
+import SolveWrapper from './SolveWrapper';
 
 interface ProblemSidePanelContentProps {
   retroId: string | number;
@@ -266,7 +267,9 @@ const ProblemSidePanelContent = ({ retroId, problemId }: ProblemSidePanelContent
             </ProblemInfoItemContent>
           </ProblemInfoItem>
         </ProblemInfo>
-        <Divider />
+        <Divider color={theme.sementicColors.border.primary} />
+        <SolveWrapper />
+        <Divider color={theme.sementicColors.border.primary} />
         {editor && <Tiptap editor={editor} />}
       </Wrapper>
     </RefContainer>

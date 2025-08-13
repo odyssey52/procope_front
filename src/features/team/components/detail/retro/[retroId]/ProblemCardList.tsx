@@ -127,7 +127,7 @@ const ProblemCardList = ({ retroId, kanbanStatus, client }: ProblemCardListProps
                   }}
                   tags={[
                     <Tag
-                      key={`PBMTastCard-${item.id}`}
+                      key={`PBMTaskCard-${item.id}`}
                       $size="large"
                       $style="transparent"
                       $leftIcon={<IconCheckMarkRectangle color={theme.sementicColors.icon.brand} />}
