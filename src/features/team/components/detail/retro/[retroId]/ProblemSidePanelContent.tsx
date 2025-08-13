@@ -39,6 +39,7 @@ import styled from 'styled-components';
 import ProblemStatusSelect from './ProblemStatusSelect';
 import SolveWrapper from './SolveWrapper';
 import CalendarArea from './CalendarArea';
+import SkeletonSidePanelContent from './SkeletonSidePanelContent';
 
 interface ProblemSidePanelContentProps {
   retroId: string | number;
@@ -209,9 +210,6 @@ const ProblemSidePanelContent = ({ retroId, problemId }: ProblemSidePanelContent
     };
   }, [isInitialized, data]);
 
-  if (isLoading) return <LoadingSpinner />;
-  if (!isSuccess) return <Error title="서버 에러" description="문제를 찾을 수 없습니다." />;
-
   return (
     <RefContainer ref={ref}>
       <PanelControl>
@@ -229,70 +227,74 @@ const ProblemSidePanelContent = ({ retroId, problemId }: ProblemSidePanelContent
           }
         />
       </PanelControl>
-      <Wrapper>
-        <TitleWrapper>
-          <Checkbox label={`PBM-${problemId}`} id={`PBM-${problemId}`} onClick={() => {}} checked />
-          <PageTitle title={currentTitle} setTitle={setCurrentTitle} placeholder="제목을 작성해 주세요" />
-        </TitleWrapper>
-        <ProblemInfo>
-          <ProblemInfoItem>
-            <ProblemInfoItemTitle>
-              <IconLoading size={20} color={theme.sementicColors.icon.disabled} />
-              진행상태
-            </ProblemInfoItemTitle>
-            <ProblemStatusSelect status={currentKanbanStatus} onChange={handleChangeKanbanStatus} />
-          </ProblemInfoItem>
-          <ProblemInfoItem>
-            <ProblemInfoItemTitle>
-              <IconApps size={20} color={theme.sementicColors.icon.disabled} />
-              카테고리
-            </ProblemInfoItemTitle>
-            <ProblemInfoItemContent>
-              <TagJob type={data.userRole as JobType} bgColor={theme.sementicColors.bg.tertiary_hover_pressed} />
-            </ProblemInfoItemContent>
-          </ProblemInfoItem>
-          <ProblemInfoItem>
-            <ProblemInfoItemTitle>
-              <IconUser size={20} color={theme.sementicColors.icon.disabled} />
-              만든사람
-            </ProblemInfoItemTitle>
-            <ProblemInfoItemContent>
-              <TextButton
-                $type="24"
-                leftIcon={<Avatar size={24} image={data.createUserInfo.profileImageUrl} />}
-                $clickable={false}
-              >
-                {data.createUserInfo.name}
-              </TextButton>
-            </ProblemInfoItemContent>
-          </ProblemInfoItem>
-          <ProblemInfoItem>
-            <ProblemInfoItemTitle>
-              <IconClockCircle size={20} color={theme.sementicColors.icon.disabled} />
-              업데이트 날짜
-            </ProblemInfoItemTitle>
-            <ProblemInfoItemContent>
-              <Text variant="body_16_medium" color="tertiary">
-                {formatDateToDot(data.updatedAt)}
-              </Text>
-            </ProblemInfoItemContent>
-          </ProblemInfoItem>
-          {currentKanbanStatus === 'OK' && (
+      {isLoading && <SkeletonSidePanelContent />}
+      {!isLoading && !isSuccess && <Error title="서버 에러" description="문제를 찾을 수 없습니다." />}
+      {!isLoading && isSuccess && (
+        <Wrapper>
+          <TitleWrapper>
+            <Checkbox label={`PBM-${problemId}`} id={`PBM-${problemId}`} onClick={() => {}} checked />
+            <PageTitle title={currentTitle} setTitle={setCurrentTitle} placeholder="제목을 작성해 주세요" />
+          </TitleWrapper>
+          <ProblemInfo>
             <ProblemInfoItem>
               <ProblemInfoItemTitle>
-                <IconFlag size={20} color={theme.sementicColors.icon.disabled} />
-                개선완료 날짜
+                <IconLoading size={20} color={theme.sementicColors.icon.disabled} />
+                진행상태
               </ProblemInfoItemTitle>
-              {/* 추후 개선완료 날짜 수정 기능 추가 */}
-              <CalendarArea selectedDate={formatDateToDot(data.updatedAt)} onChange={() => {}} />
+              <ProblemStatusSelect status={currentKanbanStatus} onChange={handleChangeKanbanStatus} />
             </ProblemInfoItem>
-          )}
-        </ProblemInfo>
-        <Divider color={theme.sementicColors.border.primary} />
-        <SolveWrapper />
-        <Divider color={theme.sementicColors.border.primary} />
-        {editor && <Tiptap editor={editor} />}
-      </Wrapper>
+            <ProblemInfoItem>
+              <ProblemInfoItemTitle>
+                <IconApps size={20} color={theme.sementicColors.icon.disabled} />
+                카테고리
+              </ProblemInfoItemTitle>
+              <ProblemInfoItemContent>
+                <TagJob type={data.userRole as JobType} bgColor={theme.sementicColors.bg.tertiary_hover_pressed} />
+              </ProblemInfoItemContent>
+            </ProblemInfoItem>
+            <ProblemInfoItem>
+              <ProblemInfoItemTitle>
+                <IconUser size={20} color={theme.sementicColors.icon.disabled} />
+                만든사람
+              </ProblemInfoItemTitle>
+              <ProblemInfoItemContent>
+                <TextButton
+                  $type="24"
+                  leftIcon={<Avatar size={24} image={data.createUserInfo.profileImageUrl} />}
+                  $clickable={false}
+                >
+                  {data.createUserInfo.name}
+                </TextButton>
+              </ProblemInfoItemContent>
+            </ProblemInfoItem>
+            <ProblemInfoItem>
+              <ProblemInfoItemTitle>
+                <IconClockCircle size={20} color={theme.sementicColors.icon.disabled} />
+                업데이트 날짜
+              </ProblemInfoItemTitle>
+              <ProblemInfoItemContent>
+                <Text variant="body_16_medium" color="tertiary">
+                  {formatDateToDot(data.updatedAt)}
+                </Text>
+              </ProblemInfoItemContent>
+            </ProblemInfoItem>
+            {currentKanbanStatus === 'OK' && (
+              <ProblemInfoItem>
+                <ProblemInfoItemTitle>
+                  <IconFlag size={20} color={theme.sementicColors.icon.disabled} />
+                  개선완료 날짜
+                </ProblemInfoItemTitle>
+                {/* 추후 개선완료 날짜 수정 기능 추가 */}
+                <CalendarArea selectedDate={formatDateToDot(data.updatedAt)} onChange={() => {}} />
+              </ProblemInfoItem>
+            )}
+          </ProblemInfo>
+          <Divider color={theme.sementicColors.border.primary} />
+          <SolveWrapper />
+          <Divider color={theme.sementicColors.border.primary} />
+          {editor && <Tiptap editor={editor} />}
+        </Wrapper>
+      )}
     </RefContainer>
   );
 };
