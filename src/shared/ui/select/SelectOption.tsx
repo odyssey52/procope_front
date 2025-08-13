@@ -10,7 +10,7 @@ export interface SelectOptionProps {
   state?: 'selected';
   display: React.ReactNode; // 화면 표시용 라벨
   description?: string;
-  onClick: () => void; // 클릭 핸들러
+  onClick?: () => void; // 클릭 핸들러
   width?: string;
   borderRadius?: string;
 }
@@ -26,7 +26,7 @@ const SelectOption = ({
   rightContent,
 }: SelectOptionProps) => {
   return (
-    <Wrapper $state={state} $width={width} $borderRadius={borderRadius} onClick={onClick}>
+    <Wrapper $state={state} $width={width} $borderRadius={borderRadius} onClick={onClick ?? (() => {})}>
       {leftContent && leftContent}
       {display && (
         <TextBox>
