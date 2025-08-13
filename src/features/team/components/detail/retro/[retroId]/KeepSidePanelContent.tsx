@@ -15,7 +15,6 @@ import TextButton from '@/shared/ui/button/TextButton';
 import Checkbox from '@/shared/ui/checkbox/Checkbox';
 import Error from '@/shared/ui/error/Error';
 import Divider from '@/shared/ui/line/Divider';
-import { LoadingSpinner } from '@/shared/ui/LoadingSpinner';
 import ItemList from '@/shared/ui/select/ItemList';
 import TagJob, { JobType } from '@/shared/ui/tag/TagJob';
 import Text from '@/shared/ui/Text';
@@ -30,6 +29,7 @@ import { useEditor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
+import SkeletonSidePanelContent from './SkeletonSidePanelContent';
 
 interface KeepSidePanelContentProps {
   retroId: string | number;
@@ -170,8 +170,6 @@ const KeepSidePanelContent = ({ retroId, problemId }: KeepSidePanelContentProps)
     };
   }, [isInitialized, retroId, problemId]);
 
-  if (isLoading) return <LoadingSpinner />;
-  if (!isSuccess) return <Error title="서버 에러" description="문제를 찾을 수 없습니다." />;
   return (
     <RefContainer ref={ref}>
       <PanelControl>
@@ -189,48 +187,52 @@ const KeepSidePanelContent = ({ retroId, problemId }: KeepSidePanelContentProps)
           }
         />
       </PanelControl>
-      <Wrapper>
-        <TitleWrapper>
-          <Checkbox label={`KEP-${problemId}`} id={`KEP-${problemId}`} onClick={() => {}} checked />
-          <PageTitle title={currentTitle} setTitle={setCurrentTitle} placeholder="제목을 작성해 주세요" />
-        </TitleWrapper>
-        <ProblemInfo>
-          <ProblemInfoItem>
-            <ProblemInfoItemTitle>
-              <IconApps size={20} color={theme.sementicColors.icon.disabled} />
-              카테고리
-            </ProblemInfoItemTitle>
-            <ProblemInfoItemContent>
-              <TagJob type={data.userRole as JobType} bgColor={theme.sementicColors.bg.tertiary_hover_pressed} />
-            </ProblemInfoItemContent>
-          </ProblemInfoItem>
-          <ProblemInfoItem>
-            <ProblemInfoItemTitle>
-              <IconUser size={20} color={theme.sementicColors.icon.disabled} />
-              만든사람
-            </ProblemInfoItemTitle>
-            <ProblemInfoItemContent>
-              <TextButton
-                $type="24"
-                leftIcon={<Avatar size={24} image={data.createUserInfo.profileImageUrl} />}
-                $clickable={false}
-              >
-                {data.createUserInfo.name}
-              </TextButton>
-            </ProblemInfoItemContent>
-          </ProblemInfoItem>
-          <ProblemInfoItem>
-            <ProblemInfoItemTitle>업데이트 날짜</ProblemInfoItemTitle>
-            <ProblemInfoItemContent>
-              <Text variant="body_16_medium" color="tertiary">
-                {formatDateToDot(data.updatedAt)}
-              </Text>
-            </ProblemInfoItemContent>
-          </ProblemInfoItem>
-        </ProblemInfo>
-        <Divider />
-        {editor && <Tiptap editor={editor} />}
-      </Wrapper>
+      {isLoading && <SkeletonSidePanelContent />}
+      {!isLoading && !isSuccess && <Error title="서버 에러" description="문제를 찾을 수 없습니다." />}
+      {!isLoading && isSuccess && (
+        <Wrapper>
+          <TitleWrapper>
+            <Checkbox label={`KEP-${problemId}`} id={`KEP-${problemId}`} onClick={() => {}} checked />
+            <PageTitle title={currentTitle} setTitle={setCurrentTitle} placeholder="제목을 작성해 주세요" />
+          </TitleWrapper>
+          <ProblemInfo>
+            <ProblemInfoItem>
+              <ProblemInfoItemTitle>
+                <IconApps size={20} color={theme.sementicColors.icon.disabled} />
+                카테고리
+              </ProblemInfoItemTitle>
+              <ProblemInfoItemContent>
+                <TagJob type={data.userRole as JobType} bgColor={theme.sementicColors.bg.tertiary_hover_pressed} />
+              </ProblemInfoItemContent>
+            </ProblemInfoItem>
+            <ProblemInfoItem>
+              <ProblemInfoItemTitle>
+                <IconUser size={20} color={theme.sementicColors.icon.disabled} />
+                만든사람
+              </ProblemInfoItemTitle>
+              <ProblemInfoItemContent>
+                <TextButton
+                  $type="24"
+                  leftIcon={<Avatar size={24} image={data.createUserInfo.profileImageUrl} />}
+                  $clickable={false}
+                >
+                  {data.createUserInfo.name}
+                </TextButton>
+              </ProblemInfoItemContent>
+            </ProblemInfoItem>
+            <ProblemInfoItem>
+              <ProblemInfoItemTitle>업데이트 날짜</ProblemInfoItemTitle>
+              <ProblemInfoItemContent>
+                <Text variant="body_16_medium" color="tertiary">
+                  {formatDateToDot(data.updatedAt)}
+                </Text>
+              </ProblemInfoItemContent>
+            </ProblemInfoItem>
+          </ProblemInfo>
+          <Divider />
+          {editor && <Tiptap editor={editor} />}
+        </Wrapper>
+      )}
     </RefContainer>
   );
 };

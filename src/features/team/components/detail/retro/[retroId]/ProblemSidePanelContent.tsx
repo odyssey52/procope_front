@@ -21,7 +21,6 @@ import TextButton from '@/shared/ui/button/TextButton';
 import Checkbox from '@/shared/ui/checkbox/Checkbox';
 import Error from '@/shared/ui/error/Error';
 import Divider from '@/shared/ui/line/Divider';
-import { LoadingSpinner } from '@/shared/ui/LoadingSpinner';
 import ItemList from '@/shared/ui/select/ItemList';
 import TagJob, { JobType } from '@/shared/ui/tag/TagJob';
 import Text from '@/shared/ui/Text';
@@ -36,10 +35,10 @@ import { useEditor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
-import ProblemStatusSelect from './ProblemStatusSelect';
-import SolveWrapper from './SolveWrapper';
 import CalendarArea from './CalendarArea';
+import ProblemStatusSelect from './ProblemStatusSelect';
 import SkeletonSidePanelContent from './SkeletonSidePanelContent';
+import SolveWrapper from './SolveWrapper';
 
 interface ProblemSidePanelContentProps {
   retroId: string | number;
