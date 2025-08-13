@@ -6,9 +6,9 @@ import SelectOption from './SelectOption';
 
 export type SelectOptionItem<TValue, TId = string | number> = {
   leftContent?: React.ReactNode;
-  label: React.ReactNode; // 표시용 라벨
-  value: TValue; // 실제 선택 값
-  id?: TId; // 식별자(선택)
+  label: React.ReactNode;
+  value: TValue;
+  id?: TId;
   description?: string;
 };
 
@@ -56,8 +56,8 @@ const Wrapper = styled.div`
   justify-content: space-around;
   border: 1px solid ${({ theme }) => theme.sementicColors.border.primary};
   background: ${({ theme }) => theme.sementicColors.bg.inverse};
-  max-height: calc(40px * 8); // SelectOption의 높이(40px) * 8개
-  outline: none; // 포커스 아웃라인 제거
+  max-height: calc(40px * 8);
+  outline: none;
 
   box-shadow:
     0px 2px 4px 0px rgba(0, 0, 0, 0.16),

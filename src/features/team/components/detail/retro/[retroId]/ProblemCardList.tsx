@@ -25,7 +25,7 @@ interface ProblemCardListProps {
   kanbanStatus: ProblemKanbanStatus;
   client: Client | null;
 }
-// key 는 ProblemKanbanStatus 와 동일
+
 export const KANBAN_STATUS = {
   RCG: {
     title: '개선점',
@@ -46,6 +46,7 @@ const ProblemCardList = ({ retroId, kanbanStatus, client }: ProblemCardListProps
   const subscriptionRef = useRef<any>(null);
   const queryClient = useQueryClient();
   const handleSwitchCard = useSidePanelStore((state) => state.handleSwitchCard);
+
   const { data, isSuccess } = useSuspenseQuery({
     ...retroQueries.readRetroProblemList({ retroId, kanbanStatus }),
   });
