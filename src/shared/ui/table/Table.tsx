@@ -131,6 +131,8 @@ const TableHeader = styled.th<{ $width?: string; $minWidth?: string; $maxWidth?:
 
 const TableCell = styled.td<{ $width?: string; $minWidth?: string; $maxWidth?: string }>`
   vertical-align: middle;
+  ${({ theme }) => theme.fontStyle.body_14_medium};
+  color: ${({ theme }) => theme.sementicColors.text.primary};
 `;
 
 const EmptyBox = styled.td`

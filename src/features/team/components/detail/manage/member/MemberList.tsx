@@ -1,6 +1,7 @@
 import { updateTeamUser } from '@/features/team/services/teamService';
 import * as types from '@/features/team/services/teamService.type';
 import { ReadTeamDetailResponse, ReadTeamUsersResponse } from '@/features/team/services/teamService.type';
+import { formatDateToDotAndSlice } from '@/features/team/utils/data';
 import { IconSortArrow } from '@/shared/assets/icons/line';
 import { MESSAGES } from '@/shared/constants/messages';
 import { toastActions } from '@/shared/store/modal/toast';
@@ -11,7 +12,6 @@ import Select from '@/shared/ui/select/Select';
 import Table from '@/shared/ui/table/Table';
 import Tag from '@/shared/ui/tag/Tag';
 import TagJob, { JobType } from '@/shared/ui/tag/TagJob';
-import { formatDateToDot } from '@/shared/utils/date';
 import { useMutation } from '@tanstack/react-query';
 import Tooltip from '@/shared/ui/tooltip/Tooltip';
 import React, { useEffect, useState } from 'react';
@@ -163,7 +163,7 @@ const MemberList = ({ teamUser, teamData }: MemberListProps) => {
       width: `${width[4]}%`,
       sortable: true,
       icon: <IconSortArrow onClick={() => setTooltipIndex((prev) => (prev === 4 ? null : 4))} />,
-      render: (item: ReadTeamUsersResponse['teamMember'][number]) => formatDateToDot(item.createdAt),
+      render: (item: ReadTeamUsersResponse['teamMember'][number]) => formatDateToDotAndSlice(item.createdAt),
     },
     {
       key: 'lastActiveAt',
@@ -171,7 +171,7 @@ const MemberList = ({ teamUser, teamData }: MemberListProps) => {
       width: `${width[5]}%`,
       sortable: true,
       icon: <IconSortArrow onClick={() => setTooltipIndex((prev) => (prev === 5 ? null : 5))} />,
-      render: (item: ReadTeamUsersResponse['teamMember'][number]) => formatDateToDot(item.lastActiveAt),
+      render: (item: ReadTeamUsersResponse['teamMember'][number]) => formatDateToDotAndSlice(item.lastActiveAt),
     },
     {
       key: 'role',
