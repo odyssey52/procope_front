@@ -8,21 +8,21 @@ import { toastActions } from '@/shared/store/modal/toast';
 import Avatar from '@/shared/ui/avatar/Avatar';
 import Breadcrumbs from '@/shared/ui/breadcrumbs/Breadcrumbs';
 import Button from '@/shared/ui/button/Button';
+import MoreArea from '@/shared/ui/button/MoreArea';
 import Empty from '@/shared/ui/empty/Empty';
+import ItemList from '@/shared/ui/select/ItemList';
+import TextSkeleton from '@/shared/ui/skeleton/TextSkeleton';
 import Table from '@/shared/ui/table/Table';
 import Text from '@/shared/ui/Text';
 import PageSubTitle from '@/shared/ui/title/PageSubTitle';
 import PageSubTitleSkeleton from '@/shared/ui/title/PageSubTitleSkeleton';
 import PageTitle from '@/shared/ui/title/PageTitle';
-import TextSkeleton from '@/shared/ui/skeleton/TextSkeleton';
 import { formatDateToDot } from '@/shared/utils/date';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
-import React, { useState } from 'react';
+import React from 'react';
 import styled from 'styled-components';
-import MoreArea from '@/shared/ui/button/MoreArea';
-import ItemList from '@/shared/ui/select/ItemList';
 
 export interface RetroItem {
   title: string;
