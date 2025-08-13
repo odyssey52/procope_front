@@ -84,7 +84,7 @@ const TaskCard = ({
         </TagBox>
         <TextWrapper>
           <Text variant="heading_18" color="secondary" ellipsis>
-            {title}
+            {title || '새 카드'}
           </Text>
         </TextWrapper>
       </Top>
