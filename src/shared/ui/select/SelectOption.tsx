@@ -54,9 +54,9 @@ const Wrapper = styled.button<{ $state?: 'selected'; $width?: string; $borderRad
   align-items: center;
   padding: 8px 12px;
   user-select: none;
+  border-radius: ${({ $borderRadius }) => ($borderRadius ? `${$borderRadius}` : 'none')};
   &:hover {
     background: ${({ theme }) => theme.sementicColors.bg.tertiary_hover_pressed};
-    border-radius: ${({ $borderRadius }) => ($borderRadius ? `${$borderRadius}` : 'none')};
   }
 
   ${({ theme, $state }) => $state === 'selected' && `background: ${theme.sementicColors.bg.tertiary_hover_pressed}`};
