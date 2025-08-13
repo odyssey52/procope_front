@@ -1,21 +1,24 @@
 'use client';
 
 import useAuthStore from '@/shared/store/auth/auth';
+import { useSidePanelStore } from '@/shared/store/sidePanel/sidePanel';
 import Breadcrumbs from '@/shared/ui/breadcrumbs/Breadcrumbs';
+import SidePanel from '@/shared/ui/sidePanel/SidePanel';
 import { Client } from '@stomp/stompjs';
 import { useParams } from 'next/navigation';
 import { Suspense, useEffect, useRef, useState } from 'react';
 import SockJS from 'sockjs-client';
 import styled from 'styled-components';
 import KeepWrapper from './KeepWrapper';
-import RetroInfoWrapper from './RetroInfoWrapper';
 import ProblemWrapper from './ProblemWrapper';
-import SkeletonProblemWrapper from './SkeletonProblemWrapper';
-import SkeletonKeepWrapper from './SkeletonKeepWrapper';
 import RetroInfoSkeleton from './RetroInfoSkeleton';
+import RetroInfoWrapper from './RetroInfoWrapper';
+import SkeletonKeepWrapper from './SkeletonKeepWrapper';
+import SkeletonProblemWrapper from './SkeletonProblemWrapper';
 
 const RetroPage = () => {
   const params = useParams();
+  const { close } = useSidePanelStore();
   const { retroId, teamId } = params;
 
   const { accessToken } = useAuthStore();
@@ -73,6 +76,7 @@ const RetroPage = () => {
       if (client.current && client.current.active) {
         client.current.deactivate();
         client.current = null;
+        close();
       }
     };
   }, [accessToken, retroId]);
@@ -93,6 +97,7 @@ const RetroPage = () => {
           <ProblemWrapper retroId={retroId as string} client={client.current} />
         </Suspense>
       </Content>
+      <SidePanel />
     </Wrapper>
   );
 };
