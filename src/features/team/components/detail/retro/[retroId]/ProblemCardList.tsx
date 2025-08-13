@@ -156,7 +156,7 @@ const Wrapper = styled.div`
   flex-direction: column;
   gap: 24px;
   padding: 24px;
-  width: 100%;
+  width: fit-content;
   border-radius: 16px;
   background: ${({ theme }) => theme.sementicColors.bg.tertiary};
   height: fit-content;
@@ -199,6 +199,6 @@ const CardList = styled.div`
   gap: 16px;
 `;
 
-ProblemCardList.displayName = 'RCGWrapper';
+ProblemCardList.displayName = 'ProblemCardList';
 
 export default ProblemCardList;
