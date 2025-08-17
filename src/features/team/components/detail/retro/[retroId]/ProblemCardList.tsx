@@ -118,16 +118,16 @@ const ProblemCardList = ({ retroId, kanbanStatus, client }: ProblemCardListProps
               data.payload.length > 0 &&
               data.payload.map((item) => (
                 <TaskCard
-                  key={item.id}
+                  key={`${retroId}-PBM-${item.id}-${kanbanStatus}`}
                   onClick={() => {
                     handleSwitchCard({
-                      cardId: `${retroId}-PBM-${item.id}`,
+                      cardId: `${retroId}-PBM-${item.id}-${kanbanStatus}`,
                       content: <ProblemSidePanelContent retroId={retroId} problemId={item.id} />,
                     });
                   }}
                   tags={[
                     <Tag
-                      key={`PBMTaskCard-${item.id}`}
+                      key={`PBMTaskCard-${item.id}-${kanbanStatus}`}
                       $size="large"
                       $style="transparent"
                       $leftIcon={<IconCheckMarkRectangle color={theme.sementicColors.icon.brand} />}

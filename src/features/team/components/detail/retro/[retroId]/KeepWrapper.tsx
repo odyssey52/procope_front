@@ -109,7 +109,7 @@ const KeepWrapper = ({ retroId, client }: KeepWrapperProps) => {
                 data.payload.length > 0 &&
                 data.payload.map((item) => (
                   <TaskCard
-                    key={item.id}
+                    key={`${retroId}-KEP-${item.id}`}
                     onClick={() => {
                       handleSwitchCard({
                         cardId: `${retroId}-KEP-${item.id}`,
