@@ -5,11 +5,11 @@ import styled, { css } from 'styled-components';
 import Text from '../Text';
 import ItemList, { SelectOptionList } from './ItemList';
 
-interface SelectProps<TValue, TId = string | number> {
+interface SelectProps<TValue, TId = string> {
   label?: React.ReactNode;
   description?: React.ReactNode;
   state?: 'default' | 'error' | 'disabled';
-  width?: number;
+  width?: string;
   placeholder: string;
   value?: TValue;
   valueHandler: (value: TValue, id?: TId) => void;
@@ -17,7 +17,7 @@ interface SelectProps<TValue, TId = string | number> {
   isSelected?: (a: TValue, b?: TValue) => boolean;
 }
 
-const Select = <TValue, TId = string | number>({
+const Select = <TValue, TId = string>({
   label,
   placeholder,
   state = 'default',
@@ -81,6 +81,7 @@ const Select = <TValue, TId = string | number>({
             <ItemList<TValue, TId>
               selectOptionList={selectOptionList}
               value={value}
+              width={width}
               valueHandler={onClickItem}
               isSelected={isSelected}
             />
@@ -96,7 +97,7 @@ const Wrapper = styled.div`
   position: relative;
   display: flex;
   flex-direction: column;
-  width: fit-content;
+  width: 100%;
   gap: 8px;
 `;
 
@@ -128,14 +129,15 @@ const getSelectBoxStateStyle = {
     background-color: ${theme.sementicColors.bg.disabled};
   `,
 };
-const SelectBox = styled.button<{ $state: 'default' | 'error' | 'disabled'; $width?: number }>`
+const SelectBox = styled.button<{ $state: 'default' | 'error' | 'disabled'; $width?: string }>`
   position: relative;
   display: flex;
   justify-content: space-between;
   align-items: center;
   gap: 8px;
   max-width: 240px;
-  width: ${({ $width }) => $width ?? $width}px;
+
+  width: ${({ $width }) => $width ?? $width};
   height: 40px;
   padding: 8px 12px;
   border-radius: 8px;

@@ -111,6 +111,8 @@ const Table = <T extends Record<string, any>>({
 const Wrapper = styled.table`
   width: 100%;
   border-collapse: collapse;
+  table-layout: fixed;
+
   caption {
     position: absolute;
     width: 1px;

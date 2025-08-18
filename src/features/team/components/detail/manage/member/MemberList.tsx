@@ -13,6 +13,7 @@ import Table from '@/shared/ui/table/Table';
 import Tag from '@/shared/ui/tag/Tag';
 import TagJob, { JobType } from '@/shared/ui/tag/TagJob';
 import { useMutation } from '@tanstack/react-query';
+import Tooltip from '@/shared/ui/tooltip/Tooltip';
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import SubModal from '../SubModal';
@@ -23,15 +24,13 @@ interface MemberListProps {
 }
 
 const MemberList = ({ teamUser, teamData }: MemberListProps) => {
-  const [openExitIndex, setOpenExitIndex] = useState<number | null>(null);
   const [roles, setRoles] = useState<Record<string, 'ADMIN' | 'MANAGER' | 'MEMBER'>>({});
   const [initialRoles, setInitialRoles] = useState<Record<string, 'ADMIN' | 'MANAGER' | 'MEMBER'>>({});
   const [tooltipIndex, setTooltipIndex] = useState<number | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const title = ['참여자', '이메일', '직무', '담당업무', '참여 일자', '마지막 활성 일자', '권한', ''];
-  const width = ['8', '18', '9', '23', '11', '11', '16', '4'];
-
+  const title = ['참여자', '이메일', '직무', '담당업무', '참여 일자', '활성 일자', '권한', ''];
+  const width = ['8', '18', '9', '23', '11', '11', '16'];
   const roleInfoName = (name: string) => {
     return <TagJob type={name as JobType} />;
   };
@@ -126,7 +125,17 @@ const MemberList = ({ teamUser, teamData }: MemberListProps) => {
       key: 'email',
       title: title[1],
       width: `${width[1]}%`,
-      render: (item: ReadTeamUsersResponse['teamMember'][number]) => item.user.email,
+      render: (item: ReadTeamUsersResponse['teamMember'][number]) => (
+        <div
+          style={{
+            whiteSpace: 'nowrap',
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+          }}
+        >
+          {item.user.email}
+        </div>
+      ),
     },
     {
       key: 'job',
@@ -153,7 +162,16 @@ const MemberList = ({ teamUser, teamData }: MemberListProps) => {
       title: title[4],
       width: `${width[4]}%`,
       sortable: true,
-      icon: <IconSortArrow onClick={() => setTooltipIndex((prev) => (prev === 4 ? null : 4))} />,
+      icon: (
+        <div style={{ position: 'relative', display: 'inline-block' }}>
+          <IconSortArrow onClick={() => setTooltipIndex((prev) => (prev === 4 ? null : 4))} />
+          {tooltipIndex === 4 && (
+            <TooltipBox>
+              <Tooltip text="참여 일자 최신순" position="top" align="start" />
+            </TooltipBox>
+          )}
+        </div>
+      ),
       render: (item: ReadTeamUsersResponse['teamMember'][number]) => formatDateToDotAndSlice(item.createdAt),
     },
     {
@@ -161,7 +179,16 @@ const MemberList = ({ teamUser, teamData }: MemberListProps) => {
       title: title[5],
       width: `${width[5]}%`,
       sortable: true,
-      icon: <IconSortArrow onClick={() => setTooltipIndex((prev) => (prev === 5 ? null : 5))} />,
+      icon: (
+        <div style={{ position: 'relative', display: 'inline-block' }}>
+          <IconSortArrow onClick={() => setTooltipIndex((prev) => (prev === 5 ? null : 5))} />
+          {tooltipIndex === 5 && (
+            <TooltipBox>
+              <Tooltip text="마지막 활성 일자 최신순" position="top" align="start" />
+            </TooltipBox>
+          )}
+        </div>
+      ),
       render: (item: ReadTeamUsersResponse['teamMember'][number]) => formatDateToDotAndSlice(item.lastActiveAt),
     },
     {
@@ -173,7 +200,7 @@ const MemberList = ({ teamUser, teamData }: MemberListProps) => {
           <Select<'ADMIN' | 'MANAGER' | 'MEMBER'>
             placeholder="권한을 선택하세요"
             value={roles[item.user.id]}
-            width={222}
+            width="100%"
             valueHandler={(next) => {
               setRoles((prev) => ({
                 ...prev,
@@ -189,8 +216,8 @@ const MemberList = ({ teamUser, teamData }: MemberListProps) => {
     {
       key: 'actions',
       title: title[7],
-      width: `${width[7]}%`,
-      render: (item: ReadTeamUsersResponse['teamMember'][number], index: number) =>
+      width: '60px',
+      render: (item: ReadTeamUsersResponse['teamMember'][number]) =>
         teamData.myRole === 'ADMIN' ? (
           <>
             <MoreArea
@@ -263,4 +290,8 @@ const Count = styled.span`
   span {
     color: ${({ theme }) => theme.sementicColors.text.brand};
   }
+`;
+const TooltipBox = styled.div`
+  position: absolute;
+  top: 140%;
 `;
