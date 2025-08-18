@@ -1,6 +1,7 @@
 'use client';
 
 import { LoginSection } from '@/features/login';
+import LoginModal from '@/features/login/LoginModal';
 import { useAuth } from '@/shared/hooks/useAuth';
 import Modal from '@/shared/ui/modal/common/Modal';
 import { useRouter, useSearchParams } from 'next/navigation';
@@ -22,7 +23,7 @@ const page = () => {
 
   return (
     <Modal portalId="confirm-dialog">
-      <LoginSection />
+      <LoginModal />
     </Modal>
   );
 
