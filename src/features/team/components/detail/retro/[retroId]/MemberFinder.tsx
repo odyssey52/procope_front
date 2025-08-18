@@ -2,7 +2,6 @@
 
 import retroQueries from '@/features/team/query/retroQueries';
 import { IconSearch } from '@/shared/assets/icons/line';
-import { useClickOutside } from '@/shared/hooks/useClickOutside';
 import useDebounce from '@/shared/hooks/useDebounce';
 import { zIndex } from '@/shared/styles/mixin';
 import Placeholder from '@/shared/ui/placeholder/Placeholder';

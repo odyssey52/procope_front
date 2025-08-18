@@ -10,7 +10,7 @@ export const metadata: Metadata = {
   // <meta name="viewport" content="width=device-width, initial-scale=1" />
 };
 
-export default function RootLayout({ children }: { children: ReactNode }) {
+export default function RootLayout({ children, modal }: { children: ReactNode; modal: ReactNode }) {
   return (
     <html lang="ko">
       <head>
@@ -20,7 +20,10 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         />
       </head>
       <body>
-        <Provider>{children}</Provider>
+        <Provider>
+          {children}
+          {modal}
+        </Provider>
       </body>
     </html>
   );
