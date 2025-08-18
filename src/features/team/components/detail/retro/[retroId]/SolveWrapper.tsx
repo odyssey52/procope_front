@@ -1,27 +1,48 @@
 'use client';
 
-import PageTitle from '@/shared/ui/title/PageTitle';
+import { RetroProblemSolutionListItem } from '@/features/team/services/retroService.type';
+import { IconSend } from '@/shared/assets/icons/line';
+import MoreIndicator from '@/shared/ui/indicator/MoreIndicator';
+import Placeholder from '@/shared/ui/placeholder/Placeholder';
+import PageSubTitle from '@/shared/ui/title/PageSubTitle';
+import { useState } from 'react';
 import styled from 'styled-components';
 
-const SolveWrapper = () => {
+const SolveWrapper = ({ comments }: { comments: RetroProblemSolutionListItem[] }) => {
+  const [title, setTitle] = useState('');
   return (
     <Wrapper>
       <Head>
-        <PageTitle title="개선 방안" placeholder="제목을 작성해 주세요" />
+        <PageSubTitle first="개선방안">
+          <MoreIndicator count={comments?.length} type="transparent" />
+        </PageSubTitle>
       </Head>
+      <InputWrapper>
+        <Placeholder
+          value={title}
+          valueHandler={setTitle}
+          placeholder="개선방안 작성하기"
+          rightIcon={<IconSend size={20} />}
+        />
+      </InputWrapper>
     </Wrapper>
   );
 };
 
 const Wrapper = styled.div`
-  /* color: ${({ theme }) => theme.sementicColors.text.primary}; */
-  /* background-color: ${({ theme }) => theme.sementicColors.bg.inverse}; */
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 `;
 
 const Head = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
+`;
+
+const InputWrapper = styled.div`
+  margin-top: 16px;
 `;
 
 SolveWrapper.displayName = 'SolveWrapper';

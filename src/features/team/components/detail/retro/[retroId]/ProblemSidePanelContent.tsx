@@ -289,7 +289,7 @@ const ProblemSidePanelContent = ({ retroId, problemId }: ProblemSidePanelContent
             )}
           </ProblemInfo>
           <Divider color={theme.sementicColors.border.primary} />
-          <SolveWrapper />
+          <SolveWrapper comments={data.solutions} />
           <Divider color={theme.sementicColors.border.primary} />
           {editor && <Tiptap editor={editor} />}
         </Wrapper>
