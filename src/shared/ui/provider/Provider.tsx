@@ -15,6 +15,7 @@ queryClient.setDefaultOptions({
   queries: {
     retry: 0,
     retryDelay: 0,
+    refetchOnWindowFocus: false,
   },
   mutations: {
     retry: 0,
