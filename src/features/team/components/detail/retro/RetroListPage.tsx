@@ -83,7 +83,7 @@ type ColumnConfig = {
   render: (item: ReadRetroListItem, index: number) => React.ReactNode;
 };
 
-const RetroList = () => {
+const RetroListPage = () => {
   const router = useRouter();
   const params = useParams();
   const teamId = params.teamId as string;
@@ -261,6 +261,6 @@ const TableWrapper = styled.div`
   overflow-y: visible;
 `;
 
-RetroList.displayName = 'RetroList';
+RetroListPage.displayName = 'RetroListPage';
 
-export default RetroList;
+export default RetroListPage;

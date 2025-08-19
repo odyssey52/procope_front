@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 import LogoPlace from './login/continue/LogoPlace';
 
-const Home = () => {
+const HomePage = () => {
   const router = useRouter();
   const { accessToken, isLoading } = useAuth();
 
@@ -21,6 +21,6 @@ const Home = () => {
   return <LogoPlace />;
 };
 
-Home.displayName = 'Home';
+HomePage.displayName = 'HomePage';
 
-export default Home;
+export default HomePage;

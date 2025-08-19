@@ -1,7 +1,7 @@
 'use client';
 
-import Home from '@/features/Home';
+import HomePage from '@/features/HomePage';
 
-const page = () => <Home />;
+const page = () => <HomePage />;
 
 export default page;

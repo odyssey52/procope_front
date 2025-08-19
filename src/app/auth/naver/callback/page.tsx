@@ -1,12 +1,12 @@
 'use client';
 
-import NaverCallback from '@/features/auth/components/naver/NaverCallback';
+import NaverCallbackPage from '@/features/auth/components/naver/NaverCallbackPage';
 import { Suspense } from 'react';
 
 const page = () => {
   return (
     <Suspense fallback={<div>로딩 중...</div>}>
-      <NaverCallback />
+      <NaverCallbackPage />
     </Suspense>
   );
 };

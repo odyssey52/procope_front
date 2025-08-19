@@ -1,9 +1,9 @@
 'use client';
 
-import Login from '@/features/login/Login';
+import LoginPage from '@/features/login/LoginPage';
 
 const page = () => {
-  return <Login />;
+  return <LoginPage />;
 };
 
 page.displayName = 'page';

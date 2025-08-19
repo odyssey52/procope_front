@@ -1,8 +1,8 @@
-import TeamCreateDone from '@/features/team/components/create/done/TeamCreateDone';
+import TeamCreateDonePage from '@/features/team/components/create/done/TeamCreateDonePage';
 
 const page = async ({ params }: { params: Promise<{ code: string }> }) => {
   const { code } = await params;
-  return <TeamCreateDone code={code} />;
+  return <TeamCreateDonePage code={code} />;
 };
 
 page.displayName = 'page';

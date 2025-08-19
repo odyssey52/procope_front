@@ -1,12 +1,12 @@
 'use client';
 
-import GoogleCallback from '@/features/auth/components/google/GoogleCallback';
+import GoogleCallbackPage from '@/features/auth/components/google/GoogleCallbackPage';
 import { Suspense } from 'react';
 
 const page = () => {
   return (
     <Suspense fallback={<div>로딩 중...</div>}>
-      <GoogleCallback />
+      <GoogleCallbackPage />
     </Suspense>
   );
 };

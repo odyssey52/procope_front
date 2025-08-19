@@ -1,8 +1,8 @@
 'use client';
 
-import TeamCreate from '@/features/team/components/create/TeamCreate';
+import TeamCreatePage from '@/features/team/components/create/TeamCreatePage';
 
-const page = () => <TeamCreate />;
+const page = () => <TeamCreatePage />;
 
 page.displayName = 'page';
 
