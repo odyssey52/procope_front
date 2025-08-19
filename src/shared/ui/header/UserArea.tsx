@@ -12,6 +12,7 @@ import { ReactNode, useState } from 'react';
 import styled from 'styled-components';
 import Avatar from '../avatar/Avatar';
 import SelectOption from '../select/SelectOption';
+import { LoadingSpinner } from '../LoadingSpinner';
 
 interface UserAreaProps {
   userData: {
@@ -41,6 +42,8 @@ const UserArea = ({ userData }: UserAreaProps) => {
       });
     } catch (error) {
       handleError(error);
+    } finally {
+      setIsOpen(false);
     }
   };
 
@@ -73,7 +76,6 @@ const UserArea = ({ userData }: UserAreaProps) => {
       value: '로그아웃',
     },
   ];
-
   return (
     <Wrapper ref={ref}>
       <Avatar
@@ -84,17 +86,19 @@ const UserArea = ({ userData }: UserAreaProps) => {
       />
       {isOpen && (
         <SettingOption onClick={(e) => e.stopPropagation()} data-testid="setting-option">
-          {selectOptionList.map((value) => (
-            <div key={value.value}>
-              <SelectOption
-                leftContent={value.leftContent}
-                description={value.description}
-                onClick={() => valueHandler(value.value)}
-                display={value.value}
-              />
-              {value.size && <Line $size={value.size} />}
-            </div>
-          ))}
+          {invalidateRefreshTokenMutation.isPending && <LoadingSpinner />}
+          {!invalidateRefreshTokenMutation.isPending &&
+            selectOptionList.map((value) => (
+              <div key={value.value}>
+                <SelectOption
+                  leftContent={value.leftContent}
+                  description={value.description}
+                  onClick={() => valueHandler(value.value)}
+                  display={value.value}
+                />
+                {value.size && <Line $size={value.size} />}
+              </div>
+            ))}
         </SettingOption>
       )}
     </Wrapper>
@@ -116,7 +120,7 @@ const SettingOption = styled.div`
   background-color: white;
   border-radius: 12px;
   padding: 12px 0px;
-  ${zIndex.layer3};
+  ${zIndex.layer2};
   ${elevation.shadow4}
 `;
 

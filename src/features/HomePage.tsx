@@ -3,23 +3,24 @@
 import { useAuth } from '@/shared/hooks/useAuth';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
+import LogoPlace from './login/continue/LogoPlace';
 
-const Home = () => {
+const HomePage = () => {
   const router = useRouter();
   const { accessToken, isLoading } = useAuth();
 
   useEffect(() => {
     if (!isLoading && !accessToken) {
-      router.replace('/login');
+      window.location.href = '/login';
     }
     if (!isLoading && accessToken) {
       router.replace('/team');
     }
   }, [router, isLoading, accessToken]);
 
-  return null;
+  return <LogoPlace />;
 };
 
-Home.displayName = 'Home';
+HomePage.displayName = 'HomePage';
 
-export default Home;
+export default HomePage;

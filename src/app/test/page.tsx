@@ -2,6 +2,7 @@
 
 import { IconCheckMarkRectangle } from '@/shared/assets/icons/line';
 import useAuthStore from '@/shared/store/auth/auth';
+import Button from '@/shared/ui/button/Button';
 import Calendar from '@/shared/ui/calendar/Calendar';
 import RetroCard from '@/shared/ui/card/RetroCard';
 import TaskCard from '@/shared/ui/card/TaskCard';
@@ -10,6 +11,7 @@ import Tab2 from '@/shared/ui/tab/Tab2';
 import { JobType } from '@/shared/ui/tag/TagJob';
 import Toggle from '@/shared/ui/toggle/Toggle';
 import { CompatClient, Stomp } from '@stomp/stompjs';
+import { useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 import SockJS from 'sockjs-client';
 import styled from 'styled-components';
@@ -49,10 +51,11 @@ const mock: Mock = {
 const tagData = [{ id: 1, leftIcon: <IconCheckMarkRectangle />, label: 'PBM1' }];
 
 const page = () => {
+  const router = useRouter();
+
   const [selectedDate, setSelectedDate] = useState<string>('');
   const [isToggleChecked, setIsToggleChecked] = useState(false);
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
-
   // STOMP 웹소켓 관련 상태
   const [isConnected, setIsConnected] = useState(false);
   const [messages, setMessages] = useState<string[]>([]);
@@ -154,6 +157,20 @@ const page = () => {
 
   return (
     <PlayGround>
+      <Button
+        onClick={() => {
+          router.push('/login');
+        }}
+      >
+        login
+      </Button>
+      <Button
+        onClick={() => {
+          router.push('/interceptor');
+        }}
+      >
+        interceptor
+      </Button>
       <SegmentedTabs
         tabs={[
           { title: 'Tab1', href: '/test?v=1' },

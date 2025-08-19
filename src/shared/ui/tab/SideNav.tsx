@@ -17,8 +17,14 @@ const SideNav = ({ tabList }: SideNavProps) => {
 
 const Wrapper = styled.div`
   padding: 24px;
+  flex-shrink: 0;
+  width: 16.46%;
+  min-width: 296px;
   background-color: ${({ theme }) => theme.sementicColors.bg.inverse};
   border-right: 1px solid ${({ theme }) => theme.sementicColors.border.primary};
+  @media (max-width: 768px) {
+    display: none;
+  }
 `;
 
 SideNav.displayName = 'SideNav';

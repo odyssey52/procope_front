@@ -18,6 +18,7 @@ export const jobList = {
   영업: 'sales',
   운영: 'operations',
 } as const;
+
 export const formatDateToDotAndSlice = (date: string) => {
   return date.slice(0, 10).replace(/-/g, '.');
 };

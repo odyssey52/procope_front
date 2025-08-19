@@ -1,9 +1,9 @@
 'use clinet';
 
-import AccountSetting from '@/features/accountSetting/AccountSetting';
+import AccountSettingPage from '@/features/accountSetting/AccountSettingPage';
 
 const page = () => {
-  return <AccountSetting />;
+  return <AccountSettingPage />;
 };
 
 page.displayName = 'page';

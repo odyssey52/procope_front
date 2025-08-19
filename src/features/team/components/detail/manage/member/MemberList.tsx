@@ -1,7 +1,6 @@
 import { updateTeamUser } from '@/features/team/services/teamService';
 import * as types from '@/features/team/services/teamService.type';
 import { ReadTeamDetailResponse, ReadTeamUsersResponse } from '@/features/team/services/teamService.type';
-import { formatDateToDotAndSlice } from '@/features/team/utils/data';
 import { IconSortArrow } from '@/shared/assets/icons/line';
 import { MESSAGES } from '@/shared/constants/messages';
 import { toastActions } from '@/shared/store/modal/toast';
@@ -12,8 +11,9 @@ import Select from '@/shared/ui/select/Select';
 import Table from '@/shared/ui/table/Table';
 import Tag from '@/shared/ui/tag/Tag';
 import TagJob, { JobType } from '@/shared/ui/tag/TagJob';
+import Text from '@/shared/ui/Text';
+import { formatDateToDot } from '@/shared/utils/date';
 import { useMutation } from '@tanstack/react-query';
-import Tooltip from '@/shared/ui/tooltip/Tooltip';
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import SubModal from '../SubModal';
@@ -119,22 +119,20 @@ const MemberList = ({ teamUser, teamData }: MemberListProps) => {
       key: 'name',
       title: title[0],
       width: `${width[0]}%`,
-      render: (item: ReadTeamUsersResponse['teamMember'][number]) => item.user.name,
+      render: (item: ReadTeamUsersResponse['teamMember'][number]) => (
+        <Text variant="body_14_medium" color="secondary" ellipsis>
+          {item.user.name}
+        </Text>
+      ),
     },
     {
       key: 'email',
       title: title[1],
       width: `${width[1]}%`,
       render: (item: ReadTeamUsersResponse['teamMember'][number]) => (
-        <div
-          style={{
-            whiteSpace: 'nowrap',
-            overflow: 'hidden',
-            textOverflow: 'ellipsis',
-          }}
-        >
+        <Text variant="body_14_medium" color="secondary" ellipsis>
           {item.user.email}
-        </div>
+        </Text>
       ),
     },
     {
@@ -162,34 +160,24 @@ const MemberList = ({ teamUser, teamData }: MemberListProps) => {
       title: title[4],
       width: `${width[4]}%`,
       sortable: true,
-      icon: (
-        <div style={{ position: 'relative', display: 'inline-block' }}>
-          <IconSortArrow onClick={() => setTooltipIndex((prev) => (prev === 4 ? null : 4))} />
-          {tooltipIndex === 4 && (
-            <TooltipBox>
-              <Tooltip text="참여 일자 최신순" position="top" align="start" />
-            </TooltipBox>
-          )}
-        </div>
+      icon: <IconSortArrow onClick={() => setTooltipIndex((prev) => (prev === 4 ? null : 4))} />,
+      render: (item: ReadTeamUsersResponse['teamMember'][number]) => (
+        <Text variant="body_14_medium" color="secondary" ellipsis>
+          {formatDateToDot(item.createdAt)}
+        </Text>
       ),
-      render: (item: ReadTeamUsersResponse['teamMember'][number]) => formatDateToDotAndSlice(item.createdAt),
     },
     {
       key: 'lastActiveAt',
       title: title[5],
       width: `${width[5]}%`,
       sortable: true,
-      icon: (
-        <div style={{ position: 'relative', display: 'inline-block' }}>
-          <IconSortArrow onClick={() => setTooltipIndex((prev) => (prev === 5 ? null : 5))} />
-          {tooltipIndex === 5 && (
-            <TooltipBox>
-              <Tooltip text="마지막 활성 일자 최신순" position="top" align="start" />
-            </TooltipBox>
-          )}
-        </div>
+      icon: <IconSortArrow onClick={() => setTooltipIndex((prev) => (prev === 5 ? null : 5))} />,
+      render: (item: ReadTeamUsersResponse['teamMember'][number]) => (
+        <Text variant="body_14_medium" color="secondary" ellipsis>
+          {formatDateToDot(item.lastActiveAt)}
+        </Text>
       ),
-      render: (item: ReadTeamUsersResponse['teamMember'][number]) => formatDateToDotAndSlice(item.lastActiveAt),
     },
     {
       key: 'role',
@@ -262,12 +250,14 @@ const MemberList = ({ teamUser, teamData }: MemberListProps) => {
           </Button>
         )}
       </Top>
-      <Table
-        data={teamUser?.teamMember}
-        columns={columns}
-        keyExtractor={(item) => String(item.user.id)}
-        caption="멤버 목록"
-      />
+      <TableWrapper>
+        <Table
+          data={teamUser?.teamMember}
+          columns={columns}
+          keyExtractor={(item) => String(item.user.id)}
+          caption="멤버 목록"
+        />
+      </TableWrapper>
     </Wrapper>
   );
 };
@@ -278,6 +268,7 @@ const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
   gap: 16px;
+  flex-grow: 1;
 `;
 const Top = styled.div`
   display: flex;
@@ -291,6 +282,13 @@ const Count = styled.span`
     color: ${({ theme }) => theme.sementicColors.text.brand};
   }
 `;
+
+const TableWrapper = styled.div`
+  flex-grow: 1;
+  overflow-x: scroll;
+  overflow-y: visible;
+`;
+
 const TooltipBox = styled.div`
   position: absolute;
   top: 140%;

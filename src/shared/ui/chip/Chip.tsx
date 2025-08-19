@@ -1,3 +1,4 @@
+import { zIndex } from '@/shared/styles/mixin';
 import React from 'react';
 import styled, { css } from 'styled-components';
 
@@ -34,14 +35,14 @@ const chipStyle = (size: ChipProps['size'], disabled: ChipProps['disabled'], sel
         background: ${({ theme }) => theme.sementicColors.bg.info_subtle};
         color: ${({ theme }) => theme.sementicColors.text.info};
         border: none;
-        z-index: 1;
+        ${zIndex.layer1};
       `;
     }
     return css`
       background: ${({ theme }) => theme.sementicColors.bg.brand};
       color: ${({ theme }) => theme.sementicColors.text.inverse};
       border: none;
-      z-index: 1;
+      ${zIndex.layer1};
     `;
   }
   return css`

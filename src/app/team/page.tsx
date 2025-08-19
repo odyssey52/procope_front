@@ -1,8 +1,8 @@
 'use client';
 
-import Team from '@/features/team/components/Team';
+import TeamPage from '@/features/team/components/TeamPage';
 
-const page = () => <Team />;
+const page = () => <TeamPage />;
 
 page.displayName = 'page';
 

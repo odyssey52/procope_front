@@ -3,7 +3,14 @@
 import retroQueries from '@/features/team/query/retroQueries';
 import { deleteRetroProblem, updateRetroProblem } from '@/features/team/services/retroService';
 import { ProblemKanbanStatus, UpdateRetroProblemPayload } from '@/features/team/services/retroService.type';
-import { IconApps, IconDirectionRight1, IconLoading, IconUser } from '@/shared/assets/icons/line';
+import {
+  IconApps,
+  IconClockCircle,
+  IconDirectionRight1,
+  IconFlag,
+  IconLoading,
+  IconUser,
+} from '@/shared/assets/icons/line';
 import useApiError from '@/shared/hooks/useApiError';
 import { useClickOutside } from '@/shared/hooks/useClickOutside';
 import { useSidePanelStore } from '@/shared/store/sidePanel/sidePanel';
@@ -14,7 +21,6 @@ import TextButton from '@/shared/ui/button/TextButton';
 import Checkbox from '@/shared/ui/checkbox/Checkbox';
 import Error from '@/shared/ui/error/Error';
 import Divider from '@/shared/ui/line/Divider';
-import { LoadingSpinner } from '@/shared/ui/LoadingSpinner';
 import ItemList from '@/shared/ui/select/ItemList';
 import TagJob, { JobType } from '@/shared/ui/tag/TagJob';
 import Text from '@/shared/ui/Text';
@@ -29,7 +35,10 @@ import { useEditor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
+import CalendarArea from './CalendarArea';
 import ProblemStatusSelect from './ProblemStatusSelect';
+import SkeletonSidePanelContent from './SkeletonSidePanelContent';
+import SolveWrapper from './SolveWrapper';
 
 interface ProblemSidePanelContentProps {
   retroId: string | number;
@@ -200,9 +209,6 @@ const ProblemSidePanelContent = ({ retroId, problemId }: ProblemSidePanelContent
     };
   }, [isInitialized, data]);
 
-  if (isLoading) return <LoadingSpinner />;
-  if (!isSuccess) return <Error title="서버 에러" description="문제를 찾을 수 없습니다." />;
-
   return (
     <RefContainer ref={ref}>
       <PanelControl>
@@ -220,61 +226,83 @@ const ProblemSidePanelContent = ({ retroId, problemId }: ProblemSidePanelContent
           }
         />
       </PanelControl>
-      <Wrapper>
-        <TitleWrapper>
-          <Checkbox label={`PBM-${problemId}`} id={`PBM-${problemId}`} onClick={() => {}} checked />
-          <PageTitle title={currentTitle} setTitle={setCurrentTitle} placeholder="제목을 작성해 주세요" />
-        </TitleWrapper>
-        <ProblemInfo>
-          <ProblemInfoItem>
-            <ProblemInfoItemTitle>
-              <IconLoading size={20} color={theme.sementicColors.icon.disabled} />
-              진행상태
-            </ProblemInfoItemTitle>
-            <ProblemStatusSelect status={currentKanbanStatus} onChange={handleChangeKanbanStatus} />
-          </ProblemInfoItem>
-          <ProblemInfoItem>
-            <ProblemInfoItemTitle>
-              <IconApps size={20} color={theme.sementicColors.icon.disabled} />
-              카테고리
-            </ProblemInfoItemTitle>
-            <ProblemInfoItemContent>
-              <TagJob type={data.userRole as JobType} bgColor={theme.sementicColors.bg.tertiary_hover_pressed} />
-            </ProblemInfoItemContent>
-          </ProblemInfoItem>
-          <ProblemInfoItem>
-            <ProblemInfoItemTitle>
-              <IconUser size={20} color={theme.sementicColors.icon.disabled} />
-              만든사람
-            </ProblemInfoItemTitle>
-            <ProblemInfoItemContent>
-              <TextButton
-                $type="24"
-                leftIcon={<Avatar size={24} image={data.createUserInfo.profileImageUrl} />}
-                $clickable={false}
-              >
-                {data.createUserInfo.name}
-              </TextButton>
-            </ProblemInfoItemContent>
-          </ProblemInfoItem>
-          <ProblemInfoItem>
-            <ProblemInfoItemTitle>업데이트 날짜</ProblemInfoItemTitle>
-            <ProblemInfoItemContent>
-              <Text variant="body_16_medium" color="tertiary">
-                {formatDateToDot(data.updatedAt)}
-              </Text>
-            </ProblemInfoItemContent>
-          </ProblemInfoItem>
-        </ProblemInfo>
-        <Divider />
-        {editor && <Tiptap editor={editor} />}
-      </Wrapper>
+      {isLoading && <SkeletonSidePanelContent />}
+      {!isLoading && !isSuccess && <Error title="서버 에러" description="문제를 찾을 수 없습니다." />}
+      {!isLoading && isSuccess && (
+        <Wrapper>
+          <TitleWrapper>
+            <Checkbox label={`PBM-${problemId}`} id={`PBM-${problemId}`} onClick={() => {}} checked />
+            <PageTitle title={currentTitle} setTitle={setCurrentTitle} placeholder="제목을 작성해 주세요" />
+          </TitleWrapper>
+          <ProblemInfo>
+            <ProblemInfoItem>
+              <ProblemInfoItemTitle>
+                <IconLoading size={20} color={theme.sementicColors.icon.disabled} />
+                진행상태
+              </ProblemInfoItemTitle>
+              <ProblemStatusSelect status={currentKanbanStatus} onChange={handleChangeKanbanStatus} />
+            </ProblemInfoItem>
+            <ProblemInfoItem>
+              <ProblemInfoItemTitle>
+                <IconApps size={20} color={theme.sementicColors.icon.disabled} />
+                카테고리
+              </ProblemInfoItemTitle>
+              <ProblemInfoItemContent>
+                <TagJob type={data.userRole as JobType} bgColor={theme.sementicColors.bg.tertiary_hover_pressed} />
+              </ProblemInfoItemContent>
+            </ProblemInfoItem>
+            <ProblemInfoItem>
+              <ProblemInfoItemTitle>
+                <IconUser size={20} color={theme.sementicColors.icon.disabled} />
+                만든사람
+              </ProblemInfoItemTitle>
+              <ProblemInfoItemContent>
+                <TextButton
+                  $type="24"
+                  leftIcon={<Avatar size={24} image={data.createUserInfo.profileImageUrl} />}
+                  $clickable={false}
+                >
+                  {data.createUserInfo.name}
+                </TextButton>
+              </ProblemInfoItemContent>
+            </ProblemInfoItem>
+            <ProblemInfoItem>
+              <ProblemInfoItemTitle>
+                <IconClockCircle size={20} color={theme.sementicColors.icon.disabled} />
+                업데이트 날짜
+              </ProblemInfoItemTitle>
+              <ProblemInfoItemContent>
+                <Text variant="body_16_medium" color="tertiary">
+                  {formatDateToDot(data.updatedAt)}
+                </Text>
+              </ProblemInfoItemContent>
+            </ProblemInfoItem>
+            {currentKanbanStatus === 'OK' && (
+              <ProblemInfoItem>
+                <ProblemInfoItemTitle>
+                  <IconFlag size={20} color={theme.sementicColors.icon.disabled} />
+                  개선완료 날짜
+                </ProblemInfoItemTitle>
+                {/* 추후 개선완료 날짜 수정 기능 추가 */}
+                <CalendarArea selectedDate={formatDateToDot(data.updatedAt)} onChange={() => {}} />
+              </ProblemInfoItem>
+            )}
+          </ProblemInfo>
+          <Divider color={theme.sementicColors.border.primary} />
+          <SolveWrapper comments={data.solutions} />
+          <Divider color={theme.sementicColors.border.primary} />
+          {editor && <Tiptap editor={editor} />}
+        </Wrapper>
+      )}
     </RefContainer>
   );
 };
 
 const RefContainer = styled.div`
   position: relative;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
 `;
 
 const Wrapper = styled.div`

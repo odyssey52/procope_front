@@ -10,7 +10,7 @@ export interface SelectOptionProps {
   state?: 'selected';
   display: React.ReactNode; // 화면 표시용 라벨
   description?: string;
-  onClick: () => void; // 클릭 핸들러
+  onClick?: () => void; // 클릭 핸들러
   width?: string;
   borderRadius?: string;
 }
@@ -26,7 +26,7 @@ const SelectOption = ({
   rightContent,
 }: SelectOptionProps) => {
   return (
-    <Wrapper $state={state} $width={width} $borderRadius={borderRadius} onClick={onClick}>
+    <Wrapper $state={state} $width={width} $borderRadius={borderRadius} onClick={onClick ?? (() => {})}>
       {leftContent && leftContent}
       {display && (
         <TextBox>
@@ -54,9 +54,9 @@ const Wrapper = styled.button<{ $state?: 'selected'; $width?: string; $borderRad
   align-items: center;
   padding: 8px 12px;
   user-select: none;
+  border-radius: ${({ $borderRadius }) => ($borderRadius ? `${$borderRadius}` : 'none')};
   &:hover {
     background: ${({ theme }) => theme.sementicColors.bg.tertiary_hover_pressed};
-    border-radius: ${({ $borderRadius }) => ($borderRadius ? `${$borderRadius}` : 'none')};
   }
 
   ${({ theme, $state }) => $state === 'selected' && `background: ${theme.sementicColors.bg.tertiary_hover_pressed}`};

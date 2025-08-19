@@ -3,7 +3,6 @@
 import { useClickOutside } from '@/shared/hooks/useClickOutside';
 import Button from '@/shared/ui/button/Button';
 import { useState } from 'react';
-import styled from 'styled-components';
 import MemberFinder from './MemberFinder';
 
 const MemberArea = ({ teamId, retroId }: { teamId: string; retroId: string }) => {
@@ -14,19 +13,14 @@ const MemberArea = ({ teamId, retroId }: { teamId: string; retroId: string }) =>
   };
 
   return (
-    <Wrapper ref={ref}>
+    <div ref={ref}>
       <Button $type="outline" pressed={isOpen} onClick={handleMemberListOpen}>
         Member
       </Button>
-      {isOpen && <MemberFinder teamId={teamId} retroId={retroId} onClose={handleMemberListOpen} />}
-    </Wrapper>
+      {isOpen && <MemberFinder teamId={teamId} retroId={retroId} />}
+    </div>
   );
 };
-
-const Wrapper = styled.div`
-  /* color: ${({ theme }) => theme.sementicColors.text.primary}; */
-  /* background-color: ${({ theme }) => theme.sementicColors.bg.inverse}; */
-`;
 
 MemberArea.displayName = 'MemberArea';
 

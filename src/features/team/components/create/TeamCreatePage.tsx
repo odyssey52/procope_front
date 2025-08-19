@@ -30,7 +30,7 @@ const PATH = [
   },
 ];
 
-const TeamCreate = () => {
+const TeamCreatePage = () => {
   const TOTAL_STEP = 2;
 
   const router = useRouter();
@@ -173,6 +173,6 @@ const ControlBox = styled.div`
   gap: 12px;
   margin-top: 48px;
 `;
-TeamCreate.displayName = 'TeamCreate';
+TeamCreatePage.displayName = 'TeamCreatePage';
 
-export default TeamCreate;
+export default TeamCreatePage;

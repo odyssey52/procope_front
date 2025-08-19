@@ -148,7 +148,7 @@ export const Wrapper = styled.div`
   gap: 4px;
   border-radius: 12px;
   background: ${theme.sementicColors.bg.inverse};
-  ${zIndex.layer3};
+  ${zIndex.layer2};
   ${elevation.shadow4};
 `;
 

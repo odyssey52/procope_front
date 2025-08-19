@@ -45,6 +45,7 @@ const Wrapper = styled.div`
   align-items: center;
   justify-content: space-between;
   gap: 8px;
+  min-height: 40px;
 `;
 const TitleBox = styled.div`
   position: relative;

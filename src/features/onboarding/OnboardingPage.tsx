@@ -21,7 +21,7 @@ const ONBOARDING_CONSTANTS = {
   TOTAL_STEPS: 3,
 } as const;
 
-const Onboarding = () => {
+const OnboardingPage = () => {
   const router = useRouter();
   const [step, setStep] = useState<1 | 2 | 3 | 4>(1);
   const [jobMain, setJobMain] = useState<JobMain | null>(null);
@@ -229,6 +229,6 @@ const Percent = styled.div`
   justify-content: space-between;
 `;
 
-Onboarding.displayName = 'Onboarding';
+OnboardingPage.displayName = 'OnboardingPage';
 
-export default Onboarding;
+export default OnboardingPage;

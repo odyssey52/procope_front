@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import SkeletonTeamContents from './SkeletonTeamContents';
 import TeamContent from './TeamContents';
 
-const Team = () => {
+const TeamPage = () => {
   return (
     <HeaderLayout>
       <TeamContainer>
@@ -22,6 +22,6 @@ const TeamContainer = styled(Container)`
   padding-bottom: 80px;
 `;
 
-Team.displayName = 'Team';
+TeamPage.displayName = 'TeamPage';
 
-export default Team;
+export default TeamPage;
