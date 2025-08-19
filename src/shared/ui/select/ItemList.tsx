@@ -31,7 +31,7 @@ const ItemList = <TValue, TId = string | number>({
 }: ItemListProps<TValue, TId>) => {
   const equals = isSelected ?? ((a: TValue, b?: TValue) => a === b);
   return (
-    <Wrapper>
+    <Wrapper $width={width}>
       {selectOptionList.map((item, index) => (
         <SelectOption
           key={index}
@@ -47,9 +47,10 @@ const ItemList = <TValue, TId = string | number>({
   );
 };
 
-const Wrapper = styled.div`
+const Wrapper = styled.div<{ $width?: string }>`
   display: flex;
   flex-direction: column;
+  width: ${({ $width }) => $width ?? '100%'};
   overflow-y: auto;
   gap: 2px;
   border-radius: 8px;

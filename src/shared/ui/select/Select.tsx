@@ -75,7 +75,7 @@ const Select = <TValue, TId = string>({
               {selectedLabel}
             </Text>
           )}
-          {isOpen ? <IconDirectionUp /> : <IconDirectionDown />}
+          {isOpen ? <IconDirectionUp size={20} /> : <IconDirectionDown size={20} />}
         </SelectBox>
         {isOpen && (
           <ItemListWrapper>
@@ -144,12 +144,15 @@ const SelectBox = styled.button<{ $state: 'default' | 'error' | 'disabled'; $wid
   border-radius: 8px;
   ${({ $state }) => getSelectBoxStateStyle[$state]}
 `;
+
 const SelectBoxWrapper = styled.div`
   position: relative;
 `;
+
 const ItemListWrapper = styled.div`
   position: absolute;
   display: flex;
+  width: 100%;
   top: calc(100% + 2px);
   left: 50%;
   transform: translateX(-50%);
