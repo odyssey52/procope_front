@@ -120,7 +120,7 @@ const SettingOption = styled.div`
   background-color: white;
   border-radius: 12px;
   padding: 12px 0px;
-  ${zIndex.layer3};
+  ${zIndex.layer2};
   ${elevation.shadow4}
 `;
 

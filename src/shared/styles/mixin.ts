@@ -9,10 +9,10 @@ export const zIndex = {
     z-index: 10;
   `,
   layer3: css`
-    z-index: 100;
+    z-index: 100; // modalLayout
   `,
   layer4: css`
-    z-index: 1000;
+    z-index: 1000; // modalLayout 안에 들어가는 content
   `,
   gnb: css`
     z-index: 9;

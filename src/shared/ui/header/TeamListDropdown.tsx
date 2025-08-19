@@ -25,7 +25,7 @@ const TeamListDropdown = () => {
 const Wrapper = styled.div`
   position: absolute;
   top: calc(100% + 4px);
-  ${zIndex.layer3};
+  ${zIndex.layer2};
 `;
 
 const LoadingContainer = styled.div`

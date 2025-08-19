@@ -63,7 +63,7 @@ const Wrapper = styled.div`
     0px 2px 4px 0px rgba(0, 0, 0, 0.16),
     0px 0px 2px 0px rgba(0, 0, 0, 0.12);
 
-  ${zIndex.layer3};
+  ${zIndex.layer2};
 `;
 
 const Content = styled.div`

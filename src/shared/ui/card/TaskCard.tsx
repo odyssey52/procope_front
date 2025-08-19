@@ -1,6 +1,7 @@
 'use client';
 
 import { IconChat01, IconClockCircle, IconFlag, IconMenuCircleVertical } from '@/shared/assets/icons/line';
+import { zIndex } from '@/shared/styles/mixin';
 import { theme } from '@/shared/styles/theme';
 import { formatDateToDot } from '@/shared/utils/date';
 import React, { useState } from 'react';
@@ -192,7 +193,7 @@ const MenuDropdown = styled.div`
   border-radius: 8px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   min-width: 160px;
-  z-index: 10;
+  ${zIndex.layer1};
 `;
 
 const Menu = styled.div`

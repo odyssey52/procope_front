@@ -1,4 +1,5 @@
 import { IconDirectionDown, IconDirectionUp } from '@/shared/assets/icons/line';
+import { zIndex } from '@/shared/styles/mixin';
 import { theme } from '@/shared/styles/theme';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import styled, { css } from 'styled-components';
@@ -152,7 +153,7 @@ const ItemListWrapper = styled.div`
   top: calc(100% + 2px);
   left: 50%;
   transform: translateX(-50%);
-  z-index: 1;
+  ${zIndex.layer1};
 `;
 
 Select.displayName = 'Select';
