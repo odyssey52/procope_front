@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import HeroSection from './HeroSection';
 import LoginSection from './LoginSection';
 
-const Login = () => {
+const LoginPage = () => {
   return (
     <Wrapper>
       <Content>
@@ -29,6 +29,6 @@ const Content = styled.div`
   padding: 24px 0 24px 24px;
 `;
 
-export default Login;
+export default LoginPage;
 
-Login.displayName = 'Login';
+LoginPage.displayName = 'LoginPage';

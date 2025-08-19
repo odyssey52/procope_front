@@ -1,15 +1,16 @@
 import { IconDirectionDown, IconDirectionUp } from '@/shared/assets/icons/line';
+import { zIndex } from '@/shared/styles/mixin';
 import { theme } from '@/shared/styles/theme';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import styled, { css } from 'styled-components';
 import Text from '../Text';
 import ItemList, { SelectOptionList } from './ItemList';
 
-interface SelectProps<TValue, TId = string | number> {
+interface SelectProps<TValue, TId = string> {
   label?: React.ReactNode;
   description?: React.ReactNode;
   state?: 'default' | 'error' | 'disabled';
-  width?: number;
+  width?: string;
   placeholder: string;
   value?: TValue;
   valueHandler: (value: TValue, id?: TId) => void;
@@ -17,7 +18,7 @@ interface SelectProps<TValue, TId = string | number> {
   isSelected?: (a: TValue, b?: TValue) => boolean;
 }
 
-const Select = <TValue, TId = string | number>({
+const Select = <TValue, TId = string>({
   label,
   placeholder,
   state = 'default',
@@ -74,13 +75,14 @@ const Select = <TValue, TId = string | number>({
               {selectedLabel}
             </Text>
           )}
-          {isOpen ? <IconDirectionUp /> : <IconDirectionDown />}
+          {isOpen ? <IconDirectionUp size={20} /> : <IconDirectionDown size={20} />}
         </SelectBox>
         {isOpen && (
           <ItemListWrapper>
             <ItemList<TValue, TId>
               selectOptionList={selectOptionList}
               value={value}
+              width={width}
               valueHandler={onClickItem}
               isSelected={isSelected}
             />
@@ -96,7 +98,7 @@ const Wrapper = styled.div`
   position: relative;
   display: flex;
   flex-direction: column;
-  width: fit-content;
+  width: 100%;
   gap: 8px;
 `;
 
@@ -128,29 +130,33 @@ const getSelectBoxStateStyle = {
     background-color: ${theme.sementicColors.bg.disabled};
   `,
 };
-const SelectBox = styled.button<{ $state: 'default' | 'error' | 'disabled'; $width?: number }>`
+const SelectBox = styled.button<{ $state: 'default' | 'error' | 'disabled'; $width?: string }>`
   position: relative;
   display: flex;
   justify-content: space-between;
   align-items: center;
   gap: 8px;
   max-width: 240px;
-  width: ${({ $width }) => $width ?? $width}px;
+
+  width: ${({ $width }) => $width ?? $width};
   height: 40px;
   padding: 8px 12px;
   border-radius: 8px;
   ${({ $state }) => getSelectBoxStateStyle[$state]}
 `;
+
 const SelectBoxWrapper = styled.div`
   position: relative;
 `;
+
 const ItemListWrapper = styled.div`
   position: absolute;
   display: flex;
+  width: 100%;
   top: calc(100% + 2px);
   left: 50%;
   transform: translateX(-50%);
-  z-index: 1;
+  ${zIndex.layer1};
 `;
 
 Select.displayName = 'Select';

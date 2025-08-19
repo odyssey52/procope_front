@@ -109,12 +109,10 @@ const Wrapper = styled.div<AvatarStyledProps>`
       background-color: transparent;
       background-image: url(${$image});
     `};
-  ${({ $image, $nickname, $type }) =>
+  ${({ $image, $nickname }) =>
     !$image &&
     !$nickname &&
-    $type !== 'initial' &&
     css`
-      background-color: transparent;
       background-image: url('/assets/icons/graphic/profile/empty.svg');
     `};
   ${({ $isOnline }) =>

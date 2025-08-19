@@ -25,7 +25,7 @@ interface ProblemCardListProps {
   kanbanStatus: ProblemKanbanStatus;
   client: Client | null;
 }
-// key 는 ProblemKanbanStatus 와 동일
+
 export const KANBAN_STATUS = {
   RCG: {
     title: '개선점',
@@ -46,6 +46,7 @@ const ProblemCardList = ({ retroId, kanbanStatus, client }: ProblemCardListProps
   const subscriptionRef = useRef<any>(null);
   const queryClient = useQueryClient();
   const handleSwitchCard = useSidePanelStore((state) => state.handleSwitchCard);
+
   const { data, isSuccess } = useSuspenseQuery({
     ...retroQueries.readRetroProblemList({ retroId, kanbanStatus }),
   });
@@ -117,16 +118,16 @@ const ProblemCardList = ({ retroId, kanbanStatus, client }: ProblemCardListProps
               data.payload.length > 0 &&
               data.payload.map((item) => (
                 <TaskCard
-                  key={item.id}
+                  key={`${retroId}-PBM-${item.id}-${kanbanStatus}`}
                   onClick={() => {
                     handleSwitchCard({
-                      cardId: `${retroId}-PBM-${item.id}`,
+                      cardId: `${retroId}-PBM-${item.id}-${kanbanStatus}`,
                       content: <ProblemSidePanelContent retroId={retroId} problemId={item.id} />,
                     });
                   }}
                   tags={[
                     <Tag
-                      key={`PBMTastCard-${item.id}`}
+                      key={`PBMTaskCard-${item.id}-${kanbanStatus}`}
                       $size="large"
                       $style="transparent"
                       $leftIcon={<IconCheckMarkRectangle color={theme.sementicColors.icon.brand} />}
@@ -156,7 +157,7 @@ const Wrapper = styled.div`
   flex-direction: column;
   gap: 24px;
   padding: 24px;
-  width: 100%;
+  width: fit-content;
   border-radius: 16px;
   background: ${({ theme }) => theme.sementicColors.bg.tertiary};
   height: fit-content;
@@ -199,6 +200,6 @@ const CardList = styled.div`
   gap: 16px;
 `;
 
-ProblemCardList.displayName = 'RCGWrapper';
+ProblemCardList.displayName = 'ProblemCardList';
 
 export default ProblemCardList;

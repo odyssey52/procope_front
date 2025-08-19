@@ -1,5 +1,6 @@
 'use client';
 
+import { zIndex } from '@/shared/styles/mixin';
 import { ChangeEvent, ReactNode, useRef } from 'react';
 import styled, { css } from 'styled-components';
 import Description from '../description/Description';
@@ -97,7 +98,7 @@ const InputWrapper = styled.div<{ $isValid?: boolean; $disabled?: boolean }>`
       border: 1px solid ${theme.sementicColors.border.disabled};
       background: ${theme.sementicColors.bg.disabled};
       cursor: not-allowed;
-      z-index: 1;
+      ${zIndex.layer1};
     `}
 
   ${({ $isValid, $disabled, theme }) =>

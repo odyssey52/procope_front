@@ -27,4 +27,5 @@ const Wrapper = styled.div`
   width: 100%;
   padding: 48px 0px;
   background-color: ${({ theme }) => theme.sementicColors.bg.tertiary};
+  overflow-y: auto;
 `;

@@ -75,7 +75,7 @@ const Table = <T extends Record<string, any>>({
         </tr>
       </thead>
 
-      {isEmpty && !isLoading && (
+      {!isError && isEmpty && !isLoading && (
         <tbody>
           <tr>
             <EmptyBox colSpan={columns.length}>{emptyNode}</EmptyBox>
@@ -109,8 +109,12 @@ const Table = <T extends Record<string, any>>({
 };
 
 const Wrapper = styled.table`
+  position: relative;
+  display: block;
   width: 100%;
   border-collapse: collapse;
+  table-layout: fixed;
+
   caption {
     position: absolute;
     width: 1px;
@@ -129,6 +133,8 @@ const TableHeader = styled.th<{ $width?: string; $minWidth?: string; $maxWidth?:
 
 const TableCell = styled.td<{ $width?: string; $minWidth?: string; $maxWidth?: string }>`
   vertical-align: middle;
+  ${({ theme }) => theme.fontStyle.body_14_medium};
+  color: ${({ theme }) => theme.sementicColors.text.primary};
 `;
 
 const EmptyBox = styled.td`

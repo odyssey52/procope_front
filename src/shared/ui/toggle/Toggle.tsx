@@ -34,6 +34,7 @@ const toggleStyle = (disabled: ToggleProps['disabled'], checked: ToggleProps['ch
     `;
   }
 };
+
 const toggleSize = {
   20: css`
     width: 34px;
@@ -46,6 +47,7 @@ const toggleSize = {
     border-radius: 12px;
   `,
 };
+
 const Toggle = ({
   size = 20,
   label,
@@ -95,7 +97,6 @@ const Circle = styled.span<{ $checked?: boolean; $size: 20 | 24 }>`
   display: block;
   aspect-ratio: 1/1;
   height: calc(100% - 4px);
-  /* box-shadow: 0px 0px 0.5px rgba(0, 0, 0, 0.12); */
   box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.16);
   border-radius: 50%;
   background-color: ${({ theme }) => theme.sementicColors.bg.inverse};

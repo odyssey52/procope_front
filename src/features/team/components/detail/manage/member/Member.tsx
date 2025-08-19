@@ -1,12 +1,13 @@
+import teamQueries from '@/features/team/query/teamQueries';
+import { MESSAGES } from '@/shared/constants/messages';
+import { toastActions } from '@/shared/store/modal/toast';
 import Breadcrumbs from '@/shared/ui/breadcrumbs/Breadcrumbs';
 import Button from '@/shared/ui/button/Button';
+import Text from '@/shared/ui/Text';
 import PageTitle from '@/shared/ui/title/PageTitle';
+import { useQuery } from '@tanstack/react-query';
 import { useParams } from 'next/navigation';
 import styled from 'styled-components';
-import { useQuery } from '@tanstack/react-query';
-import teamQueries from '@/features/team/query/teamQueries';
-import { toastActions } from '@/shared/store/modal/toast';
-import { MESSAGES } from '@/shared/constants/messages';
 import MemberList from './MemberList';
 
 const Member = () => {
@@ -72,7 +73,9 @@ const Member = () => {
               </Icon>
               <TeamText>
                 <Title>{teamData?.name}</Title>
-                <TeamLink>{inviteUrl}</TeamLink>
+                <Text variant="body_16_medium" color="secondary" ellipsis>
+                  {inviteUrl}
+                </Text>
               </TeamText>
             </TeamInfo>
             <Button onClick={() => copyToLink(inviteUrl)}>링크 복사</Button>
@@ -87,6 +90,8 @@ const Member = () => {
 export default Member;
 
 const Wrapper = styled.div`
+  position: relative;
+  display: flex;
   width: 100%;
   background-color: ${({ theme }) => theme.sementicColors.bg.inverse};
   padding: 24px;
@@ -97,6 +102,7 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   gap: 40px;
+  flex-grow: 1;
 `;
 const TopSection = styled.div`
   display: flex;
@@ -116,6 +122,7 @@ const BottomSection = styled.div`
   display: flex;
   flex-direction: column;
   gap: 32px;
+  flex-grow: 1;
 `;
 const Team = styled.div`
   width: 100%;
@@ -139,8 +146,9 @@ const Icon = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  border-radius: 9999px;
+  border-radius: 50%;
   background-color: ${({ theme }) => theme.sementicColors.bg.info_subtle};
+  flex-shrink: 0;
 `;
 const TeamText = styled.div`
   height: 52px;
@@ -148,11 +156,8 @@ const TeamText = styled.div`
   flex-direction: column;
   gap: 2px;
 `;
+
 const Title = styled.div`
   ${({ theme }) => theme.fontStyle.heading_18}
-  color: ${({ theme }) => theme.sementicColors.text.primary}
-`;
-const TeamLink = styled.div`
-  ${({ theme }) => theme.fontStyle.body_16_medium}
-  color: ${({ theme }) => theme.sementicColors.text.secondary}
+  color: ${({ theme }) => theme.sementicColors.text.primary};
 `;

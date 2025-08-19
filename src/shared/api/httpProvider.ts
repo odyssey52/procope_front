@@ -49,19 +49,19 @@ export default class HTTPProvider {
             const newAccessToken = refreshResponse.data;
 
             useAuthStore.getState().setAccessToken(newAccessToken);
-            error.config.headers.Authorization = `Bearer ${newAccessToken}`;
-            return this.client.request(error.config);
+
+            const newConfig = { ...error.config };
+            newConfig.headers.Authorization = `Bearer ${newAccessToken}`;
+            return this.client.request(newConfig);
           } catch (refreshError) {
             if (axios.isAxiosError(refreshError)) {
-              toastActions.open({
-                title: MESSAGES.ERROR.UNAUTHORIZED,
-                description: MESSAGES.ERROR.UNAUTHORIZED_DESCRIPTION,
-                state: 'error',
-              });
               await axios.get(`${USER_URL}auth/invalidate`, { withCredentials: true });
               await handleLogout({ savePreviousPath: true });
             } else {
-              console.error('예상치 못한 에러 발생:', refreshError);
+              toastActions.open({
+                title: MESSAGES.ERROR.UNKNOWN_ERROR,
+                state: 'error',
+              });
             }
             return Promise.reject(refreshError);
           }

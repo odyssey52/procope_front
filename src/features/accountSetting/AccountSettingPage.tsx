@@ -14,7 +14,7 @@ const selectOptionList = [
   { value: '소통 설정', label: '소통 설정' },
 ];
 
-const AccountSetting = () => {
+const AccountSettingPage = () => {
   const { user, isLoading } = useAuth();
   const [page, setPage] = useState<'프로필 설정' | '소통 설정'>('프로필 설정');
 
@@ -55,8 +55,6 @@ const AccountSetting = () => {
   );
 };
 
-export default AccountSetting;
-
 const Wrapper = styled.div`
   max-width: 908px;
   margin: 0 auto;
@@ -92,4 +90,7 @@ const Section = styled.div`
 const Content = styled.div`
   flex-grow: 1;
 `;
-AccountSetting.displayName = 'AccountSetting';
+
+AccountSettingPage.displayName = 'AccountSettingPage';
+
+export default AccountSettingPage;

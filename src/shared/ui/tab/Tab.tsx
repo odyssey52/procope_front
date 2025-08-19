@@ -46,7 +46,6 @@ const Wrapper = styled.div<{ $selected?: boolean }>`
   position: relative;
   display: flex;
   flex-direction: column;
-  min-width: 268px;
   gap: 4px;
   cursor: pointer;
 `;

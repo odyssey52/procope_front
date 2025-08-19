@@ -106,7 +106,6 @@ const Toast = () => {
 };
 
 const ToastBox = styled(motion.div)<{ $isOneLine: boolean }>`
-  ${zIndex.layer3};
   position: fixed;
   display: flex;
   gap: 8px;
@@ -119,7 +118,8 @@ const ToastBox = styled(motion.div)<{ $isOneLine: boolean }>`
   border: 1px solid #f2f2f2;
   background: linear-gradient(180deg, rgba(249, 250, 251, 0.5) 0%, rgba(229, 234, 239, 0.5) 100%);
 
-  /* glassEffect */
+  ${zIndex.layer4};
+
   box-shadow: 4px 4px 54px 0px rgba(1, 39, 88, 0.05);
   backdrop-filter: blur(6px);
 `;

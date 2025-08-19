@@ -11,7 +11,7 @@ import { useRouter } from 'next/navigation';
 import styled from 'styled-components';
 import { MESSAGES } from '@/shared/constants/messages';
 
-const TeamCreateDone = ({ code }: { code: string }) => {
+const TeamCreateDonePage = ({ code }: { code: string }) => {
   const inviteUrl = `${process.env.NEXT_PUBLIC_APP_URL}team/invite/${code}`;
   const router = useRouter();
 
@@ -85,6 +85,6 @@ const ShareBox = styled.div`
 const StartButton = styled(Button)`
   align-self: end;
 `;
-TeamCreateDone.displayName = 'TeamCreateDone';
+TeamCreateDonePage.displayName = 'TeamCreateDonePage';
 
-export default TeamCreateDone;
+export default TeamCreateDonePage;

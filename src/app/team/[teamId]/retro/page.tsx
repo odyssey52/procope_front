@@ -1,7 +1,7 @@
-import RetroList from '@/features/team/components/detail/retro/RetroList';
+import RetroListPage from '@/features/team/components/detail/retro/RetroListPage';
 
 const page = () => {
-  return <RetroList />;
+  return <RetroListPage />;
 };
 
 page.displayName = 'page';

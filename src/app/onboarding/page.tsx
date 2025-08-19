@@ -1,8 +1,8 @@
 'use client';
 
-import Onboarding from '@/features/onboarding/Onboarding';
+import OnboardingPage from '@/features/onboarding/OnboardingPage';
 
-const page = () => <Onboarding />;
+const page = () => <OnboardingPage />;
 
 page.displayName = 'page';
 

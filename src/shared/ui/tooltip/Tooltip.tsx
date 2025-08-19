@@ -1,3 +1,4 @@
+import { zIndex } from '@/shared/styles/mixin';
 import styled from 'styled-components';
 
 interface TooltipProps {
@@ -67,7 +68,7 @@ const Wrapper = styled.div<{ position?: string; align?: string }>`
   justify-content: center;
   padding: 8px;
   border-radius: 4px;
-  z-index: 9999;
+  ${zIndex.layer2};
   ${({ align }) =>
     align === 'start'
       ? 'transform: translateX(0);'
