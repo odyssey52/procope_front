@@ -203,15 +203,17 @@ const RetroList = () => {
             <Button onClick={addRetro}>추가</Button>
           </PageSubTitle>
         )}
-        <Table
-          data={data}
-          columns={columns}
-          keyExtractor={(item) => item.title}
-          caption="회고 목록"
-          isError={isError}
-          isLoading={isLoading}
-          emptyNode={<Empty title={EMPTY_TITLE} description={EMPTY_DESCRIPTION} onClick={addRetro} />}
-        />
+        <TableWrapper>
+          <Table
+            data={data}
+            columns={columns}
+            keyExtractor={(item) => item.title}
+            caption="회고 목록"
+            isError={isError}
+            isLoading={isLoading}
+            emptyNode={<Empty title={EMPTY_TITLE} description={EMPTY_DESCRIPTION} onClick={addRetro} />}
+          />
+        </TableWrapper>
       </Content>
     </Wrapper>
   );
@@ -231,6 +233,7 @@ const Content = styled.div`
   display: flex;
   flex-direction: column;
   gap: 16px;
+  flex-grow: 1;
 `;
 
 const Head = styled.div`
@@ -250,6 +253,12 @@ const CreatorWrapper = styled.div`
   display: flex;
   align-items: center;
   gap: 8px;
+`;
+
+const TableWrapper = styled.div`
+  flex-grow: 1;
+  overflow-x: scroll;
+  overflow-y: visible;
 `;
 
 RetroList.displayName = 'RetroList';
