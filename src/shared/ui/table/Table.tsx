@@ -75,7 +75,7 @@ const Table = <T extends Record<string, any>>({
         </tr>
       </thead>
 
-      {isEmpty && !isLoading && (
+      {!isError && isEmpty && !isLoading && (
         <tbody>
           <tr>
             <EmptyBox colSpan={columns.length}>{emptyNode}</EmptyBox>
@@ -109,6 +109,8 @@ const Table = <T extends Record<string, any>>({
 };
 
 const Wrapper = styled.table`
+  position: relative;
+  display: block;
   width: 100%;
   border-collapse: collapse;
   table-layout: fixed;
