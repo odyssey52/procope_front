@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import SelectOption from './SelectOption';
 
 export type SelectOptionItem<TValue, TId = string | number> = {
@@ -31,7 +31,7 @@ const ItemList = <TValue, TId = string | number>({
 }: ItemListProps<TValue, TId>) => {
   const equals = isSelected ?? ((a: TValue, b?: TValue) => a === b);
   return (
-    <Wrapper $width={width}>
+    <Wrapper $width={width} $listLength={selectOptionList.length}>
       {selectOptionList.map((item, index) => (
         <SelectOption
           key={index}
@@ -47,17 +47,24 @@ const ItemList = <TValue, TId = string | number>({
   );
 };
 
-const Wrapper = styled.div<{ $width?: string }>`
+const Wrapper = styled.div<{ $width?: string; $listLength?: number }>`
   display: flex;
   flex-direction: column;
   width: ${({ $width }) => $width ?? '100%'};
-  overflow-y: auto;
   gap: 2px;
   border-radius: 8px;
   justify-content: space-around;
   border: 1px solid ${({ theme }) => theme.sementicColors.border.primary};
   background: ${({ theme }) => theme.sementicColors.bg.inverse};
+  height: fit-content;
   max-height: calc(40px * 8);
+  ${({ $listLength }) =>
+    $listLength &&
+    $listLength > 8 &&
+    css`
+      overflow-y: auto;
+      overflow-x: hidden;
+    `}
   outline: none;
 
   box-shadow:
