@@ -64,7 +64,11 @@ export function AuthGuard({ children }: { children: React.ReactNode }) {
   }, [isSuccess, isError, accessTokenWithRefreshToken, setAccessToken, accessToken]);
 
   if (isRefreshing) {
-    return <LoadingSpinner />;
+    return (
+      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+        <LoadingSpinner />
+      </div>
+    );
   }
   if (isError) {
     return null;
