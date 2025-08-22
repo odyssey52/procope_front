@@ -64,7 +64,9 @@ const authorityTag: AuthorityTag[] = [
 const MemberList = ({ teamUser, teamData }: MemberListProps) => {
   const { user } = useAuth();
   const userId = String(user?.userContext.id) || '';
-
+  const userRole = teamData.myRole;
+  const isAdmin = userRole === 'ADMIN';
+  console.log(teamData, teamUser);
   const [roles, setRoles] = useState<Record<string, UserRole>>({});
   const [initialRoles, setInitialRoles] = useState<Record<string, UserRole>>({});
   const [tooltipIndex, setTooltipIndex] = useState<number | null>(null);
@@ -192,7 +194,7 @@ const MemberList = ({ teamUser, teamData }: MemberListProps) => {
       title: title[6],
       width: `${width[6]}%`,
       render: (item: ReadTeamUsersResponse['teamMember'][number]) =>
-        teamData.myRole === 'ADMIN' ? (
+        isAdmin && item.teamRole !== 'ADMIN' ? (
           <Select<UserRole>
             placeholder="권한을 선택하세요"
             value={roles[item.user.id]}
@@ -214,7 +216,7 @@ const MemberList = ({ teamUser, teamData }: MemberListProps) => {
       title: title[7],
       width: '60px',
       render: (item: ReadTeamUsersResponse['teamMember'][number]) =>
-        teamData.myRole === 'ADMIN' && item.user.id !== userId ? (
+        isAdmin && item.user.id !== userId ? (
           <>
             <MoreArea
               size={36}
@@ -252,7 +254,7 @@ const MemberList = ({ teamUser, teamData }: MemberListProps) => {
         <Count>
           총 <span>{teamUser.count}</span> 명
         </Count>
-        {teamData.myRole === 'ADMIN' && (
+        {isAdmin && (
           <Button size="36" onClick={saveTeamUserHandle}>
             변경
           </Button>
