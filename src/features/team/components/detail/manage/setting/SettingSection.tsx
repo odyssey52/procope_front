@@ -112,7 +112,7 @@ const SettingSection = ({ teamData, teamId }: Props) => {
         <CardSection>
           <JobSubCard
             text="스쿼드"
-            size="small"
+            width="267px"
             icon="/assets/icons/graphic/glass/user-on.png"
             state={teamType === 'SQUAD' ? 'selected' : undefined}
             subText={'특정 목표를 바탕으로\n직무와 상관없이 제품을 만들기 위한 팀'}
@@ -120,7 +120,7 @@ const SettingSection = ({ teamData, teamId }: Props) => {
           />
           <JobSubCard
             text="기능"
-            size="small"
+            width="267px"
             icon="/assets/icons/graphic/glass/setting-on.png"
             state={teamType === 'FEATURE' ? 'selected' : undefined}
             subText={'직무를 중심으로 구성된 팀\n개발, 기획, 마케팅, 재무 등'}
@@ -168,11 +168,13 @@ const SettingSection = ({ teamData, teamId }: Props) => {
 
 export default SettingSection;
 const Container = styled.div`
-  width: 607px;
-  margin: 0 auto;
+  max-width: 607px;
+  width: 100%;
   display: flex;
   flex-direction: column;
   gap: 40px;
+  margin: 24px;
+  padding: 24px;
 `;
 const Head = styled.div`
   display: flex;
@@ -190,18 +192,19 @@ const Content = styled.div`
   gap: 24px;
 `;
 const CardSection = styled.div`
-  background-color: ${({ theme }) => theme.sementicColors.bg.inverse};
+  display: flex;
   border-radius: 16px;
   padding: 24px;
-  display: flex;
   justify-content: space-between;
+  gap: 24px;
+  background-color: ${({ theme }) => theme.sementicColors.bg.inverse};
 `;
 const TextSection = styled.div`
+  display: flex;
+  flex-direction: column;
   background-color: ${({ theme }) => theme.sementicColors.bg.inverse};
   border-radius: 16px;
   padding: 24px;
-  display: flex;
-  flex-direction: column;
   gap: 32px;
 `;
 const ButtonSection = styled.div`

@@ -1,13 +1,15 @@
 'use client';
 
-import { useAuth } from '@/shared/hooks/useAuth';
+import { useUserInfo } from '@/shared/hooks/useUserInfo';
+import useAuthStore from '@/shared/store/auth/auth';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 import LogoPlace from './login/continue/LogoPlace';
 
 const HomePage = () => {
   const router = useRouter();
-  const { accessToken, isLoading } = useAuth();
+  const { accessToken } = useAuthStore();
+  const { isLoading } = useUserInfo();
 
   useEffect(() => {
     if (!isLoading && !accessToken) {

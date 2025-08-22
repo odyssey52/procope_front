@@ -10,10 +10,9 @@ import SegmentedTabs from '@/shared/ui/tab/SegmentedTabs';
 import Tab2 from '@/shared/ui/tab/Tab2';
 import { JobType } from '@/shared/ui/tag/TagJob';
 import Toggle from '@/shared/ui/toggle/Toggle';
-import { CompatClient, Stomp } from '@stomp/stompjs';
+import { CompatClient } from '@stomp/stompjs';
 import { useRouter } from 'next/navigation';
-import { useEffect, useRef, useState } from 'react';
-import SockJS from 'sockjs-client';
+import { useRef, useState } from 'react';
 import styled from 'styled-components';
 
 interface Mock {
@@ -63,90 +62,6 @@ const page = () => {
   const { accessToken } = useAuthStore();
   const client = useRef<CompatClient | null>(null);
 
-  const connectHandler = () => {
-    const socket = new SockJS(`http://192.168.0.17:8081/websocket?token=${accessToken}&retroId=1`);
-
-    client.current = Stomp.over(socket);
-
-    console.log('액세스 토큰:', accessToken);
-    client.current.connect(
-      {
-        Authorization: `Bearer ${accessToken}`,
-        'Content-Type': 'application/json',
-      },
-      () => {
-        console.log('✅ STOMP 연결 성공');
-        setIsConnected(true);
-        setMessages((prev) => [...prev, '웹소켓 연결 성공!']);
-
-        // 구독 설정
-        console.log('구독 설정 중: /topic/goodThing');
-        client.current?.subscribe('/topic/goodThing', (message) => {
-          console.log('📨 메시지 수신:', message.body);
-          setMessages((prev) => [...prev, `수신: ${message.body}`]);
-        });
-      },
-      (error: any) => {
-        console.error('❌ STOMP 에러:', error);
-        setIsConnected(false);
-        setMessages((prev) => [...prev, `연결 에러: ${error}`]);
-      },
-    );
-  };
-
-  useEffect(() => {
-    connectHandler();
-
-    // 컴포넌트 언마운트 시 연결 해제
-    return () => {
-      if (client.current && client.current.connected) {
-        client.current.disconnect();
-      }
-    };
-  }, []);
-
-  // 연결/해제 토글 함수
-  const toggleConnection = () => {
-    if (client.current) {
-      if (isConnected) {
-        client.current.disconnect();
-      } else {
-        connectHandler();
-      }
-    }
-  };
-
-  // 테스트 메시지 전송
-  const sendTestMessage = () => {
-    if (client.current && client.current.connected) {
-      client.current.send(
-        '/app/goodThing',
-        {
-          Authorization: `Bearer ${accessToken}`,
-          'Content-Type': 'application/json',
-        },
-        JSON.stringify({
-          action: 'DETAIL',
-          payload: {
-            retroId: 1,
-            id: 3,
-          },
-        }),
-      );
-      setMessages((prev) => [
-        ...prev,
-        `전송: ${JSON.stringify({
-          action: 'DETAIL',
-          payload: {
-            retroId: 1,
-            id: 3,
-          },
-        })}`,
-      ]);
-      setTestMessage('');
-    }
-  };
-
   const handleOpenCalendar = () => {
     setIsCalendarOpen(!isCalendarOpen);
   };
@@ -186,51 +101,6 @@ const page = () => {
           <StatusIndicator connected={isConnected.toString()} />
           <span>연결 상태: {isConnected ? '연결됨' : '연결 안됨'}</span>
         </ConnectionStatus>
-
-        <ButtonGroup>
-          <button
-            type="button"
-            onClick={toggleConnection}
-            style={{
-              backgroundColor: isConnected ? '#ff4444' : '#44aa44',
-              color: 'white',
-              padding: '8px 16px',
-              border: 'none',
-              borderRadius: '4px',
-              cursor: 'pointer',
-            }}
-          >
-            {isConnected ? '연결 해제' : '연결'}
-          </button>
-        </ButtonGroup>
-
-        <MessageSection>
-          <h3>메시지 전송</h3>
-          <MessageInput>
-            <input
-              type="text"
-              value={testMessage}
-              onChange={(e) => setTestMessage(e.target.value)}
-              placeholder="전송할 메시지를 입력하세요"
-              onKeyPress={(e) => e.key === 'Enter' && sendTestMessage()}
-            />
-            <button
-              type="button"
-              onClick={sendTestMessage}
-              disabled={!isConnected || !testMessage.trim()}
-              style={{
-                backgroundColor: isConnected && testMessage.trim() ? '#007bff' : '#ccc',
-                color: 'white',
-                padding: '8px 16px',
-                border: 'none',
-                borderRadius: '4px',
-                cursor: isConnected && testMessage.trim() ? 'pointer' : 'not-allowed',
-              }}
-            >
-              전송
-            </button>
-          </MessageInput>
-        </MessageSection>
 
         <MessageLog>
           <h3>메시지 로그</h3>

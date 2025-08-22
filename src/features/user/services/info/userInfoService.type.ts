@@ -1,4 +1,3 @@
-import { JobSub } from '@/features/onboarding/SecondStep';
 import { Preference } from '@/features/onboarding/ThirdStep';
 
 export type UserContext = {

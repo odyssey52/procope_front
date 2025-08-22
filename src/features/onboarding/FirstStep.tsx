@@ -5,6 +5,7 @@ import { JOB_MAIN_IMG_LIST } from '@/shared/constants/stepper';
 import propertiesRolesQueries from '@/features/properties/query/roles/propertiesRolesQueries';
 import { useQuery } from '@tanstack/react-query';
 import styled from 'styled-components';
+import { LoadingSpinner } from '@/shared/ui/LoadingSpinner';
 
 export interface JobMain {
   id: number;
@@ -17,7 +18,11 @@ interface Props {
 }
 
 const FirstStep = ({ jobMain, jobMainHandler, onNext }: Props) => {
-  const { data: roles, isSuccess } = useQuery({
+  const {
+    data: roles,
+    isSuccess,
+    isLoading,
+  } = useQuery({
     ...propertiesRolesQueries.readPropertiesRoles,
     select: (data) => data.roles.sort((a, b) => a.id - b.id),
   });
@@ -31,6 +36,7 @@ const FirstStep = ({ jobMain, jobMainHandler, onNext }: Props) => {
         </Text>
       </TextBox>
       <JobCardBox>
+        {isLoading && <LoadingSpinner />}
         {isSuccess &&
           roles.map(({ id, name }) => {
             return (

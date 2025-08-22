@@ -1,8 +1,8 @@
 'use client';
 
 import { updateUserInfo } from '@/features/user/services/info/userInfoService';
-import { MESSAGES } from '@/shared/constants/messages';
 import { TENDENCY_TITLE_LIST } from '@/shared/constants/stepper';
+import useApiError from '@/shared/hooks/useApiError';
 import { toastActions } from '@/shared/store/modal/toast';
 import Container from '@/shared/ui/Container';
 import Text from '@/shared/ui/Text';
@@ -23,6 +23,8 @@ const ONBOARDING_CONSTANTS = {
 
 const OnboardingPage = () => {
   const router = useRouter();
+  const { handleError } = useApiError();
+
   const [step, setStep] = useState<1 | 2 | 3 | 4>(1);
   const [jobMain, setJobMain] = useState<JobMain | null>(null);
   const [jobSub, setJobSub] = useState<JobSub[]>([]);
@@ -30,14 +32,6 @@ const OnboardingPage = () => {
 
   const updateUserInfoMutation = useMutation({
     mutationFn: updateUserInfo,
-    onError: (error) => {
-      toastActions.open({
-        state: 'error',
-        title: MESSAGES.TITLE_SAVE_FAILED,
-        description: MESSAGES.DESCRIPTION_SAVE_FAILED,
-      });
-      console.error('Failed to save user info:', error);
-    },
   });
 
   const isValidPreferences = useCallback(
@@ -122,8 +116,8 @@ const OnboardingPage = () => {
       } else {
         router.replace('/team');
       }
-    } catch {
-      // 에러 처리는 mutation의 onError에서 처리
+    } catch (error) {
+      handleError(error);
     }
   }, [jobMain, jobSub, preferences, isValidPreferences, updateUserInfoMutation, router]);
 
@@ -189,7 +183,7 @@ const OnboardingPage = () => {
         {step !== 4 && (
           <Percent>
             <ProgressBar rate={progressRate} />
-            <Text variant="caption_12_regular" color="secondary">
+            <Text variant="caption_12_regular" color="secondary" nowrap>
               {step}/{ONBOARDING_CONSTANTS.TOTAL_STEPS}단계
             </Text>
           </Percent>
@@ -211,13 +205,11 @@ const Content = styled.div<{ step: number }>`
   display: flex;
   max-width: 608px;
   width: 100%;
-  min-height: 100vh;
+  height: 100vh;
   ${({ step }) =>
     step === 2 &&
     css`
-      @media (max-height: 1400px) {
-        margin: 12vh 0;
-      }
+      padding: 12vh 0;
     `}
   flex-direction: column;
   justify-content: center;

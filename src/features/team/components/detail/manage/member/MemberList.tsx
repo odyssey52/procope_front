@@ -1,9 +1,25 @@
+import {
+  AUTHORITY_TAG,
+  MEMBERLIST_TABLE_TITLE,
+  MEMBERLIST_TABLE_WIDTH,
+  SELECT_AUTHORITY_TAG,
+} from '@/features/team/const/member';
+import teamQueries from '@/features/team/query/teamQueries';
 import { updateTeamUser } from '@/features/team/services/teamService';
-import * as types from '@/features/team/services/teamService.type';
-import { ReadTeamDetailResponse, ReadTeamUsersResponse } from '@/features/team/services/teamService.type';
+import {
+  ReadTeamDetailResponse,
+  ReadTeamUsersResponse,
+  TeamMember,
+  UpdateTeamUserParams,
+  UpdateTeamUserPayload,
+} from '@/features/team/services/teamService.type';
+import { FieldInfo } from '@/features/user/services/info/userInfoService.type';
 import { IconSortArrow } from '@/shared/assets/icons/line';
 import { MESSAGES } from '@/shared/constants/messages';
+import useApiError from '@/shared/hooks/useApiError';
+import { useUserInfo } from '@/shared/hooks/useUserInfo';
 import { toastActions } from '@/shared/store/modal/toast';
+import { UserRole } from '@/shared/types/team';
 import Button from '@/shared/ui/button/Button';
 import MoreArea from '@/shared/ui/button/MoreArea';
 import ItemList from '@/shared/ui/select/ItemList';
@@ -13,8 +29,8 @@ import Tag from '@/shared/ui/tag/Tag';
 import TagJob, { JobType } from '@/shared/ui/tag/TagJob';
 import Text from '@/shared/ui/Text';
 import { formatDateToDot } from '@/shared/utils/date';
-import { useMutation } from '@tanstack/react-query';
-import React, { useEffect, useState } from 'react';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import SubModal from '../SubModal';
 
@@ -24,74 +40,47 @@ interface MemberListProps {
 }
 
 const MemberList = ({ teamUser, teamData }: MemberListProps) => {
-  const [roles, setRoles] = useState<Record<string, 'ADMIN' | 'MANAGER' | 'MEMBER'>>({});
-  const [initialRoles, setInitialRoles] = useState<Record<string, 'ADMIN' | 'MANAGER' | 'MEMBER'>>({});
+  const queryClient = useQueryClient();
+  const { handleError } = useApiError();
+  const { data: user } = useUserInfo();
+
+  const userId = String(user?.userContext.id) || '';
+  const userRole = teamData.myRole;
+  const isAdmin = userRole === 'ADMIN';
+
+  const [roles, setRoles] = useState<Record<string, UserRole>>({});
+  const [initialRoles, setInitialRoles] = useState<Record<string, UserRole>>({});
   const [tooltipIndex, setTooltipIndex] = useState<number | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const title = ['참여자', '이메일', '직무', '담당업무', '참여 일자', '활성 일자', '권한', ''];
-  const width = ['8', '18', '9', '23', '11', '11', '16'];
+  const changedUsers: UpdateTeamUserPayload = Object.entries(roles)
+    .filter(([userId, role]) => initialRoles[userId] !== role)
+    .map(([userId, role]) => ({
+      userId,
+      role,
+    }));
+
+  const isChanged = Object.entries(roles).some(([userId, role]) => initialRoles[userId] !== role);
+  const saveTeamUserMutation = useMutation({
+    mutationFn: ({ payload, params }: { payload: UpdateTeamUserPayload; params: UpdateTeamUserParams }) =>
+      updateTeamUser(payload, params),
+  });
+
   const roleInfoName = (name: string) => {
     return <TagJob type={name as JobType} />;
   };
 
-  const authorityTag: {
-    id: 'ADMIN' | 'MANAGER' | 'MEMBER';
-    value: 'ADMIN' | 'MANAGER' | 'MEMBER';
-    label: React.JSX.Element;
-  }[] = [
-    {
-      id: 'ADMIN',
-      value: 'ADMIN',
-      label: (
-        <Tag $status="info" $style="transparent" $size="large">
-          최고 관리자
-        </Tag>
-      ),
-    },
-    {
-      id: 'MANAGER',
-      value: 'MANAGER',
-      label: (
-        <Tag $status="success" $style="transparent" $size="large">
-          관리자
-        </Tag>
-      ),
-    },
-    {
-      id: 'MEMBER',
-      value: 'MEMBER',
-      label: (
-        <Tag $style="transparent" $size="large">
-          참여자
-        </Tag>
-      ),
-    },
-  ];
-
-  const selectAuth = (value: 'ADMIN' | 'MANAGER' | 'MEMBER') => {
-    const tagObj = authorityTag.find((tag) => tag.id === value);
+  const selectAuth = (value: UserRole) => {
+    const tagObj = AUTHORITY_TAG.find((tag) => tag.id === value);
     return tagObj?.label;
   };
 
-  const task = (value: { id: string; name: string }[]) => {
+  const task = (value: FieldInfo[]) => {
     return value.map((ele) => ele.name);
   };
 
-  const saveTeamUserMutation = useMutation({
-    mutationFn: ({ payload, params }: { payload: types.UpdateTeamUserPayload; params: types.UpdateTeamUserParams }) =>
-      updateTeamUser(payload, params),
-  });
-
   const saveTeamUserHandle = async () => {
     try {
-      const changedUsers: types.UpdateTeamUserPayload = Object.entries(roles)
-        .filter(([userId, role]) => initialRoles[userId] !== role)
-        .map(([userId, role]) => ({
-          userId,
-          role,
-        }));
-
       if (changedUsers.length === 0) {
         toastActions.open({ state: 'info', title: '변경된 멤버가 없습니다.' });
         return;
@@ -107,19 +96,18 @@ const MemberList = ({ teamUser, teamData }: MemberListProps) => {
 
       setInitialRoles(roles);
     } catch (err) {
-      toastActions.open({
-        state: 'error',
-        title: MESSAGES.ACCOUNT_SAVE_ERROR,
-      });
+      handleError(err);
+    } finally {
+      queryClient.invalidateQueries({ queryKey: teamQueries.readTeamUser({ teamId: teamData.teamId }).queryKey });
     }
   };
 
   const columns = [
     {
       key: 'name',
-      title: title[0],
-      width: `${width[0]}%`,
-      render: (item: ReadTeamUsersResponse['teamMember'][number]) => (
+      title: MEMBERLIST_TABLE_TITLE[0],
+      width: `${MEMBERLIST_TABLE_WIDTH[0]}%`,
+      render: (item: TeamMember[number]) => (
         <Text variant="body_14_medium" color="secondary" ellipsis>
           {item.user.name}
         </Text>
@@ -127,9 +115,9 @@ const MemberList = ({ teamUser, teamData }: MemberListProps) => {
     },
     {
       key: 'email',
-      title: title[1],
-      width: `${width[1]}%`,
-      render: (item: ReadTeamUsersResponse['teamMember'][number]) => (
+      title: MEMBERLIST_TABLE_TITLE[1],
+      width: `${MEMBERLIST_TABLE_WIDTH[1]}%`,
+      render: (item: TeamMember[number]) => (
         <Text variant="body_14_medium" color="secondary" ellipsis>
           {item.user.email}
         </Text>
@@ -137,15 +125,15 @@ const MemberList = ({ teamUser, teamData }: MemberListProps) => {
     },
     {
       key: 'job',
-      title: title[2],
-      width: `${width[2]}%`,
-      render: (item: ReadTeamUsersResponse['teamMember'][number]) => roleInfoName(item.user.roleInfo.name),
+      title: MEMBERLIST_TABLE_TITLE[2],
+      width: `${MEMBERLIST_TABLE_WIDTH[2]}%`,
+      render: (item: TeamMember[number]) => roleInfoName(item.user.roleInfo.name),
     },
     {
       key: 'tasks',
-      title: title[3],
-      width: `${width[3]}%`,
-      render: (item: ReadTeamUsersResponse['teamMember'][number]) => (
+      title: MEMBERLIST_TABLE_TITLE[3],
+      width: `${MEMBERLIST_TABLE_WIDTH[3]}%`,
+      render: (item: TeamMember[number]) => (
         <>
           {task(item.user.roleInfo.fields).map((ele, idx) => (
             <Tag key={idx} $style="transparent" $size="large">
@@ -157,11 +145,11 @@ const MemberList = ({ teamUser, teamData }: MemberListProps) => {
     },
     {
       key: 'createdAt',
-      title: title[4],
-      width: `${width[4]}%`,
+      title: MEMBERLIST_TABLE_TITLE[4],
+      width: `${MEMBERLIST_TABLE_WIDTH[4]}%`,
       sortable: true,
       icon: <IconSortArrow onClick={() => setTooltipIndex((prev) => (prev === 4 ? null : 4))} />,
-      render: (item: ReadTeamUsersResponse['teamMember'][number]) => (
+      render: (item: TeamMember[number]) => (
         <Text variant="body_14_medium" color="secondary" ellipsis>
           {formatDateToDot(item.createdAt)}
         </Text>
@@ -169,11 +157,11 @@ const MemberList = ({ teamUser, teamData }: MemberListProps) => {
     },
     {
       key: 'lastActiveAt',
-      title: title[5],
-      width: `${width[5]}%`,
+      title: MEMBERLIST_TABLE_TITLE[5],
+      width: `${MEMBERLIST_TABLE_WIDTH[5]}%`,
       sortable: true,
       icon: <IconSortArrow onClick={() => setTooltipIndex((prev) => (prev === 5 ? null : 5))} />,
-      render: (item: ReadTeamUsersResponse['teamMember'][number]) => (
+      render: (item: TeamMember[number]) => (
         <Text variant="body_14_medium" color="secondary" ellipsis>
           {formatDateToDot(item.lastActiveAt)}
         </Text>
@@ -181,11 +169,12 @@ const MemberList = ({ teamUser, teamData }: MemberListProps) => {
     },
     {
       key: 'role',
-      title: title[6],
-      width: `${width[6]}%`,
-      render: (item: ReadTeamUsersResponse['teamMember'][number]) =>
-        teamData.myRole === 'ADMIN' ? (
-          <Select<'ADMIN' | 'MANAGER' | 'MEMBER'>
+      title: MEMBERLIST_TABLE_TITLE[6],
+      width: `${MEMBERLIST_TABLE_WIDTH[6]}%`,
+      minWidth: '150px',
+      render: (item: TeamMember[number]) =>
+        isAdmin && item.teamRole !== 'ADMIN' ? (
+          <Select<UserRole>
             placeholder="권한을 선택하세요"
             value={roles[item.user.id]}
             width="100%"
@@ -195,7 +184,7 @@ const MemberList = ({ teamUser, teamData }: MemberListProps) => {
                 [item.user.id]: next,
               }));
             }}
-            selectOptionList={authorityTag}
+            selectOptionList={SELECT_AUTHORITY_TAG}
           />
         ) : (
           selectAuth(item.teamRole)
@@ -203,10 +192,10 @@ const MemberList = ({ teamUser, teamData }: MemberListProps) => {
     },
     {
       key: 'actions',
-      title: title[7],
+      title: MEMBERLIST_TABLE_TITLE[7],
       width: '60px',
-      render: (item: ReadTeamUsersResponse['teamMember'][number]) =>
-        teamData.myRole === 'ADMIN' ? (
+      render: (item: TeamMember[number]) =>
+        isAdmin && item.user.id !== userId ? (
           <>
             <MoreArea
               size={36}
@@ -244,8 +233,8 @@ const MemberList = ({ teamUser, teamData }: MemberListProps) => {
         <Count>
           총 <span>{teamUser.count}</span> 명
         </Count>
-        {teamData.myRole === 'ADMIN' && (
-          <Button size="36" onClick={saveTeamUserHandle}>
+        {isAdmin && (
+          <Button size="36" onClick={saveTeamUserHandle} disabled={!isChanged}>
             변경
           </Button>
         )}
@@ -256,6 +245,7 @@ const MemberList = ({ teamUser, teamData }: MemberListProps) => {
           columns={columns}
           keyExtractor={(item) => String(item.user.id)}
           caption="멤버 목록"
+          isLoading={saveTeamUserMutation.isPending}
         />
       </TableWrapper>
     </Wrapper>

@@ -1,12 +1,19 @@
 'use clinet';
 
 import Error from '@/shared/ui/error/Error';
+import { useRouter } from 'next/navigation';
 import styled from 'styled-components';
 
 const NotFound = () => {
+  const router = useRouter();
   return (
     <Wrapper>
-      <Error title="페이지를 찾을 수 없습니다!" description="잘못된 경로에 접근했습니다." />
+      <Error
+        title="페이지를 찾을 수 없습니다!"
+        description="잘못된 경로에 접근했습니다."
+        onRetry={() => router.push('/')}
+        onRetryLabel="홈으로 이동"
+      />
     </Wrapper>
   );
 };

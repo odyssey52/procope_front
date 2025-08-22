@@ -1,5 +1,3 @@
-export type JobMainId = (typeof JOB_MAIN_LIST)[keyof typeof JOB_MAIN_LIST]['id'];
-
 export const JOB_MAIN_IMG_LIST = [
   '/assets/icons/graphic/glass/file-on.png',
   '/assets/icons/graphic/glass/laptop-on.png',
@@ -9,7 +7,6 @@ export const JOB_MAIN_IMG_LIST = [
   '/assets/icons/graphic/glass/money-on.png',
   '/assets/icons/graphic/glass/userbook-on.png',
 ];
-export const JOB_MAIN_ICON_LIST = ['📑', '‍🧑‍💻', '🎨', '💰', '🧑‍💼', '☕️', '📊'];
 export const JOB_MAIN_LIST = {
   기획: {
     id: 1,
@@ -125,48 +122,6 @@ export const JOB_MAIN_LIST = {
       { id: 7, name: '리스크' },
     ],
   },
-};
-
-export const JOB_SUB_LIST = {
-  기획: ['사업', '전략', '서비스', 'R&D', '상품'],
-  개발: [
-    '프론트엔드',
-    '안드로이드',
-    'ios',
-    '유니티',
-    '언리얼',
-    'VR',
-    '서버',
-    'DBA',
-    '.NET',
-    '인프라',
-    'DevOps',
-    'CI/CD',
-    '임베디드',
-    '블록체인',
-    '기술지원',
-    'QA',
-    '정보보안',
-  ],
-  디자인: ['CX', 'BX', 'UX', 'UI', '그래픽', '3D', '컨텐츠'],
-  데이터: ['데이터 분석', '데이터 시각화', '머신러닝', 'AI'],
-  마케팅: [
-    '디지털',
-    '콘텐츠',
-    '브랜드',
-    '마케팅 전략',
-    '퍼포먼스',
-    '소셜',
-    '광고',
-    '글로벌',
-    'PR',
-    '그로스 해킹',
-    '제휴',
-    'ATL',
-    'BTL',
-  ],
-  영업: ['기술영업', '외부영업', '해외영업', '솔루션 컨설턴트', '미디어 세일즈'],
-  운영: ['회계', '인사', '구매', '리스크', '법률', 'CS', '행정'],
 };
 
 export const TENDENCY_TITLE_LIST = [

@@ -3,25 +3,38 @@ import { MESSAGES } from '@/shared/constants/messages';
 import { toastActions } from '@/shared/store/modal/toast';
 import Breadcrumbs from '@/shared/ui/breadcrumbs/Breadcrumbs';
 import Button from '@/shared/ui/button/Button';
+import Error from '@/shared/ui/error/Error';
 import Text from '@/shared/ui/Text';
 import PageTitle from '@/shared/ui/title/PageTitle';
 import { useQuery } from '@tanstack/react-query';
 import { useParams } from 'next/navigation';
 import styled from 'styled-components';
 import MemberList from './MemberList';
+import SkeletonMemberPage from './SkeletonMemberPage';
 
-const Member = () => {
+const MemberPage = () => {
   const params = useParams();
   const teamId = params.teamId as string;
 
-  const { data: teamUser } = useQuery({
+  const {
+    data: teamUser,
+    isLoading: isTeamUserLoading,
+    isError: isTeamUserError,
+  } = useQuery({
     ...teamQueries.readTeamUser({ teamId }),
-    enabled: !!teamId,
   });
-  const { data: teamData } = useQuery({
+
+  const {
+    data: teamData,
+    isLoading: isTeamDataLoading,
+    isError: isTeamDataError,
+  } = useQuery({
     ...teamQueries.readTeamDetail({ teamId }),
-    enabled: !!teamId,
   });
+
+  const isLoading = isTeamUserLoading || isTeamDataLoading;
+  const isError = isTeamUserError || isTeamDataError;
+  const hasData = teamUser && teamData;
 
   const inviteUrl = `${process.env.NEXT_PUBLIC_APP_URL}team/invite/${teamData?.inviteUrl}`;
 
@@ -53,8 +66,9 @@ const Member = () => {
     );
   };
 
-  if (!teamUser || !teamData) return null;
-
+  if (isLoading) return <SkeletonMemberPage />;
+  if (isError) return <Error title="에러 발생" description="팀 참여관리 정보를 불러오는 중 오류가 발생했습니다." />;
+  if (!hasData) return null;
   return (
     <Wrapper>
       <Container>
@@ -86,8 +100,6 @@ const Member = () => {
     </Wrapper>
   );
 };
-
-export default Member;
 
 const Wrapper = styled.div`
   position: relative;
@@ -161,3 +173,6 @@ const Title = styled.div`
   ${({ theme }) => theme.fontStyle.heading_18}
   color: ${({ theme }) => theme.sementicColors.text.primary};
 `;
+MemberPage.displayName = 'MemberPage';
+
+export default MemberPage;

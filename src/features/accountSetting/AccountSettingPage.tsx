@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { useAuth } from '@/shared/hooks/useAuth';
+import { useUserInfo } from '@/shared/hooks/useUserInfo';
 import { LoadingSpinner } from '@/shared/ui/LoadingSpinner';
 import SelectOption from '@/shared/ui/select/SelectOption';
 import styled from 'styled-components';
@@ -15,7 +15,7 @@ const selectOptionList = [
 ];
 
 const AccountSettingPage = () => {
-  const { user, isLoading } = useAuth();
+  const { data: user, isLoading } = useUserInfo();
   const [page, setPage] = useState<'프로필 설정' | '소통 설정'>('프로필 설정');
 
   const handleSelect = (next: '프로필 설정' | '소통 설정') => setPage(next);
@@ -23,7 +23,9 @@ const AccountSettingPage = () => {
   if (isLoading) {
     return (
       <HeaderLayout>
-        <LoadingSpinner />
+        <LoadingWrapper>
+          <LoadingSpinner />
+        </LoadingWrapper>
       </HeaderLayout>
     );
   }
@@ -88,6 +90,13 @@ const Section = styled.div`
 `;
 
 const Content = styled.div`
+  flex-grow: 1;
+`;
+
+const LoadingWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
   flex-grow: 1;
 `;
 

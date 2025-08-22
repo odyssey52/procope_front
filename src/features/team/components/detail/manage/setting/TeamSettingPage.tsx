@@ -4,7 +4,7 @@ import { useParams } from 'next/navigation';
 import styled from 'styled-components';
 import SettingSection from './SettingSection';
 
-const Setting = () => {
+const TeamSettingPage = () => {
   const params = useParams();
   const teamId = params.teamId as string;
 
@@ -21,11 +21,15 @@ const Setting = () => {
   );
 };
 
-export default Setting;
-
 const Wrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   width: 100%;
-  padding: 48px 0px;
   background-color: ${({ theme }) => theme.sementicColors.bg.tertiary};
   overflow-y: auto;
 `;
+
+TeamSettingPage.displayName = 'TeamSettingPage';
+
+export default TeamSettingPage;

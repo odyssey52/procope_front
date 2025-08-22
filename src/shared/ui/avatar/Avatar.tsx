@@ -1,6 +1,6 @@
 import styled, { css } from 'styled-components';
 
-interface AvatarProps {
+export interface AvatarProps {
   type?: 'initial' | 'profile';
   size?: number; // default 32
   nickname?: string;

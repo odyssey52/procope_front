@@ -7,9 +7,10 @@ interface ErrorProps {
   title: string;
   description: string;
   onRetry?: () => void;
+  onRetryLabel?: string;
 }
 
-const Error = ({ title, description, onRetry }: ErrorProps) => {
+const Error = ({ title, description, onRetry, onRetryLabel = '다시 시도' }: ErrorProps) => {
   return (
     <Wrapper>
       <Image src="/assets/icons/graphic/glass/warning.png" width={120} height={120} alt="추가 아이콘 이미지" />
@@ -23,7 +24,7 @@ const Error = ({ title, description, onRetry }: ErrorProps) => {
       </TextBox>
       {onRetry && (
         <Button $type="outline" onClick={onRetry}>
-          다시 시도
+          {onRetryLabel}
         </Button>
       )}
     </Wrapper>
@@ -35,6 +36,9 @@ const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+  align-self: center;
+  height: fit-content;
+  justify-self: center;
   gap: 12px;
   padding: 10px;
 `;
