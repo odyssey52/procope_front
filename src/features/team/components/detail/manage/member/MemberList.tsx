@@ -66,7 +66,7 @@ const MemberList = ({ teamUser, teamData }: MemberListProps) => {
   const userId = String(user?.userContext.id) || '';
   const userRole = teamData.myRole;
   const isAdmin = userRole === 'ADMIN';
-  console.log(teamData, teamUser);
+
   const [roles, setRoles] = useState<Record<string, UserRole>>({});
   const [initialRoles, setInitialRoles] = useState<Record<string, UserRole>>({});
   const [tooltipIndex, setTooltipIndex] = useState<number | null>(null);
@@ -193,6 +193,7 @@ const MemberList = ({ teamUser, teamData }: MemberListProps) => {
       key: 'role',
       title: title[6],
       width: `${width[6]}%`,
+      minWidth: '150px',
       render: (item: ReadTeamUsersResponse['teamMember'][number]) =>
         isAdmin && item.teamRole !== 'ADMIN' ? (
           <Select<UserRole>
