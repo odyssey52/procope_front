@@ -17,6 +17,7 @@ const GoogleCallbackPage = () => {
   const router = useRouter();
   const search = useSearchParams();
   const authorizationCode = search.get('code');
+
   const { data: userInfoData, isSuccess: isSuccessReadUserInfo } = useQuery({
     ...userInfoQueries.readUserInfo(accessToken || ''),
     enabled: !!accessToken,

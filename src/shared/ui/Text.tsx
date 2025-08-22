@@ -10,11 +10,27 @@ interface Props {
   className?: string;
   ellipsis?: boolean;
   lines?: number;
+  nowrap?: boolean;
 }
 
-const Text = ({ variant, color, children, className, ellipsis = false, lines = 1 }: PropsWithChildren<Props>) => {
+const Text = ({
+  variant,
+  color,
+  children,
+  className,
+  ellipsis = false,
+  lines = 1,
+  nowrap = false,
+}: PropsWithChildren<Props>) => {
   return (
-    <Wrapper $variant={variant} $color={color} $className={className} $ellipsis={ellipsis} $lines={lines}>
+    <Wrapper
+      $variant={variant}
+      $color={color}
+      $className={className}
+      $ellipsis={ellipsis}
+      $lines={lines}
+      $nowrap={nowrap}
+    >
       {children}
     </Wrapper>
   );
@@ -26,6 +42,7 @@ interface TextStyledProps {
   $className?: string;
   $ellipsis?: boolean;
   $lines?: number;
+  $nowrap?: boolean;
 }
 
 const Wrapper = styled.div<TextStyledProps>`
@@ -34,7 +51,7 @@ const Wrapper = styled.div<TextStyledProps>`
   color: ${({ theme, $color }) => ($color ? theme.sementicColors.text[$color] : theme.sementicColors.text.primary)};
 
   /* 기본 동작: 줄바꿈 처리 */
-  white-space: ${({ $ellipsis }) => ($ellipsis ? 'normal' : 'pre-wrap')};
+  white-space: ${({ $ellipsis, $nowrap }) => ($ellipsis ? 'normal' : $nowrap ? 'nowrap' : 'pre-wrap')};
   word-break: break-word;
   word-wrap: break-word;
 

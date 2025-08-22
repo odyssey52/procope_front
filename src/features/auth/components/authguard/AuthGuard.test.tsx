@@ -1,5 +1,5 @@
 // AuthGuard.test.tsx
-import { useAuth } from '@/shared/hooks/useAuth';
+import { useUserInfo } from '@/shared/hooks/useUserInfo';
 import { render, screen, waitFor } from '@testing-library/react';
 import { useRouter } from 'next/navigation';
 import { AuthGuard } from './AuthGuard';
@@ -30,7 +30,7 @@ describe('AuthGuard', () => {
 
   it('로딩 중일 때 LoadingSpinner를 표시해야 한다', () => {
     // useAuth 모의 구현
-    (useAuth as jest.Mock).mockReturnValue({
+    (useUserInfo as jest.Mock).mockReturnValue({
       isLoading: true,
       accessToken: null,
       user: null,
@@ -47,7 +47,7 @@ describe('AuthGuard', () => {
 
   it('인증되지 않은 사용자는 로그인 페이지로 리다이렉트되어야 한다', async () => {
     // useAuth 모의 구현
-    (useAuth as jest.Mock).mockReturnValue({
+    (useUserInfo as jest.Mock).mockReturnValue({
       isLoading: false,
       accessToken: null,
       user: null,
@@ -66,7 +66,7 @@ describe('AuthGuard', () => {
 
   it('인증된 사용자는 보호된 컨텐츠를 볼 수 있어야 한다', () => {
     // useAuth 모의 구현
-    (useAuth as jest.Mock).mockReturnValue({
+    (useUserInfo as jest.Mock).mockReturnValue({
       isLoading: false,
       accessToken: 'test-token',
       user: { id: 1, name: 'Test User' },

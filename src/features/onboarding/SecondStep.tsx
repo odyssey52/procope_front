@@ -1,9 +1,10 @@
+import propertiesFieldsQueries from '@/features/properties/query/fields/propertiesFieldsQueries';
 import { IconDirectionLeft } from '@/shared/assets/icons/line';
 import Button from '@/shared/ui/button/Button';
 import TextButton from '@/shared/ui/button/TextButton';
 import JobSubCard from '@/shared/ui/card/JobSubCard';
+import { LoadingSpinner } from '@/shared/ui/LoadingSpinner';
 import Text from '@/shared/ui/Text';
-import propertiesFieldsQueries from '@/features/properties/query/fields/propertiesFieldsQueries';
 import { useQuery } from '@tanstack/react-query';
 import styled from 'styled-components';
 import { JobMain } from './FirstStep';
@@ -21,12 +22,10 @@ interface Props {
 }
 
 const SecondStep = ({ jobMain, jobSub, jobSubHandler, onBefore, onNext }: Props) => {
-  const { data, isSuccess } = useQuery({
+  const { data, isSuccess, isLoading } = useQuery({
     ...propertiesFieldsQueries.readPropertiesFields({ roleId: jobMain.id }),
     select: (data) => data.fields.sort((a, b) => a.id - b.id),
   });
-
-  if (!isSuccess) return null;
 
   return (
     <Wrapper>
@@ -40,19 +39,22 @@ const SecondStep = ({ jobMain, jobSub, jobSubHandler, onBefore, onNext }: Props)
           답변에 따라 맞춤화된 회고 서비스를 제공해 드려요!
         </Text>
       </TextBox>
-      <JobCardBox>
-        {isSuccess &&
-          data.map((field) => {
+      {isLoading && <LoadingSpinner />}
+      {isSuccess && (
+        <JobCardBox>
+          {data?.map((field) => {
             return (
               <JobSubCard
                 key={`JobSubCard-${field.id}`}
                 text={field.name}
                 state={jobSub.includes(field) ? 'selected' : undefined}
                 onClick={() => jobSubHandler(field)}
+                width="100%"
               />
             );
           })}
-      </JobCardBox>
+        </JobCardBox>
+      )}
       <ButtonContainer>
         <ButtonBox>
           <TextButton $type="16" leftIcon={<IconDirectionLeft />} onClick={onBefore}>
@@ -68,16 +70,29 @@ const SecondStep = ({ jobMain, jobSub, jobSubHandler, onBefore, onNext }: Props)
 };
 
 const Wrapper = styled.div`
-  width: 608px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
 `;
 const TextBox = styled.div`
   margin: 40px 0px 36px 0px;
 `;
 const JobCardBox = styled.div`
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  @media screen and (max-width: 480px) {
+    grid-template-columns: repeat(1, 1fr);
+  }
   gap: 24px;
+  flex-grow: 1;
+  overflow-y: auto;
+  overflow-x: visible;
+  padding: 2px;
+  position: relative;
 `;
+
 const ButtonContainer = styled.div`
   display: flex;
   justify-content: flex-end;

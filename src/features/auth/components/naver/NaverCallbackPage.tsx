@@ -18,6 +18,7 @@ const NaverCallbackPage = () => {
   const search = useSearchParams();
   const authorizationCode = search.get('code');
   const state = search.get('state');
+
   const { data: userInfoData, isSuccess: isSuccessReadUserInfo } = useQuery({
     ...userInfoQueries.readUserInfo(accessToken || ''),
     enabled: !!accessToken,

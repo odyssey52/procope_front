@@ -12,9 +12,8 @@ import TeamListArea from './TeamListArea';
 import UserArea from './UserArea';
 
 const Header = () => {
-  const { accessToken } = useAuthStore();
+  const { accessToken, logoutType } = useAuthStore();
   const { setUser } = useUserStore();
-  const { logoutType } = useAuthStore();
   const { teamInfo } = useTeamStore();
 
   const { data, isSuccess } = useQuery({

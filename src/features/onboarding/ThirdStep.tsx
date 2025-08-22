@@ -6,6 +6,7 @@ import Text from '@/shared/ui/Text';
 import propertiesQuestionsQueries from '@/features/properties/query/questions/propertiesQuestionsQueries';
 import { useQuery } from '@tanstack/react-query';
 import styled from 'styled-components';
+import { LoadingSpinner } from '@/shared/ui/LoadingSpinner';
 
 export interface Preference {
   questionId: number;
@@ -20,11 +21,10 @@ interface Props {
 }
 
 const ThirdStep = ({ preferences, preferencesHandler, isValidPreferences, onBefore, onNext }: Props) => {
-  const { data, isSuccess } = useQuery({
+  const { data, isSuccess, isLoading } = useQuery({
     ...propertiesQuestionsQueries.readPropertiesQuestions,
     select: (data) => data.questions.sort((a, b) => a.id - b.id),
   });
-  if (!isSuccess) return null;
   return (
     <Wrapper>
       <TextBox>
@@ -37,56 +37,60 @@ const ThirdStep = ({ preferences, preferencesHandler, isValidPreferences, onBefo
           답변에 따라 맞춤화된 회고 서비스를 제공해 드려요!
         </Text>
       </TextBox>
-      {data.map(({ id, description }, index) => {
-        return (
-          <div key={index}>
-            <Text variant="body_14_semibold">{description}</Text>
-            <PreferencesBox>
-              <Text variant="heading_18" color="tertiary">
-                그렇다
-              </Text>
-              <RadioBox>
-                <RadioSurvey
-                  id={`preferences-${index}-very-agree`}
-                  name={`preferences-${index}`}
-                  $size="lg"
-                  onClick={() => preferencesHandler(index, { questionId: id, score: 5 })}
-                  defaultChecked={preferences[index]?.score === 5}
-                />
-                <RadioSurvey
-                  id={`preferences-${index}-agree`}
-                  name={`preferences-${index}`}
-                  onClick={() => preferencesHandler(index, { questionId: id, score: 4 })}
-                  defaultChecked={preferences[index]?.score === 4}
-                />
-                <RadioSurvey
-                  id={`preferences-${index}-soso`}
-                  name={`preferences-${index}`}
-                  $size="sm"
-                  onClick={() => preferencesHandler(index, { questionId: id, score: 3 })}
-                  defaultChecked={preferences[index]?.score === 3}
-                />
-                <RadioSurvey
-                  id={`preferences-${index}-disagree`}
-                  name={`preferences-${index}`}
-                  onClick={() => preferencesHandler(index, { questionId: id, score: 2 })}
-                  defaultChecked={preferences[index]?.score === 2}
-                />
-                <RadioSurvey
-                  id={`preferences-${index}-very-disagree`}
-                  name={`preferences-${index}`}
-                  $size="lg"
-                  onClick={() => preferencesHandler(index, { questionId: id, score: 1 })}
-                  defaultChecked={preferences[index]?.score === 1}
-                />
-              </RadioBox>
-              <Text variant="heading_18" color="tertiary">
-                그렇지 않다
-              </Text>
-            </PreferencesBox>
-          </div>
-        );
-      })}
+      <Content>
+        {isLoading && <LoadingSpinner />}
+        {isSuccess &&
+          data?.map(({ id, description }, index) => {
+            return (
+              <div key={index}>
+                <Text variant="body_14_semibold">{description}</Text>
+                <PreferencesBox>
+                  <Text variant="heading_18" color="tertiary">
+                    그렇다
+                  </Text>
+                  <RadioBox>
+                    <RadioSurvey
+                      id={`preferences-${index}-very-agree`}
+                      name={`preferences-${index}`}
+                      $size="lg"
+                      onClick={() => preferencesHandler(index, { questionId: id, score: 5 })}
+                      defaultChecked={preferences[index]?.score === 5}
+                    />
+                    <RadioSurvey
+                      id={`preferences-${index}-agree`}
+                      name={`preferences-${index}`}
+                      onClick={() => preferencesHandler(index, { questionId: id, score: 4 })}
+                      defaultChecked={preferences[index]?.score === 4}
+                    />
+                    <RadioSurvey
+                      id={`preferences-${index}-soso`}
+                      name={`preferences-${index}`}
+                      $size="sm"
+                      onClick={() => preferencesHandler(index, { questionId: id, score: 3 })}
+                      defaultChecked={preferences[index]?.score === 3}
+                    />
+                    <RadioSurvey
+                      id={`preferences-${index}-disagree`}
+                      name={`preferences-${index}`}
+                      onClick={() => preferencesHandler(index, { questionId: id, score: 2 })}
+                      defaultChecked={preferences[index]?.score === 2}
+                    />
+                    <RadioSurvey
+                      id={`preferences-${index}-very-disagree`}
+                      name={`preferences-${index}`}
+                      $size="lg"
+                      onClick={() => preferencesHandler(index, { questionId: id, score: 1 })}
+                      defaultChecked={preferences[index]?.score === 1}
+                    />
+                  </RadioBox>
+                  <Text variant="heading_18" color="tertiary">
+                    그렇지 않다
+                  </Text>
+                </PreferencesBox>
+              </div>
+            );
+          })}
+      </Content>
       <ButtonContainer>
         <ButtonBox>
           <TextButton $type="16" leftIcon={<IconDirectionLeft />} onClick={onBefore}>
@@ -102,8 +106,15 @@ const ThirdStep = ({ preferences, preferencesHandler, isValidPreferences, onBefo
 };
 
 const Wrapper = styled.div`
-  width: 608px;
-  height: 794px;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+`;
+const Content = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  flex-grow: 1;
 `;
 const TextBox = styled.div`
   margin: 40px 0px 36px 0px;

@@ -4,12 +4,12 @@ import Text from '../Text';
 
 interface JobMainCardProps {
   text: string;
-  size?: 'small'; // default: large
   subText?: string;
   icon?: string;
   state?: 'selected' | 'disabled';
   onClick?: () => void;
   disabled?: boolean;
+  width?: string;
 }
 
 const getStateStyle = (state?: 'selected' | 'disabled') => {
@@ -46,9 +46,9 @@ const getStateStyle = (state?: 'selected' | 'disabled') => {
   }
 };
 
-const JobSubCard = ({ text, size, subText, icon, state, onClick, disabled }: JobMainCardProps) => {
+const JobSubCard = ({ text, width = '292px', subText, icon, state, onClick, disabled }: JobMainCardProps) => {
   return (
-    <Wrapper $state={state} $size={size} onClick={onClick} disabled={disabled}>
+    <Wrapper $state={state} $width={width} onClick={onClick} disabled={disabled}>
       {icon && (
         <IconBox>
           <Image src={icon} width={80} height={80} alt="직무아이콘이미지" />
@@ -68,8 +68,8 @@ const JobSubCard = ({ text, size, subText, icon, state, onClick, disabled }: Job
   );
 };
 
-const Wrapper = styled.button<{ $state?: 'selected' | 'disabled'; $size?: 'small' }>`
-  width: ${({ $size }) => ($size ? '267px' : '292px')};
+const Wrapper = styled.button<{ $state?: 'selected' | 'disabled'; $width?: string }>`
+  width: ${({ $width }) => $width || '292px'};
   max-height: 240px;
   padding: 36px 20px;
   border-radius: 16px;

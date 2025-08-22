@@ -51,6 +51,7 @@ const UserArea = ({ userData }: UserAreaProps) => {
     if (value === '홈') router.push('/team');
     else if (value === '계정 설정') router.push('/accountSetting');
     else if (value === '로그아웃') handleLogoutClick();
+    setIsOpen(false);
   };
 
   const selectOptionList = [

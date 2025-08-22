@@ -1,3 +1,4 @@
+import { RoleInfo } from '@/features/user/services/info/userInfoService.type';
 import { TeamType, UserRole } from '@/shared/types/team';
 
 // Params
@@ -46,7 +47,7 @@ export interface UpdateTeamPayload {
 }
 export type UpdateTeamUserItem = {
   userId: string;
-  role: 'ADMIN' | 'MANAGER' | 'MEMBER';
+  role: UserRole;
 };
 export type UpdateTeamUserPayload = UpdateTeamUserItem[];
 
@@ -69,24 +70,7 @@ export interface ReadTeamListResponse {
 
 export interface ReadTeamUsersResponse {
   count: number;
-  teamMember: {
-    user: {
-      id: string;
-      name: string;
-      email: string;
-      roleInfo: {
-        id: string;
-        name: string;
-        fields: {
-          id: string;
-          name: string;
-        }[];
-      };
-    };
-    teamRole: 'ADMIN' | 'MANAGER' | 'MEMBER';
-    createdAt: string;
-    lastActiveAt: string;
-  }[];
+  teamMember: TeamMember;
 }
 
 export interface ReadTeamDetailResponse {
@@ -94,7 +78,7 @@ export interface ReadTeamDetailResponse {
   type: TeamType;
   name: string;
   description: string;
-  myRole: 'ADMIN' | 'MANAGER' | 'MEMBER';
+  myRole: UserRole;
   inviteUrl: string;
 }
 
@@ -110,3 +94,15 @@ export type ReadTeamRoleCountResponse = {
   number: number;
 };
 export type UpdateTeamUserResponse = string;
+
+export type TeamMember = {
+  user: {
+    id: string;
+    name: string;
+    email: string;
+    roleInfo: RoleInfo;
+  };
+  teamRole: UserRole;
+  createdAt: string;
+  lastActiveAt: string;
+}[];
