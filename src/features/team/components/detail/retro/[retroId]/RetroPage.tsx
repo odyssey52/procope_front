@@ -4,6 +4,7 @@ import useAuthStore from '@/shared/store/auth/auth';
 import { useSidePanelStore } from '@/shared/store/sidePanel/sidePanel';
 import Breadcrumbs from '@/shared/ui/breadcrumbs/Breadcrumbs';
 import SidePanel from '@/shared/ui/sidePanel/SidePanel';
+import ErrorBoundary from '@/shared/ui/errorboundary/ErrorBoundary';
 import { Client } from '@stomp/stompjs';
 import { useParams } from 'next/navigation';
 import { Suspense, useEffect, useRef, useState } from 'react';
@@ -82,23 +83,29 @@ const RetroPage = () => {
   }, [accessToken, retroId]);
 
   return (
-    <Wrapper>
-      <Head>
-        <Breadcrumbs paths={paths} />
-        <Suspense fallback={<RetroInfoSkeleton />}>
-          <RetroInfoWrapper client={client.current} />
-        </Suspense>
-      </Head>
-      <Content>
-        <Suspense fallback={<SkeletonKeepWrapper />}>
-          <KeepWrapper retroId={retroId as string} client={client.current} />
-        </Suspense>
-        <Suspense fallback={<SkeletonProblemWrapper />}>
-          <ProblemWrapper retroId={retroId as string} client={client.current} />
-        </Suspense>
-      </Content>
-      <SidePanel />
-    </Wrapper>
+    <ErrorBoundary
+      title="회고 페이지 로딩 실패"
+      description="회고 정보를 불러오는 중 문제가 발생했습니다."
+      onRetry={() => window.location.reload()}
+    >
+      <Wrapper>
+        <Head>
+          <Breadcrumbs paths={paths} />
+          <Suspense fallback={<RetroInfoSkeleton />}>
+            <RetroInfoWrapper client={client.current} />
+          </Suspense>
+        </Head>
+        <Content>
+          <Suspense fallback={<SkeletonKeepWrapper />}>
+            <KeepWrapper retroId={retroId as string} client={client.current} />
+          </Suspense>
+          <Suspense fallback={<SkeletonProblemWrapper />}>
+            <ProblemWrapper retroId={retroId as string} client={client.current} />
+          </Suspense>
+        </Content>
+        <SidePanel />
+      </Wrapper>
+    </ErrorBoundary>
   );
 };
 
