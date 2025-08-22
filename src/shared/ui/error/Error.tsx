@@ -36,6 +36,9 @@ const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+  align-self: center;
+  height: fit-content;
+  justify-self: center;
   gap: 12px;
   padding: 10px;
 `;

@@ -23,6 +23,7 @@ const MemberPage = () => {
   } = useQuery({
     ...teamQueries.readTeamUser({ teamId }),
   });
+
   const {
     data: teamData,
     isLoading: isTeamDataLoading,
