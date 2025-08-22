@@ -1,7 +1,7 @@
 'use client';
 
 import { MESSAGES } from '@/shared/constants/messages';
-import { useAuth } from '@/shared/hooks/useAuth';
+import { useUserInfo } from '@/shared/hooks/useUserInfo';
 import { useLogout } from '@/shared/hooks/useLogout';
 import useAuthStore from '@/shared/store/auth/auth';
 import { toastActions } from '@/shared/store/modal/toast';
@@ -27,8 +27,7 @@ import { refreshTokenQueries } from '../../query/refresh/refreshTokenQueries';
  */
 
 export function AuthGuard({ children }: { children: React.ReactNode }) {
-  const { accessToken } = useAuth();
-  const { setAccessToken, logoutType } = useAuthStore();
+  const { accessToken, setAccessToken, logoutType } = useAuthStore();
   const { logout } = useLogout();
   const [isRefreshing, setIsRefreshing] = useState(true);
 
@@ -37,7 +36,7 @@ export function AuthGuard({ children }: { children: React.ReactNode }) {
   }, [accessToken, logoutType]);
 
   const {
-    data: accessTokenWithRefreshToken,
+    data: newAccessToken,
     isSuccess,
     isError,
   } = useQuery({
@@ -48,7 +47,7 @@ export function AuthGuard({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     if (accessToken) setIsRefreshing(false);
-    if (isSuccess && accessTokenWithRefreshToken) setAccessToken(accessTokenWithRefreshToken);
+    if (isSuccess && newAccessToken) setAccessToken(newAccessToken);
     if (isSuccess || isError) setIsRefreshing(false);
 
     if (!accessToken) {
@@ -61,7 +60,7 @@ export function AuthGuard({ children }: { children: React.ReactNode }) {
         logout({ savePreviousPath });
       }
     }
-  }, [isSuccess, isError, accessTokenWithRefreshToken, setAccessToken, accessToken]);
+  }, [isSuccess, isError, newAccessToken, setAccessToken, accessToken]);
 
   if (isRefreshing) {
     return (
