@@ -33,3 +33,24 @@ export const AUTHORITY_TAG: AuthorityTag[] = [
     ),
   },
 ];
+
+export const SELECT_AUTHORITY_TAG: AuthorityTag[] = [
+  {
+    id: 'MANAGER',
+    value: 'MANAGER',
+    label: (
+      <Tag $status="success" $style="transparent" $size="large">
+        관리자
+      </Tag>
+    ),
+  },
+  {
+    id: 'MEMBER',
+    value: 'MEMBER',
+    label: (
+      <Tag $style="transparent" $size="large">
+        참여자
+      </Tag>
+    ),
+  },
+];

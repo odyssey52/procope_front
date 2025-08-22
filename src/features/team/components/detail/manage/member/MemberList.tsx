@@ -1,4 +1,10 @@
-import { AUTHORITY_TAG, MEMBERLIST_TABLE_TITLE, MEMBERLIST_TABLE_WIDTH } from '@/features/team/const/member';
+import {
+  AUTHORITY_TAG,
+  MEMBERLIST_TABLE_TITLE,
+  MEMBERLIST_TABLE_WIDTH,
+  SELECT_AUTHORITY_TAG,
+} from '@/features/team/const/member';
+import teamQueries from '@/features/team/query/teamQueries';
 import { updateTeamUser } from '@/features/team/services/teamService';
 import {
   ReadTeamDetailResponse,
@@ -10,6 +16,7 @@ import {
 import { FieldInfo } from '@/features/user/services/info/userInfoService.type';
 import { IconSortArrow } from '@/shared/assets/icons/line';
 import { MESSAGES } from '@/shared/constants/messages';
+import useApiError from '@/shared/hooks/useApiError';
 import { useAuth } from '@/shared/hooks/useAuth';
 import { toastActions } from '@/shared/store/modal/toast';
 import { UserRole } from '@/shared/types/team';
@@ -22,7 +29,7 @@ import Tag from '@/shared/ui/tag/Tag';
 import TagJob, { JobType } from '@/shared/ui/tag/TagJob';
 import Text from '@/shared/ui/Text';
 import { formatDateToDot } from '@/shared/utils/date';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import SubModal from '../SubModal';
@@ -33,6 +40,8 @@ interface MemberListProps {
 }
 
 const MemberList = ({ teamUser, teamData }: MemberListProps) => {
+  const queryClient = useQueryClient();
+  const { handleError } = useApiError();
   const { user } = useAuth();
   const userId = String(user?.userContext.id) || '';
   const userRole = teamData.myRole;
@@ -43,6 +52,14 @@ const MemberList = ({ teamUser, teamData }: MemberListProps) => {
   const [tooltipIndex, setTooltipIndex] = useState<number | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
+  const changedUsers: UpdateTeamUserPayload = Object.entries(roles)
+    .filter(([userId, role]) => initialRoles[userId] !== role)
+    .map(([userId, role]) => ({
+      userId,
+      role,
+    }));
+
+  const isChanged = Object.entries(roles).some(([userId, role]) => initialRoles[userId] !== role);
   const saveTeamUserMutation = useMutation({
     mutationFn: ({ payload, params }: { payload: UpdateTeamUserPayload; params: UpdateTeamUserParams }) =>
       updateTeamUser(payload, params),
@@ -63,13 +80,6 @@ const MemberList = ({ teamUser, teamData }: MemberListProps) => {
 
   const saveTeamUserHandle = async () => {
     try {
-      const changedUsers: UpdateTeamUserPayload = Object.entries(roles)
-        .filter(([userId, role]) => initialRoles[userId] !== role)
-        .map(([userId, role]) => ({
-          userId,
-          role,
-        }));
-
       if (changedUsers.length === 0) {
         toastActions.open({ state: 'info', title: '변경된 멤버가 없습니다.' });
         return;
@@ -85,10 +95,9 @@ const MemberList = ({ teamUser, teamData }: MemberListProps) => {
 
       setInitialRoles(roles);
     } catch (err) {
-      toastActions.open({
-        state: 'error',
-        title: MESSAGES.ACCOUNT_SAVE_ERROR,
-      });
+      handleError(err);
+    } finally {
+      queryClient.invalidateQueries({ queryKey: teamQueries.readTeamUser({ teamId: teamData.teamId }).queryKey });
     }
   };
 
@@ -174,7 +183,7 @@ const MemberList = ({ teamUser, teamData }: MemberListProps) => {
                 [item.user.id]: next,
               }));
             }}
-            selectOptionList={AUTHORITY_TAG}
+            selectOptionList={SELECT_AUTHORITY_TAG}
           />
         ) : (
           selectAuth(item.teamRole)
@@ -224,7 +233,7 @@ const MemberList = ({ teamUser, teamData }: MemberListProps) => {
           총 <span>{teamUser.count}</span> 명
         </Count>
         {isAdmin && (
-          <Button size="36" onClick={saveTeamUserHandle}>
+          <Button size="36" onClick={saveTeamUserHandle} disabled={!isChanged}>
             변경
           </Button>
         )}
@@ -235,6 +244,7 @@ const MemberList = ({ teamUser, teamData }: MemberListProps) => {
           columns={columns}
           keyExtractor={(item) => String(item.user.id)}
           caption="멤버 목록"
+          isLoading={saveTeamUserMutation.isPending}
         />
       </TableWrapper>
     </Wrapper>

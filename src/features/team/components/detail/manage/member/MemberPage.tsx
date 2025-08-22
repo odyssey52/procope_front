@@ -22,7 +22,6 @@ const MemberPage = () => {
     isError: isTeamUserError,
   } = useQuery({
     ...teamQueries.readTeamUser({ teamId }),
-    enabled: !!teamId,
   });
   const {
     data: teamData,
@@ -30,7 +29,6 @@ const MemberPage = () => {
     isError: isTeamDataError,
   } = useQuery({
     ...teamQueries.readTeamDetail({ teamId }),
-    enabled: !!teamId,
   });
 
   const isLoading = isTeamUserLoading || isTeamDataLoading;
