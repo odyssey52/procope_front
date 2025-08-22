@@ -1,3 +1,4 @@
+import { RoleInfo } from '@/features/user/services/info/userInfoService.type';
 import { TeamType, UserRole } from '@/shared/types/team';
 
 // Params
@@ -69,24 +70,7 @@ export interface ReadTeamListResponse {
 
 export interface ReadTeamUsersResponse {
   count: number;
-  teamMember: {
-    user: {
-      id: string;
-      name: string;
-      email: string;
-      roleInfo: {
-        id: string;
-        name: string;
-        fields: {
-          id: string;
-          name: string;
-        }[];
-      };
-    };
-    teamRole: UserRole;
-    createdAt: string;
-    lastActiveAt: string;
-  }[];
+  teamMember: TeamMember;
 }
 
 export interface ReadTeamDetailResponse {
@@ -110,3 +94,15 @@ export type ReadTeamRoleCountResponse = {
   number: number;
 };
 export type UpdateTeamUserResponse = string;
+
+export type TeamMember = {
+  user: {
+    id: string;
+    name: string;
+    email: string;
+    roleInfo: RoleInfo;
+  };
+  teamRole: UserRole;
+  createdAt: string;
+  lastActiveAt: string;
+}[];

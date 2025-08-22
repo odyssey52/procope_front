@@ -1,6 +1,12 @@
 import { updateTeamUser } from '@/features/team/services/teamService';
-import * as types from '@/features/team/services/teamService.type';
-import { ReadTeamDetailResponse, ReadTeamUsersResponse } from '@/features/team/services/teamService.type';
+import {
+  ReadTeamDetailResponse,
+  ReadTeamUsersResponse,
+  TeamMember,
+  UpdateTeamUserPayload,
+  UpdateTeamUserParams,
+} from '@/features/team/services/teamService.type';
+import { FieldInfo } from '@/features/user/services/info/userInfoService.type';
 import { IconSortArrow } from '@/shared/assets/icons/line';
 import { MESSAGES } from '@/shared/constants/messages';
 import { useAuth } from '@/shared/hooks/useAuth';
@@ -73,7 +79,7 @@ const MemberList = ({ teamUser, teamData }: MemberListProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const saveTeamUserMutation = useMutation({
-    mutationFn: ({ payload, params }: { payload: types.UpdateTeamUserPayload; params: types.UpdateTeamUserParams }) =>
+    mutationFn: ({ payload, params }: { payload: UpdateTeamUserPayload; params: UpdateTeamUserParams }) =>
       updateTeamUser(payload, params),
   });
 
@@ -89,13 +95,13 @@ const MemberList = ({ teamUser, teamData }: MemberListProps) => {
     return tagObj?.label;
   };
 
-  const task = (value: { id: string; name: string }[]) => {
+  const task = (value: FieldInfo[]) => {
     return value.map((ele) => ele.name);
   };
 
   const saveTeamUserHandle = async () => {
     try {
-      const changedUsers: types.UpdateTeamUserPayload = Object.entries(roles)
+      const changedUsers: UpdateTeamUserPayload = Object.entries(roles)
         .filter(([userId, role]) => initialRoles[userId] !== role)
         .map(([userId, role]) => ({
           userId,
@@ -129,7 +135,7 @@ const MemberList = ({ teamUser, teamData }: MemberListProps) => {
       key: 'name',
       title: title[0],
       width: `${width[0]}%`,
-      render: (item: ReadTeamUsersResponse['teamMember'][number]) => (
+      render: (item: TeamMember[number]) => (
         <Text variant="body_14_medium" color="secondary" ellipsis>
           {item.user.name}
         </Text>
@@ -139,7 +145,7 @@ const MemberList = ({ teamUser, teamData }: MemberListProps) => {
       key: 'email',
       title: title[1],
       width: `${width[1]}%`,
-      render: (item: ReadTeamUsersResponse['teamMember'][number]) => (
+      render: (item: TeamMember[number]) => (
         <Text variant="body_14_medium" color="secondary" ellipsis>
           {item.user.email}
         </Text>
@@ -149,13 +155,13 @@ const MemberList = ({ teamUser, teamData }: MemberListProps) => {
       key: 'job',
       title: title[2],
       width: `${width[2]}%`,
-      render: (item: ReadTeamUsersResponse['teamMember'][number]) => roleInfoName(item.user.roleInfo.name),
+      render: (item: TeamMember[number]) => roleInfoName(item.user.roleInfo.name),
     },
     {
       key: 'tasks',
       title: title[3],
       width: `${width[3]}%`,
-      render: (item: ReadTeamUsersResponse['teamMember'][number]) => (
+      render: (item: TeamMember[number]) => (
         <>
           {task(item.user.roleInfo.fields).map((ele, idx) => (
             <Tag key={idx} $style="transparent" $size="large">
@@ -171,7 +177,7 @@ const MemberList = ({ teamUser, teamData }: MemberListProps) => {
       width: `${width[4]}%`,
       sortable: true,
       icon: <IconSortArrow onClick={() => setTooltipIndex((prev) => (prev === 4 ? null : 4))} />,
-      render: (item: ReadTeamUsersResponse['teamMember'][number]) => (
+      render: (item: TeamMember[number]) => (
         <Text variant="body_14_medium" color="secondary" ellipsis>
           {formatDateToDot(item.createdAt)}
         </Text>
@@ -183,7 +189,7 @@ const MemberList = ({ teamUser, teamData }: MemberListProps) => {
       width: `${width[5]}%`,
       sortable: true,
       icon: <IconSortArrow onClick={() => setTooltipIndex((prev) => (prev === 5 ? null : 5))} />,
-      render: (item: ReadTeamUsersResponse['teamMember'][number]) => (
+      render: (item: TeamMember[number]) => (
         <Text variant="body_14_medium" color="secondary" ellipsis>
           {formatDateToDot(item.lastActiveAt)}
         </Text>
@@ -194,7 +200,7 @@ const MemberList = ({ teamUser, teamData }: MemberListProps) => {
       title: title[6],
       width: `${width[6]}%`,
       minWidth: '150px',
-      render: (item: ReadTeamUsersResponse['teamMember'][number]) =>
+      render: (item: TeamMember[number]) =>
         isAdmin && item.teamRole !== 'ADMIN' ? (
           <Select<UserRole>
             placeholder="권한을 선택하세요"
@@ -216,7 +222,7 @@ const MemberList = ({ teamUser, teamData }: MemberListProps) => {
       key: 'actions',
       title: title[7],
       width: '60px',
-      render: (item: ReadTeamUsersResponse['teamMember'][number]) =>
+      render: (item: TeamMember[number]) =>
         isAdmin && item.user.id !== userId ? (
           <>
             <MoreArea
