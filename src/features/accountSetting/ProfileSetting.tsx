@@ -11,6 +11,7 @@ import Chip from '@/shared/ui/chip/Chip';
 import Label from '@/shared/ui/label/Label';
 import Placeholder from '@/shared/ui/placeholder/Placeholder';
 import Radio from '@/shared/ui/radio/Radio';
+import TextSkeleton from '@/shared/ui/skeleton/TextSkeleton';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
 import styled from 'styled-components';
@@ -53,7 +54,11 @@ const ProfileSetting = ({ data }: Props) => {
     ...propertiesRolesQueries.readPropertiesRoles,
     select: (data) => data.roles.sort((a, b) => a.id - b.id),
   });
-  const { data: subJobList, isSuccess: isSubJobListSuccess } = useQuery({
+  const {
+    data: subJobList,
+    isLoading: isSubJobListLoading,
+    isSuccess: isSubJobListSuccess,
+  } = useQuery({
     ...propertiesFieldsQueries.readPropertiesFields({ roleId: jobSelectedValue.id }),
     select: (data) => data.fields.sort((a, b) => a.id - b.id),
   });
@@ -139,6 +144,15 @@ const ProfileSetting = ({ data }: Props) => {
       <WorkSection>
         <Label required text="담당 업무 (최대 3개)" />
         <ChipBox>
+          {isSubJobListLoading && (
+            <>
+              <TextSkeleton width="100px" height={32} />
+              <TextSkeleton width="100px" height={32} />
+              <TextSkeleton width="100px" height={32} />
+              <TextSkeleton width="100px" height={32} />
+              <TextSkeleton width="100px" height={32} />
+            </>
+          )}
           {isSubJobListSuccess &&
             subJobList.map((value) => {
               const isSelected = subJob.some((job) => job.name === value.name);

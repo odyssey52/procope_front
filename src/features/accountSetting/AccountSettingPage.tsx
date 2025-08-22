@@ -23,7 +23,9 @@ const AccountSettingPage = () => {
   if (isLoading) {
     return (
       <HeaderLayout>
-        <LoadingSpinner />
+        <LoadingWrapper>
+          <LoadingSpinner />
+        </LoadingWrapper>
       </HeaderLayout>
     );
   }
@@ -88,6 +90,13 @@ const Section = styled.div`
 `;
 
 const Content = styled.div`
+  flex-grow: 1;
+`;
+
+const LoadingWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
   flex-grow: 1;
 `;
 
