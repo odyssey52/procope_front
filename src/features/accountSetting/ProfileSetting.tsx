@@ -18,6 +18,7 @@ import { JobMain } from '../onboarding/FirstStep';
 import { JobSub } from '../onboarding/SecondStep';
 import userInfoQueries from '../user/query/info/userInfoQueries';
 import DeleteModal from './DeleteModal';
+
 interface Props {
   data: ReadUserInfoResponse;
 }
@@ -27,6 +28,7 @@ interface AvatarState {
   image: AvatarProps['image'];
   nickname: AvatarProps['nickname'];
 }
+
 const ProfileSetting = ({ data }: Props) => {
   const queryClient = useQueryClient();
   const { accessToken } = useAuthStore();
