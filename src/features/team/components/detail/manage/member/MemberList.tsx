@@ -3,6 +3,7 @@ import * as types from '@/features/team/services/teamService.type';
 import { ReadTeamDetailResponse, ReadTeamUsersResponse } from '@/features/team/services/teamService.type';
 import { IconSortArrow } from '@/shared/assets/icons/line';
 import { MESSAGES } from '@/shared/constants/messages';
+import { useAuth } from '@/shared/hooks/useAuth';
 import { toastActions } from '@/shared/store/modal/toast';
 import Button from '@/shared/ui/button/Button';
 import MoreArea from '@/shared/ui/button/MoreArea';
@@ -24,10 +25,14 @@ interface MemberListProps {
 }
 
 const MemberList = ({ teamUser, teamData }: MemberListProps) => {
+  const { user } = useAuth();
+
   const [roles, setRoles] = useState<Record<string, 'ADMIN' | 'MANAGER' | 'MEMBER'>>({});
   const [initialRoles, setInitialRoles] = useState<Record<string, 'ADMIN' | 'MANAGER' | 'MEMBER'>>({});
   const [tooltipIndex, setTooltipIndex] = useState<number | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const userId = String(user?.userContext.id) || '';
 
   const title = ['참여자', '이메일', '직무', '담당업무', '참여 일자', '활성 일자', '권한', ''];
   const width = ['8', '18', '9', '23', '11', '11', '16'];
@@ -206,7 +211,7 @@ const MemberList = ({ teamUser, teamData }: MemberListProps) => {
       title: title[7],
       width: '60px',
       render: (item: ReadTeamUsersResponse['teamMember'][number]) =>
-        teamData.myRole === 'ADMIN' ? (
+        teamData.myRole === 'ADMIN' && item.user.id !== userId ? (
           <>
             <MoreArea
               size={36}

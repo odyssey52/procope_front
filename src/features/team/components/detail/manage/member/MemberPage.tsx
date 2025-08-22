@@ -10,7 +10,7 @@ import { useParams } from 'next/navigation';
 import styled from 'styled-components';
 import MemberList from './MemberList';
 
-const Member = () => {
+const MemberPage = () => {
   const params = useParams();
   const teamId = params.teamId as string;
 
@@ -87,8 +87,6 @@ const Member = () => {
   );
 };
 
-export default Member;
-
 const Wrapper = styled.div`
   position: relative;
   display: flex;
@@ -161,3 +159,6 @@ const Title = styled.div`
   ${({ theme }) => theme.fontStyle.heading_18}
   color: ${({ theme }) => theme.sementicColors.text.primary};
 `;
+MemberPage.displayName = 'MemberPage';
+
+export default MemberPage;

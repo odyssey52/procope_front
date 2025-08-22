@@ -1,9 +1,9 @@
 'use client';
 
-import Member from '@/features/team/components/detail/manage/member/Member';
+import MemberPage from '@/features/team/components/detail/manage/member/MemberPage';
 
 const page = () => {
-  return <Member />;
+  return <MemberPage />;
 };
 
 page.displayName = 'page';
