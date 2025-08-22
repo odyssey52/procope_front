@@ -46,7 +46,7 @@ export interface UpdateTeamPayload {
 }
 export type UpdateTeamUserItem = {
   userId: string;
-  role: 'ADMIN' | 'MANAGER' | 'MEMBER';
+  role: UserRole;
 };
 export type UpdateTeamUserPayload = UpdateTeamUserItem[];
 
@@ -83,7 +83,7 @@ export interface ReadTeamUsersResponse {
         }[];
       };
     };
-    teamRole: 'ADMIN' | 'MANAGER' | 'MEMBER';
+    teamRole: UserRole;
     createdAt: string;
     lastActiveAt: string;
   }[];
@@ -94,7 +94,7 @@ export interface ReadTeamDetailResponse {
   type: TeamType;
   name: string;
   description: string;
-  myRole: 'ADMIN' | 'MANAGER' | 'MEMBER';
+  myRole: UserRole;
   inviteUrl: string;
 }
 

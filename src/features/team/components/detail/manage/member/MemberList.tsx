@@ -5,6 +5,7 @@ import { IconSortArrow } from '@/shared/assets/icons/line';
 import { MESSAGES } from '@/shared/constants/messages';
 import { useAuth } from '@/shared/hooks/useAuth';
 import { toastActions } from '@/shared/store/modal/toast';
+import { UserRole } from '@/shared/types/team';
 import Button from '@/shared/ui/button/Button';
 import MoreArea from '@/shared/ui/button/MoreArea';
 import ItemList from '@/shared/ui/select/ItemList';
@@ -24,57 +25,64 @@ interface MemberListProps {
   teamData: ReadTeamDetailResponse;
 }
 
+interface AuthorityTag {
+  id: UserRole;
+  value: UserRole;
+  label: React.JSX.Element;
+}
+
+const authorityTag: AuthorityTag[] = [
+  {
+    id: 'ADMIN',
+    value: 'ADMIN',
+    label: (
+      <Tag $status="info" $style="transparent" $size="large">
+        최고 관리자
+      </Tag>
+    ),
+  },
+  {
+    id: 'MANAGER',
+    value: 'MANAGER',
+    label: (
+      <Tag $status="success" $style="transparent" $size="large">
+        관리자
+      </Tag>
+    ),
+  },
+  {
+    id: 'MEMBER',
+    value: 'MEMBER',
+    label: (
+      <Tag $style="transparent" $size="large">
+        참여자
+      </Tag>
+    ),
+  },
+];
+
 const MemberList = ({ teamUser, teamData }: MemberListProps) => {
   const { user } = useAuth();
+  const userId = String(user?.userContext.id) || '';
 
-  const [roles, setRoles] = useState<Record<string, 'ADMIN' | 'MANAGER' | 'MEMBER'>>({});
-  const [initialRoles, setInitialRoles] = useState<Record<string, 'ADMIN' | 'MANAGER' | 'MEMBER'>>({});
+  const [roles, setRoles] = useState<Record<string, UserRole>>({});
+  const [initialRoles, setInitialRoles] = useState<Record<string, UserRole>>({});
   const [tooltipIndex, setTooltipIndex] = useState<number | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const userId = String(user?.userContext.id) || '';
+  const saveTeamUserMutation = useMutation({
+    mutationFn: ({ payload, params }: { payload: types.UpdateTeamUserPayload; params: types.UpdateTeamUserParams }) =>
+      updateTeamUser(payload, params),
+  });
 
   const title = ['참여자', '이메일', '직무', '담당업무', '참여 일자', '활성 일자', '권한', ''];
   const width = ['8', '18', '9', '23', '11', '11', '16'];
+
   const roleInfoName = (name: string) => {
     return <TagJob type={name as JobType} />;
   };
 
-  const authorityTag: {
-    id: 'ADMIN' | 'MANAGER' | 'MEMBER';
-    value: 'ADMIN' | 'MANAGER' | 'MEMBER';
-    label: React.JSX.Element;
-  }[] = [
-    {
-      id: 'ADMIN',
-      value: 'ADMIN',
-      label: (
-        <Tag $status="info" $style="transparent" $size="large">
-          최고 관리자
-        </Tag>
-      ),
-    },
-    {
-      id: 'MANAGER',
-      value: 'MANAGER',
-      label: (
-        <Tag $status="success" $style="transparent" $size="large">
-          관리자
-        </Tag>
-      ),
-    },
-    {
-      id: 'MEMBER',
-      value: 'MEMBER',
-      label: (
-        <Tag $style="transparent" $size="large">
-          참여자
-        </Tag>
-      ),
-    },
-  ];
-
-  const selectAuth = (value: 'ADMIN' | 'MANAGER' | 'MEMBER') => {
+  const selectAuth = (value: UserRole) => {
     const tagObj = authorityTag.find((tag) => tag.id === value);
     return tagObj?.label;
   };
@@ -82,11 +90,6 @@ const MemberList = ({ teamUser, teamData }: MemberListProps) => {
   const task = (value: { id: string; name: string }[]) => {
     return value.map((ele) => ele.name);
   };
-
-  const saveTeamUserMutation = useMutation({
-    mutationFn: ({ payload, params }: { payload: types.UpdateTeamUserPayload; params: types.UpdateTeamUserParams }) =>
-      updateTeamUser(payload, params),
-  });
 
   const saveTeamUserHandle = async () => {
     try {
@@ -190,7 +193,7 @@ const MemberList = ({ teamUser, teamData }: MemberListProps) => {
       width: `${width[6]}%`,
       render: (item: ReadTeamUsersResponse['teamMember'][number]) =>
         teamData.myRole === 'ADMIN' ? (
-          <Select<'ADMIN' | 'MANAGER' | 'MEMBER'>
+          <Select<UserRole>
             placeholder="권한을 선택하세요"
             value={roles[item.user.id]}
             width="100%"
