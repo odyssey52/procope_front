@@ -1,10 +1,11 @@
+import { AUTHORITY_TAG, MEMBERLIST_TABLE_TITLE, MEMBERLIST_TABLE_WIDTH } from '@/features/team/const/member';
 import { updateTeamUser } from '@/features/team/services/teamService';
 import {
   ReadTeamDetailResponse,
   ReadTeamUsersResponse,
   TeamMember,
-  UpdateTeamUserPayload,
   UpdateTeamUserParams,
+  UpdateTeamUserPayload,
 } from '@/features/team/services/teamService.type';
 import { FieldInfo } from '@/features/user/services/info/userInfoService.type';
 import { IconSortArrow } from '@/shared/assets/icons/line';
@@ -22,7 +23,7 @@ import TagJob, { JobType } from '@/shared/ui/tag/TagJob';
 import Text from '@/shared/ui/Text';
 import { formatDateToDot } from '@/shared/utils/date';
 import { useMutation } from '@tanstack/react-query';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import SubModal from '../SubModal';
 
@@ -30,42 +31,6 @@ interface MemberListProps {
   teamUser: ReadTeamUsersResponse;
   teamData: ReadTeamDetailResponse;
 }
-
-interface AuthorityTag {
-  id: UserRole;
-  value: UserRole;
-  label: React.JSX.Element;
-}
-
-const authorityTag: AuthorityTag[] = [
-  {
-    id: 'ADMIN',
-    value: 'ADMIN',
-    label: (
-      <Tag $status="info" $style="transparent" $size="large">
-        최고 관리자
-      </Tag>
-    ),
-  },
-  {
-    id: 'MANAGER',
-    value: 'MANAGER',
-    label: (
-      <Tag $status="success" $style="transparent" $size="large">
-        관리자
-      </Tag>
-    ),
-  },
-  {
-    id: 'MEMBER',
-    value: 'MEMBER',
-    label: (
-      <Tag $style="transparent" $size="large">
-        참여자
-      </Tag>
-    ),
-  },
-];
 
 const MemberList = ({ teamUser, teamData }: MemberListProps) => {
   const { user } = useAuth();
@@ -83,15 +48,12 @@ const MemberList = ({ teamUser, teamData }: MemberListProps) => {
       updateTeamUser(payload, params),
   });
 
-  const title = ['참여자', '이메일', '직무', '담당업무', '참여 일자', '활성 일자', '권한', ''];
-  const width = ['8', '18', '9', '23', '11', '11', '16'];
-
   const roleInfoName = (name: string) => {
     return <TagJob type={name as JobType} />;
   };
 
   const selectAuth = (value: UserRole) => {
-    const tagObj = authorityTag.find((tag) => tag.id === value);
+    const tagObj = AUTHORITY_TAG.find((tag) => tag.id === value);
     return tagObj?.label;
   };
 
@@ -133,8 +95,8 @@ const MemberList = ({ teamUser, teamData }: MemberListProps) => {
   const columns = [
     {
       key: 'name',
-      title: title[0],
-      width: `${width[0]}%`,
+      title: MEMBERLIST_TABLE_TITLE[0],
+      width: `${MEMBERLIST_TABLE_WIDTH[0]}%`,
       render: (item: TeamMember[number]) => (
         <Text variant="body_14_medium" color="secondary" ellipsis>
           {item.user.name}
@@ -143,8 +105,8 @@ const MemberList = ({ teamUser, teamData }: MemberListProps) => {
     },
     {
       key: 'email',
-      title: title[1],
-      width: `${width[1]}%`,
+      title: MEMBERLIST_TABLE_TITLE[1],
+      width: `${MEMBERLIST_TABLE_WIDTH[1]}%`,
       render: (item: TeamMember[number]) => (
         <Text variant="body_14_medium" color="secondary" ellipsis>
           {item.user.email}
@@ -153,14 +115,14 @@ const MemberList = ({ teamUser, teamData }: MemberListProps) => {
     },
     {
       key: 'job',
-      title: title[2],
-      width: `${width[2]}%`,
+      title: MEMBERLIST_TABLE_TITLE[2],
+      width: `${MEMBERLIST_TABLE_WIDTH[2]}%`,
       render: (item: TeamMember[number]) => roleInfoName(item.user.roleInfo.name),
     },
     {
       key: 'tasks',
-      title: title[3],
-      width: `${width[3]}%`,
+      title: MEMBERLIST_TABLE_TITLE[3],
+      width: `${MEMBERLIST_TABLE_WIDTH[3]}%`,
       render: (item: TeamMember[number]) => (
         <>
           {task(item.user.roleInfo.fields).map((ele, idx) => (
@@ -173,8 +135,8 @@ const MemberList = ({ teamUser, teamData }: MemberListProps) => {
     },
     {
       key: 'createdAt',
-      title: title[4],
-      width: `${width[4]}%`,
+      title: MEMBERLIST_TABLE_TITLE[4],
+      width: `${MEMBERLIST_TABLE_WIDTH[4]}%`,
       sortable: true,
       icon: <IconSortArrow onClick={() => setTooltipIndex((prev) => (prev === 4 ? null : 4))} />,
       render: (item: TeamMember[number]) => (
@@ -185,8 +147,8 @@ const MemberList = ({ teamUser, teamData }: MemberListProps) => {
     },
     {
       key: 'lastActiveAt',
-      title: title[5],
-      width: `${width[5]}%`,
+      title: MEMBERLIST_TABLE_TITLE[5],
+      width: `${MEMBERLIST_TABLE_WIDTH[5]}%`,
       sortable: true,
       icon: <IconSortArrow onClick={() => setTooltipIndex((prev) => (prev === 5 ? null : 5))} />,
       render: (item: TeamMember[number]) => (
@@ -197,8 +159,8 @@ const MemberList = ({ teamUser, teamData }: MemberListProps) => {
     },
     {
       key: 'role',
-      title: title[6],
-      width: `${width[6]}%`,
+      title: MEMBERLIST_TABLE_TITLE[6],
+      width: `${MEMBERLIST_TABLE_WIDTH[6]}%`,
       minWidth: '150px',
       render: (item: TeamMember[number]) =>
         isAdmin && item.teamRole !== 'ADMIN' ? (
@@ -212,7 +174,7 @@ const MemberList = ({ teamUser, teamData }: MemberListProps) => {
                 [item.user.id]: next,
               }));
             }}
-            selectOptionList={authorityTag}
+            selectOptionList={AUTHORITY_TAG}
           />
         ) : (
           selectAuth(item.teamRole)
@@ -220,7 +182,7 @@ const MemberList = ({ teamUser, teamData }: MemberListProps) => {
     },
     {
       key: 'actions',
-      title: title[7],
+      title: MEMBERLIST_TABLE_TITLE[7],
       width: '60px',
       render: (item: TeamMember[number]) =>
         isAdmin && item.user.id !== userId ? (
