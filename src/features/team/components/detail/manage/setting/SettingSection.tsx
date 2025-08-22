@@ -168,11 +168,13 @@ const SettingSection = ({ teamData, teamId }: Props) => {
 
 export default SettingSection;
 const Container = styled.div`
-  width: 607px;
-  margin: 0 auto;
+  max-width: 607px;
+  width: 100%;
   display: flex;
   flex-direction: column;
   gap: 40px;
+  margin: 24px;
+  padding: 24px;
 `;
 const Head = styled.div`
   display: flex;
@@ -190,18 +192,19 @@ const Content = styled.div`
   gap: 24px;
 `;
 const CardSection = styled.div`
-  background-color: ${({ theme }) => theme.sementicColors.bg.inverse};
+  display: flex;
   border-radius: 16px;
   padding: 24px;
-  display: flex;
   justify-content: space-between;
+  gap: 24px;
+  background-color: ${({ theme }) => theme.sementicColors.bg.inverse};
 `;
 const TextSection = styled.div`
+  display: flex;
+  flex-direction: column;
   background-color: ${({ theme }) => theme.sementicColors.bg.inverse};
   border-radius: 16px;
   padding: 24px;
-  display: flex;
-  flex-direction: column;
   gap: 32px;
 `;
 const ButtonSection = styled.div`
