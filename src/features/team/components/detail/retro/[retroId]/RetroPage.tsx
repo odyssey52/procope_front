@@ -30,17 +30,17 @@ const RetroPage = () => {
   const paths = [
     {
       name: '회고 관리',
-      path: `/team/${params.teamId}`,
+      path: `/team/${teamId}`,
       clickable: false,
     },
     {
       name: '회고 목록',
-      path: `/team/${params.teamId}/retro`,
+      path: `/team/${teamId}/retro`,
       clickable: true,
     },
     {
       name: '회고 상세',
-      path: `/team/${params.teamId}/retro/${params.retroId}`,
+      path: `/team/${teamId}/retro/${retroId}`,
       clickable: true,
     },
   ];
