@@ -1,9 +1,9 @@
 'use client';
 
-import TeamSetting from '@/features/team/components/detail/manage/setting/TeamSettingPage';
+import TeamSettingPage from '@/features/team/components/detail/manage/setting/TeamSettingPage';
 
 const page = () => {
-  return <TeamSetting />;
+  return <TeamSettingPage />;
 };
 
 page.displayName = 'page';

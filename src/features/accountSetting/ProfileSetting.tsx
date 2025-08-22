@@ -5,7 +5,7 @@ import { ReadUserInfoResponse } from '@/features/user/services/info/userInfoServ
 import { MESSAGES } from '@/shared/constants/messages';
 import useAuthStore from '@/shared/store/auth/auth';
 import { toastActions } from '@/shared/store/modal/toast';
-import Avatar from '@/shared/ui/avatar/Avatar';
+import Avatar, { AvatarProps } from '@/shared/ui/avatar/Avatar';
 import Button from '@/shared/ui/button/Button';
 import Chip from '@/shared/ui/chip/Chip';
 import Label from '@/shared/ui/label/Label';
@@ -22,18 +22,20 @@ interface Props {
   data: ReadUserInfoResponse;
 }
 
+interface AvatarState {
+  type: AvatarProps['type'];
+  image: AvatarProps['image'];
+  nickname: AvatarProps['nickname'];
+}
 const ProfileSetting = ({ data }: Props) => {
   const queryClient = useQueryClient();
   const { accessToken } = useAuthStore();
-  const [avatar, setAvatar] = useState<{
-    type: 'profile' | 'initial';
-    image: string;
-    nickname: string;
-  }>(() => ({
-    type: 'profile',
+  const [avatar, setAvatar] = useState<AvatarState>(() => ({
+    type: data.userContext.picture ? 'profile' : 'initial',
     image: data.userContext.picture,
     nickname: data.userContext.name,
   }));
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [name, setName] = useState(data.userContext.name);
   const [jobSelectedValue, setJobSelectedValue] = useState<JobMain>(data.roleInfo);
@@ -76,10 +78,12 @@ const ProfileSetting = ({ data }: Props) => {
       });
     }
   };
+
   const handleJob = (index: number, value: string) => {
     setJobSelectedValue({ id: index, name: value });
     setSubJob([]); // 선택된 Chip 초기화
   };
+
   const handleSubJob = (name: string, id: number) => {
     setSubJob((prev) => {
       if (prev.some((job) => job.name === name)) return prev.filter((job) => job.name !== name);
@@ -90,6 +94,7 @@ const ProfileSetting = ({ data }: Props) => {
   const accountDelete = () => {
     setIsModalOpen(true);
   };
+
   const closeModal = () => {
     setIsModalOpen(false);
   };
@@ -100,7 +105,6 @@ const ProfileSetting = ({ data }: Props) => {
       type: data.userContext.picture ? 'profile' : 'initial',
     }));
   }, [data.userContext.picture]);
-
   return (
     <Content>
       <Avatar type={avatar.type} size={84} image={avatar.image} nickname={avatar.nickname} />
