@@ -124,6 +124,7 @@ const ProblemSidePanelContent = ({ retroId, problemId }: ProblemSidePanelContent
   const handleDeleteRetroProblem = async (problemId: string | number) => {
     try {
       await deleteRetroProblemMutation.mutateAsync(problemId);
+      close();
     } catch (error) {
       handleError(error);
     }
