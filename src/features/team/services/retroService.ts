@@ -20,6 +20,8 @@ const URLS = {
     `/retrospectives/problems/${retroId}/${problemId}`,
   UPDATE_RETRO_PROBLEM_STATUS: (retroId: string | number, problemId: string | number) =>
     `/retrospectives/problems/${retroId}/${problemId}/status`,
+  UPDATE_RETRO_PROBLEM_COMPLETED_AT: (retroId: string | number, problemId: string | number) =>
+    `/retrospectives/problems/${retroId}/${problemId}/completed`,
 
   READ_RETRO_MEMBER_LIST: (teamId: string, retroId: string | number) =>
     `/retrospectives/${teamId}/${retroId}/participants`,
@@ -121,6 +123,14 @@ export async function updateRetroProblemStatus(
   params: types.UpdateRetroProblemStatusParams,
   payload: types.UpdateRetroProblemStatusPayload,
 ) {
-  const { data } = await api.put(URLS.UPDATE_RETRO_PROBLEM_STATUS(params.retroId, params.problemId), payload);
+  const { data } = await api.patch(URLS.UPDATE_RETRO_PROBLEM_STATUS(params.retroId, params.problemId), payload);
+  return data;
+}
+
+export async function updateRetroProblemCompletedAt(
+  params: types.UpdateRetroProblemCompletedAtParams,
+  payload: types.UpdateRetroProblemCompletedAtPayload,
+) {
+  const { data } = await api.patch(URLS.UPDATE_RETRO_PROBLEM_COMPLETED_AT(params.retroId, params.problemId), payload);
   return data;
 }

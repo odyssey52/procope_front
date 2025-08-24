@@ -68,6 +68,10 @@ export interface UpdateRetroProblemStatusParams {
   problemId: string | number;
 }
 
+export interface UpdateRetroProblemCompletedAtParams {
+  retroId: string | number;
+  problemId: string | number;
+}
 // Payload
 export interface CreateRetroPayload {
   title: string;
@@ -105,6 +109,11 @@ export interface DeleteRetroMemberPayload {
 export interface UpdateRetroProblemStatusPayload {
   kanbanStatus: ProblemKanbanStatus;
 }
+
+export interface UpdateRetroProblemCompletedAtPayload {
+  completedTime: string;
+}
+
 // response
 export type CreateRetroResponse = {
   retroId: string | number;
