@@ -18,6 +18,8 @@ const URLS = {
     `/retrospectives/problems/${retroId}/${problemId}`,
   DELETE_RETRO_PROBLEM: (retroId: string | number, problemId: string | number) =>
     `/retrospectives/problems/${retroId}/${problemId}`,
+  UPDATE_RETRO_PROBLEM_STATUS: (retroId: string | number, problemId: string | number) =>
+    `/retrospectives/problems/${retroId}/${problemId}/status`,
 
   READ_RETRO_MEMBER_LIST: (teamId: string, retroId: string | number) =>
     `/retrospectives/${teamId}/${retroId}/participants`,
@@ -112,5 +114,13 @@ export async function deleteRetroMember(
   const { data } = await api.delete(URLS.DELETE_RETRO_MEMBER(params.teamId, params.retroId), {
     data: payload,
   });
+  return data;
+}
+
+export async function updateRetroProblemStatus(
+  params: types.UpdateRetroProblemStatusParams,
+  payload: types.UpdateRetroProblemStatusPayload,
+) {
+  const { data } = await api.put(URLS.UPDATE_RETRO_PROBLEM_STATUS(params.retroId, params.problemId), payload);
   return data;
 }

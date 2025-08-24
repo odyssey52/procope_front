@@ -63,6 +63,11 @@ export interface DeleteRetroMemberParams {
   retroId: string | number;
 }
 
+export interface UpdateRetroProblemStatusParams {
+  retroId: string | number;
+  problemId: string | number;
+}
+
 // Payload
 export interface CreateRetroPayload {
   title: string;
@@ -97,6 +102,9 @@ export interface DeleteRetroMemberPayload {
   targetUserId: string;
 }
 
+export interface UpdateRetroProblemStatusPayload {
+  kanbanStatus: ProblemKanbanStatus;
+}
 // response
 export type CreateRetroResponse = {
   retroId: string | number;
