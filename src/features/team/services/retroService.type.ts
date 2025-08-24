@@ -91,7 +91,6 @@ export interface CreateRetroProblemPayload {
 export interface UpdateRetroProblemPayload {
   title: string;
   content: string;
-  kanbanStatus: ProblemKanbanStatus | KanbanStatus;
 }
 
 export interface DeleteRetroProblemPayload {

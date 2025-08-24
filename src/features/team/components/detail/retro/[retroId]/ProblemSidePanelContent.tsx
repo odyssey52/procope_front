@@ -1,8 +1,16 @@
 'use client';
 
 import retroQueries from '@/features/team/query/retroQueries';
-import { deleteRetroProblem, updateRetroProblem } from '@/features/team/services/retroService';
-import { ProblemKanbanStatus, UpdateRetroProblemPayload } from '@/features/team/services/retroService.type';
+import {
+  deleteRetroProblem,
+  updateRetroProblem,
+  updateRetroProblemStatus,
+} from '@/features/team/services/retroService';
+import {
+  ProblemKanbanStatus,
+  UpdateRetroProblemPayload,
+  UpdateRetroProblemStatusPayload,
+} from '@/features/team/services/retroService.type';
 import {
   IconApps,
   IconClockCircle,
@@ -83,20 +91,22 @@ const ProblemSidePanelContent = ({ retroId, problemId }: ProblemSidePanelContent
       queryClient.invalidateQueries({
         queryKey: retroQueries.readRetroProblemDetail({ retroId, problemId }).queryKey,
       });
-      if (currentKanbanStatusRef.current === data?.kanbanStatus) {
-        queryClient.invalidateQueries({
-          queryKey: retroQueries.readRetroProblemList({ retroId, kanbanStatus: currentKanbanStatusRef.current })
-            .queryKey,
-        });
-      } else {
-        queryClient.invalidateQueries({
-          queryKey: retroQueries.readRetroProblemList({ retroId, kanbanStatus: currentKanbanStatusRef.current })
-            .queryKey,
-        });
-        queryClient.invalidateQueries({
-          queryKey: retroQueries.readRetroProblemList({ retroId, kanbanStatus: data?.kanbanStatus! }).queryKey,
-        });
-      }
+      queryClient.invalidateQueries({
+        queryKey: retroQueries.readRetroProblemList({ retroId, kanbanStatus: currentKanbanStatusRef.current }).queryKey,
+      });
+    },
+  });
+
+  const updateRetroProblemStatusMutation = useMutation({
+    mutationFn: (payload: UpdateRetroProblemStatusPayload) =>
+      updateRetroProblemStatus({ retroId, problemId: problemId! }, payload),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: retroQueries.readRetroProblemList({ retroId, kanbanStatus: currentKanbanStatusRef.current }).queryKey,
+      });
+      queryClient.invalidateQueries({
+        queryKey: retroQueries.readRetroProblemList({ retroId, kanbanStatus: data?.kanbanStatus! }).queryKey,
+      });
     },
   });
 
@@ -114,6 +124,15 @@ const ProblemSidePanelContent = ({ retroId, problemId }: ProblemSidePanelContent
       await updateRetroProblemMutation.mutateAsync({
         title,
         content,
+      });
+    } catch (error) {
+      handleError(error);
+    }
+  };
+
+  const handleUpdateRetroProblemStatus = async (kanbanStatus: ProblemKanbanStatus) => {
+    try {
+      await updateRetroProblemStatusMutation.mutateAsync({
         kanbanStatus,
       });
     } catch (error) {
@@ -132,7 +151,6 @@ const ProblemSidePanelContent = ({ retroId, problemId }: ProblemSidePanelContent
 
   const triggerSave = (immediate = false) => {
     if (saveTimer.current) clearTimeout(saveTimer.current);
-
     if (immediate) {
       handleUpdateRetroProblem(currentTitle, currentContent, currentKanbanStatus);
     } else {
@@ -179,7 +197,7 @@ const ProblemSidePanelContent = ({ retroId, problemId }: ProblemSidePanelContent
     if (!isInitialized) return;
     if (!data) return;
     if (currentKanbanStatus !== data.kanbanStatus) {
-      triggerSave(true);
+      handleUpdateRetroProblemStatus(currentKanbanStatus);
     }
   }, [currentKanbanStatus]);
 
