@@ -93,7 +93,6 @@ const KeepSidePanelContent = ({ retroId, problemId }: KeepSidePanelContentProps)
       await updateRetroProblemMutation.mutateAsync({
         title: title ?? currentTitle,
         content: content ?? currentContent,
-        kanbanStatus: 'KEP',
       });
     } catch (error) {
       handleError(error);
@@ -164,7 +163,6 @@ const KeepSidePanelContent = ({ retroId, problemId }: KeepSidePanelContentProps)
           updateRetroProblemMutation.mutate({
             title: finalTitle,
             content: finalContent,
-            kanbanStatus: 'KEP',
           });
         }
       }
