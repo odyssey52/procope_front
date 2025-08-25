@@ -40,8 +40,6 @@ const useApiError = () => {
     } else {
       toastActions.open({ title: MESSAGES.ERROR.UNKNOWN_ERROR, state: 'error' });
     }
-
-    console.error('API 에러 발생:', error);
   }, []);
 
   return { handleError };
