@@ -50,6 +50,7 @@ const RetroPage = () => {
 
     if (!client.current) {
       client.current = new Client({
+        reconnectDelay: 0,
         webSocketFactory: () => {
           return new SockJS(`https://dev-core-api.procope.kr/websocket?token=Bearer ${accessToken}&retroId=${retroId}`);
         },
