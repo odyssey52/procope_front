@@ -72,6 +72,12 @@ export interface UpdateRetroProblemCompletedAtParams {
   retroId: string | number;
   problemId: string | number;
 }
+
+export interface UpdateRetroDateParams {
+  teamId: string;
+  retroId: string | number;
+}
+
 // Payload
 export interface CreateRetroPayload {
   title: string;
@@ -111,6 +117,10 @@ export interface UpdateRetroProblemStatusPayload {
 
 export interface UpdateRetroProblemCompletedAtPayload {
   completedTime: string;
+}
+
+export interface UpdateRetroDatePayload {
+  retroDate: string;
 }
 
 // response

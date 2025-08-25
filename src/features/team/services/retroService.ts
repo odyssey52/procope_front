@@ -29,6 +29,7 @@ const URLS = {
     `/retrospectives/${teamId}/${retroId}/participants`,
   DELETE_RETRO_MEMBER: (teamId: string, retroId: string | number) =>
     `/retrospectives/${teamId}/${retroId}/participants`,
+  UPDATE_RETRO_DATE: (teamId: string, retroId: string | number) => `/retrospectives/${teamId}/${retroId}/date`,
 };
 
 const api = new ApiClient({ isPublic: false });
@@ -132,5 +133,10 @@ export async function updateRetroProblemCompletedAt(
   payload: types.UpdateRetroProblemCompletedAtPayload,
 ) {
   const { data } = await api.patch(URLS.UPDATE_RETRO_PROBLEM_COMPLETED_AT(params.retroId, params.problemId), payload);
+  return data;
+}
+
+export async function updateRetroDate(params: types.UpdateRetroDateParams, payload: types.UpdateRetroDatePayload) {
+  const { data } = await api.patch(URLS.UPDATE_RETRO_DATE(params.teamId, params.retroId), payload);
   return data;
 }
