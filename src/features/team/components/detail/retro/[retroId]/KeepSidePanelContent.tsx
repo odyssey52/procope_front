@@ -41,7 +41,6 @@ const KeepSidePanelContent = ({ retroId, problemId }: KeepSidePanelContentProps)
   const [currentTitle, setCurrentTitle] = useState('');
   const [currentContent, setCurrentContent] = useState('');
   const [isInitialized, setIsInitialized] = useState(false);
-  const queryClient = useQueryClient();
   const close = useSidePanelStore((state) => state.close);
 
   const ref = useClickOutside<HTMLDivElement>(close, '.task-card');

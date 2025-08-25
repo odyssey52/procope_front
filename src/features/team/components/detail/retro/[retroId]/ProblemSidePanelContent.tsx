@@ -62,7 +62,6 @@ const ProblemSidePanelContent = ({ retroId, problemId }: ProblemSidePanelContent
   const close = useSidePanelStore((state) => state.close);
   const ref = useClickOutside<HTMLDivElement>(close, '.task-card');
 
-  const queryClient = useQueryClient();
   const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const currentTitleRef = useRef(currentTitle);
@@ -87,36 +86,15 @@ const ProblemSidePanelContent = ({ retroId, problemId }: ProblemSidePanelContent
 
   const updateRetroProblemMutation = useMutation({
     mutationFn: (payload: UpdateRetroProblemPayload) => updateRetroProblem({ retroId, problemId: problemId! }, payload),
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: retroQueries.readRetroProblemDetail({ retroId, problemId }).queryKey,
-      });
-      queryClient.invalidateQueries({
-        queryKey: retroQueries.readRetroProblemList({ retroId, kanbanStatus: currentKanbanStatusRef.current }).queryKey,
-      });
-    },
   });
 
   const updateRetroProblemStatusMutation = useMutation({
     mutationFn: (payload: UpdateRetroProblemStatusPayload) =>
       updateRetroProblemStatus({ retroId, problemId: problemId! }, payload),
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: retroQueries.readRetroProblemList({ retroId, kanbanStatus: currentKanbanStatusRef.current }).queryKey,
-      });
-      queryClient.invalidateQueries({
-        queryKey: retroQueries.readRetroProblemList({ retroId, kanbanStatus: data?.kanbanStatus! }).queryKey,
-      });
-    },
   });
 
   const deleteRetroProblemMutation = useMutation({
     mutationFn: (problemId: string | number) => deleteRetroProblem({ retroId, problemId }),
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: retroQueries.readRetroProblemList({ retroId, kanbanStatus: currentKanbanStatusRef.current }).queryKey,
-      });
-    },
   });
 
   const handleUpdateRetroProblem = async (title: string, content: string, kanbanStatus: ProblemKanbanStatus) => {

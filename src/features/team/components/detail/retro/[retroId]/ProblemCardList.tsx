@@ -53,11 +53,6 @@ const ProblemCardList = ({ retroId, kanbanStatus, client }: ProblemCardListProps
 
   const createRetroProblemMutation = useMutation({
     mutationFn: (payload: CreateRetroProblemPayload) => createRetroProblem({ retroId }, payload),
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: retroQueries.readRetroProblemList({ retroId, kanbanStatus }).queryKey,
-      });
-    },
   });
 
   const handleCreateRCG = async () => {
@@ -74,14 +69,15 @@ const ProblemCardList = ({ retroId, kanbanStatus, client }: ProblemCardListProps
 
   useEffect(() => {
     if (client && client.connected && kanbanStatus && retroId) {
-      subscriptionRef.current = client.subscribe(
-        `/user/topic/retrospectives?kanbanStatus=${kanbanStatus}`,
-        (message) => {
+      subscriptionRef.current = client.subscribe(`/user/topic/retrospectives${kanbanStatus}`, (message) => {
+        const data = JSON.parse(message.body);
+        if (data.code === 'UPDATE') {
+          console.log('📨 실시간 데이터 수신:', data.code);
           queryClient.invalidateQueries({
             queryKey: retroQueries.readRetroProblemList({ retroId, kanbanStatus }).queryKey,
           });
-        },
-      );
+        }
+      });
     }
     return () => {
       if (subscriptionRef.current) {
