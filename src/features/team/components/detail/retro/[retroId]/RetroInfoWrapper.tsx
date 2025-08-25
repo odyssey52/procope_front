@@ -4,6 +4,7 @@ import retroQueries from '@/features/team/query/retroQueries';
 import { deleteRetro, updateRetroTitle } from '@/features/team/services/retroService';
 import { UpdateRetroTitlePayload } from '@/features/team/services/retroService.type';
 import useApiError from '@/shared/hooks/useApiError';
+import { toastActions } from '@/shared/store/modal/toast';
 import Avatar from '@/shared/ui/avatar/Avatar';
 import AvatarGroup from '@/shared/ui/avatar/AvatarGroup';
 import MoreArea from '@/shared/ui/button/MoreArea';
@@ -48,10 +49,6 @@ const RetroInfoWrapper = ({ client }: RetroInfoWrapperProps) => {
 
   const deleteRetroMutation = useMutation({
     mutationFn: () => deleteRetro({ teamId, retroId }),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: retroQueries.readRetroList({ teamId }).queryKey });
-      router.push(`/team/${teamId}/retro`);
-    },
   });
 
   const handleSelectDate = (date: string) => {
@@ -69,10 +66,27 @@ const RetroInfoWrapper = ({ client }: RetroInfoWrapperProps) => {
     }
   };
 
+  const handleDeleteRetro = async () => {
+    try {
+      await deleteRetroMutation.mutateAsync();
+      queryClient.invalidateQueries({ queryKey: retroQueries.readRetroList({ teamId }).queryKey });
+      router.replace(`/team/${teamId}/retro`);
+      toastActions.open({
+        title: '회고가 삭제되었습니다.',
+        state: 'success',
+      });
+    } catch (error) {
+      handleError(error);
+    }
+  };
+
   useEffect(() => {
     if (client && client.connected) {
       subscriptionRef.current = client.subscribe('/user/topic/retrospectives', (message) => {
-        queryClient.invalidateQueries({ queryKey: retroQueries.readRetro({ teamId, retroId }).queryKey });
+        const data = JSON.parse(message.body);
+        if (data.code === 'UPDATE') {
+          queryClient.invalidateQueries({ queryKey: retroQueries.readRetro({ teamId, retroId }).queryKey });
+        }
       });
     }
 
@@ -115,7 +129,7 @@ const RetroInfoWrapper = ({ client }: RetroInfoWrapperProps) => {
             menuList={
               <ItemList
                 selectOptionList={[{ value: '삭제', label: '삭제' }]}
-                valueHandler={() => deleteRetroMutation.mutate()}
+                valueHandler={handleDeleteRetro}
                 width="112px"
               />
             }
