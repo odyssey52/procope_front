@@ -1,8 +1,8 @@
 'use client';
 
 import retroQueries from '@/features/team/query/retroQueries';
-import { deleteRetro, updateRetroTitle } from '@/features/team/services/retroService';
-import { UpdateRetroTitlePayload } from '@/features/team/services/retroService.type';
+import { deleteRetro, updateRetroDate, updateRetroTitle } from '@/features/team/services/retroService';
+import { UpdateRetroDatePayload, UpdateRetroTitlePayload } from '@/features/team/services/retroService.type';
 import useApiError from '@/shared/hooks/useApiError';
 import { toastActions } from '@/shared/store/modal/toast';
 import Avatar from '@/shared/ui/avatar/Avatar';
@@ -13,7 +13,7 @@ import Error from '@/shared/ui/error/Error';
 import ItemList from '@/shared/ui/select/ItemList';
 import Text from '@/shared/ui/Text';
 import PageTitle from '@/shared/ui/title/PageTitle';
-import { formatDateToDot } from '@/shared/utils/date';
+import { formatDateToDot, formatDotToISO } from '@/shared/utils/date';
 import { Client } from '@stomp/stompjs';
 import { useMutation, useQueryClient, useSuspenseQuery } from '@tanstack/react-query';
 import { useParams, useRouter } from 'next/navigation';
@@ -47,19 +47,29 @@ const RetroInfoWrapper = ({ client }: RetroInfoWrapperProps) => {
     mutationFn: (payload: UpdateRetroTitlePayload) => updateRetroTitle({ teamId, retroId }, payload),
   });
 
+  const updateRetroDateMutation = useMutation({
+    mutationFn: (payload: UpdateRetroDatePayload) => updateRetroDate({ teamId, retroId }, payload),
+  });
+
   const deleteRetroMutation = useMutation({
     mutationFn: () => deleteRetro({ teamId, retroId }),
   });
-
-  const handleSelectDate = (date: string) => {
-    setSelectedDate(date);
-  };
 
   const handleUpdateRetroTitle = async () => {
     try {
       await updateRetroTitleMutation.mutateAsync({ title: currentTitle });
       if (!client?.connected) {
         queryClient.invalidateQueries({ queryKey: retroQueries.readRetro({ teamId, retroId }).queryKey });
+      }
+    } catch (error) {
+      handleError(error);
+    }
+  };
+
+  const handleUpdateRetroDate = async (date: string) => {
+    try {
+      if (date) {
+        await updateRetroDateMutation.mutateAsync({ retroDate: formatDotToISO(date) });
       }
     } catch (error) {
       handleError(error);
@@ -84,6 +94,7 @@ const RetroInfoWrapper = ({ client }: RetroInfoWrapperProps) => {
     if (client && client.connected) {
       subscriptionRef.current = client.subscribe('/user/topic/retrospectives', (message) => {
         const data = JSON.parse(message.body);
+        console.log('📨 실시간 데이터 수신:', data);
         if (data.code === 'UPDATE') {
           queryClient.invalidateQueries({ queryKey: retroQueries.readRetro({ teamId, retroId }).queryKey });
         }
@@ -153,7 +164,7 @@ const RetroInfoWrapper = ({ client }: RetroInfoWrapperProps) => {
           <Text variant="body_16_medium" color="tertiary">
             회고 날짜
           </Text>
-          <CalendarArea selectedDate={selectedDate} onChange={handleSelectDate} />
+          <CalendarArea selectedDate={selectedDate} onChange={handleUpdateRetroDate} />
         </DateWrapper>
       </DetailInfoWrapper>
     </Wrapper>
