@@ -55,7 +55,7 @@ const renderDate = (date: string) => (
   </Text>
 );
 
-const renderCreatedAt = (item: ReadRetroListItem) => renderDate(item.createdAt);
+const renderRetroDate = (item: ReadRetroListItem) => renderDate(item.retroDate);
 
 const renderUpdatedAt = (item: ReadRetroListItem) => renderDate(item.updatedAt);
 
@@ -126,12 +126,12 @@ const RetroListPage = () => {
       render: renderMembers,
     },
     {
-      key: 'createdAt',
+      key: 'retroDate',
       title: '회고 일자',
       width: '184px',
       sortable: true,
       icon: <IconSortArrow />,
-      render: renderCreatedAt,
+      render: renderRetroDate,
     },
     {
       key: 'updatedAt',

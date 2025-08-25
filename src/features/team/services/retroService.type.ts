@@ -124,7 +124,7 @@ export type ReadRetroListItem = {
   picture: string;
   createUserName: string;
   joinedUserIds: string[];
-  createdAt: string;
+  retroDate: string;
   updatedAt: string;
 };
 
@@ -138,7 +138,7 @@ export interface ReadRetroResponse {
     name: string;
     profileImageUrl: string;
   };
-  createdAt: string;
+  retroDate: string;
   joinUserInfos: [
     {
       id: string;

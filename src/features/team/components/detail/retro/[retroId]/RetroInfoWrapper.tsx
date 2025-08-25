@@ -86,7 +86,7 @@ const RetroInfoWrapper = ({ client }: RetroInfoWrapperProps) => {
   useEffect(() => {
     if (data) {
       setCurrentTitle(data.title ?? '');
-      setSelectedDate(formatDateToDot(data.createdAt) ?? '');
+      setSelectedDate(formatDateToDot(data.retroDate) ?? '');
     }
   }, [data]);
 
