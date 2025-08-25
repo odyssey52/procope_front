@@ -1,7 +1,6 @@
 'use client';
 
 import { MESSAGES } from '@/shared/constants/messages';
-import { useUserInfo } from '@/shared/hooks/useUserInfo';
 import { useLogout } from '@/shared/hooks/useLogout';
 import useAuthStore from '@/shared/store/auth/auth';
 import { toastActions } from '@/shared/store/modal/toast';
@@ -27,9 +26,8 @@ import { refreshTokenQueries } from '../../query/refresh/refreshTokenQueries';
  */
 
 export function AuthGuard({ children }: { children: React.ReactNode }) {
-  const { accessToken, setAccessToken, logoutType } = useAuthStore();
+  const { accessToken, setAccessToken, logoutType, isRefreshing, setRefreshing } = useAuthStore();
   const { logout } = useLogout();
-  const [isRefreshing, setIsRefreshing] = useState(true);
 
   const isEnabled = useMemo(() => {
     return !accessToken && logoutType !== 'manual';
@@ -46,9 +44,9 @@ export function AuthGuard({ children }: { children: React.ReactNode }) {
   });
 
   useEffect(() => {
-    if (accessToken) setIsRefreshing(false);
-    if (isSuccess && newAccessToken) setAccessToken(newAccessToken);
-    if (isSuccess || isError) setIsRefreshing(false);
+    if (accessToken) setRefreshing(false);
+    if (isSuccess && newAccessToken && !accessToken) setAccessToken(newAccessToken);
+    if (isSuccess || isError) setRefreshing(false);
 
     if (!accessToken) {
       if (isError && !isSuccess) {
