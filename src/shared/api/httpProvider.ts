@@ -44,16 +44,43 @@ export default class HTTPProvider {
       async (error) => {
         // 토큰이 없거나 토큰 만료 코드
         if (error.response?.data?.code === 'AUTH009' || error.response?.data?.code === 'AUTH002') {
+          const authStore = useAuthStore.getState();
+
+          // 이미 토큰 갱신 중이면 대기
+          if (authStore.isRefreshing) {
+            // 토큰 갱신이 완료될 때까지 대기
+            return new Promise((resolve, reject) => {
+              const checkRefreshing = () => {
+                const currentState = useAuthStore.getState();
+                if (!currentState.isRefreshing) {
+                  // 토큰 갱신 완료, 새로운 토큰으로 재요청
+                  const newConfig = { ...error.config };
+                  newConfig.headers.Authorization = `Bearer ${currentState.accessToken}`;
+                  resolve(this.client.request(newConfig));
+                } else {
+                  // 아직 갱신 중, 100ms 후 다시 확인
+                  setTimeout(checkRefreshing, 100);
+                }
+              };
+              checkRefreshing();
+            });
+          }
+
+          // 토큰 갱신 시작
+          authStore.setRefreshing(true);
+
           try {
             const refreshResponse = await axios.get(`${USER_URL}auth/refresh`, { withCredentials: true });
             const newAccessToken = refreshResponse.data;
 
-            useAuthStore.getState().setAccessToken(newAccessToken);
+            authStore.setAccessToken(newAccessToken);
+            authStore.setRefreshing(false);
 
             const newConfig = { ...error.config };
             newConfig.headers.Authorization = `Bearer ${newAccessToken}`;
             return this.client.request(newConfig);
           } catch (refreshError) {
+            authStore.setRefreshing(false);
             if (axios.isAxiosError(refreshError)) {
               await axios.get(`${USER_URL}auth/invalidate`, { withCredentials: true });
               await handleLogout({ savePreviousPath: true });

@@ -63,6 +63,21 @@ export interface DeleteRetroMemberParams {
   retroId: string | number;
 }
 
+export interface UpdateRetroProblemStatusParams {
+  retroId: string | number;
+  problemId: string | number;
+}
+
+export interface UpdateRetroProblemCompletedAtParams {
+  retroId: string | number;
+  problemId: string | number;
+}
+
+export interface UpdateRetroDateParams {
+  teamId: string;
+  retroId: string | number;
+}
+
 // Payload
 export interface CreateRetroPayload {
   title: string;
@@ -82,7 +97,6 @@ export interface CreateRetroProblemPayload {
 export interface UpdateRetroProblemPayload {
   title: string;
   content: string;
-  kanbanStatus: ProblemKanbanStatus | KanbanStatus;
 }
 
 export interface DeleteRetroProblemPayload {
@@ -97,6 +111,18 @@ export interface DeleteRetroMemberPayload {
   targetUserId: string;
 }
 
+export interface UpdateRetroProblemStatusPayload {
+  kanbanStatus: ProblemKanbanStatus;
+}
+
+export interface UpdateRetroProblemCompletedAtPayload {
+  completedTime: string;
+}
+
+export interface UpdateRetroDatePayload {
+  retroDate: string;
+}
+
 // response
 export type CreateRetroResponse = {
   retroId: string | number;
@@ -108,7 +134,7 @@ export type ReadRetroListItem = {
   picture: string;
   createUserName: string;
   joinedUserIds: string[];
-  createdAt: string;
+  retroDate: string;
   updatedAt: string;
 };
 
@@ -122,7 +148,7 @@ export interface ReadRetroResponse {
     name: string;
     profileImageUrl: string;
   };
-  createdAt: string;
+  retroDate: string;
   joinUserInfos: [
     {
       id: string;

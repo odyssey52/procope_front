@@ -13,6 +13,7 @@ import Divider from '@/shared/ui/line/Divider';
 import Tag from '@/shared/ui/tag/Tag';
 import { JobType } from '@/shared/ui/tag/TagJob';
 import Text from '@/shared/ui/Text';
+import { Draggable, DraggableProvidedDraggableProps, DraggableStateSnapshot, Droppable } from '@hello-pangea/dnd';
 import { Client } from '@stomp/stompjs';
 import { useMutation, useQueryClient, useSuspenseQuery } from '@tanstack/react-query';
 import { useEffect, useRef } from 'react';
@@ -41,6 +42,18 @@ export const KANBAN_STATUS = {
   },
 };
 
+const getStyle = (style: DraggableProvidedDraggableProps['style'], snapshot: DraggableStateSnapshot) => {
+  if (!snapshot.isDragging) return {};
+  if (!snapshot.isDropAnimating) {
+    return style;
+  }
+
+  return {
+    ...style,
+    transitionDuration: '0.001s',
+  };
+};
+
 const ProblemCardList = ({ retroId, kanbanStatus, client }: ProblemCardListProps) => {
   const { handleError } = useApiError();
   const subscriptionRef = useRef<any>(null);
@@ -53,14 +66,9 @@ const ProblemCardList = ({ retroId, kanbanStatus, client }: ProblemCardListProps
 
   const createRetroProblemMutation = useMutation({
     mutationFn: (payload: CreateRetroProblemPayload) => createRetroProblem({ retroId }, payload),
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: retroQueries.readRetroProblemList({ retroId, kanbanStatus }).queryKey,
-      });
-    },
   });
 
-  const handleCreateRCG = async () => {
+  const handleCreateCard = async () => {
     try {
       await createRetroProblemMutation.mutateAsync({
         title: '',
@@ -74,14 +82,15 @@ const ProblemCardList = ({ retroId, kanbanStatus, client }: ProblemCardListProps
 
   useEffect(() => {
     if (client && client.connected && kanbanStatus && retroId) {
-      subscriptionRef.current = client.subscribe(
-        `/user/topic/retrospectives?kanbanStatus=${kanbanStatus}`,
-        (message) => {
+      subscriptionRef.current = client.subscribe(`/user/topic/retrospectives${kanbanStatus}`, (message) => {
+        const data = JSON.parse(message.body);
+        if (data.code === 'UPDATE') {
+          console.log('📨 실시간 데이터 수신:', data.code);
           queryClient.invalidateQueries({
             queryKey: retroQueries.readRetroProblemList({ retroId, kanbanStatus }).queryKey,
           });
-        },
-      );
+        }
+      });
     }
     return () => {
       if (subscriptionRef.current) {
@@ -91,64 +100,90 @@ const ProblemCardList = ({ retroId, kanbanStatus, client }: ProblemCardListProps
   }, [client, kanbanStatus, retroId]);
 
   return (
-    <Wrapper>
-      <Head>
-        <Title>
-          <TextWrapper>
-            <Text variant="body_16_semibold" color="primary">
-              {KANBAN_STATUS[kanbanStatus as keyof typeof KANBAN_STATUS].title}
-            </Text>
-            <MoreIndicator count={data?.count} type="transparent" />
-          </TextWrapper>
-          <PlusButton onClick={handleCreateRCG}>
-            <IconPlus size={24} />
-          </PlusButton>
-        </Title>
-        <Divider
-          color={KANBAN_STATUS[kanbanStatus as keyof typeof KANBAN_STATUS].color}
-          padding={0}
-          width={4}
-          radius={2}
-        />
-      </Head>
-      {isSuccess && (
-        <Content>
-          <CardList>
-            {data?.payload &&
-              data.payload.length > 0 &&
-              data.payload.map((item) => (
-                <TaskCard
-                  key={`${retroId}-PBM-${item.id}-${kanbanStatus}`}
-                  onClick={() => {
-                    handleSwitchCard({
-                      cardId: `${retroId}-PBM-${item.id}-${kanbanStatus}`,
-                      content: <ProblemSidePanelContent retroId={retroId} problemId={item.id} />,
-                    });
-                  }}
-                  tags={[
-                    <Tag
-                      key={`PBMTaskCard-${item.id}-${kanbanStatus}`}
-                      $size="large"
-                      $style="transparent"
-                      $leftIcon={<IconCheckMarkRectangle color={theme.sementicColors.icon.brand} />}
-                    >
-                      PBM-{item.id}
-                    </Tag>,
-                  ]}
-                  tagJob={item.userRole as JobType}
-                  title={item.title}
-                  startDate={item.updatedAt}
-                  user={{
-                    nickname: item.createUserInfo.name,
-                    profileImage: item.createUserInfo.profileImageUrl,
-                  }}
-                />
-              ))}
-            <CreateCardButton onClick={handleCreateRCG} />
-          </CardList>
-        </Content>
+    <Droppable droppableId={`${kanbanStatus}`}>
+      {(provided, snapshot) => (
+        <div
+          ref={provided.innerRef}
+          {...provided.droppableProps}
+          // style={{ backgroundColor: snapshot.isDraggingOver ? 'red' : 'blue' }}
+        >
+          <Wrapper>
+            <Head>
+              <Title>
+                <TextWrapper>
+                  <Text variant="body_16_semibold" color="primary">
+                    {KANBAN_STATUS[kanbanStatus as keyof typeof KANBAN_STATUS].title}
+                  </Text>
+                  <MoreIndicator count={data?.count} type="transparent" />
+                </TextWrapper>
+                <PlusButton onClick={handleCreateCard}>
+                  <IconPlus size={24} />
+                </PlusButton>
+              </Title>
+              <Divider
+                color={KANBAN_STATUS[kanbanStatus as keyof typeof KANBAN_STATUS].color}
+                padding={0}
+                width={4}
+                radius={2}
+              />
+            </Head>
+            {isSuccess && (
+              <Content>
+                <CardList>
+                  {data?.payload &&
+                    data.payload.length > 0 &&
+                    data.payload.map((item, index) => (
+                      <Draggable
+                        draggableId={`${item.id}`}
+                        key={`${retroId}-PBM-${item.id}-${kanbanStatus}`}
+                        index={index}
+                      >
+                        {(provided, draggableSnapshot) => (
+                          <div
+                            ref={provided.innerRef}
+                            {...provided.dragHandleProps}
+                            {...provided.draggableProps}
+                            style={getStyle(provided.draggableProps.style, draggableSnapshot)}
+                          >
+                            <TaskCard
+                              key={`${retroId}-PBM-${item.id}-${kanbanStatus}-TaskCard`}
+                              onClick={() => {
+                                handleSwitchCard({
+                                  cardId: `${retroId}-PBM-${item.id}-${kanbanStatus}-TaskCard`,
+                                  content: <ProblemSidePanelContent retroId={retroId} problemId={item.id} />,
+                                });
+                              }}
+                              tags={[
+                                <Tag
+                                  key={`${item.id}-${kanbanStatus}-TaskCard-Tag`}
+                                  $size="large"
+                                  $style="transparent"
+                                  $leftIcon={<IconCheckMarkRectangle color={theme.sementicColors.icon.brand} />}
+                                >
+                                  PBM-{item.id}
+                                </Tag>,
+                              ]}
+                              tagJob={item.userRole as JobType}
+                              title={item.title}
+                              startDate={item.updatedAt}
+                              user={{
+                                nickname: item.createUserInfo.name,
+                                profileImage: item.createUserInfo.profileImageUrl,
+                              }}
+                            />
+                          </div>
+                        )}
+                      </Draggable>
+                    ))}
+                  <CreateCardButton onClick={handleCreateCard} />
+                  <span style={{ display: 'none' }}>{provided.placeholder}</span>
+                </CardList>
+              </Content>
+            )}
+          </Wrapper>
+        </div>
       )}
-    </Wrapper>
+    </Droppable>
   );
 };
 

@@ -25,7 +25,7 @@ const MoreArea = ({ size = 24, menuList, ...props }: MoreAreaProps) => {
       <MoreButton onClick={handleMoreButtonClick}>
         <IconMenuCircleVertical size={size} />
       </MoreButton>
-      {isOpen && <MenuList>{menuList}</MenuList>}
+      {isOpen && <MenuList onClick={() => setIsOpen(false)}>{menuList}</MenuList>}
     </Wrapper>
   );
 };

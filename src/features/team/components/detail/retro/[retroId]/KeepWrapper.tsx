@@ -44,11 +44,6 @@ const KeepWrapper = ({ retroId, client }: KeepWrapperProps) => {
 
   const createRetroProblemMutation = useMutation({
     mutationFn: (payload: CreateRetroProblemPayload) => createRetroProblem({ retroId }, payload),
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: retroQueries.readRetroProblemList({ retroId, kanbanStatus: 'KEP' }).queryKey,
-      });
-    },
   });
 
   const addKeep = async () => {
@@ -65,25 +60,23 @@ const KeepWrapper = ({ retroId, client }: KeepWrapperProps) => {
 
   useEffect(() => {
     if (client && client.connected) {
-      subscriptionRef.current = client.subscribe('/user/topic/retrospectives?kanbanStatus=KEP', (message) => {
+      subscriptionRef.current = client.subscribe('/user/topic/retrospectivesKEP', (message) => {
         try {
           const keepData = JSON.parse(message.body);
-          console.log('📨 실시간 KEEP 리스트 수신:', keepData);
-          queryClient.invalidateQueries({
-            queryKey: retroQueries.readRetroProblemList({ retroId, kanbanStatus: 'KEP' }).queryKey,
-          });
+          if (keepData.code === 'UPDATE') {
+            queryClient.invalidateQueries({
+              queryKey: retroQueries.readRetroProblemList({ retroId, kanbanStatus: 'KEP' }).queryKey,
+            });
+          }
         } catch (error) {
           handleError(error);
         }
       });
-
-      console.log('✅ KEEP 구독 완료');
     }
 
     return () => {
       if (subscriptionRef.current) {
         subscriptionRef.current.unsubscribe();
-        console.log('🔌 KEEP 구독 해제');
       }
     };
   }, [client]);
