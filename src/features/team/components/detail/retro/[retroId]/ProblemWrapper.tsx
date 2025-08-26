@@ -30,7 +30,7 @@ const ProblemWrapper = ({ retroId, client }: ProblemWrapperProps) => {
   });
 
   const handleDragEnd = (result: DropResult) => {
-    const { destination, source } = result;
+    const { destination, source, draggableId } = result;
 
     if (!destination) {
       return;
@@ -43,7 +43,7 @@ const ProblemWrapper = ({ retroId, client }: ProblemWrapperProps) => {
     updateRetroProblemStatusMutation.mutate({
       params: {
         retroId,
-        problemId: source.index.toString(),
+        problemId: draggableId,
       },
       payload: {
         kanbanStatus: destination.droppableId as ProblemKanbanStatus,
