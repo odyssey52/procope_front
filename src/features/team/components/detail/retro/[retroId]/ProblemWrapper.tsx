@@ -1,7 +1,15 @@
 'use client';
 
+import { updateRetroProblemStatus } from '@/features/team/services/retroService';
+import {
+  ProblemKanbanStatus,
+  UpdateRetroProblemStatusParams,
+  UpdateRetroProblemStatusPayload,
+} from '@/features/team/services/retroService.type';
 import PageSubTitle from '@/shared/ui/title/PageSubTitle';
+import { DragDropContext, DropResult } from '@hello-pangea/dnd';
 import { Client } from '@stomp/stompjs';
+import { useMutation } from '@tanstack/react-query';
 import styled from 'styled-components';
 import ProblemCardList from './ProblemCardList';
 
@@ -11,15 +19,49 @@ interface ProblemWrapperProps {
 }
 
 const ProblemWrapper = ({ retroId, client }: ProblemWrapperProps) => {
+  const updateRetroProblemStatusMutation = useMutation({
+    mutationFn: ({
+      params,
+      payload,
+    }: {
+      params: UpdateRetroProblemStatusParams;
+      payload: UpdateRetroProblemStatusPayload;
+    }) => updateRetroProblemStatus(params, payload),
+  });
+
+  const handleDragEnd = (result: DropResult) => {
+    const { destination, source, draggableId } = result;
+
+    if (!destination) {
+      return;
+    }
+
+    if (destination.droppableId === source.droppableId) {
+      return;
+    }
+
+    updateRetroProblemStatusMutation.mutate({
+      params: {
+        retroId,
+        problemId: draggableId,
+      },
+      payload: {
+        kanbanStatus: destination.droppableId as ProblemKanbanStatus,
+      },
+    });
+  };
+
   return (
     <Wrapper>
       <Head>
         <PageSubTitle first="Q2. 개선할 점은 무엇이고 개선하기 위해 어떤 걸 시도할 수 있나요?" />
       </Head>
       <Content>
-        <ProblemCardList retroId={retroId} kanbanStatus="RCG" client={client} />
-        <ProblemCardList retroId={retroId} kanbanStatus="PRG" client={client} />
-        <ProblemCardList retroId={retroId} kanbanStatus="OK" client={client} />
+        <DragDropContext onDragEnd={handleDragEnd}>
+          <ProblemCardList retroId={retroId} kanbanStatus="RCG" client={client} />
+          <ProblemCardList retroId={retroId} kanbanStatus="PRG" client={client} />
+          <ProblemCardList retroId={retroId} kanbanStatus="OK" client={client} />
+        </DragDropContext>
       </Content>
     </Wrapper>
   );

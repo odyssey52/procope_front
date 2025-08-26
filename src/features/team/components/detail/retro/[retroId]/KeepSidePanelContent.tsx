@@ -41,7 +41,6 @@ const KeepSidePanelContent = ({ retroId, problemId }: KeepSidePanelContentProps)
   const [currentTitle, setCurrentTitle] = useState('');
   const [currentContent, setCurrentContent] = useState('');
   const [isInitialized, setIsInitialized] = useState(false);
-  const queryClient = useQueryClient();
   const close = useSidePanelStore((state) => state.close);
 
   const ref = useClickOutside<HTMLDivElement>(close, '.task-card');
@@ -69,23 +68,10 @@ const KeepSidePanelContent = ({ retroId, problemId }: KeepSidePanelContentProps)
 
   const updateRetroProblemMutation = useMutation({
     mutationFn: (payload: UpdateRetroProblemPayload) => updateRetroProblem({ retroId, problemId: problemId! }, payload),
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: retroQueries.readRetroProblemDetail({ retroId, problemId }).queryKey,
-      });
-      queryClient.invalidateQueries({
-        queryKey: retroQueries.readRetroProblemList({ retroId, kanbanStatus: 'KEP' }).queryKey,
-      });
-    },
   });
 
   const deleteRetroProblemMutation = useMutation({
     mutationFn: (problemId: string | number) => deleteRetroProblem({ retroId, problemId }),
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: retroQueries.readRetroProblemList({ retroId, kanbanStatus: 'KEP' }).queryKey,
-      });
-    },
   });
 
   const handleUpdateRetroProblem = async (title?: string, content?: string) => {
@@ -93,7 +79,6 @@ const KeepSidePanelContent = ({ retroId, problemId }: KeepSidePanelContentProps)
       await updateRetroProblemMutation.mutateAsync({
         title: title ?? currentTitle,
         content: content ?? currentContent,
-        kanbanStatus: 'KEP',
       });
     } catch (error) {
       handleError(error);
@@ -103,6 +88,7 @@ const KeepSidePanelContent = ({ retroId, problemId }: KeepSidePanelContentProps)
   const handleDeleteRetroProblem = async (problemId: string | number) => {
     try {
       await deleteRetroProblemMutation.mutateAsync(problemId);
+      close();
     } catch (error) {
       handleError(error);
     }
@@ -163,7 +149,6 @@ const KeepSidePanelContent = ({ retroId, problemId }: KeepSidePanelContentProps)
           updateRetroProblemMutation.mutate({
             title: finalTitle,
             content: finalContent,
-            kanbanStatus: 'KEP',
           });
         }
       }

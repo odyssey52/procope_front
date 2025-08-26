@@ -18,6 +18,10 @@ const URLS = {
     `/retrospectives/problems/${retroId}/${problemId}`,
   DELETE_RETRO_PROBLEM: (retroId: string | number, problemId: string | number) =>
     `/retrospectives/problems/${retroId}/${problemId}`,
+  UPDATE_RETRO_PROBLEM_STATUS: (retroId: string | number, problemId: string | number) =>
+    `/retrospectives/problems/${retroId}/${problemId}/status`,
+  UPDATE_RETRO_PROBLEM_COMPLETED_AT: (retroId: string | number, problemId: string | number) =>
+    `/retrospectives/problems/${retroId}/${problemId}/completed`,
 
   READ_RETRO_MEMBER_LIST: (teamId: string, retroId: string | number) =>
     `/retrospectives/${teamId}/${retroId}/participants`,
@@ -25,6 +29,7 @@ const URLS = {
     `/retrospectives/${teamId}/${retroId}/participants`,
   DELETE_RETRO_MEMBER: (teamId: string, retroId: string | number) =>
     `/retrospectives/${teamId}/${retroId}/participants`,
+  UPDATE_RETRO_DATE: (teamId: string, retroId: string | number) => `/retrospectives/${teamId}/${retroId}/date`,
 };
 
 const api = new ApiClient({ isPublic: false });
@@ -112,5 +117,26 @@ export async function deleteRetroMember(
   const { data } = await api.delete(URLS.DELETE_RETRO_MEMBER(params.teamId, params.retroId), {
     data: payload,
   });
+  return data;
+}
+
+export async function updateRetroProblemStatus(
+  params: types.UpdateRetroProblemStatusParams,
+  payload: types.UpdateRetroProblemStatusPayload,
+) {
+  const { data } = await api.patch(URLS.UPDATE_RETRO_PROBLEM_STATUS(params.retroId, params.problemId), payload);
+  return data;
+}
+
+export async function updateRetroProblemCompletedAt(
+  params: types.UpdateRetroProblemCompletedAtParams,
+  payload: types.UpdateRetroProblemCompletedAtPayload,
+) {
+  const { data } = await api.patch(URLS.UPDATE_RETRO_PROBLEM_COMPLETED_AT(params.retroId, params.problemId), payload);
+  return data;
+}
+
+export async function updateRetroDate(params: types.UpdateRetroDateParams, payload: types.UpdateRetroDatePayload) {
+  const { data } = await api.patch(URLS.UPDATE_RETRO_DATE(params.teamId, params.retroId), payload);
   return data;
 }
