@@ -105,7 +105,13 @@ const ProblemCardList = ({ retroId, kanbanStatus, client }: ProblemCardListProps
         <div
           ref={provided.innerRef}
           {...provided.droppableProps}
-          // style={{ backgroundColor: snapshot.isDraggingOver ? 'red' : 'blue' }}
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            borderRadius: 16,
+            padding: '5px',
+            backgroundColor: snapshot.isDraggingOver ? '#dadadf' : 'transparent',
+          }}
         >
           <Wrapper>
             <Head>
