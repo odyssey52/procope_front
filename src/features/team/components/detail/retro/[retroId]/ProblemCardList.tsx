@@ -93,7 +93,7 @@ const ProblemCardList = ({ retroId, kanbanStatus, client }: ProblemCardListProps
         <div
           ref={provided.innerRef}
           {...provided.droppableProps}
-          style={{ backgroundColor: snapshot.isDraggingOver ? 'red' : 'blue' }}
+          // style={{ backgroundColor: snapshot.isDraggingOver ? 'red' : 'blue' }}
         >
           <Wrapper>
             <Head>
@@ -124,7 +124,7 @@ const ProblemCardList = ({ retroId, kanbanStatus, client }: ProblemCardListProps
                       <Draggable
                         key={`${retroId}-PBM-${item.id}-${kanbanStatus}`}
                         draggableId={`${retroId}-PBM-${item.id}-${kanbanStatus}`}
-                        index={index}
+                        index={item.id}
                       >
                         {(provided) => (
                           <div ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
