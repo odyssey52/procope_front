@@ -209,9 +209,8 @@ const ProblemCardList = ({ retroId, kanbanStatus, client }: ProblemCardListProps
                         )}
                       </Draggable>
                     ))}
-                  <CreateCardButton onClick={handleCreateCard} />
-                  <span style={{ display: 'none' }}>{provided.placeholder}</span>
                 </CardList>
+                <CreateCardButton onClick={handleCreateCard} />
               </Content>
             )}
           </Wrapper>
@@ -266,7 +265,8 @@ const TextWrapper = styled.div`
 
 const Content = styled.div`
   display: flex;
-  gap: 8px;
+  flex-direction: column;
+  gap: 16px;
 `;
 
 const CardList = styled.div`
