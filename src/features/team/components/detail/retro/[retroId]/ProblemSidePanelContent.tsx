@@ -22,6 +22,7 @@ import {
 import useApiError from '@/shared/hooks/useApiError';
 import { useClickOutside } from '@/shared/hooks/useClickOutside';
 import { useSidePanelStore } from '@/shared/store/sidePanel/sidePanel';
+import useUserStore from '@/shared/store/user/user';
 import { theme } from '@/shared/styles/theme';
 import Avatar from '@/shared/ui/avatar/Avatar';
 import MoreArea from '@/shared/ui/button/MoreArea';
@@ -35,7 +36,7 @@ import Text from '@/shared/ui/Text';
 import Tiptap from '@/shared/ui/tiptap/Tiptap';
 import PageTitle from '@/shared/ui/title/PageTitle';
 import { formatDateToDot } from '@/shared/utils/date';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import BulletList from '@tiptap/extension-bullet-list';
 import ListItem from '@tiptap/extension-list-item';
 import Placeholder from '@tiptap/extension-placeholder';
@@ -54,6 +55,7 @@ interface ProblemSidePanelContentProps {
 }
 
 const ProblemSidePanelContent = ({ retroId, problemId }: ProblemSidePanelContentProps) => {
+  const { id } = useUserStore();
   const { handleError } = useApiError();
   const [currentTitle, setCurrentTitle] = useState('');
   const [currentContent, setCurrentContent] = useState('');
@@ -83,6 +85,8 @@ const ProblemSidePanelContent = ({ retroId, problemId }: ProblemSidePanelContent
     ],
     content: currentContent,
   });
+
+  const isEditable = data?.createUserInfo.id !== id;
 
   const updateRetroProblemMutation = useMutation({
     mutationFn: (payload: UpdateRetroProblemPayload) => updateRetroProblem({ retroId, problemId: problemId! }, payload),
@@ -288,7 +292,12 @@ const ProblemSidePanelContent = ({ retroId, problemId }: ProblemSidePanelContent
           <Divider color={theme.sementicColors.border.primary} />
           <SolveWrapper comments={data.solutions} />
           <Divider color={theme.sementicColors.border.primary} />
-          {editor && <Tiptap editor={editor} />}
+          {editor && (
+            <Tiptap
+              editor={editor}
+              // editable={isEditable}
+            />
+          )}
         </Wrapper>
       )}
     </RefContainer>
