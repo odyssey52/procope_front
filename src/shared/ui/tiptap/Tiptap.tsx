@@ -2,6 +2,7 @@
 
 import { Colors, FontStyle } from '@/shared/styles/theme';
 import { Editor, EditorContent } from '@tiptap/react';
+import { useEffect } from 'react';
 import styled from 'styled-components';
 
 interface TiptapProps {
@@ -12,7 +13,9 @@ interface TiptapProps {
 }
 
 const Tiptap = ({ editor, variant = 'body_16_regular', color = 'primary', editable = true }: TiptapProps) => {
-  editor.setEditable(editable);
+  useEffect(() => {
+    editor.setEditable(editable);
+  }, [editor, editable]);
 
   return (
     <Wrapper $variant={variant} $color={color}>
