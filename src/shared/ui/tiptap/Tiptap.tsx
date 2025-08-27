@@ -8,16 +8,14 @@ interface TiptapProps {
   editor: Editor;
   variant?: keyof FontStyle;
   color?: keyof Colors['text'];
+  editable?: boolean;
 }
 
-const Tiptap = ({ editor, variant = 'body_16_regular', color = 'primary' }: TiptapProps) => {
+const Tiptap = ({ editor, variant = 'body_16_regular', color = 'primary', editable = true }: TiptapProps) => {
+  editor.setEditable(editable);
+
   return (
     <Wrapper $variant={variant} $color={color}>
-      {/* <DragHandle editor={editor} className={editor?.isEditable ? 'block' : 'hidden'}>
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 9h16.5m-16.5 6.75h16.5" />
-        </svg>
-      </DragHandle> */}
       <EditorContent editor={editor} />
     </Wrapper>
   );
@@ -42,6 +40,7 @@ const Wrapper = styled.div<{ $variant: keyof FontStyle; $color: keyof Colors['te
       ${({ theme, $variant }) => theme.fontStyle[$variant]};
       color: ${({ theme }) => theme.sementicColors.text.tertiary};
       pointer-events: none;
+
       height: 0;
     }
 
