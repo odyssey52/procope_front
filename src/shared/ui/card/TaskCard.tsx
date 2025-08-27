@@ -59,7 +59,7 @@ const TaskCard = ({
   };
 
   return (
-    <Wrapper onClick={onClick} className="task-card">
+    <Wrapper onClick={onClick}>
       <Top>
         <TagBox>
           <TagList>
