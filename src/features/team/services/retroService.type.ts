@@ -78,6 +78,23 @@ export interface UpdateRetroDateParams {
   retroId: string | number;
 }
 
+export interface CreateRetroSolutionParams {
+  retroId: string | number;
+  problemId: string | number;
+}
+
+export interface UpdateRetroSolutionParams {
+  retroId: string | number;
+  problemId: string | number;
+  solutionId: string | number;
+}
+
+export interface DeleteRetroSolutionParams {
+  retroId: string | number;
+  problemId: string | number;
+  solutionId: string | number;
+}
+
 // Payload
 export interface CreateRetroPayload {
   title: string;
@@ -121,6 +138,16 @@ export interface UpdateRetroProblemCompletedAtPayload {
 
 export interface UpdateRetroDatePayload {
   retroDate: string;
+}
+
+export interface CreateRetroSolutionPayload {
+  title: string;
+  content: string;
+}
+
+export interface UpdateRetroSolutionPayload {
+  title: string;
+  content: string;
 }
 
 // response
