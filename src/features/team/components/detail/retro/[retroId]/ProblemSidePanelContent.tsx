@@ -64,6 +64,7 @@ const ProblemSidePanelContent = ({ retroId, problemId }: ProblemSidePanelContent
   const [currentTitle, setCurrentTitle] = useState('');
   const [currentContent, setCurrentContent] = useState('');
   const [currentKanbanStatus, setCurrentKanbanStatus] = useState<ProblemKanbanStatus>('RCG');
+  const [currentCompletedAt, setCurrentCompletedAt] = useState('');
   const [isInitialized, setIsInitialized] = useState(false);
   const close = useSidePanelStore((state) => state.close);
   const ref = useClickOutside<HTMLDivElement>(close, '.task-card');
@@ -73,6 +74,7 @@ const ProblemSidePanelContent = ({ retroId, problemId }: ProblemSidePanelContent
   const currentTitleRef = useRef(currentTitle);
   const currentContentRef = useRef(currentContent);
   const currentKanbanStatusRef = useRef(currentKanbanStatus);
+  const currentCompletedAtRef = useRef(currentCompletedAt);
 
   const { data, isLoading, isSuccess } = useQuery({
     ...retroQueries.readRetroProblemDetail({ retroId, problemId }),
@@ -104,11 +106,11 @@ const ProblemSidePanelContent = ({ retroId, problemId }: ProblemSidePanelContent
   const updateRetroProblemCompletedAtMutation = useMutation({
     mutationFn: (payload: UpdateRetroProblemCompletedAtPayload) =>
       updateRetroProblemCompletedAt({ retroId, problemId: problemId! }, payload),
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: retroQueries.readRetroProblemDetail({ retroId, problemId: problemId! }).queryKey,
-      });
-    },
+    // onSuccess: () => {
+    //   queryClient.invalidateQueries({
+    //     queryKey: retroQueries.readRetroProblemDetail({ retroId, problemId: problemId! }).queryKey,
+    //   });
+    // },
   });
 
   const deleteRetroProblemMutation = useMutation({
@@ -149,6 +151,10 @@ const ProblemSidePanelContent = ({ retroId, problemId }: ProblemSidePanelContent
     setCurrentKanbanStatus(status);
   };
 
+  const handleChangeCompletedAt = (completedAt: string) => {
+    setCurrentCompletedAt(completedAt);
+  };
+
   const handleUpdateRetroProblemCompletedAt = async (completedAt: string) => {
     try {
       await updateRetroProblemCompletedAtMutation.mutateAsync({ completedTime: completedAt });
@@ -182,6 +188,7 @@ const ProblemSidePanelContent = ({ retroId, problemId }: ProblemSidePanelContent
     setCurrentTitle(data.title);
     setCurrentContent(data.content);
     setCurrentKanbanStatus(data.kanbanStatus);
+    setCurrentCompletedAt(data.completedAt);
     setIsInitialized(true);
 
     if (editor && data.content?.trim()) {
@@ -206,6 +213,14 @@ const ProblemSidePanelContent = ({ retroId, problemId }: ProblemSidePanelContent
   }, [currentKanbanStatus]);
 
   useEffect(() => {
+    if (!isInitialized) return;
+    if (!data) return;
+    if (currentCompletedAt !== data.completedAt) {
+      handleUpdateRetroProblemCompletedAt(currentCompletedAt);
+    }
+  }, [currentCompletedAt]);
+
+  useEffect(() => {
     currentTitleRef.current = currentTitle;
   }, [currentTitle]);
 
@@ -218,15 +233,15 @@ const ProblemSidePanelContent = ({ retroId, problemId }: ProblemSidePanelContent
   }, [currentKanbanStatus]);
 
   useEffect(() => {
+    currentCompletedAtRef.current = currentCompletedAt;
+  }, [currentCompletedAt]);
+
+  useEffect(() => {
     return () => {
       if (!isInitialized) return;
       if (saveTimer.current) clearTimeout(saveTimer.current);
 
-      if (
-        currentTitleRef.current !== data?.title ||
-        currentContentRef.current !== data?.content ||
-        currentKanbanStatusRef.current !== data?.kanbanStatus
-      ) {
+      if (currentTitleRef.current !== data?.title || currentContentRef.current !== data?.content) {
         handleUpdateRetroProblem(currentTitleRef.current, currentContentRef.current);
       }
     };
@@ -307,8 +322,8 @@ const ProblemSidePanelContent = ({ retroId, problemId }: ProblemSidePanelContent
                   개선완료 날짜
                 </ProblemInfoItemTitle>
                 <CalendarArea
-                  selectedDate={formatDateToDot(data.completedAt)}
-                  onChange={(date) => handleUpdateRetroProblemCompletedAt(formatDotToISO(date))}
+                  selectedDate={formatDateToDot(currentCompletedAt)}
+                  onChange={(date) => handleChangeCompletedAt(formatDotToISO(date))}
                 />
               </ProblemInfoItem>
             )}
