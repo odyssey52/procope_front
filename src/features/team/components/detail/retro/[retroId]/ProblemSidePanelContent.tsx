@@ -38,7 +38,7 @@ import Text from '@/shared/ui/Text';
 import Tiptap from '@/shared/ui/tiptap/Tiptap';
 import PageTitle from '@/shared/ui/title/PageTitle';
 import { formatDateToDot, formatDotToISO } from '@/shared/utils/date';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import BulletList from '@tiptap/extension-bullet-list';
 import ListItem from '@tiptap/extension-list-item';
 import Placeholder from '@tiptap/extension-placeholder';
@@ -57,28 +57,24 @@ interface ProblemSidePanelContentProps {
 }
 
 const ProblemSidePanelContent = ({ retroId, problemId }: ProblemSidePanelContentProps) => {
-  const queryClient = useQueryClient();
-
   const { id } = useUserStore();
   const { handleError } = useApiError();
+  const close = useSidePanelStore((state) => state.close);
+  const ref = useClickOutside<HTMLDivElement>(close, '.task-card');
+
+  const [isInitialized, setIsInitialized] = useState(false);
   const [currentTitle, setCurrentTitle] = useState('');
   const [currentContent, setCurrentContent] = useState('');
   const [currentKanbanStatus, setCurrentKanbanStatus] = useState<ProblemKanbanStatus>('RCG');
   const [currentCompletedAt, setCurrentCompletedAt] = useState('');
-  const [isInitialized, setIsInitialized] = useState(false);
-  const close = useSidePanelStore((state) => state.close);
-  const ref = useClickOutside<HTMLDivElement>(close, '.task-card');
 
   const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
-
   const currentTitleRef = useRef(currentTitle);
   const currentContentRef = useRef(currentContent);
   const currentKanbanStatusRef = useRef(currentKanbanStatus);
   const currentCompletedAtRef = useRef(currentCompletedAt);
 
-  const { data, isLoading, isSuccess } = useQuery({
-    ...retroQueries.readRetroProblemDetail({ retroId, problemId }),
-  });
+  const { data, isLoading, isSuccess } = useQuery({ ...retroQueries.readRetroProblemDetail({ retroId, problemId }) });
 
   const editor = useEditor({
     extensions: [
@@ -106,11 +102,6 @@ const ProblemSidePanelContent = ({ retroId, problemId }: ProblemSidePanelContent
   const updateRetroProblemCompletedAtMutation = useMutation({
     mutationFn: (payload: UpdateRetroProblemCompletedAtPayload) =>
       updateRetroProblemCompletedAt({ retroId, problemId: problemId! }, payload),
-    // onSuccess: () => {
-    //   queryClient.invalidateQueries({
-    //     queryKey: retroQueries.readRetroProblemDetail({ retroId, problemId: problemId! }).queryKey,
-    //   });
-    // },
   });
 
   const deleteRetroProblemMutation = useMutation({
