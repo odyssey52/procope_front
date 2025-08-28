@@ -49,7 +49,7 @@ import styled from 'styled-components';
 import CalendarArea from './CalendarArea';
 import ProblemStatusSelect from './ProblemStatusSelect';
 import SkeletonSidePanelContent from './SkeletonSidePanelContent';
-import SolveWrapper from './SolveWrapper';
+import SolutionWrapper from './SolutionWrapper';
 
 interface ProblemSidePanelContentProps {
   retroId: string | number;
@@ -306,7 +306,7 @@ const ProblemSidePanelContent = ({ retroId, problemId }: ProblemSidePanelContent
             )}
           </ProblemInfo>
           <Divider color={theme.sementicColors.border.primary} />
-          <SolveWrapper comments={data.solutions} />
+          <SolutionWrapper retroId={retroId} problemId={problemId} solutions={data.solutions} />
           <Divider color={theme.sementicColors.border.primary} />
           {editor && (
             <Tiptap
