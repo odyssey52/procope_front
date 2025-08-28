@@ -174,6 +174,7 @@ export interface ReadRetroProblemDetailResponse {
   content: string;
   kanbanStatus: KanbanStatus;
   solutions: RetroProblemSolutionListItem[];
+  completedAt: string;
   updatedAt: string;
 }
 

@@ -4,10 +4,12 @@ import retroQueries from '@/features/team/query/retroQueries';
 import {
   deleteRetroProblem,
   updateRetroProblem,
+  updateRetroProblemCompletedAt,
   updateRetroProblemStatus,
 } from '@/features/team/services/retroService';
 import {
   ProblemKanbanStatus,
+  UpdateRetroProblemCompletedAtPayload,
   UpdateRetroProblemPayload,
   UpdateRetroProblemStatusPayload,
 } from '@/features/team/services/retroService.type';
@@ -35,8 +37,8 @@ import TagJob, { JobType } from '@/shared/ui/tag/TagJob';
 import Text from '@/shared/ui/Text';
 import Tiptap from '@/shared/ui/tiptap/Tiptap';
 import PageTitle from '@/shared/ui/title/PageTitle';
-import { formatDateToDot } from '@/shared/utils/date';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { formatDateToDot, formatDotToISO } from '@/shared/utils/date';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import BulletList from '@tiptap/extension-bullet-list';
 import ListItem from '@tiptap/extension-list-item';
 import Placeholder from '@tiptap/extension-placeholder';
@@ -55,6 +57,8 @@ interface ProblemSidePanelContentProps {
 }
 
 const ProblemSidePanelContent = ({ retroId, problemId }: ProblemSidePanelContentProps) => {
+  const queryClient = useQueryClient();
+
   const { id } = useUserStore();
   const { handleError } = useApiError();
   const [currentTitle, setCurrentTitle] = useState('');
@@ -97,11 +101,21 @@ const ProblemSidePanelContent = ({ retroId, problemId }: ProblemSidePanelContent
       updateRetroProblemStatus({ retroId, problemId: problemId! }, payload),
   });
 
+  const updateRetroProblemCompletedAtMutation = useMutation({
+    mutationFn: (payload: UpdateRetroProblemCompletedAtPayload) =>
+      updateRetroProblemCompletedAt({ retroId, problemId: problemId! }, payload),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: retroQueries.readRetroProblemDetail({ retroId, problemId: problemId! }).queryKey,
+      });
+    },
+  });
+
   const deleteRetroProblemMutation = useMutation({
     mutationFn: (problemId: string | number) => deleteRetroProblem({ retroId, problemId }),
   });
 
-  const handleUpdateRetroProblem = async (title: string, content: string, kanbanStatus: ProblemKanbanStatus) => {
+  const handleUpdateRetroProblem = async (title: string, content: string) => {
     try {
       await updateRetroProblemMutation.mutateAsync({
         title,
@@ -131,19 +145,27 @@ const ProblemSidePanelContent = ({ retroId, problemId }: ProblemSidePanelContent
     }
   };
 
-  const triggerSave = (immediate = false) => {
-    if (saveTimer.current) clearTimeout(saveTimer.current);
-    if (immediate) {
-      handleUpdateRetroProblem(currentTitle, currentContent, currentKanbanStatus);
-    } else {
-      saveTimer.current = setTimeout(() => {
-        handleUpdateRetroProblem(currentTitle, currentContent, currentKanbanStatus);
-      }, 3000);
+  const handleChangeKanbanStatus = (status: ProblemKanbanStatus) => {
+    setCurrentKanbanStatus(status);
+  };
+
+  const handleUpdateRetroProblemCompletedAt = async (completedAt: string) => {
+    try {
+      await updateRetroProblemCompletedAtMutation.mutateAsync({ completedTime: completedAt });
+    } catch (error) {
+      handleError(error);
     }
   };
 
-  const handleChangeKanbanStatus = (status: ProblemKanbanStatus) => {
-    setCurrentKanbanStatus(status);
+  const triggerSave = (immediate = false) => {
+    if (saveTimer.current) clearTimeout(saveTimer.current);
+    if (immediate) {
+      handleUpdateRetroProblem(currentTitle, currentContent);
+    } else {
+      saveTimer.current = setTimeout(() => {
+        handleUpdateRetroProblem(currentTitle, currentContent);
+      }, 3000);
+    }
   };
 
   // 에디터 내용 변경
@@ -205,7 +227,7 @@ const ProblemSidePanelContent = ({ retroId, problemId }: ProblemSidePanelContent
         currentContentRef.current !== data?.content ||
         currentKanbanStatusRef.current !== data?.kanbanStatus
       ) {
-        handleUpdateRetroProblem(currentTitleRef.current, currentContentRef.current, currentKanbanStatusRef.current);
+        handleUpdateRetroProblem(currentTitleRef.current, currentContentRef.current);
       }
     };
   }, [isInitialized, data]);
@@ -284,8 +306,10 @@ const ProblemSidePanelContent = ({ retroId, problemId }: ProblemSidePanelContent
                   <IconFlag size={20} color={theme.sementicColors.icon.disabled} />
                   개선완료 날짜
                 </ProblemInfoItemTitle>
-                {/* 추후 개선완료 날짜 수정 기능 추가 */}
-                <CalendarArea selectedDate={formatDateToDot(data.updatedAt)} onChange={() => {}} />
+                <CalendarArea
+                  selectedDate={formatDateToDot(data.completedAt)}
+                  onChange={(date) => handleUpdateRetroProblemCompletedAt(formatDotToISO(date))}
+                />
               </ProblemInfoItem>
             )}
           </ProblemInfo>
