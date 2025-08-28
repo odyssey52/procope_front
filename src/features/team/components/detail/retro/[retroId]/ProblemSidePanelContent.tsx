@@ -174,7 +174,6 @@ const ProblemSidePanelContent = ({ retroId, problemId }: ProblemSidePanelContent
     }
   };
 
-  // 에디터 내용 변경
   useEffect(() => {
     if (!editor) return;
     editor.on('update', ({ editor }) => {
@@ -182,7 +181,6 @@ const ProblemSidePanelContent = ({ retroId, problemId }: ProblemSidePanelContent
     });
   }, [editor]);
 
-  // 데이터 초기 로드
   useEffect(() => {
     if (!data) return;
     setCurrentTitle(data.title);
@@ -197,6 +195,8 @@ const ProblemSidePanelContent = ({ retroId, problemId }: ProblemSidePanelContent
   }, [data, editor]);
 
   useEffect(() => {
+    currentTitleRef.current = currentTitle;
+    currentContentRef.current = currentContent;
     if (!isInitialized) return;
     if (!data) return;
     if (currentTitle !== data.title || currentContent !== data.content) {
@@ -205,6 +205,7 @@ const ProblemSidePanelContent = ({ retroId, problemId }: ProblemSidePanelContent
   }, [currentTitle, currentContent]);
 
   useEffect(() => {
+    currentKanbanStatusRef.current = currentKanbanStatus;
     if (!isInitialized) return;
     if (!data) return;
     if (currentKanbanStatus !== data.kanbanStatus) {
@@ -213,27 +214,12 @@ const ProblemSidePanelContent = ({ retroId, problemId }: ProblemSidePanelContent
   }, [currentKanbanStatus]);
 
   useEffect(() => {
+    currentCompletedAtRef.current = currentCompletedAt;
     if (!isInitialized) return;
     if (!data) return;
     if (currentCompletedAt !== data.completedAt) {
       handleUpdateRetroProblemCompletedAt(currentCompletedAt);
     }
-  }, [currentCompletedAt]);
-
-  useEffect(() => {
-    currentTitleRef.current = currentTitle;
-  }, [currentTitle]);
-
-  useEffect(() => {
-    currentContentRef.current = currentContent;
-  }, [currentContent]);
-
-  useEffect(() => {
-    currentKanbanStatusRef.current = currentKanbanStatus;
-  }, [currentKanbanStatus]);
-
-  useEffect(() => {
-    currentCompletedAtRef.current = currentCompletedAt;
   }, [currentCompletedAt]);
 
   useEffect(() => {
