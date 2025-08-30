@@ -43,7 +43,7 @@ const KeepSidePanelContent = ({ retroId, problemId }: KeepSidePanelContentProps)
   const [isInitialized, setIsInitialized] = useState(false);
   const close = useSidePanelStore((state) => state.close);
 
-  const ref = useClickOutside<HTMLDivElement>(close, '.task-card');
+  const ref = useClickOutside<HTMLDivElement>(close, '.task-card-for-useClickOutside-hook');
   const currentTitleRef = useRef('');
   const currentContentRef = useRef('');
 
