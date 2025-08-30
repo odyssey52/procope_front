@@ -36,12 +36,17 @@ export function AuthGuard({ children }: { children: React.ReactNode }) {
   const {
     data: newAccessToken,
     isSuccess,
+    isLoading,
     isError,
   } = useQuery({
     ...refreshTokenQueries.accessTokenWithRefreshToken,
     enabled: isEnabled,
     retry: false,
   });
+
+  useEffect(() => {
+    setRefreshing(true);
+  }, []);
 
   useEffect(() => {
     if (accessToken) setRefreshing(false);
@@ -60,7 +65,7 @@ export function AuthGuard({ children }: { children: React.ReactNode }) {
     }
   }, [isSuccess, isError, newAccessToken, setAccessToken, accessToken]);
 
-  if (isRefreshing) {
+  if (isRefreshing || isLoading) {
     return (
       <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
         <LoadingSpinner />
