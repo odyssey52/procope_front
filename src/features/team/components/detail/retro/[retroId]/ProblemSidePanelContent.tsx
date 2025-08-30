@@ -60,7 +60,7 @@ const ProblemSidePanelContent = ({ retroId, problemId }: ProblemSidePanelContent
   const { id } = useUserStore();
   const { handleError } = useApiError();
   const close = useSidePanelStore((state) => state.close);
-  const ref = useClickOutside<HTMLDivElement>(close, '.task-card');
+  const ref = useClickOutside<HTMLDivElement>(close, '.task-card-for-useClickOutside-hook');
 
   const [isInitialized, setIsInitialized] = useState(false);
   const [currentTitle, setCurrentTitle] = useState('');
