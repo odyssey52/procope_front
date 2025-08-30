@@ -1,5 +1,6 @@
 'use client';
 
+import { useTeamDetailQuery } from '@/features/team/hooks/useTeamDetailQuery';
 import retroQueries from '@/features/team/query/retroQueries';
 import {
   deleteRetroProblem,
@@ -125,6 +126,8 @@ const ProblemSidePanelContent = ({ retroId, problemId }: ProblemSidePanelContent
   const { handleError } = useApiError();
   const close = useSidePanelStore((state) => state.close);
   const ref = useClickOutside<HTMLDivElement>(close, '.task-card-for-useClickOutside-hook');
+  const { data: teamInfo } = useTeamDetailQuery();
+  const myRole = teamInfo?.myRole;
 
   const [isInitialized, setIsInitialized] = useState(false);
   const [currentTitle, setCurrentTitle] = useState('');

@@ -14,7 +14,7 @@ const layout = ({ children }: { children: ReactNode }) => {
   const teamId = params.teamId as string;
   const { setTeamInfo, resetTeamInfo } = useTeamStore();
 
-  const { data: teamData } = useTeamDetailQuery({ teamId });
+  const { data: teamData } = useTeamDetailQuery();
 
   useEffect(() => {
     setTeamInfo(teamData || null);
