@@ -5,6 +5,7 @@ import { CreateRetroSolutionPayload, RetroProblemSolutionListItem } from '@/feat
 import { IconCheckMarkRectangle, IconSend } from '@/shared/assets/icons/line';
 import { useSidePanelStore } from '@/shared/store/sidePanel/sidePanel';
 import { theme } from '@/shared/styles/theme';
+import Button from '@/shared/ui/button/Button';
 import TaskCard from '@/shared/ui/card/TaskCard';
 import MoreIndicator from '@/shared/ui/indicator/MoreIndicator';
 import Placeholder from '@/shared/ui/placeholder/Placeholder';
@@ -30,11 +31,20 @@ const SolutionWrapper = ({
     mutationFn: (payload: CreateRetroSolutionPayload) => createRetroSolution({ retroId, problemId }, payload),
   });
 
+  const addSolution = () => {
+    console.log('addSolution');
+  };
+
   return (
     <Wrapper>
       <Head>
         <PageSubTitle first="개선방안">
-          <MoreIndicator count={solutions?.length} type="transparent" />
+          <SubTitleRightBox>
+            <MoreIndicator count={solutions?.length} type="transparent" />
+            <Button $type="secondary" onClick={addSolution}>
+              추가
+            </Button>
+          </SubTitleRightBox>
         </PageSubTitle>
       </Head>
       <Content>
@@ -68,18 +78,6 @@ const SolutionWrapper = ({
           ))}
         </CardList>
       </Content>
-      <InputWrapper>
-        <Placeholder
-          value={content}
-          valueHandler={setContent}
-          placeholder="개선방안 작성하기"
-          rightIcon={
-            <SendButton>
-              <IconSend size={20} />
-            </SendButton>
-          }
-        />
-      </InputWrapper>
     </Wrapper>
   );
 };
@@ -92,12 +90,7 @@ const Wrapper = styled.div`
 
 const Head = styled.div`
   display: flex;
-  align-items: center;
   justify-content: space-between;
-`;
-
-const InputWrapper = styled.div`
-  margin-top: 16px;
 `;
 
 const Content = styled.div`
@@ -113,7 +106,6 @@ const CardList = styled.div`
   flex-grow: 1;
   width: 100%;
   gap: 16px;
-  padding: 0 48px;
   &::-webkit-scrollbar {
     display: none;
   }
@@ -136,11 +128,12 @@ const CardList = styled.div`
   } */
 `;
 
-const SendButton = styled.button`
+const SubTitleRightBox = styled.div`
   display: flex;
   align-items: center;
-  justify-content: center;
-  cursor: pointer;
+  justify-content: space-between;
+  gap: 8px;
+  flex-grow: 1;
 `;
 
 SolutionWrapper.displayName = 'SolutionWrapper';

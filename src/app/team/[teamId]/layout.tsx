@@ -1,24 +1,20 @@
 'use client';
 
-import SideNav from '@/shared/ui/tab/SideNav';
 import HeaderLayout from '@/features/layout/HeaderLayout';
+import { useTeamDetailQuery } from '@/features/team/hooks/useTeamDetailQuery';
 import { TEAM_SIDE_NAV_TABS } from '@/shared/constants/sideNavTab';
+import useTeamStore from '@/shared/store/team/team';
+import SideNav from '@/shared/ui/tab/SideNav';
 import { useParams } from 'next/navigation';
 import { ReactNode, useEffect } from 'react';
 import styled from 'styled-components';
-import useTeamStore from '@/shared/store/team/team';
-import { useQuery } from '@tanstack/react-query';
-import teamQueries from '@/features/team/query/teamQueries';
 
 const layout = ({ children }: { children: ReactNode }) => {
   const params = useParams();
   const teamId = params.teamId as string;
   const { setTeamInfo, resetTeamInfo } = useTeamStore();
 
-  const { data: teamData } = useQuery({
-    ...teamQueries.readTeamDetail({ teamId }),
-    enabled: !!teamId,
-  });
+  const { data: teamData } = useTeamDetailQuery({ teamId });
 
   useEffect(() => {
     setTeamInfo(teamData || null);

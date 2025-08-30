@@ -19,7 +19,6 @@ const TeamListDropdownContent = () => {
   const handleTeamSelect = (teamId: string | number) => {
     router.push(`/team/${teamId}/dashboard`);
   };
-
   return (
     <Wrapper>
       <ItemList selectOptionList={selectOptionList} valueHandler={handleTeamSelect} />

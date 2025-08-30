@@ -36,7 +36,8 @@ import useApiError from './useApiError';
  * @property {boolean} isRefetching - 수동 갱신 중
  * @property {() => Promise<any>} refetch - 수동 갱신 함수
  */
-export function useUserInfo() {
+
+const useUserInfoQuery = () => {
   const { accessToken } = useAuthStore();
   const { handleError } = useApiError();
   const handleErrorRef = useRef(handleError);
@@ -52,4 +53,6 @@ export function useUserInfo() {
     }
   }, [query.error]);
   return query;
-}
+};
+
+export default useUserInfoQuery;
