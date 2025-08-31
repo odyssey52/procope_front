@@ -59,10 +59,10 @@ const TaskCard = ({
   };
 
   return (
-    <Wrapper onClick={onClick}>
+    <Wrapper onClick={onClick} className="task-card-for-useClickOutside-hook">
       <Top>
         <TagBox>
-          {tags && tagJob && tags.length > 0 && (
+          {((tags && tags.length > 0) || tagJob) && (
             <TagList>
               {tags?.map((tag) => tag)}
               {tagJob && <TagJob type={tagJob} bgColor={theme.sementicColors.bg.tertiary_hover_pressed} />}

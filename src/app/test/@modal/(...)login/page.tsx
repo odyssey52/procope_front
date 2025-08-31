@@ -1,7 +1,7 @@
 'use client';
 
 import { LoginSection } from '@/features/login';
-import { useUserInfo } from '@/shared/hooks/useUserInfo';
+import { useUserInfoQuery } from '@/shared/hooks/useUserInfoQuery';
 import useAuthStore from '@/shared/store/auth/auth';
 import Modal from '@/shared/ui/modal/common/Modal';
 import { useRouter, useSearchParams } from 'next/navigation';
@@ -11,7 +11,7 @@ import styled from 'styled-components';
 // 로그인 모달 컨텐츠 컴포넌트
 function LoginModalContent() {
   const { accessToken } = useAuthStore();
-  const { isLoading } = useUserInfo();
+  const { isLoading } = useUserInfoQuery();
   const router = useRouter();
   const searchParams = useSearchParams();
   const from = searchParams.get('from') || '/';
