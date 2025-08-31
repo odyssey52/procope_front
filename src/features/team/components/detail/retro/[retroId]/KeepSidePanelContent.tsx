@@ -1,5 +1,6 @@
 'use client';
 
+import { useTeamDetailQuery } from '@/features/team/hooks/useTeamDetailQuery';
 import retroQueries from '@/features/team/query/retroQueries';
 import { deleteRetroProblem, updateRetroProblem } from '@/features/team/services/retroService';
 import { UpdateRetroProblemPayload } from '@/features/team/services/retroService.type';
@@ -8,6 +9,7 @@ import useApiError from '@/shared/hooks/useApiError';
 import { useClickOutside } from '@/shared/hooks/useClickOutside';
 import useDebounce from '@/shared/hooks/useDebounce';
 import { useSidePanelStore } from '@/shared/store/sidePanel/sidePanel';
+import useUserStore from '@/shared/store/user/user';
 import { theme } from '@/shared/styles/theme';
 import Avatar from '@/shared/ui/avatar/Avatar';
 import MoreArea from '@/shared/ui/button/MoreArea';
@@ -21,7 +23,7 @@ import Text from '@/shared/ui/Text';
 import Tiptap from '@/shared/ui/tiptap/Tiptap';
 import PageTitle from '@/shared/ui/title/PageTitle';
 import { formatDateToDot } from '@/shared/utils/date';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import BulletList from '@tiptap/extension-bullet-list';
 import ListItem from '@tiptap/extension-list-item';
 import Placeholder from '@tiptap/extension-placeholder';
@@ -37,11 +39,26 @@ interface KeepSidePanelContentProps {
 }
 
 const KeepSidePanelContent = ({ retroId, problemId }: KeepSidePanelContentProps) => {
+  const { id } = useUserStore();
   const { handleError } = useApiError();
   const [currentTitle, setCurrentTitle] = useState('');
   const [currentContent, setCurrentContent] = useState('');
   const [isInitialized, setIsInitialized] = useState(false);
   const close = useSidePanelStore((state) => state.close);
+
+  const { data: teamInfo, isLoading: isTeamInfoLoading } = useTeamDetailQuery();
+  const {
+    data,
+    isLoading: isProblemDetailLoading,
+    isSuccess,
+  } = useQuery({
+    ...retroQueries.readRetroProblemDetail({ retroId, problemId }),
+  });
+
+  const isLoading = isTeamInfoLoading || isProblemDetailLoading;
+  const role = teamInfo?.myRole;
+  const isAdmin = role === 'ADMIN';
+  const isEditable = data?.createUserInfo.id === id || isAdmin;
 
   const ref = useClickOutside<HTMLDivElement>(close, '.task-card-for-useClickOutside-hook');
   const currentTitleRef = useRef('');
@@ -60,10 +77,6 @@ const KeepSidePanelContent = ({ retroId, problemId }: KeepSidePanelContentProps)
       }),
     ],
     content: currentContent,
-  });
-
-  const { data, isLoading, isSuccess } = useQuery({
-    ...retroQueries.readRetroProblemDetail({ retroId, problemId }),
   });
 
   const updateRetroProblemMutation = useMutation({
@@ -178,7 +191,11 @@ const KeepSidePanelContent = ({ retroId, problemId }: KeepSidePanelContentProps)
         <Wrapper>
           <TitleWrapper>
             <Checkbox label={`KEP-${problemId}`} id={`KEP-${problemId}`} onClick={() => {}} checked />
-            <PageTitle title={currentTitle} setTitle={setCurrentTitle} placeholder="제목을 작성해 주세요" />
+            <PageTitle
+              title={currentTitle}
+              setTitle={isEditable ? setCurrentTitle : undefined}
+              placeholder="제목을 작성해 주세요"
+            />
           </TitleWrapper>
           <ProblemInfo>
             <ProblemInfoItem>
@@ -215,7 +232,7 @@ const KeepSidePanelContent = ({ retroId, problemId }: KeepSidePanelContentProps)
             </ProblemInfoItem>
           </ProblemInfo>
           <Divider />
-          {editor && <Tiptap editor={editor} />}
+          {editor && <Tiptap editor={editor} editable={isEditable} />}
         </Wrapper>
       )}
     </RefContainer>
