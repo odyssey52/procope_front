@@ -126,8 +126,20 @@ const ProblemSidePanelContent = ({ retroId, problemId }: ProblemSidePanelContent
   const { handleError } = useApiError();
   const close = useSidePanelStore((state) => state.close);
   const ref = useClickOutside<HTMLDivElement>(close, '.task-card-for-useClickOutside-hook');
-  const { data: teamInfo } = useTeamDetailQuery();
-  const myRole = teamInfo?.myRole;
+
+  const { data: teamInfo, isLoading: isTeamInfoLoading } = useTeamDetailQuery();
+  const {
+    data,
+    isLoading: isProblemDetailLoading,
+    isSuccess,
+  } = useQuery({
+    ...retroQueries.readRetroProblemDetail({ retroId, problemId }),
+  });
+
+  const role = teamInfo?.myRole;
+  const isAdmin = role === 'ADMIN';
+  const isEditable = data?.createUserInfo.id === id || isAdmin;
+  const isLoading = isTeamInfoLoading || isProblemDetailLoading;
 
   const [isInitialized, setIsInitialized] = useState(false);
   const [currentTitle, setCurrentTitle] = useState('');
@@ -141,8 +153,6 @@ const ProblemSidePanelContent = ({ retroId, problemId }: ProblemSidePanelContent
   const currentKanbanStatusRef = useRef(currentKanbanStatus);
   const currentCompletedAtRef = useRef(currentCompletedAt);
 
-  const { data, isLoading, isSuccess } = useQuery({ ...retroQueries.readRetroProblemDetail({ retroId, problemId }) });
-
   const editor = useEditor({
     extensions: [
       BulletList,
@@ -154,8 +164,6 @@ const ProblemSidePanelContent = ({ retroId, problemId }: ProblemSidePanelContent
     ],
     content: currentContent,
   });
-
-  const isEditable = data?.createUserInfo.id === id;
 
   const updateRetroProblemMutation = useMutation({
     mutationFn: (payload: UpdateRetroProblemPayload) => updateRetroProblem({ retroId, problemId: problemId! }, payload),
@@ -316,7 +324,11 @@ const ProblemSidePanelContent = ({ retroId, problemId }: ProblemSidePanelContent
         <Wrapper>
           <TitleWrapper>
             <Checkbox label={`PBM-${problemId}`} id={`PBM-${problemId}`} onClick={() => {}} checked />
-            <PageTitle title={currentTitle} setTitle={setCurrentTitle} placeholder="제목을 작성해 주세요" />
+            <PageTitle
+              title={currentTitle}
+              setTitle={isEditable ? setCurrentTitle : undefined}
+              placeholder="제목을 작성해 주세요"
+            />
           </TitleWrapper>
           <ProblemInfo>
             <ProblemInfoItem>
