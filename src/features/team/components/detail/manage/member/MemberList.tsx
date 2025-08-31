@@ -17,7 +17,7 @@ import { FieldInfo } from '@/features/user/services/info/userInfoService.type';
 import { IconSortArrow } from '@/shared/assets/icons/line';
 import { MESSAGES } from '@/shared/constants/messages';
 import useApiError from '@/shared/hooks/useApiError';
-import { useUserInfo } from '@/shared/hooks/useUserInfo';
+import { useUserInfoQuery } from '@/shared/hooks/useUserInfoQuery';
 import { toastActions } from '@/shared/store/modal/toast';
 import { UserRole } from '@/shared/types/team';
 import Button from '@/shared/ui/button/Button';
@@ -42,7 +42,7 @@ interface MemberListProps {
 const MemberList = ({ teamUser, teamData }: MemberListProps) => {
   const queryClient = useQueryClient();
   const { handleError } = useApiError();
-  const { data: user } = useUserInfo();
+  const { data: user } = useUserInfoQuery();
 
   const userId = String(user?.userContext.id) || '';
   const userRole = teamData.myRole;

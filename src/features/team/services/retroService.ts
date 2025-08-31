@@ -22,6 +22,7 @@ const URLS = {
     `/retrospectives/problems/${retroId}/${problemId}/status`,
   UPDATE_RETRO_PROBLEM_COMPLETED_AT: (retroId: string | number, problemId: string | number) =>
     `/retrospectives/problems/${retroId}/${problemId}/completed`,
+  UPDATE_RETRO_DATE: (teamId: string, retroId: string | number) => `/retrospectives/${teamId}/${retroId}/date`,
 
   READ_RETRO_MEMBER_LIST: (teamId: string, retroId: string | number) =>
     `/retrospectives/${teamId}/${retroId}/participants`,
@@ -29,7 +30,13 @@ const URLS = {
     `/retrospectives/${teamId}/${retroId}/participants`,
   DELETE_RETRO_MEMBER: (teamId: string, retroId: string | number) =>
     `/retrospectives/${teamId}/${retroId}/participants`,
-  UPDATE_RETRO_DATE: (teamId: string, retroId: string | number) => `/retrospectives/${teamId}/${retroId}/date`,
+
+  CREATE_RETRO_SOLUTION: (retroId: string | number, problemId: string | number) =>
+    `/retrospectives/problems/solutions/${retroId}/${problemId}`,
+  UPDATE_RETRO_SOLUTION: (retroId: string | number, problemId: string | number, solutionId: string | number) =>
+    `/retrospectives/problems/solutions/${retroId}/${problemId}/${solutionId}`,
+  DELETE_RETRO_SOLUTION: (retroId: string | number, problemId: string | number, solutionId: string | number) =>
+    `/retrospectives/problems/solutions/${retroId}/${problemId}/${solutionId}`,
 };
 
 const api = new ApiClient({ isPublic: false });
@@ -138,5 +145,29 @@ export async function updateRetroProblemCompletedAt(
 
 export async function updateRetroDate(params: types.UpdateRetroDateParams, payload: types.UpdateRetroDatePayload) {
   const { data } = await api.patch(URLS.UPDATE_RETRO_DATE(params.teamId, params.retroId), payload);
+  return data;
+}
+
+export async function createRetroSolution(
+  params: types.CreateRetroSolutionParams,
+  payload: types.CreateRetroSolutionPayload,
+) {
+  const { data } = await api.post(URLS.CREATE_RETRO_SOLUTION(params.retroId, params.problemId), payload);
+  return data;
+}
+
+export async function updateRetroSolution(
+  params: types.UpdateRetroSolutionParams,
+  payload: types.UpdateRetroSolutionPayload,
+) {
+  const { data } = await api.put(
+    URLS.UPDATE_RETRO_SOLUTION(params.retroId, params.problemId, params.solutionId),
+    payload,
+  );
+  return data;
+}
+
+export async function deleteRetroSolution(params: types.DeleteRetroSolutionParams) {
+  const { data } = await api.delete(URLS.DELETE_RETRO_SOLUTION(params.retroId, params.problemId, params.solutionId));
   return data;
 }

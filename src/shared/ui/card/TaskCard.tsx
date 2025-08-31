@@ -19,7 +19,7 @@ interface MenuItem {
 
 interface TaskCardProps {
   tags?: React.ReactNode[];
-  tagJob: JobType;
+  tagJob?: JobType;
   title: string;
   startDate: string;
   endDate?: string;
@@ -59,13 +59,15 @@ const TaskCard = ({
   };
 
   return (
-    <Wrapper onClick={onClick} className="task-card">
+    <Wrapper onClick={onClick} className="task-card-for-useClickOutside-hook">
       <Top>
         <TagBox>
-          <TagList>
-            {tags?.map((tag) => tag)}
-            <TagJob type={tagJob} bgColor={theme.sementicColors.bg.tertiary_hover_pressed} />
-          </TagList>
+          {((tags && tags.length > 0) || tagJob) && (
+            <TagList>
+              {tags?.map((tag) => tag)}
+              {tagJob && <TagJob type={tagJob} bgColor={theme.sementicColors.bg.tertiary_hover_pressed} />}
+            </TagList>
+          )}
           {showMenu && (
             <MenuContainer>
               <MenuIconButton onClick={handleMenuClick}>

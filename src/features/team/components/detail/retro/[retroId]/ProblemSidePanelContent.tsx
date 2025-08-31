@@ -1,13 +1,17 @@
 'use client';
 
+import { useTeamDetailQuery } from '@/features/team/hooks/useTeamDetailQuery';
 import retroQueries from '@/features/team/query/retroQueries';
 import {
   deleteRetroProblem,
   updateRetroProblem,
+  updateRetroProblemCompletedAt,
   updateRetroProblemStatus,
 } from '@/features/team/services/retroService';
 import {
   ProblemKanbanStatus,
+  RetroProblemSolutionListItem,
+  UpdateRetroProblemCompletedAtPayload,
   UpdateRetroProblemPayload,
   UpdateRetroProblemStatusPayload,
 } from '@/features/team/services/retroService.type';
@@ -22,6 +26,7 @@ import {
 import useApiError from '@/shared/hooks/useApiError';
 import { useClickOutside } from '@/shared/hooks/useClickOutside';
 import { useSidePanelStore } from '@/shared/store/sidePanel/sidePanel';
+import useUserStore from '@/shared/store/user/user';
 import { theme } from '@/shared/styles/theme';
 import Avatar from '@/shared/ui/avatar/Avatar';
 import MoreArea from '@/shared/ui/button/MoreArea';
@@ -34,8 +39,8 @@ import TagJob, { JobType } from '@/shared/ui/tag/TagJob';
 import Text from '@/shared/ui/Text';
 import Tiptap from '@/shared/ui/tiptap/Tiptap';
 import PageTitle from '@/shared/ui/title/PageTitle';
-import { formatDateToDot } from '@/shared/utils/date';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { formatDateToDot, formatDotToISO } from '@/shared/utils/date';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import BulletList from '@tiptap/extension-bullet-list';
 import ListItem from '@tiptap/extension-list-item';
 import Placeholder from '@tiptap/extension-placeholder';
@@ -46,31 +51,107 @@ import styled from 'styled-components';
 import CalendarArea from './CalendarArea';
 import ProblemStatusSelect from './ProblemStatusSelect';
 import SkeletonSidePanelContent from './SkeletonSidePanelContent';
-import SolveWrapper from './SolveWrapper';
+import SolutionWrapper from './SolutionWrapper';
 
 interface ProblemSidePanelContentProps {
   retroId: string | number;
   problemId: string | number;
 }
 
+const mockSolutions: RetroProblemSolutionListItem[] = [
+  {
+    id: 1,
+    title: 'Solution 1',
+    updatedAt: '2021-01-01',
+    createUserInfo: {
+      id: '1',
+      name: 'User 1',
+      profileImageUrl: 'https://via.placeholder.com/150',
+    },
+  },
+  {
+    id: 2,
+    title: 'Solution 2',
+    updatedAt: '2021-01-02',
+    createUserInfo: {
+      id: '2',
+      name: 'User 2',
+      profileImageUrl: 'https://via.placeholder.com/150',
+    },
+  },
+  {
+    id: 3,
+    title: 'Solution 3',
+    updatedAt: '2021-01-03',
+    createUserInfo: {
+      id: '3',
+      name: 'User 3',
+      profileImageUrl: 'https://via.placeholder.com/150',
+    },
+  },
+  {
+    id: 4,
+    title: 'Solution 4',
+    updatedAt: '2021-01-04',
+    createUserInfo: {
+      id: '4',
+      name: 'User 4',
+      profileImageUrl: 'https://via.placeholder.com/150',
+    },
+  },
+  {
+    id: 5,
+    title: 'Solution 5',
+    updatedAt: '2021-01-05',
+    createUserInfo: {
+      id: '5',
+      name: 'User 5',
+      profileImageUrl: 'https://via.placeholder.com/150',
+    },
+  },
+  {
+    id: 6,
+    title: 'Solution 6',
+    updatedAt: '2021-01-06',
+    createUserInfo: {
+      id: '6',
+      name: 'User 6',
+      profileImageUrl: 'https://via.placeholder.com/150',
+    },
+  },
+];
+
 const ProblemSidePanelContent = ({ retroId, problemId }: ProblemSidePanelContentProps) => {
+  const { id } = useUserStore();
   const { handleError } = useApiError();
+  const close = useSidePanelStore((state) => state.close);
+  const ref = useClickOutside<HTMLDivElement>(close, '.task-card-for-useClickOutside-hook');
+
+  const { data: teamInfo, isLoading: isTeamInfoLoading } = useTeamDetailQuery();
+  const {
+    data,
+    isLoading: isProblemDetailLoading,
+    isSuccess,
+  } = useQuery({
+    ...retroQueries.readRetroProblemDetail({ retroId, problemId }),
+  });
+
+  const role = teamInfo?.myRole;
+  const isAdmin = role === 'ADMIN';
+  const isEditable = data?.createUserInfo.id === id || isAdmin;
+  const isLoading = isTeamInfoLoading || isProblemDetailLoading;
+
+  const [isInitialized, setIsInitialized] = useState(false);
   const [currentTitle, setCurrentTitle] = useState('');
   const [currentContent, setCurrentContent] = useState('');
   const [currentKanbanStatus, setCurrentKanbanStatus] = useState<ProblemKanbanStatus>('RCG');
-  const [isInitialized, setIsInitialized] = useState(false);
-  const close = useSidePanelStore((state) => state.close);
-  const ref = useClickOutside<HTMLDivElement>(close, '.task-card');
+  const [currentCompletedAt, setCurrentCompletedAt] = useState('');
 
   const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
-
   const currentTitleRef = useRef(currentTitle);
   const currentContentRef = useRef(currentContent);
   const currentKanbanStatusRef = useRef(currentKanbanStatus);
-
-  const { data, isLoading, isSuccess } = useQuery({
-    ...retroQueries.readRetroProblemDetail({ retroId, problemId }),
-  });
+  const currentCompletedAtRef = useRef(currentCompletedAt);
 
   const editor = useEditor({
     extensions: [
@@ -93,11 +174,16 @@ const ProblemSidePanelContent = ({ retroId, problemId }: ProblemSidePanelContent
       updateRetroProblemStatus({ retroId, problemId: problemId! }, payload),
   });
 
+  const updateRetroProblemCompletedAtMutation = useMutation({
+    mutationFn: (payload: UpdateRetroProblemCompletedAtPayload) =>
+      updateRetroProblemCompletedAt({ retroId, problemId: problemId! }, payload),
+  });
+
   const deleteRetroProblemMutation = useMutation({
     mutationFn: (problemId: string | number) => deleteRetroProblem({ retroId, problemId }),
   });
 
-  const handleUpdateRetroProblem = async (title: string, content: string, kanbanStatus: ProblemKanbanStatus) => {
+  const handleUpdateRetroProblem = async (title: string, content: string) => {
     try {
       await updateRetroProblemMutation.mutateAsync({
         title,
@@ -127,22 +213,33 @@ const ProblemSidePanelContent = ({ retroId, problemId }: ProblemSidePanelContent
     }
   };
 
-  const triggerSave = (immediate = false) => {
-    if (saveTimer.current) clearTimeout(saveTimer.current);
-    if (immediate) {
-      handleUpdateRetroProblem(currentTitle, currentContent, currentKanbanStatus);
-    } else {
-      saveTimer.current = setTimeout(() => {
-        handleUpdateRetroProblem(currentTitle, currentContent, currentKanbanStatus);
-      }, 3000);
-    }
-  };
-
   const handleChangeKanbanStatus = (status: ProblemKanbanStatus) => {
     setCurrentKanbanStatus(status);
   };
 
-  // 에디터 내용 변경
+  const handleChangeCompletedAt = (completedAt: string) => {
+    setCurrentCompletedAt(completedAt);
+  };
+
+  const handleUpdateRetroProblemCompletedAt = async (completedAt: string) => {
+    try {
+      await updateRetroProblemCompletedAtMutation.mutateAsync({ completedTime: completedAt });
+    } catch (error) {
+      handleError(error);
+    }
+  };
+
+  const triggerSave = (immediate = false) => {
+    if (saveTimer.current) clearTimeout(saveTimer.current);
+    if (immediate) {
+      handleUpdateRetroProblem(currentTitle, currentContent);
+    } else {
+      saveTimer.current = setTimeout(() => {
+        handleUpdateRetroProblem(currentTitle, currentContent);
+      }, 3000);
+    }
+  };
+
   useEffect(() => {
     if (!editor) return;
     editor.on('update', ({ editor }) => {
@@ -150,12 +247,12 @@ const ProblemSidePanelContent = ({ retroId, problemId }: ProblemSidePanelContent
     });
   }, [editor]);
 
-  // 데이터 초기 로드
   useEffect(() => {
     if (!data) return;
     setCurrentTitle(data.title);
     setCurrentContent(data.content);
     setCurrentKanbanStatus(data.kanbanStatus);
+    setCurrentCompletedAt(data.completedAt);
     setIsInitialized(true);
 
     if (editor && data.content?.trim()) {
@@ -164,6 +261,8 @@ const ProblemSidePanelContent = ({ retroId, problemId }: ProblemSidePanelContent
   }, [data, editor]);
 
   useEffect(() => {
+    currentTitleRef.current = currentTitle;
+    currentContentRef.current = currentContent;
     if (!isInitialized) return;
     if (!data) return;
     if (currentTitle !== data.title || currentContent !== data.content) {
@@ -172,6 +271,7 @@ const ProblemSidePanelContent = ({ retroId, problemId }: ProblemSidePanelContent
   }, [currentTitle, currentContent]);
 
   useEffect(() => {
+    currentKanbanStatusRef.current = currentKanbanStatus;
     if (!isInitialized) return;
     if (!data) return;
     if (currentKanbanStatus !== data.kanbanStatus) {
@@ -180,28 +280,21 @@ const ProblemSidePanelContent = ({ retroId, problemId }: ProblemSidePanelContent
   }, [currentKanbanStatus]);
 
   useEffect(() => {
-    currentTitleRef.current = currentTitle;
-  }, [currentTitle]);
-
-  useEffect(() => {
-    currentContentRef.current = currentContent;
-  }, [currentContent]);
-
-  useEffect(() => {
-    currentKanbanStatusRef.current = currentKanbanStatus;
-  }, [currentKanbanStatus]);
+    currentCompletedAtRef.current = currentCompletedAt;
+    if (!isInitialized) return;
+    if (!data) return;
+    if (currentCompletedAt !== data.completedAt) {
+      handleUpdateRetroProblemCompletedAt(currentCompletedAt);
+    }
+  }, [currentCompletedAt]);
 
   useEffect(() => {
     return () => {
       if (!isInitialized) return;
       if (saveTimer.current) clearTimeout(saveTimer.current);
 
-      if (
-        currentTitleRef.current !== data?.title ||
-        currentContentRef.current !== data?.content ||
-        currentKanbanStatusRef.current !== data?.kanbanStatus
-      ) {
-        handleUpdateRetroProblem(currentTitleRef.current, currentContentRef.current, currentKanbanStatusRef.current);
+      if (currentTitleRef.current !== data?.title || currentContentRef.current !== data?.content) {
+        handleUpdateRetroProblem(currentTitleRef.current, currentContentRef.current);
       }
     };
   }, [isInitialized, data]);
@@ -212,16 +305,18 @@ const ProblemSidePanelContent = ({ retroId, problemId }: ProblemSidePanelContent
         <CloseButton onClick={close}>
           <IconDirectionRight1 />
         </CloseButton>
-        <MoreArea
-          size={24}
-          menuList={
-            <ItemList
-              width="112px"
-              selectOptionList={[{ value: '삭제', label: '삭제' }]}
-              valueHandler={() => handleDeleteRetroProblem(problemId)}
-            />
-          }
-        />
+        {isEditable && (
+          <MoreArea
+            size={24}
+            menuList={
+              <ItemList
+                width="112px"
+                selectOptionList={[{ value: '삭제', label: '삭제' }]}
+                valueHandler={() => handleDeleteRetroProblem(problemId)}
+              />
+            }
+          />
+        )}
       </PanelControl>
       {isLoading && <SkeletonSidePanelContent />}
       {!isLoading && !isSuccess && <Error title="서버 에러" description="문제를 찾을 수 없습니다." />}
@@ -229,7 +324,11 @@ const ProblemSidePanelContent = ({ retroId, problemId }: ProblemSidePanelContent
         <Wrapper>
           <TitleWrapper>
             <Checkbox label={`PBM-${problemId}`} id={`PBM-${problemId}`} onClick={() => {}} checked />
-            <PageTitle title={currentTitle} setTitle={setCurrentTitle} placeholder="제목을 작성해 주세요" />
+            <PageTitle
+              title={currentTitle}
+              setTitle={isEditable ? setCurrentTitle : undefined}
+              placeholder="제목을 작성해 주세요"
+            />
           </TitleWrapper>
           <ProblemInfo>
             <ProblemInfoItem>
@@ -280,15 +379,17 @@ const ProblemSidePanelContent = ({ retroId, problemId }: ProblemSidePanelContent
                   <IconFlag size={20} color={theme.sementicColors.icon.disabled} />
                   개선완료 날짜
                 </ProblemInfoItemTitle>
-                {/* 추후 개선완료 날짜 수정 기능 추가 */}
-                <CalendarArea selectedDate={formatDateToDot(data.updatedAt)} onChange={() => {}} />
+                <CalendarArea
+                  selectedDate={formatDateToDot(currentCompletedAt)}
+                  onChange={(date) => handleChangeCompletedAt(formatDotToISO(date))}
+                />
               </ProblemInfoItem>
             )}
           </ProblemInfo>
           <Divider color={theme.sementicColors.border.primary} />
-          <SolveWrapper comments={data.solutions} />
+          <SolutionWrapper retroId={retroId} problemId={problemId} solutions={mockSolutions} />
           <Divider color={theme.sementicColors.border.primary} />
-          {editor && <Tiptap editor={editor} />}
+          {editor && <Tiptap editor={editor} editable={isEditable} />}
         </Wrapper>
       )}
     </RefContainer>
