@@ -1,14 +1,13 @@
 'use client';
 
-import { useQuery } from '@tanstack/react-query';
+import { useSuspenseQuery } from '@tanstack/react-query';
 import { useParams } from 'next/navigation';
 import teamQueries from '../query/teamQueries';
 
-export const useTeamDetailQuery = () => {
+export const useTeamDetailSuspenseQuery = () => {
   const { teamId } = useParams() as { teamId: string };
 
-  return useQuery({
+  return useSuspenseQuery({
     ...teamQueries.readTeamDetail({ teamId: teamId! }),
-    enabled: !!teamId,
   });
 };
