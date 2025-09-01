@@ -2,7 +2,7 @@
 import { MESSAGES } from '@/shared/constants/messages';
 import useAuthStore from '@/shared/store/auth/auth';
 import { toastActions } from '@/shared/store/modal/toast';
-import { handleLogout } from '@/shared/utils/auth';
+
 import axios from 'axios';
 
 import type { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
@@ -76,7 +76,7 @@ export default class HTTPProvider {
             if (newAccessToken === 'TokenExpiredError') {
               authStore.setRefreshing(false);
               await axios.get(`${USER_URL}auth/invalidate`, { withCredentials: true });
-              await handleLogout({ savePreviousPath: true });
+              authStore.setIsRefreshTokenExpired(true);
             }
             authStore.setAccessToken(newAccessToken);
             authStore.setRefreshing(false);
@@ -89,7 +89,7 @@ export default class HTTPProvider {
             if (axios.isAxiosError(refreshError)) {
               if (refreshError.response?.data?.code === 'AUTH003') {
                 await axios.get(`${USER_URL}auth/invalidate`, { withCredentials: true });
-                await handleLogout({ savePreviousPath: true });
+                authStore.setIsRefreshTokenExpired(true);
               }
             }
 
