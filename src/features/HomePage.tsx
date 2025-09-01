@@ -1,6 +1,6 @@
 'use client';
 
-import { useUserInfoQuery } from '@/shared/hooks/useUserInfoQuery';
+import useUserInfoQuery from '@/shared/hooks/useUserInfoQuery';
 import useAuthStore from '@/shared/store/auth/auth';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
@@ -10,7 +10,6 @@ const HomePage = () => {
   const router = useRouter();
   const { accessToken } = useAuthStore();
   const { isLoading } = useUserInfoQuery();
-
   useEffect(() => {
     if (!isLoading && !accessToken) {
       window.location.href = '/login';
