@@ -72,7 +72,12 @@ export default class HTTPProvider {
           try {
             const refreshResponse = await axios.get(`${USER_URL}auth/refresh`, { withCredentials: true });
             const newAccessToken = refreshResponse.data;
-
+            // 리프레시토큰 자체 만료 시 추후 에러로 처리해야함
+            if (newAccessToken === 'TokenExpiredError') {
+              authStore.setRefreshing(false);
+              await axios.get(`${USER_URL}auth/invalidate`, { withCredentials: true });
+              await handleLogout({ savePreviousPath: true });
+            }
             authStore.setAccessToken(newAccessToken);
             authStore.setRefreshing(false);
 
@@ -80,16 +85,14 @@ export default class HTTPProvider {
             newConfig.headers.Authorization = `Bearer ${newAccessToken}`;
             return this.client.request(newConfig);
           } catch (refreshError) {
-            authStore.setRefreshing(false);
+            // 추주 리프레시토큰 에러처리 후 사용될 코드
             if (axios.isAxiosError(refreshError)) {
-              await axios.get(`${USER_URL}auth/invalidate`, { withCredentials: true });
-              await handleLogout({ savePreviousPath: true });
-            } else {
-              toastActions.open({
-                title: MESSAGES.ERROR.UNKNOWN_ERROR,
-                state: 'error',
-              });
+              if (refreshError.response?.data?.code === 'AUTH003') {
+                await axios.get(`${USER_URL}auth/invalidate`, { withCredentials: true });
+                await handleLogout({ savePreviousPath: true });
+              }
             }
+
             return Promise.reject(refreshError);
           }
         }
