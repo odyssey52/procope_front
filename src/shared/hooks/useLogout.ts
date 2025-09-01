@@ -20,6 +20,7 @@ export const useLogout = () => {
     try {
       if (savePreviousPath && typeof window !== 'undefined') {
         localStorage.setItem('previousPath', window.location.pathname);
+        resetAccessToken();
       }
 
       if (typeof window !== 'undefined') {
