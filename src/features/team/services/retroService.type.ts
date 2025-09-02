@@ -95,6 +95,12 @@ export interface DeleteRetroSolutionParams {
   solutionId: string | number;
 }
 
+export interface ReadRetroSolutionDetailParams {
+  retroId: string | number;
+  problemId: string | number;
+  solutionId: string | number;
+}
+
 // Payload
 export interface CreateRetroPayload {
   title: string;
@@ -208,6 +214,17 @@ export interface ReadRetroProblemDetailResponse {
 export type ReadRetroMemberListResponse = {
   payload: RetroMemberListItem[];
 };
+
+export interface ReadRetroSolutionDetailResponse {
+  createUserInfo: {
+    id: string;
+    name: string;
+    profileImageUrl: string;
+  };
+  title: string;
+  content: string;
+  updatedAt: string;
+}
 
 // interface
 export type KanbanStatus = 'RCG' | 'PRG' | 'OK' | 'KEP';
