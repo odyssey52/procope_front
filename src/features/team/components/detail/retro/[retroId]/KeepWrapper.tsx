@@ -60,7 +60,7 @@ const KeepWrapper = ({ retroId, client }: KeepWrapperProps) => {
 
   useEffect(() => {
     if (client && client.connected) {
-      subscriptionRef.current = client.subscribe('/user/topic/retrospectivesKEP', (message) => {
+      subscriptionRef.current = client.subscribe('/user/topic/retrospectives/KEP', (message) => {
         try {
           const keepData = JSON.parse(message.body);
           if (keepData.code === 'UPDATE') {

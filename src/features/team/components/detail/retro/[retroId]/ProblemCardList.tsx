@@ -84,7 +84,7 @@ const ProblemCardList = ({ retroId, kanbanStatus, client }: ProblemCardListProps
 
   useEffect(() => {
     if (client && client.connected && kanbanStatus && retroId) {
-      subscriptionRef.current = client.subscribe(`/user/topic/retrospectives${kanbanStatus}`, (message) => {
+      subscriptionRef.current = client.subscribe(`/user/topic/retrospectives/${kanbanStatus}`, (message) => {
         const data = JSON.parse(message.body);
         if (data.code === 'UPDATE') {
           console.log('📨 실시간 데이터 수신:', data.code);
