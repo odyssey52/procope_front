@@ -145,6 +145,7 @@ export interface DeleteRetroMemberPayload {
 
 export interface UpdateRetroProblemStatusPayload {
   kanbanStatus: ProblemKanbanStatus;
+  changeIndex: number | null;
 }
 
 export interface UpdateRetroProblemCompletedAtPayload {
@@ -205,8 +206,14 @@ export type ReadRetroProblemListResponse = {
   payload: RetroProblemListItem[];
 };
 
+export type CreateRetroProblemResponse = {
+  problemId: string | number;
+};
 export interface ReadRetroProblemDetailResponse {
-  userRole: string;
+  roles: {
+    id: number;
+    role: string;
+  }[];
   createUserInfo: {
     id: string;
     name: string;
@@ -234,7 +241,9 @@ export interface ReadRetroSolutionDetailResponse {
   content: string;
   updatedAt: string;
 }
-
+export type CreateRetroSolutionResponse = {
+  id: string | number;
+};
 // interface
 export type KanbanStatus = 'RCG' | 'PRG' | 'OK' | 'KEP';
 export type ProblemKanbanStatus = Omit<KanbanStatus, 'KEP'>;

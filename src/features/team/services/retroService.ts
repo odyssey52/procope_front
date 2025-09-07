@@ -21,7 +21,7 @@ const URLS = {
   UPDATE_RETRO_PROBLEM_ORDER: (retroId: string | number, problemId: string | number) =>
     `/retrospectives/problems/${retroId}/${problemId}`,
   UPDATE_RETRO_PROBLEM_STATUS: (retroId: string | number, problemId: string | number) =>
-    `/retrospectives/problems/${retroId}/${problemId}/status`,
+    `/retrospectives/problems/${retroId}/${problemId}`,
   UPDATE_RETRO_PROBLEM_COMPLETED_AT: (retroId: string | number, problemId: string | number) =>
     `/retrospectives/problems/${retroId}/${problemId}/completed`,
   UPDATE_RETRO_DATE: (teamId: string, retroId: string | number) => `/retrospectives/${teamId}/${retroId}/date`,
@@ -82,7 +82,7 @@ export async function createRetroProblem(
   params: types.CreateRetroProblemParams,
   payload: types.CreateRetroProblemPayload,
 ) {
-  const { data } = await api.post(URLS.CREATE_RETRO_PROBLEM(params.retroId), payload);
+  const { data } = await api.post<types.CreateRetroProblemResponse>(URLS.CREATE_RETRO_PROBLEM(params.retroId), payload);
   return data;
 }
 
@@ -164,7 +164,10 @@ export async function createRetroSolution(
   params: types.CreateRetroSolutionParams,
   payload: types.CreateRetroSolutionPayload,
 ) {
-  const { data } = await api.post(URLS.CREATE_RETRO_SOLUTION(params.retroId, params.problemId), payload);
+  const { data } = await api.post<types.CreateRetroSolutionResponse>(
+    URLS.CREATE_RETRO_SOLUTION(params.retroId, params.problemId),
+    payload,
+  );
   return data;
 }
 
