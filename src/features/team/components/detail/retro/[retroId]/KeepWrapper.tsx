@@ -48,11 +48,17 @@ const KeepWrapper = ({ retroId, client }: KeepWrapperProps) => {
 
   const addKeep = async () => {
     try {
-      await createRetroProblemMutation.mutateAsync({
+      const { problemId } = await createRetroProblemMutation.mutateAsync({
         title: '',
         content: '',
         kanbanStatus: 'KEP',
       });
+      if (problemId) {
+        handleSwitchCard({
+          cardId: `${retroId}-KEP-${problemId}`,
+          content: <KeepSidePanelContent retroId={retroId} problemId={problemId} />,
+        });
+      }
     } catch (error) {
       handleError(error);
     }
