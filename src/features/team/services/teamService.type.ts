@@ -101,6 +101,7 @@ export type TeamMember = {
     name: string;
     email: string;
     roleInfo: RoleInfo;
+    picture: string;
   };
   teamRole: UserRole;
   createdAt: string;
