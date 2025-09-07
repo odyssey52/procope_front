@@ -230,9 +230,8 @@ export interface ReadRetroProblemDetailResponse {
   updatedAt: string;
 }
 
-export type ReadRetroMemberListResponse = {
-  payload: RetroMemberListItem[];
-};
+export type ReadRetroMemberListResponse = RetroMemberListItem[];
+
 export type ReadRetroSolutionListResponse = RetroProblemSolutionListItem[];
 export interface ReadRetroSolutionDetailResponse {
   createUserInfo: {
