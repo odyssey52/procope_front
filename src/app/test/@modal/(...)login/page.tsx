@@ -1,7 +1,7 @@
 'use client';
 
 import { LoginSection } from '@/features/login';
-import { useUserInfoQuery } from '@/shared/hooks/useUserInfoQuery';
+import useUserInfoQuery from '@/shared/hooks/useUserInfoQuery';
 import useAuthStore from '@/shared/store/auth/auth';
 import Modal from '@/shared/ui/modal/common/Modal';
 import { useRouter, useSearchParams } from 'next/navigation';

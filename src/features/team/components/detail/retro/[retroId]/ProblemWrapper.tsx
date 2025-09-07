@@ -1,11 +1,14 @@
 'use client';
 
-import { updateRetroProblemStatus } from '@/features/team/services/retroService';
+import { updateRetroProblemOrder, updateRetroProblemStatus } from '@/features/team/services/retroService';
 import {
   ProblemKanbanStatus,
+  UpdateRetroProblemOrderParams,
+  UpdateRetroProblemOrderPayload,
   UpdateRetroProblemStatusParams,
   UpdateRetroProblemStatusPayload,
 } from '@/features/team/services/retroService.type';
+import useApiError from '@/shared/hooks/useApiError';
 import PageSubTitle from '@/shared/ui/title/PageSubTitle';
 import { DragDropContext, DropResult } from '@hello-pangea/dnd';
 import { Client } from '@stomp/stompjs';
@@ -19,6 +22,7 @@ interface ProblemWrapperProps {
 }
 
 const ProblemWrapper = ({ retroId, client }: ProblemWrapperProps) => {
+  const { handleError } = useApiError();
   const updateRetroProblemStatusMutation = useMutation({
     mutationFn: ({
       params,
@@ -29,26 +33,61 @@ const ProblemWrapper = ({ retroId, client }: ProblemWrapperProps) => {
     }) => updateRetroProblemStatus(params, payload),
   });
 
-  const handleDragEnd = (result: DropResult) => {
-    const { destination, source, draggableId } = result;
+  const updateRetroProblemOrderMutation = useMutation({
+    mutationFn: ({
+      params,
+      payload,
+    }: {
+      params: UpdateRetroProblemOrderParams;
+      payload: UpdateRetroProblemOrderPayload;
+    }) => updateRetroProblemOrder(params, payload),
+  });
 
+  const handleDragEnd = async (result: DropResult) => {
+    const { destination, source, draggableId } = result;
     if (!destination) {
       return;
     }
+    try {
+      const isSameStatus = destination.droppableId === source.droppableId;
+      const isSameIndex = destination.index === source.index;
+      if (isSameStatus) {
+        if (isSameIndex) {
+          return;
+        }
+        await updateRetroProblemOrderMutation.mutateAsync({
+          params: {
+            retroId,
+            problemId: draggableId,
+          },
+          payload: {
+            changeOrder: destination.index,
+          },
+        });
+      }
 
-    if (destination.droppableId === source.droppableId) {
-      return;
+      await updateRetroProblemStatusMutation.mutateAsync({
+        params: {
+          retroId,
+          problemId: draggableId,
+        },
+        payload: {
+          kanbanStatus: destination.droppableId as ProblemKanbanStatus,
+        },
+      });
+
+      await updateRetroProblemOrderMutation.mutateAsync({
+        params: {
+          retroId,
+          problemId: draggableId,
+        },
+        payload: {
+          changeOrder: destination.index,
+        },
+      });
+    } catch (error) {
+      handleError(error);
     }
-
-    updateRetroProblemStatusMutation.mutate({
-      params: {
-        retroId,
-        problemId: draggableId,
-      },
-      payload: {
-        kanbanStatus: destination.droppableId as ProblemKanbanStatus,
-      },
-    });
   };
 
   return (

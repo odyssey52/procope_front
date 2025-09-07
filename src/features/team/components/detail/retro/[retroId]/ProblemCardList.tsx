@@ -139,7 +139,7 @@ const ProblemCardList = ({ retroId, kanbanStatus, client }: ProblemCardListProps
                     <Draggable
                       draggableId={`${item.id}`}
                       key={`${retroId}-PBM-${item.id}-${kanbanStatus}`}
-                      index={index}
+                      index={item.orderIndex}
                     >
                       {(provided, draggableSnapshot) => (
                         <>

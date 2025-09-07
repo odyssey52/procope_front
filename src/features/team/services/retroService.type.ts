@@ -251,6 +251,7 @@ export interface RetroProblemListItem {
   content: string;
   kanbanStatus: KanbanStatus;
   updatedAt: string;
+  orderIndex: number;
 }
 
 export type RetroMemberListItem = {
