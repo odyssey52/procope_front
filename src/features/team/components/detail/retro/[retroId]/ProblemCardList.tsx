@@ -49,7 +49,6 @@ export const KANBAN_STATUS = {
 };
 
 const ProblemCardList = ({ retroId, kanbanStatus, client, problems, onCreateCard }: ProblemCardListProps) => {
-  const queryClient = useQueryClient();
   const handleSwitchCard = useSidePanelStore((state) => state.handleSwitchCard);
 
   // 로컬 상태를 사용하므로 서버 쿼리 제거
@@ -60,7 +59,7 @@ const ProblemCardList = ({ retroId, kanbanStatus, client, problems, onCreateCard
   const onClickTaskCard = (item: RetroProblemListItem) => {
     handleSwitchCard({
       cardId: `${retroId}-PBM-${item.id}-${kanbanStatus}-TaskCard`,
-      content: <ProblemSidePanelContent retroId={retroId} problemId={item.id} />,
+      content: <ProblemSidePanelContent retroId={retroId} problemId={item.id} client={client} />,
     });
   };
 

@@ -82,7 +82,7 @@ const ProblemWrapper = ({ retroId, client }: ProblemWrapperProps) => {
       if (problemId) {
         handleSwitchCard({
           cardId: `${retroId}-PBM-${problemId}-${kanbanStatus}-TaskCard`,
-          content: <ProblemSidePanelContent retroId={retroId} problemId={problemId} />,
+          content: <ProblemSidePanelContent retroId={retroId} problemId={problemId} client={client} />,
         });
       }
     } catch (error) {

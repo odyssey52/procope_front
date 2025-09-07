@@ -12,10 +12,10 @@ import TaskCard from '@/shared/ui/card/TaskCard';
 import MoreIndicator from '@/shared/ui/indicator/MoreIndicator';
 import Tag from '@/shared/ui/tag/Tag';
 import PageSubTitle from '@/shared/ui/title/PageSubTitle';
-import { useMutation, useQuery, useSuspenseQuery } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import styled from 'styled-components';
-import SolutionSidePanelContent from './SolutionSidePanelContent';
 import SkeletonSolutionList from './SkeletonSolutionList';
+import SolutionSidePanelContent from './SolutionSidePanelContent';
 
 const SolutionWrapper = ({ retroId, problemId }: { retroId: string | number; problemId: string | number }) => {
   const open = useSidePanelStore((state) => state.open);
