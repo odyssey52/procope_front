@@ -88,6 +88,7 @@ const sidePanelStore = create<SidePanelState>((set, get) => ({
 
   handleSwitchCard: (options) => {
     const { panels } = get();
+    const hasExistingPanels = panels.length > 0;
 
     // 모든 패널의 onClose 콜백 실행
     panels.forEach((panel) => panel.onClose?.());
@@ -97,18 +98,20 @@ const sidePanelStore = create<SidePanelState>((set, get) => ({
       content: options.content,
       cardId: options.cardId ?? null,
       onClose: options.onClose,
-      skipEnterAnimation: true, // 애니메이션 스킵
+      skipEnterAnimation: hasExistingPanels, // 기존 패널이 있을 때만 애니메이션 스킵
     };
 
     set({
       panels: [newPanel], // 기존 패널들을 모두 제거하고 새 패널만 추가
-      skipEnterAnimation: true,
+      skipEnterAnimation: hasExistingPanels,
     });
 
-    // 다음 프레임에서 애니메이션 스킵 플래그 리셋
-    requestAnimationFrame(() => {
-      requestAnimationFrame(() => set({ skipEnterAnimation: false }));
-    });
+    // 기존 패널이 있었을 때만 다음 프레임에서 애니메이션 스킵 플래그 리셋
+    if (hasExistingPanels) {
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => set({ skipEnterAnimation: false }));
+      });
+    }
   },
 }));
 
