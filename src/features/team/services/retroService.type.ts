@@ -105,6 +105,10 @@ export interface ReadRetroSolutionDetailParams {
   problemId: string | number;
   solutionId: string | number;
 }
+export interface ReadRetroSolutionListParams {
+  retroId: string | number;
+  problemId: string | number;
+}
 
 // Payload
 export interface CreateRetroPayload {
@@ -222,7 +226,6 @@ export interface ReadRetroProblemDetailResponse {
   title: string;
   content: string;
   kanbanStatus: KanbanStatus;
-  solutions: RetroProblemSolutionListItem[];
   completedAt: string;
   updatedAt: string;
 }
@@ -230,7 +233,7 @@ export interface ReadRetroProblemDetailResponse {
 export type ReadRetroMemberListResponse = {
   payload: RetroMemberListItem[];
 };
-
+export type ReadRetroSolutionListResponse = RetroProblemSolutionListItem[];
 export interface ReadRetroSolutionDetailResponse {
   createUserInfo: {
     id: string;
