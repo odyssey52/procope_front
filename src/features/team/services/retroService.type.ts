@@ -38,6 +38,11 @@ export interface DeleteRetroProblemParams {
   problemId: string | number;
 }
 
+export interface UpdateRetroProblemOrderParams {
+  retroId: string | number;
+  problemId: string | number;
+}
+
 export interface UpdateRetroProblemParams {
   retroId: string | number;
   problemId: string | number;
@@ -95,6 +100,12 @@ export interface DeleteRetroSolutionParams {
   solutionId: string | number;
 }
 
+export interface ReadRetroSolutionDetailParams {
+  retroId: string | number;
+  problemId: string | number;
+  solutionId: string | number;
+}
+
 // Payload
 export interface CreateRetroPayload {
   title: string;
@@ -109,6 +120,10 @@ export interface CreateRetroProblemPayload {
   title: string;
   content: string;
   kanbanStatus: ProblemKanbanStatus | KanbanStatus;
+}
+
+export interface UpdateRetroProblemOrderPayload {
+  changeOrder: number;
 }
 
 export interface UpdateRetroProblemPayload {
@@ -208,6 +223,17 @@ export interface ReadRetroProblemDetailResponse {
 export type ReadRetroMemberListResponse = {
   payload: RetroMemberListItem[];
 };
+
+export interface ReadRetroSolutionDetailResponse {
+  createUserInfo: {
+    id: string;
+    name: string;
+    profileImageUrl: string;
+  };
+  title: string;
+  content: string;
+  updatedAt: string;
+}
 
 // interface
 export type KanbanStatus = 'RCG' | 'PRG' | 'OK' | 'KEP';

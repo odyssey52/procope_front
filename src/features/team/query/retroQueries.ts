@@ -4,6 +4,7 @@ import {
   readRetroProblemList,
   readRetroMemberList,
   readRetroProblemDetail,
+  readRetroSolutionDetail,
 } from '@/features/team/services/retroService';
 import { createQueryKeys } from '@lukemorales/query-key-factory';
 import * as types from '@/features/team/services/retroService.type';
@@ -28,6 +29,10 @@ const retroQueries = createQueryKeys('retro', {
   readRetroProblemDetail: (params: types.ReadRetroProblemDetailParams) => ({
     queryKey: [params.retroId, params.problemId],
     queryFn: () => readRetroProblemDetail(params),
+  }),
+  readRetroSolutionDetail: (params: types.ReadRetroSolutionDetailParams) => ({
+    queryKey: [params.retroId, params.problemId, params.solutionId],
+    queryFn: () => readRetroSolutionDetail(params),
   }),
 });
 

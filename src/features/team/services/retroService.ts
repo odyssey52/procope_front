@@ -18,6 +18,8 @@ const URLS = {
     `/retrospectives/problems/${retroId}/${problemId}`,
   DELETE_RETRO_PROBLEM: (retroId: string | number, problemId: string | number) =>
     `/retrospectives/problems/${retroId}/${problemId}`,
+  UPDATE_RETRO_PROBLEM_ORDER: (retroId: string | number, problemId: string | number) =>
+    `/retrospectives/problems/${retroId}/${problemId}`,
   UPDATE_RETRO_PROBLEM_STATUS: (retroId: string | number, problemId: string | number) =>
     `/retrospectives/problems/${retroId}/${problemId}/status`,
   UPDATE_RETRO_PROBLEM_COMPLETED_AT: (retroId: string | number, problemId: string | number) =>
@@ -36,6 +38,8 @@ const URLS = {
   UPDATE_RETRO_SOLUTION: (retroId: string | number, problemId: string | number, solutionId: string | number) =>
     `/retrospectives/problems/solutions/${retroId}/${problemId}/${solutionId}`,
   DELETE_RETRO_SOLUTION: (retroId: string | number, problemId: string | number, solutionId: string | number) =>
+    `/retrospectives/problems/solutions/${retroId}/${problemId}/${solutionId}`,
+  READ_RETRO_SOLUTION_DETAIL: (retroId: string | number, problemId: string | number, solutionId: string | number) =>
     `/retrospectives/problems/solutions/${retroId}/${problemId}/${solutionId}`,
 };
 
@@ -84,6 +88,14 @@ export async function createRetroProblem(
 
 export async function deleteRetroProblem(params: types.DeleteRetroProblemParams) {
   const { data } = await api.delete(URLS.DELETE_RETRO_PROBLEM(params.retroId, params.problemId));
+  return data;
+}
+
+export async function updateRetroProblemOrder(
+  params: types.UpdateRetroProblemOrderParams,
+  payload: types.UpdateRetroProblemOrderPayload,
+) {
+  const { data } = await api.put(URLS.UPDATE_RETRO_PROBLEM_ORDER(params.retroId, params.problemId), payload);
   return data;
 }
 
@@ -169,5 +181,12 @@ export async function updateRetroSolution(
 
 export async function deleteRetroSolution(params: types.DeleteRetroSolutionParams) {
   const { data } = await api.delete(URLS.DELETE_RETRO_SOLUTION(params.retroId, params.problemId, params.solutionId));
+  return data;
+}
+
+export async function readRetroSolutionDetail(params: types.ReadRetroSolutionDetailParams) {
+  const { data } = await api.get<types.ReadRetroSolutionDetailResponse>(
+    URLS.READ_RETRO_SOLUTION_DETAIL(params.retroId, params.problemId, params.solutionId),
+  );
   return data;
 }

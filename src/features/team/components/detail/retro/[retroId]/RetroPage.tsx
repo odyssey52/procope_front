@@ -19,10 +19,10 @@ import SkeletonProblemWrapper from './SkeletonProblemWrapper';
 
 const RetroPage = () => {
   const params = useParams();
+  const { accessToken } = useAuthStore();
   const { close } = useSidePanelStore();
   const { retroId, teamId } = params;
 
-  const { accessToken } = useAuthStore();
   const client = useRef<Client | null>(null);
 
   const [isConnected, setIsConnected] = useState(false);

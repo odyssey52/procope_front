@@ -26,7 +26,15 @@ import { refreshTokenQueries } from '../../query/refresh/refreshTokenQueries';
  */
 
 export function AuthGuard({ children }: { children: React.ReactNode }) {
-  const { accessToken, setAccessToken, logoutType, isRefreshing, setRefreshing } = useAuthStore();
+  const {
+    accessToken,
+    setAccessToken,
+    logoutType,
+    isRefreshing,
+    setRefreshing,
+    isRefreshTokenExpired,
+    setIsRefreshTokenExpired,
+  } = useAuthStore();
   const { logout } = useLogout();
 
   const isEnabled = useMemo(() => {
@@ -53,6 +61,15 @@ export function AuthGuard({ children }: { children: React.ReactNode }) {
     if (isSuccess && newAccessToken && !accessToken) setAccessToken(newAccessToken);
     if (isSuccess || isError) setRefreshing(false);
 
+    if (isRefreshTokenExpired) {
+      setIsRefreshTokenExpired(false);
+      toastActions.open({
+        state: 'error',
+        title: MESSAGES.ERROR.UNAUTHORIZED,
+      });
+      logout({ savePreviousPath: true });
+    }
+
     if (!accessToken) {
       if (isError && !isSuccess) {
         const savePreviousPath = logoutType !== 'manual';
@@ -63,7 +80,7 @@ export function AuthGuard({ children }: { children: React.ReactNode }) {
         logout({ savePreviousPath });
       }
     }
-  }, [isSuccess, isError, newAccessToken, setAccessToken, accessToken]);
+  }, [isSuccess, isError, newAccessToken, setAccessToken, accessToken, isRefreshTokenExpired]);
 
   if (isRefreshing || isLoading) {
     return (
