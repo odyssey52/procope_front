@@ -6,14 +6,15 @@ import { AnimatePresence, motion } from 'framer-motion';
 import styled from 'styled-components';
 
 const SidePanel = () => {
-  const { isOpen, cardId, content, skipEnterAnimation } = useSidePanelStore();
+  const { panels, skipEnterAnimation } = useSidePanelStore();
 
   return (
     <AnimatePresence>
-      {isOpen && (
+      {panels.map((panel, index) => (
         <Wrapper
-          key={cardId ?? 'sidepanel'}
-          $isOpen={isOpen}
+          key={panel.id}
+          $isOpen
+          $stackIndex={index}
           initial={skipEnterAnimation ? { right: 0 } : { right: '-100%' }}
           animate={{
             right: 0,
@@ -23,14 +24,14 @@ const SidePanel = () => {
           }}
           exit={{ right: '-100%', transition: { duration: 0.2, ease: 'easeInOut' } }}
         >
-          {content}
+          {panel.content}
         </Wrapper>
-      )}
+      ))}
     </AnimatePresence>
   );
 };
 
-const Wrapper = styled(motion.div)<{ $isOpen: boolean }>`
+const Wrapper = styled(motion.div)<{ $isOpen: boolean; $stackIndex: number }>`
   width: 790px;
   max-width: calc(100vw - 316px);
   padding-top: 24px;
@@ -45,6 +46,9 @@ const Wrapper = styled(motion.div)<{ $isOpen: boolean }>`
   border-left: 1px solid ${({ theme }) => theme.sementicColors.border.primary};
   box-shadow: 0 2px 20px 0 rgba(0, 0, 0, 0.05);
   ${zIndex.layer1};
+
+  /* 스택 인덱스에 따른 z-index 조정 */
+  z-index: ${({ $stackIndex }) => 1000 + $stackIndex};
 `;
 
 SidePanel.displayName = 'SidePanel';
