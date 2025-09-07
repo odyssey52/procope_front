@@ -204,7 +204,13 @@ const KeepSidePanelContent = ({ retroId, problemId }: KeepSidePanelContentProps)
                 카테고리
               </ProblemInfoItemTitle>
               <ProblemInfoItemContent>
-                <TagJob type={data.userRole as JobType} bgColor={theme.sementicColors.bg.tertiary_hover_pressed} />
+                {data.roles.map((item) => (
+                  <TagJob
+                    key={item.role + item.id}
+                    type={item.role as JobType}
+                    bgColor={theme.sementicColors.bg.tertiary_hover_pressed}
+                  />
+                ))}
               </ProblemInfoItemContent>
             </ProblemInfoItem>
             <ProblemInfoItem>
