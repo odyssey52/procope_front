@@ -6,7 +6,6 @@ import { deleteRetroProblem, updateRetroProblem } from '@/features/team/services
 import { UpdateRetroProblemPayload } from '@/features/team/services/retroService.type';
 import { IconApps, IconDirectionRight1, IconUser } from '@/shared/assets/icons/line';
 import useApiError from '@/shared/hooks/useApiError';
-import { useClickOutside } from '@/shared/hooks/useClickOutside';
 import useDebounce from '@/shared/hooks/useDebounce';
 import { useSidePanelStore } from '@/shared/store/sidePanel/sidePanel';
 import useUserStore from '@/shared/store/user/user';
@@ -23,7 +22,8 @@ import Text from '@/shared/ui/Text';
 import Tiptap from '@/shared/ui/tiptap/Tiptap';
 import PageTitle from '@/shared/ui/title/PageTitle';
 import { formatDateToDot } from '@/shared/utils/date';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { Client } from '@stomp/stompjs';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import BulletList from '@tiptap/extension-bullet-list';
 import ListItem from '@tiptap/extension-list-item';
 import Placeholder from '@tiptap/extension-placeholder';
@@ -36,11 +36,13 @@ import SkeletonSidePanelContent from './SkeletonSidePanelContent';
 interface KeepSidePanelContentProps {
   retroId: string | number;
   problemId: string | number;
+  client: Client | null;
 }
 
-const KeepSidePanelContent = ({ retroId, problemId }: KeepSidePanelContentProps) => {
+const KeepSidePanelContent = ({ retroId, problemId, client }: KeepSidePanelContentProps) => {
   const { id } = useUserStore();
   const { handleError } = useApiError();
+  const queryClient = useQueryClient();
   const [currentTitle, setCurrentTitle] = useState('');
   const [currentContent, setCurrentContent] = useState('');
   const [isInitialized, setIsInitialized] = useState(false);
@@ -60,7 +62,6 @@ const KeepSidePanelContent = ({ retroId, problemId }: KeepSidePanelContentProps)
   const isAdmin = role === 'ADMIN';
   const isEditable = data?.createUserInfo.id === id || isAdmin;
 
-  const ref = useClickOutside<HTMLDivElement>(close, '.task-card-for-useClickOutside-hook');
   const currentTitleRef = useRef('');
   const currentContentRef = useRef('');
 
@@ -168,8 +169,25 @@ const KeepSidePanelContent = ({ retroId, problemId }: KeepSidePanelContentProps)
     };
   }, [isInitialized, retroId, problemId]);
 
+  useEffect(() => {
+    if (client && client.connected && retroId) {
+      const subscription = client.subscribe(`/user/topic/retrospectives/problems/${problemId}`, (message) => {
+        const data = JSON.parse(message.body);
+        console.log('📨 실시간 데이터 수신:', message.body);
+        if (data.code === 'UPDATE') {
+          queryClient.refetchQueries({
+            queryKey: retroQueries.readRetroProblemDetail({ retroId, problemId }).queryKey,
+          });
+        }
+      });
+      return () => {
+        subscription.unsubscribe();
+      };
+    }
+  }, [client, retroId, queryClient]);
+
   return (
-    <RefContainer ref={ref}>
+    <RefContainer>
       <PanelControl>
         <CloseButton onClick={close}>
           <IconDirectionRight1 />

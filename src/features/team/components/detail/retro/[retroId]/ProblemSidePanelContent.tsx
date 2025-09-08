@@ -238,7 +238,7 @@ const ProblemSidePanelContent = ({ retroId, problemId, client }: ProblemSidePane
 
   useEffect(() => {
     if (client && client.connected && retroId) {
-      const subscription = client.subscribe(`/user/topic/retrospectives/problems/${problemId}`, (message) => {
+      const subscription = client.subscribe(`/user/topic/retrospectives/${problemId}`, (message) => {
         const data = JSON.parse(message.body);
         console.log('📨 실시간 데이터 수신:', message.body);
         if (data.code === 'UPDATE') {
