@@ -45,10 +45,9 @@ const Wrapper = styled(motion.div)<{ $isOpen: boolean; $stackIndex: number }>`
   background-color: ${({ theme }) => theme.sementicColors.bg.inverse};
   border-left: 1px solid ${({ theme }) => theme.sementicColors.border.primary};
   box-shadow: 0 2px 20px 0 rgba(0, 0, 0, 0.05);
-  ${zIndex.layer1};
 
   /* 스택 인덱스에 따른 z-index 조정 */
-  z-index: ${({ $stackIndex }) => 1000 + $stackIndex};
+  z-index: ${({ $stackIndex }) => 1 + $stackIndex};
 `;
 
 SidePanel.displayName = 'SidePanel';
