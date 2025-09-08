@@ -46,6 +46,7 @@ const KeepSidePanelContent = ({ retroId, problemId, client }: KeepSidePanelConte
   const [currentTitle, setCurrentTitle] = useState('');
   const [currentContent, setCurrentContent] = useState('');
   const [isInitialized, setIsInitialized] = useState(false);
+  const [isEdit, setIsEdit] = useState(false); // 현재 수정 중인지 여부
   const close = useSidePanelStore((state) => state.close);
 
   const { data: teamInfo, isLoading: isTeamInfoLoading } = useTeamDetailQuery();
@@ -114,12 +115,16 @@ const KeepSidePanelContent = ({ retroId, problemId, client }: KeepSidePanelConte
         const newContent = editor.getHTML();
         setCurrentContent(newContent);
         currentContentRef.current = newContent;
+        setIsEdit(true);
       });
     }
   }, [editor]);
 
   useEffect(() => {
     currentTitleRef.current = currentTitle;
+    if (currentTitle !== data?.title) {
+      setIsEdit(true);
+    }
   }, [currentTitle]);
 
   useEffect(() => {
@@ -128,11 +133,13 @@ const KeepSidePanelContent = ({ retroId, problemId, client }: KeepSidePanelConte
 
   useEffect(() => {
     if (data) {
+      console.log('refetch');
       setCurrentTitle(data.title);
       setCurrentContent(data.content);
       currentTitleRef.current = data.title;
       currentContentRef.current = data.content;
       setIsInitialized(true);
+      setIsEdit(false);
 
       if (editor) {
         if (data.content && data.content.trim() !== '') {
@@ -145,13 +152,17 @@ const KeepSidePanelContent = ({ retroId, problemId, client }: KeepSidePanelConte
   useEffect(() => {
     if (
       isInitialized &&
+      isEdit &&
       data &&
       ((debouncedTitle !== data.title && debouncedTitle !== '') ||
         (debouncedContent !== data.content && debouncedContent !== ''))
     ) {
+      console.log('isEdit:', isEdit);
+      console.log('data.title:', data.title, 'debouncedTitle:', debouncedTitle);
+      console.log('data.content:', data.content, 'debouncedContent:', debouncedContent);
       handleUpdateRetroProblem(debouncedTitle, debouncedContent);
     }
-  }, [debouncedTitle, debouncedContent, isInitialized, data]);
+  }, [debouncedTitle, debouncedContent, isInitialized, data, isEdit]);
 
   useEffect(() => {
     return () => {
@@ -178,6 +189,7 @@ const KeepSidePanelContent = ({ retroId, problemId, client }: KeepSidePanelConte
           queryClient.refetchQueries({
             queryKey: retroQueries.readRetroProblemDetail({ retroId, problemId }).queryKey,
           });
+          setIsEdit(false);
         }
       });
       return () => {
