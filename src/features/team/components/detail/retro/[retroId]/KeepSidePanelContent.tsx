@@ -224,7 +224,7 @@ const KeepSidePanelContent = ({ retroId, problemId, client }: KeepSidePanelConte
             <PageTitle
               title={currentTitle}
               setTitle={isEditable ? setCurrentTitle : undefined}
-              placeholder="제목을 작성해 주세요"
+              placeholder={isEditable ? '제목을 작성해 주세요' : '새 카드'}
             />
           </TitleWrapper>
           <ProblemInfo>
