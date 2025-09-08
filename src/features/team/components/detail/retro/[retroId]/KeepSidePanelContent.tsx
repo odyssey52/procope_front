@@ -42,12 +42,14 @@ interface KeepSidePanelContentProps {
 const KeepSidePanelContent = ({ retroId, problemId, client }: KeepSidePanelContentProps) => {
   const { id } = useUserStore();
   const { handleError } = useApiError();
+
+  const close = useSidePanelStore((state) => state.close);
+
   const queryClient = useQueryClient();
   const [currentTitle, setCurrentTitle] = useState('');
   const [currentContent, setCurrentContent] = useState('');
   const [isInitialized, setIsInitialized] = useState(false);
   const [isEdit, setIsEdit] = useState(false); // 현재 수정 중인지 여부
-  const close = useSidePanelStore((state) => state.close);
 
   const { data: teamInfo, isLoading: isTeamInfoLoading } = useTeamDetailQuery();
   const {
@@ -157,9 +159,6 @@ const KeepSidePanelContent = ({ retroId, problemId, client }: KeepSidePanelConte
       ((debouncedTitle !== data.title && debouncedTitle !== '') ||
         (debouncedContent !== data.content && debouncedContent !== ''))
     ) {
-      console.log('isEdit:', isEdit);
-      console.log('data.title:', data.title, 'debouncedTitle:', debouncedTitle);
-      console.log('data.content:', data.content, 'debouncedContent:', debouncedContent);
       handleUpdateRetroProblem(debouncedTitle, debouncedContent);
     }
   }, [debouncedTitle, debouncedContent, isInitialized, data, isEdit]);
