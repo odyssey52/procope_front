@@ -33,7 +33,6 @@ const RetroInfoWrapper = ({ client }: RetroInfoWrapperProps) => {
   const retroId = params.retroId as string;
 
   const queryClient = useQueryClient();
-  const subscriptionRef = useRef<any>(null);
   const { handleError } = useApiError();
 
   const { data } = useSuspenseQuery({
@@ -92,20 +91,25 @@ const RetroInfoWrapper = ({ client }: RetroInfoWrapperProps) => {
 
   useEffect(() => {
     if (client && client.connected) {
-      subscriptionRef.current = client.subscribe('/user/topic/retrospectives', (message) => {
+      const subscription = client.subscribe('/user/topic/retrospectives', (message) => {
         const data = JSON.parse(message.body);
         console.log('📨 실시간 데이터 수신:', data);
         if (data.code === 'UPDATE') {
           queryClient.invalidateQueries({ queryKey: retroQueries.readRetro({ teamId, retroId }).queryKey });
         }
       });
+      const memberSubscription = client.subscribe('/user/topic/members', (message) => {
+        const data = JSON.parse(message.body);
+        console.log('📨 실시간 데이터 수신:', data);
+        if (data.code === 'UPDATE') {
+          queryClient.invalidateQueries({ queryKey: retroQueries.readRetroMemberList({ teamId, retroId }).queryKey });
+        }
+      });
+      return () => {
+        subscription.unsubscribe();
+        memberSubscription.unsubscribe();
+      };
     }
-
-    return () => {
-      if (subscriptionRef.current) {
-        subscriptionRef.current.unsubscribe();
-      }
-    };
   }, [client]);
 
   useEffect(() => {
