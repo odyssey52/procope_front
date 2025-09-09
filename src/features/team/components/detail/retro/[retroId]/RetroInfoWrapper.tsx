@@ -21,6 +21,7 @@ import { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import CalendarArea from './CalendarArea';
 import MemberArea from './MemberArea';
+import RetroInfoMemberWrapper from './RetroInfoMemberWrapper';
 
 interface RetroInfoWrapperProps {
   client: Client | null;
@@ -28,14 +29,13 @@ interface RetroInfoWrapperProps {
 
 const RetroInfoWrapper = ({ client }: RetroInfoWrapperProps) => {
   const params = useParams();
-  const router = useRouter();
   const teamId = params.teamId as string;
   const retroId = params.retroId as string;
 
   const queryClient = useQueryClient();
   const { handleError } = useApiError();
 
-  const { data } = useSuspenseQuery({
+  const { data, isSuccess } = useSuspenseQuery({
     ...retroQueries.readRetro({ teamId: teamId as string, retroId: retroId as string }),
   });
 
@@ -48,10 +48,6 @@ const RetroInfoWrapper = ({ client }: RetroInfoWrapperProps) => {
 
   const updateRetroDateMutation = useMutation({
     mutationFn: (payload: UpdateRetroDatePayload) => updateRetroDate({ teamId, retroId }, payload),
-  });
-
-  const deleteRetroMutation = useMutation({
-    mutationFn: () => deleteRetro({ teamId, retroId }),
   });
 
   const handleUpdateRetroTitle = async () => {
@@ -75,19 +71,12 @@ const RetroInfoWrapper = ({ client }: RetroInfoWrapperProps) => {
     }
   };
 
-  const handleDeleteRetro = async () => {
-    try {
-      await deleteRetroMutation.mutateAsync();
-      queryClient.invalidateQueries({ queryKey: retroQueries.readRetroList({ teamId }).queryKey });
-      router.replace(`/team/${teamId}/retro`);
-      toastActions.open({
-        title: '회고가 삭제되었습니다.',
-        state: 'success',
-      });
-    } catch (error) {
-      handleError(error);
+  useEffect(() => {
+    if (data) {
+      setCurrentTitle(data.title ?? '');
+      setSelectedDate(formatDateToDot(data.retroDate) ?? '');
     }
-  };
+  }, [data]);
 
   useEffect(() => {
     if (client && client.connected) {
@@ -98,28 +87,14 @@ const RetroInfoWrapper = ({ client }: RetroInfoWrapperProps) => {
           queryClient.invalidateQueries({ queryKey: retroQueries.readRetro({ teamId, retroId }).queryKey });
         }
       });
-      const memberSubscription = client.subscribe('/user/topic/members', (message) => {
-        const data = JSON.parse(message.body);
-        console.log('📨 실시간 데이터 수신:', data);
-        if (data.code === 'UPDATE') {
-          queryClient.invalidateQueries({ queryKey: retroQueries.readRetroMemberList({ teamId, retroId }).queryKey });
-        }
-      });
+
       return () => {
         subscription.unsubscribe();
-        memberSubscription.unsubscribe();
       };
     }
   }, [client]);
 
-  useEffect(() => {
-    if (data) {
-      setCurrentTitle(data.title ?? '');
-      setSelectedDate(formatDateToDot(data.retroDate) ?? '');
-    }
-  }, [data]);
-
-  if (!data) return <Error title="에러 발생" description="회고 정보를 불러오는 중 오류가 발생했습니다." />;
+  if (!isSuccess) return <Error title="에러 발생" description="회고 정보를 불러오는 중 오류가 발생했습니다." />;
   return (
     <Wrapper>
       <TitleWrapper>
@@ -129,27 +104,7 @@ const RetroInfoWrapper = ({ client }: RetroInfoWrapperProps) => {
           placeholder="제목을 작성해 주세요"
           onBlur={handleUpdateRetroTitle}
         />
-        <MemberWrapper>
-          <AvatarGroup
-            profileList={data?.joinUserInfos?.map((user) => ({
-              nickname: user.name,
-              image: user.profileImageUrl,
-              isOnline: true,
-            }))}
-            size={32}
-          />
-          <MemberArea teamId={teamId} retroId={retroId} />
-          <MoreArea
-            size={40}
-            menuList={
-              <ItemList
-                selectOptionList={[{ value: '삭제', label: '삭제' }]}
-                valueHandler={handleDeleteRetro}
-                width="112px"
-              />
-            }
-          />
-        </MemberWrapper>
+        <RetroInfoMemberWrapper teamId={teamId} retroId={retroId} client={client} />
       </TitleWrapper>
       <DetailInfoWrapper>
         <CreatorWrapper>
@@ -158,10 +113,10 @@ const RetroInfoWrapper = ({ client }: RetroInfoWrapperProps) => {
           </Text>
           <TextButton
             $type="24"
-            leftIcon={<Avatar size={24} image={data?.createUserInfo?.profileImageUrl} />}
+            leftIcon={<Avatar size={24} image={data.createUserInfo?.profileImageUrl} />}
             $clickable={false}
           >
-            {data?.createUserInfo?.name}
+            {data.createUserInfo?.name}
           </TextButton>
         </CreatorWrapper>
         <DateWrapper>
@@ -184,14 +139,6 @@ const Wrapper = styled.div`
 const TitleWrapper = styled.div`
   display: flex;
   gap: 16px;
-`;
-
-const MemberWrapper = styled.div`
-  position: relative;
-  display: flex;
-  gap: 12px;
-  flex-shrink: 0;
-  align-items: center;
 `;
 
 const DetailInfoWrapper = styled.div`
