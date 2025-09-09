@@ -8,7 +8,7 @@ import AvatarGroup from '@/shared/ui/avatar/AvatarGroup';
 import MoreArea from '@/shared/ui/button/MoreArea';
 import ItemList from '@/shared/ui/select/ItemList';
 import { Client } from '@stomp/stompjs';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import styled from 'styled-components';
@@ -25,8 +25,9 @@ const RetroInfoMemberWrapper = ({ teamId, retroId, client }: RetroInfoMemberWrap
   const queryClient = useQueryClient();
   const { handleError } = useApiError();
 
-  // 추후 소켓 응답 받아서 업데이트
-  const [onlineMemberList, setOnlineMemberList] = useState([]);
+  const { data: onlineMemberList } = useQuery({
+    ...retroQueries.readOnlineMemberList({ retroId }),
+  });
   const deleteRetroMutation = useMutation({
     mutationFn: () => deleteRetro({ teamId, retroId }),
   });
@@ -51,7 +52,7 @@ const RetroInfoMemberWrapper = ({ teamId, retroId, client }: RetroInfoMemberWrap
         const data = JSON.parse(message.body);
         console.log('📨 실시간 데이터 수신:', data);
         if (data.code === 'UPDATE') {
-          queryClient.invalidateQueries({ queryKey: retroQueries.readRetroMemberList({ teamId, retroId }).queryKey });
+          queryClient.invalidateQueries({ queryKey: retroQueries.readOnlineMemberList({ retroId }).queryKey });
         }
       });
       return () => {
@@ -62,14 +63,16 @@ const RetroInfoMemberWrapper = ({ teamId, retroId, client }: RetroInfoMemberWrap
 
   return (
     <Wrapper>
-      {/* <AvatarGroup
-        profileList={onlineMemberList.map((user) => ({
-          nickname: user.name,
-          image: user.profileImageUrl,
-          isOnline: true,
-        }))}
-        size={32}
-      /> */}
+      {onlineMemberList && (
+        <AvatarGroup
+          profileList={onlineMemberList.map((user) => ({
+            nickname: user.name,
+            image: user.picture,
+            isOnline: true,
+          }))}
+          size={32}
+        />
+      )}
       <MemberArea teamId={teamId} retroId={retroId} />
       <MoreArea
         size={40}
