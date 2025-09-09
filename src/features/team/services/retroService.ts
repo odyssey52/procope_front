@@ -4,6 +4,7 @@ import * as types from './retroService.type';
 const URLS = {
   READ_RETRO_LIST: (teamId: string) => `/retrospectives/${teamId}`,
   CREATE_RETRO: (teamId: string) => `/retrospectives/${teamId}`,
+  READ_ONLINE_MEMBER_LIST: (retroId: string | number) => `/retrospectives/${retroId}/visitUsers`,
   READ_RETRO: (teamId: string, retroId: string | number) => `/retrospectives/${teamId}/${retroId}`,
   DELETE_RETRO: (teamId: string, retroId: string | number) => `/retrospectives/${teamId}/${retroId}`,
 
@@ -200,5 +201,10 @@ export async function readRetroSolutionDetail(params: types.ReadRetroSolutionDet
   const { data } = await api.get<types.ReadRetroSolutionDetailResponse>(
     URLS.READ_RETRO_SOLUTION_DETAIL(params.retroId, params.problemId, params.solutionId),
   );
+  return data;
+}
+
+export async function readOnlineMemberList(params: types.ReadOnlineMemberListParams) {
+  const { data } = await api.get<types.ReadOnlineMemberListResponse>(URLS.READ_ONLINE_MEMBER_LIST(params.retroId));
   return data;
 }

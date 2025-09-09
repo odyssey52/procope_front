@@ -110,6 +110,10 @@ export interface ReadRetroSolutionListParams {
   problemId: string | number;
 }
 
+export interface ReadOnlineMemberListParams {
+  retroId: string | number;
+}
+
 // Payload
 export interface CreateRetroPayload {
   title: string;
@@ -246,6 +250,9 @@ export interface ReadRetroSolutionDetailResponse {
 export type CreateRetroSolutionResponse = {
   id: string | number;
 };
+
+export type ReadOnlineMemberListResponse = ReadOnlineMember[];
+
 // interface
 export type KanbanStatus = 'RCG' | 'PRG' | 'OK' | 'KEP';
 export type ProblemKanbanStatus = Omit<KanbanStatus, 'KEP'>;
@@ -281,4 +288,11 @@ export type RetroProblemSolutionListItem = {
     name: string;
     profileImageUrl: string;
   };
+};
+
+export type ReadOnlineMember = {
+  id: string;
+  name: string;
+  email: string;
+  picture: string;
 };
