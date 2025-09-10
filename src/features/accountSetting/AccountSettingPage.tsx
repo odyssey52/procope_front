@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { useUserInfoQuery } from '@/shared/hooks/useUserInfoQuery';
+import useUserInfoQuery from '@/shared/hooks/useUserInfoQuery';
 import { LoadingSpinner } from '@/shared/ui/LoadingSpinner';
 import SelectOption from '@/shared/ui/select/SelectOption';
 import styled from 'styled-components';

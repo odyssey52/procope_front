@@ -28,7 +28,7 @@ const PageTitle = ({ hasBack, title, setTitle, onBlur, placeholder, description,
       )}
       {!setTitle && (
         <Text variant="heading_24" color="primary">
-          {title}
+          {title || placeholder}
         </Text>
       )}
       {description && (

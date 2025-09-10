@@ -1,38 +1,55 @@
 'use client';
 
+import retroQueries from '@/features/team/query/retroQueries';
 import { createRetroSolution } from '@/features/team/services/retroService';
-import { CreateRetroSolutionPayload, RetroProblemSolutionListItem } from '@/features/team/services/retroService.type';
-import { IconCheckMarkRectangle, IconSend } from '@/shared/assets/icons/line';
+import { CreateRetroSolutionPayload } from '@/features/team/services/retroService.type';
+import { IconCheckMarkRectangle } from '@/shared/assets/icons/line';
+import useApiError from '@/shared/hooks/useApiError';
 import { useSidePanelStore } from '@/shared/store/sidePanel/sidePanel';
 import { theme } from '@/shared/styles/theme';
 import Button from '@/shared/ui/button/Button';
 import TaskCard from '@/shared/ui/card/TaskCard';
 import MoreIndicator from '@/shared/ui/indicator/MoreIndicator';
-import Placeholder from '@/shared/ui/placeholder/Placeholder';
 import Tag from '@/shared/ui/tag/Tag';
 import PageSubTitle from '@/shared/ui/title/PageSubTitle';
-import { useMutation } from '@tanstack/react-query';
-import { useState } from 'react';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import styled from 'styled-components';
+import SkeletonSolutionList from './SkeletonSolutionList';
+import SolutionSidePanelContent from './SolutionSidePanelContent';
 
-const SolutionWrapper = ({
-  retroId,
-  problemId,
-  solutions,
-}: {
-  retroId: string | number;
-  problemId: string | number;
-  solutions: RetroProblemSolutionListItem[];
-}) => {
-  const [content, setContent] = useState('');
-  const handleSwitchCard = useSidePanelStore((state) => state.handleSwitchCard);
+const SolutionWrapper = ({ retroId, problemId }: { retroId: string | number; problemId: string | number }) => {
+  const open = useSidePanelStore((state) => state.open);
+  const { handleError } = useApiError();
+
+  const {
+    data: solutions,
+    isSuccess,
+    isLoading,
+  } = useQuery({
+    ...retroQueries.readRetroSolutionList({ retroId, problemId }),
+  });
 
   const createRetroSolutionMutation = useMutation({
     mutationFn: (payload: CreateRetroSolutionPayload) => createRetroSolution({ retroId, problemId }, payload),
   });
 
-  const addSolution = () => {
-    console.log('addSolution');
+  const handleSolutionCard = async () => {
+    try {
+      const { id } = await createRetroSolutionMutation.mutateAsync({
+        title: '',
+        content: '',
+      });
+      openSolution(id);
+    } catch (error) {
+      handleError(error);
+    }
+  };
+
+  const openSolution = (solutionId: string | number) => {
+    open({
+      cardId: `${retroId}-PBM-${problemId}-SOL-${solutionId}`,
+      content: <SolutionSidePanelContent retroId={retroId} problemId={problemId} solutionId={solutionId} />,
+    });
   };
 
   return (
@@ -41,43 +58,41 @@ const SolutionWrapper = ({
         <PageSubTitle first="개선방안">
           <SubTitleRightBox>
             <MoreIndicator count={solutions?.length} type="transparent" />
-            <Button $type="secondary" onClick={addSolution}>
+            <Button $type="secondary" onClick={handleSolutionCard}>
               추가
             </Button>
           </SubTitleRightBox>
         </PageSubTitle>
       </Head>
-      <Content>
-        <CardList>
-          {solutions.map((solution) => (
-            <TaskCard
-              key={`SOL-${solution.id}`}
-              // onClick={() => {
-              //   handleSwitchCard({
-              //     cardId: `${retroId}-PBM-${problemId}-SOL-${solution.id}`,
-              //     content: <KeepSidePanelContent retroId={retroId} problemId={problemId} />,
-              //   });
-              // }}
-              tags={[
-                <Tag
-                  key={`SolutionTaskCard-${solution.id}`}
-                  $size="large"
-                  $style="transparent"
-                  $leftIcon={<IconCheckMarkRectangle color={theme.sementicColors.icon.brand} />}
-                >
-                  SOL-{solution.id}
-                </Tag>,
-              ]}
-              title={solution.title}
-              startDate={solution.updatedAt}
-              user={{
-                nickname: solution.createUserInfo.name,
-                profileImage: solution.createUserInfo.profileImageUrl,
-              }}
-            />
-          ))}
-        </CardList>
-      </Content>
+      {isLoading && <SkeletonSolutionList />}
+      {isSuccess && solutions.length > 0 && (
+        <Content>
+          <CardList>
+            {solutions.map((solution) => (
+              <TaskCard
+                key={`SOL-${solution.id}`}
+                onClick={() => openSolution(solution.id)}
+                tags={[
+                  <Tag
+                    key={`SolutionTaskCard-${solution.id}`}
+                    $size="large"
+                    $style="transparent"
+                    $leftIcon={<IconCheckMarkRectangle color={theme.sementicColors.icon.brand} />}
+                  >
+                    SOL-{solution.id}
+                  </Tag>,
+                ]}
+                title={solution.title}
+                startDate={solution.updatedAt}
+                user={{
+                  nickname: solution.createUserInfo.name,
+                  profileImage: solution.createUserInfo.profileImageUrl,
+                }}
+              />
+            ))}
+          </CardList>
+        </Content>
+      )}
     </Wrapper>
   );
 };

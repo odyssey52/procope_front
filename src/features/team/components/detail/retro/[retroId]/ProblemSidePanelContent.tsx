@@ -10,7 +10,6 @@ import {
 } from '@/features/team/services/retroService';
 import {
   ProblemKanbanStatus,
-  RetroProblemSolutionListItem,
   UpdateRetroProblemCompletedAtPayload,
   UpdateRetroProblemPayload,
   UpdateRetroProblemStatusPayload,
@@ -24,7 +23,6 @@ import {
   IconUser,
 } from '@/shared/assets/icons/line';
 import useApiError from '@/shared/hooks/useApiError';
-import { useClickOutside } from '@/shared/hooks/useClickOutside';
 import { useSidePanelStore } from '@/shared/store/sidePanel/sidePanel';
 import useUserStore from '@/shared/store/user/user';
 import { theme } from '@/shared/styles/theme';
@@ -40,7 +38,8 @@ import Text from '@/shared/ui/Text';
 import Tiptap from '@/shared/ui/tiptap/Tiptap';
 import PageTitle from '@/shared/ui/title/PageTitle';
 import { formatDateToDot, formatDotToISO } from '@/shared/utils/date';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { Client } from '@stomp/stompjs';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import BulletList from '@tiptap/extension-bullet-list';
 import ListItem from '@tiptap/extension-list-item';
 import Placeholder from '@tiptap/extension-placeholder';
@@ -54,79 +53,18 @@ import SkeletonSidePanelContent from './SkeletonSidePanelContent';
 import SolutionWrapper from './SolutionWrapper';
 
 interface ProblemSidePanelContentProps {
+  client: Client | null;
   retroId: string | number;
   problemId: string | number;
 }
 
-const mockSolutions: RetroProblemSolutionListItem[] = [
-  {
-    id: 1,
-    title: 'Solution 1',
-    updatedAt: '2021-01-01',
-    createUserInfo: {
-      id: '1',
-      name: 'User 1',
-      profileImageUrl: 'https://via.placeholder.com/150',
-    },
-  },
-  {
-    id: 2,
-    title: 'Solution 2',
-    updatedAt: '2021-01-02',
-    createUserInfo: {
-      id: '2',
-      name: 'User 2',
-      profileImageUrl: 'https://via.placeholder.com/150',
-    },
-  },
-  {
-    id: 3,
-    title: 'Solution 3',
-    updatedAt: '2021-01-03',
-    createUserInfo: {
-      id: '3',
-      name: 'User 3',
-      profileImageUrl: 'https://via.placeholder.com/150',
-    },
-  },
-  {
-    id: 4,
-    title: 'Solution 4',
-    updatedAt: '2021-01-04',
-    createUserInfo: {
-      id: '4',
-      name: 'User 4',
-      profileImageUrl: 'https://via.placeholder.com/150',
-    },
-  },
-  {
-    id: 5,
-    title: 'Solution 5',
-    updatedAt: '2021-01-05',
-    createUserInfo: {
-      id: '5',
-      name: 'User 5',
-      profileImageUrl: 'https://via.placeholder.com/150',
-    },
-  },
-  {
-    id: 6,
-    title: 'Solution 6',
-    updatedAt: '2021-01-06',
-    createUserInfo: {
-      id: '6',
-      name: 'User 6',
-      profileImageUrl: 'https://via.placeholder.com/150',
-    },
-  },
-];
-
-const ProblemSidePanelContent = ({ retroId, problemId }: ProblemSidePanelContentProps) => {
+const ProblemSidePanelContent = ({ retroId, problemId, client }: ProblemSidePanelContentProps) => {
   const { id } = useUserStore();
   const { handleError } = useApiError();
-  const close = useSidePanelStore((state) => state.close);
-  const ref = useClickOutside<HTMLDivElement>(close, '.task-card-for-useClickOutside-hook');
 
+  const close = useSidePanelStore((state) => state.close);
+
+  const queryClient = useQueryClient();
   const { data: teamInfo, isLoading: isTeamInfoLoading } = useTeamDetailQuery();
   const {
     data,
@@ -198,6 +136,7 @@ const ProblemSidePanelContent = ({ retroId, problemId }: ProblemSidePanelContent
     try {
       await updateRetroProblemStatusMutation.mutateAsync({
         kanbanStatus,
+        changeIndex: null,
       });
     } catch (error) {
       handleError(error);
@@ -299,8 +238,38 @@ const ProblemSidePanelContent = ({ retroId, problemId }: ProblemSidePanelContent
     };
   }, [isInitialized, data]);
 
+  useEffect(() => {
+    if (client && client.connected && retroId) {
+      const subscription = client.subscribe(`/user/topic/retrospectives/problems/${problemId}`, (message) => {
+        const data = JSON.parse(message.body);
+        console.log('📨 실시간 데이터 수신:', message.body);
+        if (data.code === 'UPDATE') {
+          // 즉시 리페칭해서 로컬 상태 업데이트
+          queryClient.refetchQueries({
+            queryKey: retroQueries.readRetroProblemDetail({ retroId, problemId }).queryKey,
+          });
+        }
+      });
+      // solutions 도 구독
+      const solutionSubscription = client.subscribe(`/user/topic/retrospectives/solutions/${problemId}`, (message) => {
+        const data = JSON.parse(message.body);
+        console.log('📨 실시간 데이터 수신:', message.body);
+        if (data.code === 'UPDATE') {
+          queryClient.refetchQueries({
+            queryKey: retroQueries.readRetroSolutionList({ retroId, problemId }).queryKey,
+          });
+        }
+      });
+      // 구독 정리
+      return () => {
+        subscription.unsubscribe();
+        solutionSubscription.unsubscribe();
+      };
+    }
+  }, [client, retroId, queryClient]);
+
   return (
-    <RefContainer ref={ref}>
+    <PanelContainer>
       <PanelControl>
         <CloseButton onClick={close}>
           <IconDirectionRight1 />
@@ -327,7 +296,7 @@ const ProblemSidePanelContent = ({ retroId, problemId }: ProblemSidePanelContent
             <PageTitle
               title={currentTitle}
               setTitle={isEditable ? setCurrentTitle : undefined}
-              placeholder="제목을 작성해 주세요"
+              placeholder={isEditable ? '제목을 작성해 주세요' : '새 카드'}
             />
           </TitleWrapper>
           <ProblemInfo>
@@ -344,7 +313,13 @@ const ProblemSidePanelContent = ({ retroId, problemId }: ProblemSidePanelContent
                 카테고리
               </ProblemInfoItemTitle>
               <ProblemInfoItemContent>
-                <TagJob type={data.userRole as JobType} bgColor={theme.sementicColors.bg.tertiary_hover_pressed} />
+                {data.roles.map((item) => (
+                  <TagJob
+                    key={item.role + item.id}
+                    type={item.role as JobType}
+                    bgColor={theme.sementicColors.bg.tertiary_hover_pressed}
+                  />
+                ))}
               </ProblemInfoItemContent>
             </ProblemInfoItem>
             <ProblemInfoItem>
@@ -387,16 +362,16 @@ const ProblemSidePanelContent = ({ retroId, problemId }: ProblemSidePanelContent
             )}
           </ProblemInfo>
           <Divider color={theme.sementicColors.border.primary} />
-          <SolutionWrapper retroId={retroId} problemId={problemId} solutions={mockSolutions} />
+          <SolutionWrapper retroId={retroId} problemId={problemId} />
           <Divider color={theme.sementicColors.border.primary} />
           {editor && <Tiptap editor={editor} editable={isEditable} />}
         </Wrapper>
       )}
-    </RefContainer>
+    </PanelContainer>
   );
 };
 
-const RefContainer = styled.div`
+const PanelContainer = styled.div`
   position: relative;
   display: flex;
   flex-direction: column;
