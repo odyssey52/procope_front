@@ -38,6 +38,11 @@ export interface DeleteRetroProblemParams {
   problemId: string | number;
 }
 
+export interface UpdateRetroProblemOrderParams {
+  retroId: string | number;
+  problemId: string | number;
+}
+
 export interface UpdateRetroProblemParams {
   retroId: string | number;
   problemId: string | number;
@@ -95,6 +100,20 @@ export interface DeleteRetroSolutionParams {
   solutionId: string | number;
 }
 
+export interface ReadRetroSolutionDetailParams {
+  retroId: string | number;
+  problemId: string | number;
+  solutionId: string | number;
+}
+export interface ReadRetroSolutionListParams {
+  retroId: string | number;
+  problemId: string | number;
+}
+
+export interface ReadOnlineMemberListParams {
+  retroId: string | number;
+}
+
 // Payload
 export interface CreateRetroPayload {
   title: string;
@@ -109,6 +128,10 @@ export interface CreateRetroProblemPayload {
   title: string;
   content: string;
   kanbanStatus: ProblemKanbanStatus | KanbanStatus;
+}
+
+export interface UpdateRetroProblemOrderPayload {
+  changeOrder: number;
 }
 
 export interface UpdateRetroProblemPayload {
@@ -130,6 +153,7 @@ export interface DeleteRetroMemberPayload {
 
 export interface UpdateRetroProblemStatusPayload {
   kanbanStatus: ProblemKanbanStatus;
+  changeIndex: number | null;
 }
 
 export interface UpdateRetroProblemCompletedAtPayload {
@@ -190,8 +214,14 @@ export type ReadRetroProblemListResponse = {
   payload: RetroProblemListItem[];
 };
 
+export type CreateRetroProblemResponse = {
+  problemId: string | number;
+};
 export interface ReadRetroProblemDetailResponse {
-  userRole: string;
+  roles: {
+    id: number;
+    role: string;
+  }[];
   createUserInfo: {
     id: string;
     name: string;
@@ -200,14 +230,28 @@ export interface ReadRetroProblemDetailResponse {
   title: string;
   content: string;
   kanbanStatus: KanbanStatus;
-  solutions: RetroProblemSolutionListItem[];
   completedAt: string;
   updatedAt: string;
 }
 
-export type ReadRetroMemberListResponse = {
-  payload: RetroMemberListItem[];
+export type ReadRetroMemberListResponse = RetroMemberListItem[];
+
+export type ReadRetroSolutionListResponse = RetroProblemSolutionListItem[];
+export interface ReadRetroSolutionDetailResponse {
+  createUserInfo: {
+    id: string;
+    name: string;
+    profileImageUrl: string;
+  };
+  title: string;
+  content: string;
+  updatedAt: string;
+}
+export type CreateRetroSolutionResponse = {
+  id: string | number;
 };
+
+export type ReadOnlineMemberListResponse = ReadOnlineMember[];
 
 // interface
 export type KanbanStatus = 'RCG' | 'PRG' | 'OK' | 'KEP';
@@ -225,13 +269,13 @@ export interface RetroProblemListItem {
   content: string;
   kanbanStatus: KanbanStatus;
   updatedAt: string;
+  orderIndex: number;
 }
 
 export type RetroMemberListItem = {
   userId: string;
   name: string;
   profileImage: string;
-  inviteStatus: boolean;
 };
 
 export type RetroProblemSolutionListItem = {
@@ -243,4 +287,11 @@ export type RetroProblemSolutionListItem = {
     name: string;
     profileImageUrl: string;
   };
+};
+
+export type ReadOnlineMember = {
+  id: string;
+  name: string;
+  email: string;
+  picture: string;
 };

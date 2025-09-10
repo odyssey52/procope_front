@@ -1,13 +1,15 @@
 'use client';
 
 import retroQueries from '@/features/team/query/retroQueries';
+import teamQueries from '@/features/team/query/teamQueries';
+import { TeamMember } from '@/features/team/services/teamService.type';
 import { IconSearch } from '@/shared/assets/icons/line';
 import useDebounce from '@/shared/hooks/useDebounce';
 import { zIndex } from '@/shared/styles/mixin';
 import Placeholder from '@/shared/ui/placeholder/Placeholder';
 import { filterByHangulSearch } from '@/shared/utils/hangulSearch';
 import { useQuery } from '@tanstack/react-query';
-import { useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import styled from 'styled-components';
 import MemberFinderItem from './MemberFinderItem';
 
@@ -16,18 +18,45 @@ interface MemberFinderProps {
   retroId: string;
 }
 
+export type MemberFinderUser = TeamMember[0] & {
+  isRetroMember: boolean;
+};
 const MemberFinder = ({ teamId, retroId }: MemberFinderProps) => {
-  const { data: userList } = useQuery({
+  const { data: teamUserList } = useQuery({
+    ...teamQueries.readTeamUser({ teamId }),
+  });
+  const { data: retroMemberList } = useQuery({
     ...retroQueries.readRetroMemberList({ teamId, retroId }),
-    enabled: !!teamId,
   });
 
+  const [userList, setUserList] = useState<MemberFinderUser[]>([]);
   const [keyword, setKeyword] = useState('');
 
   const debouncedKeyword = useDebounce(keyword, 300);
 
-  const filteredUserList = filterByHangulSearch(userList?.payload || [], debouncedKeyword, (user) => user.name);
+  const filteredUserList = useMemo(
+    () => filterByHangulSearch(userList, debouncedKeyword, (user) => user.user.name),
+    [userList, debouncedKeyword],
+  );
+  console.log(filteredUserList);
+  useEffect(() => {
+    if (!teamUserList || !retroMemberList) return;
+    console.log('teamUserList', teamUserList.teamMember);
+    console.log('retroMemberList', retroMemberList);
 
+    const userList = teamUserList.teamMember.map((teamMember) => {
+      const isRetroMember = retroMemberList?.some((retroMember) => {
+        return retroMember.userId === teamMember.user.id || false;
+      });
+
+      return {
+        ...teamMember,
+        isRetroMember,
+      };
+    });
+    console.log('userList', userList);
+    setUserList(userList);
+  }, [teamUserList, retroMemberList]);
   return (
     <Wrapper>
       <Placeholder
@@ -39,7 +68,7 @@ const MemberFinder = ({ teamId, retroId }: MemberFinderProps) => {
       {filteredUserList.length > 0 && (
         <Content>
           {filteredUserList.map((user) => (
-            <MemberFinderItem key={`MemberFinderItem-${user.userId}`} user={user} teamId={teamId} retroId={retroId} />
+            <MemberFinderItem key={`MemberFinderItem-${user.user.id}`} user={user} teamId={teamId} retroId={retroId} />
           ))}
         </Content>
       )}

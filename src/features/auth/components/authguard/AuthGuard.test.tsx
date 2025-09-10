@@ -1,5 +1,5 @@
 // AuthGuard.test.tsx
-import { useUserInfoQuery } from '@/shared/hooks/useUserInfoQuery';
+import useUserInfoQuery from '@/shared/hooks/useUserInfoQuery';
 import { render, screen, waitFor } from '@testing-library/react';
 import { useRouter } from 'next/navigation';
 import { AuthGuard } from './AuthGuard';

@@ -6,7 +6,6 @@ import { deleteRetroProblem, updateRetroProblem } from '@/features/team/services
 import { UpdateRetroProblemPayload } from '@/features/team/services/retroService.type';
 import { IconApps, IconDirectionRight1, IconUser } from '@/shared/assets/icons/line';
 import useApiError from '@/shared/hooks/useApiError';
-import { useClickOutside } from '@/shared/hooks/useClickOutside';
 import useDebounce from '@/shared/hooks/useDebounce';
 import { useSidePanelStore } from '@/shared/store/sidePanel/sidePanel';
 import useUserStore from '@/shared/store/user/user';
@@ -23,7 +22,8 @@ import Text from '@/shared/ui/Text';
 import Tiptap from '@/shared/ui/tiptap/Tiptap';
 import PageTitle from '@/shared/ui/title/PageTitle';
 import { formatDateToDot } from '@/shared/utils/date';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { Client } from '@stomp/stompjs';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import BulletList from '@tiptap/extension-bullet-list';
 import ListItem from '@tiptap/extension-list-item';
 import Placeholder from '@tiptap/extension-placeholder';
@@ -36,15 +36,20 @@ import SkeletonSidePanelContent from './SkeletonSidePanelContent';
 interface KeepSidePanelContentProps {
   retroId: string | number;
   problemId: string | number;
+  client: Client | null;
 }
 
-const KeepSidePanelContent = ({ retroId, problemId }: KeepSidePanelContentProps) => {
+const KeepSidePanelContent = ({ retroId, problemId, client }: KeepSidePanelContentProps) => {
   const { id } = useUserStore();
   const { handleError } = useApiError();
+
+  const close = useSidePanelStore((state) => state.close);
+
+  const queryClient = useQueryClient();
   const [currentTitle, setCurrentTitle] = useState('');
   const [currentContent, setCurrentContent] = useState('');
   const [isInitialized, setIsInitialized] = useState(false);
-  const close = useSidePanelStore((state) => state.close);
+  const [isEdit, setIsEdit] = useState(false); // 현재 수정 중인지 여부
 
   const { data: teamInfo, isLoading: isTeamInfoLoading } = useTeamDetailQuery();
   const {
@@ -60,7 +65,6 @@ const KeepSidePanelContent = ({ retroId, problemId }: KeepSidePanelContentProps)
   const isAdmin = role === 'ADMIN';
   const isEditable = data?.createUserInfo.id === id || isAdmin;
 
-  const ref = useClickOutside<HTMLDivElement>(close, '.task-card-for-useClickOutside-hook');
   const currentTitleRef = useRef('');
   const currentContentRef = useRef('');
 
@@ -113,12 +117,16 @@ const KeepSidePanelContent = ({ retroId, problemId }: KeepSidePanelContentProps)
         const newContent = editor.getHTML();
         setCurrentContent(newContent);
         currentContentRef.current = newContent;
+        setIsEdit(true);
       });
     }
   }, [editor]);
 
   useEffect(() => {
     currentTitleRef.current = currentTitle;
+    if (currentTitle !== data?.title) {
+      setIsEdit(true);
+    }
   }, [currentTitle]);
 
   useEffect(() => {
@@ -127,11 +135,13 @@ const KeepSidePanelContent = ({ retroId, problemId }: KeepSidePanelContentProps)
 
   useEffect(() => {
     if (data) {
+      console.log('refetch');
       setCurrentTitle(data.title);
       setCurrentContent(data.content);
       currentTitleRef.current = data.title;
       currentContentRef.current = data.content;
       setIsInitialized(true);
+      setIsEdit(false);
 
       if (editor) {
         if (data.content && data.content.trim() !== '') {
@@ -144,13 +154,14 @@ const KeepSidePanelContent = ({ retroId, problemId }: KeepSidePanelContentProps)
   useEffect(() => {
     if (
       isInitialized &&
+      isEdit &&
       data &&
       ((debouncedTitle !== data.title && debouncedTitle !== '') ||
         (debouncedContent !== data.content && debouncedContent !== ''))
     ) {
       handleUpdateRetroProblem(debouncedTitle, debouncedContent);
     }
-  }, [debouncedTitle, debouncedContent, isInitialized, data]);
+  }, [debouncedTitle, debouncedContent, isInitialized, data, isEdit]);
 
   useEffect(() => {
     return () => {
@@ -168,8 +179,26 @@ const KeepSidePanelContent = ({ retroId, problemId }: KeepSidePanelContentProps)
     };
   }, [isInitialized, retroId, problemId]);
 
+  useEffect(() => {
+    if (client && client.connected && retroId) {
+      const subscription = client.subscribe(`/user/topic/retrospectives/problems/${problemId}`, (message) => {
+        const data = JSON.parse(message.body);
+        console.log('📨 실시간 데이터 수신:', message.body);
+        if (data.code === 'UPDATE') {
+          queryClient.refetchQueries({
+            queryKey: retroQueries.readRetroProblemDetail({ retroId, problemId }).queryKey,
+          });
+          setIsEdit(false);
+        }
+      });
+      return () => {
+        subscription.unsubscribe();
+      };
+    }
+  }, [client, retroId, queryClient]);
+
   return (
-    <RefContainer ref={ref}>
+    <RefContainer>
       <PanelControl>
         <CloseButton onClick={close}>
           <IconDirectionRight1 />
@@ -194,7 +223,7 @@ const KeepSidePanelContent = ({ retroId, problemId }: KeepSidePanelContentProps)
             <PageTitle
               title={currentTitle}
               setTitle={isEditable ? setCurrentTitle : undefined}
-              placeholder="제목을 작성해 주세요"
+              placeholder={isEditable ? '제목을 작성해 주세요' : '새 카드'}
             />
           </TitleWrapper>
           <ProblemInfo>
@@ -204,7 +233,13 @@ const KeepSidePanelContent = ({ retroId, problemId }: KeepSidePanelContentProps)
                 카테고리
               </ProblemInfoItemTitle>
               <ProblemInfoItemContent>
-                <TagJob type={data.userRole as JobType} bgColor={theme.sementicColors.bg.tertiary_hover_pressed} />
+                {data.roles.map((item) => (
+                  <TagJob
+                    key={item.role + item.id}
+                    type={item.role as JobType}
+                    bgColor={theme.sementicColors.bg.tertiary_hover_pressed}
+                  />
+                ))}
               </ProblemInfoItemContent>
             </ProblemInfoItem>
             <ProblemInfoItem>

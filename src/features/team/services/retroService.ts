@@ -4,6 +4,7 @@ import * as types from './retroService.type';
 const URLS = {
   READ_RETRO_LIST: (teamId: string) => `/retrospectives/${teamId}`,
   CREATE_RETRO: (teamId: string) => `/retrospectives/${teamId}`,
+  READ_ONLINE_MEMBER_LIST: (retroId: string | number) => `/retrospectives/${retroId}/visitUsers`,
   READ_RETRO: (teamId: string, retroId: string | number) => `/retrospectives/${teamId}/${retroId}`,
   DELETE_RETRO: (teamId: string, retroId: string | number) => `/retrospectives/${teamId}/${retroId}`,
 
@@ -18,8 +19,10 @@ const URLS = {
     `/retrospectives/problems/${retroId}/${problemId}`,
   DELETE_RETRO_PROBLEM: (retroId: string | number, problemId: string | number) =>
     `/retrospectives/problems/${retroId}/${problemId}`,
+  UPDATE_RETRO_PROBLEM_ORDER: (retroId: string | number, problemId: string | number) =>
+    `/retrospectives/problems/${retroId}/${problemId}`,
   UPDATE_RETRO_PROBLEM_STATUS: (retroId: string | number, problemId: string | number) =>
-    `/retrospectives/problems/${retroId}/${problemId}/status`,
+    `/retrospectives/problems/${retroId}/${problemId}`,
   UPDATE_RETRO_PROBLEM_COMPLETED_AT: (retroId: string | number, problemId: string | number) =>
     `/retrospectives/problems/${retroId}/${problemId}/completed`,
   UPDATE_RETRO_DATE: (teamId: string, retroId: string | number) => `/retrospectives/${teamId}/${retroId}/date`,
@@ -36,6 +39,10 @@ const URLS = {
   UPDATE_RETRO_SOLUTION: (retroId: string | number, problemId: string | number, solutionId: string | number) =>
     `/retrospectives/problems/solutions/${retroId}/${problemId}/${solutionId}`,
   DELETE_RETRO_SOLUTION: (retroId: string | number, problemId: string | number, solutionId: string | number) =>
+    `/retrospectives/problems/solutions/${retroId}/${problemId}/${solutionId}`,
+  READ_RETRO_SOLUTION_LIST: (retroId: string | number, problemId: string | number) =>
+    `/retrospectives/problems/solutions/${retroId}/${problemId}`,
+  READ_RETRO_SOLUTION_DETAIL: (retroId: string | number, problemId: string | number, solutionId: string | number) =>
     `/retrospectives/problems/solutions/${retroId}/${problemId}/${solutionId}`,
 };
 
@@ -78,12 +85,20 @@ export async function createRetroProblem(
   params: types.CreateRetroProblemParams,
   payload: types.CreateRetroProblemPayload,
 ) {
-  const { data } = await api.post(URLS.CREATE_RETRO_PROBLEM(params.retroId), payload);
+  const { data } = await api.post<types.CreateRetroProblemResponse>(URLS.CREATE_RETRO_PROBLEM(params.retroId), payload);
   return data;
 }
 
 export async function deleteRetroProblem(params: types.DeleteRetroProblemParams) {
   const { data } = await api.delete(URLS.DELETE_RETRO_PROBLEM(params.retroId, params.problemId));
+  return data;
+}
+
+export async function updateRetroProblemOrder(
+  params: types.UpdateRetroProblemOrderParams,
+  payload: types.UpdateRetroProblemOrderPayload,
+) {
+  const { data } = await api.put(URLS.UPDATE_RETRO_PROBLEM_ORDER(params.retroId, params.problemId), payload);
   return data;
 }
 
@@ -152,7 +167,10 @@ export async function createRetroSolution(
   params: types.CreateRetroSolutionParams,
   payload: types.CreateRetroSolutionPayload,
 ) {
-  const { data } = await api.post(URLS.CREATE_RETRO_SOLUTION(params.retroId, params.problemId), payload);
+  const { data } = await api.post<types.CreateRetroSolutionResponse>(
+    URLS.CREATE_RETRO_SOLUTION(params.retroId, params.problemId),
+    payload,
+  );
   return data;
 }
 
@@ -169,5 +187,24 @@ export async function updateRetroSolution(
 
 export async function deleteRetroSolution(params: types.DeleteRetroSolutionParams) {
   const { data } = await api.delete(URLS.DELETE_RETRO_SOLUTION(params.retroId, params.problemId, params.solutionId));
+  return data;
+}
+
+export async function readRetroSolutionList(params: types.ReadRetroSolutionListParams) {
+  const { data } = await api.get<types.ReadRetroSolutionListResponse>(
+    URLS.READ_RETRO_SOLUTION_LIST(params.retroId, params.problemId),
+  );
+  return data;
+}
+
+export async function readRetroSolutionDetail(params: types.ReadRetroSolutionDetailParams) {
+  const { data } = await api.get<types.ReadRetroSolutionDetailResponse>(
+    URLS.READ_RETRO_SOLUTION_DETAIL(params.retroId, params.problemId, params.solutionId),
+  );
+  return data;
+}
+
+export async function readOnlineMemberList(params: types.ReadOnlineMemberListParams) {
+  const { data } = await api.get<types.ReadOnlineMemberListResponse>(URLS.READ_ONLINE_MEMBER_LIST(params.retroId));
   return data;
 }
