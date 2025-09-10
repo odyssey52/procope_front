@@ -18,15 +18,17 @@ interface RetroInfoMemberWrapperProps {
   teamId: string;
   retroId: string;
   client: Client | null;
+  isConnected: boolean;
 }
 
-const RetroInfoMemberWrapper = ({ teamId, retroId, client }: RetroInfoMemberWrapperProps) => {
+const RetroInfoMemberWrapper = ({ teamId, retroId, client, isConnected }: RetroInfoMemberWrapperProps) => {
   const router = useRouter();
   const queryClient = useQueryClient();
   const { handleError } = useApiError();
 
   const { data: onlineMemberList } = useQuery({
     ...retroQueries.readOnlineMemberList({ retroId }),
+    enabled: isConnected,
   });
   const deleteRetroMutation = useMutation({
     mutationFn: () => deleteRetro({ teamId, retroId }),

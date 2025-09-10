@@ -93,7 +93,7 @@ const RetroPage = () => {
         <Head>
           <Breadcrumbs paths={paths} />
           <Suspense fallback={<RetroInfoSkeleton />}>
-            <RetroInfoWrapper client={client.current} />
+            <RetroInfoWrapper client={client.current} isConnected={isConnected} />
           </Suspense>
         </Head>
         <Content>

@@ -25,9 +25,10 @@ import RetroInfoMemberWrapper from './RetroInfoMemberWrapper';
 
 interface RetroInfoWrapperProps {
   client: Client | null;
+  isConnected: boolean;
 }
 
-const RetroInfoWrapper = ({ client }: RetroInfoWrapperProps) => {
+const RetroInfoWrapper = ({ client, isConnected }: RetroInfoWrapperProps) => {
   const params = useParams();
   const teamId = params.teamId as string;
   const retroId = params.retroId as string;
@@ -104,7 +105,7 @@ const RetroInfoWrapper = ({ client }: RetroInfoWrapperProps) => {
           placeholder="제목을 작성해 주세요"
           onBlur={handleUpdateRetroTitle}
         />
-        <RetroInfoMemberWrapper teamId={teamId} retroId={retroId} client={client} />
+        <RetroInfoMemberWrapper teamId={teamId} retroId={retroId} client={client} isConnected={isConnected} />
       </TitleWrapper>
       <DetailInfoWrapper>
         <CreatorWrapper>
