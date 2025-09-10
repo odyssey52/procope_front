@@ -17,7 +17,7 @@ import { formatDateToDot, formatDotToISO } from '@/shared/utils/date';
 import { Client } from '@stomp/stompjs';
 import { useMutation, useQueryClient, useSuspenseQuery } from '@tanstack/react-query';
 import { useParams, useRouter } from 'next/navigation';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import styled from 'styled-components';
 import CalendarArea from './CalendarArea';
 import MemberArea from './MemberArea';
@@ -43,6 +43,8 @@ const RetroInfoWrapper = ({ client, isConnected }: RetroInfoWrapperProps) => {
   const [currentTitle, setCurrentTitle] = useState<string>('');
   const [selectedDate, setSelectedDate] = useState<string>('');
 
+  const isChangeTitle = useMemo(() => currentTitle !== data.title, [currentTitle, data.title]);
+
   const updateRetroTitleMutation = useMutation({
     mutationFn: (payload: UpdateRetroTitlePayload) => updateRetroTitle({ teamId, retroId }, payload),
   });
@@ -52,6 +54,7 @@ const RetroInfoWrapper = ({ client, isConnected }: RetroInfoWrapperProps) => {
   });
 
   const handleUpdateRetroTitle = async () => {
+    if (!isChangeTitle) return;
     try {
       await updateRetroTitleMutation.mutateAsync({ title: currentTitle });
       if (!client?.connected) {
