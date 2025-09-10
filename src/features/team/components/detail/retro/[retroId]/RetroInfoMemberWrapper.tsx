@@ -10,7 +10,7 @@ import ItemList from '@/shared/ui/select/ItemList';
 import { Client } from '@stomp/stompjs';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import styled from 'styled-components';
 import MemberArea from './MemberArea';
 
@@ -30,6 +30,31 @@ const RetroInfoMemberWrapper = ({ teamId, retroId, client, isConnected }: RetroI
     ...retroQueries.readOnlineMemberList({ retroId }),
     enabled: isConnected,
   });
+  const { data: retroMemberList } = useQuery({
+    ...retroQueries.readRetroMemberList({ teamId, retroId }),
+  });
+
+  const sortedMemberList = useMemo(() => {
+    const onlineMembers = onlineMemberList || [];
+    const retroMembers = retroMemberList || [];
+
+    const convertedOnlineMembers = onlineMembers.map((member) => ({
+      userId: member.id,
+      name: member.name,
+      profileImage: member.picture,
+      isOnline: true,
+    }));
+
+    const offlineMembers = retroMembers
+      .filter((retroMember) => !onlineMembers.some((onlineMember) => onlineMember.id === retroMember.userId))
+      .map((member) => ({
+        ...member,
+        isOnline: false,
+      }));
+
+    return [...convertedOnlineMembers, ...offlineMembers];
+  }, [retroMemberList, onlineMemberList]);
+
   const deleteRetroMutation = useMutation({
     mutationFn: () => deleteRetro({ teamId, retroId }),
   });
@@ -65,12 +90,12 @@ const RetroInfoMemberWrapper = ({ teamId, retroId, client, isConnected }: RetroI
 
   return (
     <Wrapper>
-      {onlineMemberList && (
+      {sortedMemberList && (
         <AvatarGroup
-          profileList={onlineMemberList.map((user) => ({
+          profileList={sortedMemberList.map((user) => ({
             nickname: user.name,
-            image: user.picture,
-            isOnline: true,
+            image: user.profileImage,
+            isOnline: user.isOnline,
           }))}
           size={32}
         />

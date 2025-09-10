@@ -276,7 +276,6 @@ export type RetroMemberListItem = {
   userId: string;
   name: string;
   profileImage: string;
-  inviteStatus: boolean;
 };
 
 export type RetroProblemSolutionListItem = {
