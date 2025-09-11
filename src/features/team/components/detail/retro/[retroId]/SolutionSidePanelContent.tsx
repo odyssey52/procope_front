@@ -20,7 +20,8 @@ import Text from '@/shared/ui/Text';
 import Tiptap from '@/shared/ui/tiptap/Tiptap';
 import PageTitle from '@/shared/ui/title/PageTitle';
 import { formatDateToDot } from '@/shared/utils/date';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { Client } from '@stomp/stompjs';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import BulletList from '@tiptap/extension-bullet-list';
 import ListItem from '@tiptap/extension-list-item';
 import Placeholder from '@tiptap/extension-placeholder';
@@ -34,11 +35,13 @@ interface SolutionSidePanelContentProps {
   retroId: string | number;
   problemId: string | number;
   solutionId: string | number;
+  client: Client | null;
 }
 
-const SolutionSidePanelContent = ({ retroId, problemId, solutionId }: SolutionSidePanelContentProps) => {
+const SolutionSidePanelContent = ({ retroId, problemId, solutionId, client }: SolutionSidePanelContentProps) => {
   const { id } = useUserStore();
   const { handleError } = useApiError();
+  const queryClient = useQueryClient();
   const close = useSidePanelStore((state) => state.close);
 
   const { data: teamInfo, isLoading: isTeamInfoLoading } = useTeamDetailQuery();
@@ -155,6 +158,25 @@ const SolutionSidePanelContent = ({ retroId, problemId, solutionId }: SolutionSi
     };
   }, [isInitialized, data]);
 
+  useEffect(() => {
+    if (client && client.connected && retroId) {
+      const subscription = client.subscribe(
+        `/user/topic/retrospectives/${problemId}/solutions/${solutionId}`,
+        (message) => {
+          const data = JSON.parse(message.body);
+          console.log('📨 실시간 데이터 수신:', message.body);
+          if (data.code === 'UPDATE') {
+            queryClient.refetchQueries({
+              queryKey: retroQueries.readRetroSolutionDetail({ retroId, problemId, solutionId }).queryKey,
+            });
+          }
+        },
+      );
+      return () => {
+        subscription.unsubscribe();
+      };
+    }
+  }, [client, retroId, queryClient]);
   return (
     <PanelContainer>
       <PanelControl>
