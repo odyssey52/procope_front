@@ -202,7 +202,11 @@ const SolutionSidePanelContent = ({ retroId, problemId, solutionId, client }: So
         <Wrapper>
           <TitleWrapper>
             <Checkbox label={`SOL-${solutionId}`} id={`SOL-${solutionId}`} onClick={() => {}} checked />
-            <PageTitle title={currentTitle} setTitle={setCurrentTitle} placeholder="제목을 작성해 주세요" />
+            <PageTitle
+              title={currentTitle}
+              setTitle={isEditable ? setCurrentTitle : undefined}
+              placeholder={isEditable ? '제목을 작성해 주세요' : '새 카드'}
+            />
           </TitleWrapper>
           <SolutionInfo>
             <SolutionInfoItem>
@@ -233,7 +237,7 @@ const SolutionSidePanelContent = ({ retroId, problemId, solutionId, client }: So
             </SolutionInfoItem>
           </SolutionInfo>
           <Divider color={theme.sementicColors.border.primary} />
-          {editor && <Tiptap editor={editor} editable />}
+          {editor && <Tiptap editor={editor} editable={isEditable} />}
         </Wrapper>
       )}
     </PanelContainer>
