@@ -69,7 +69,7 @@ const SolutionSidePanelContent = ({ retroId, problemId, solutionId }: SolutionSi
       StarterKit,
       ListItem,
       Placeholder.configure({
-        placeholder: '솔루션 내용을 작성해 주세요',
+        placeholder: '본문을 작성해 주세요',
       }),
     ],
     content: currentContent,
@@ -175,12 +175,12 @@ const SolutionSidePanelContent = ({ retroId, problemId, solutionId }: SolutionSi
         )}
       </PanelControl>
       {isLoading && <SkeletonSidePanelContent />}
-      {!isLoading && !isSuccess && <Error title="서버 에러" description="솔루션을 찾을 수 없습니다." />}
+      {!isLoading && !isSuccess && <Error title="서버 에러" description="개선 방안을 찾을 수 없습니다." />}
       {!isLoading && isSuccess && (
         <Wrapper>
           <TitleWrapper>
             <Checkbox label={`SOL-${solutionId}`} id={`SOL-${solutionId}`} onClick={() => {}} checked />
-            <PageTitle title={currentTitle} setTitle={setCurrentTitle} placeholder="솔루션 제목을 작성해 주세요" />
+            <PageTitle title={currentTitle} setTitle={setCurrentTitle} placeholder="제목을 작성해 주세요" />
           </TitleWrapper>
           <SolutionInfo>
             <SolutionInfoItem>
