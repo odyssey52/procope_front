@@ -203,16 +203,18 @@ const KeepSidePanelContent = ({ retroId, problemId, client }: KeepSidePanelConte
         <CloseButton onClick={close}>
           <IconDirectionRight1 />
         </CloseButton>
-        <MoreArea
-          size={24}
-          menuList={
-            <ItemList
-              width="112px"
-              selectOptionList={[{ value: '삭제', label: '삭제' }]}
-              valueHandler={() => handleDeleteRetroProblem(problemId)}
-            />
-          }
-        />
+        {isEditable && (
+          <MoreArea
+            size={24}
+            menuList={
+              <ItemList
+                width="112px"
+                selectOptionList={[{ value: '삭제', label: '삭제' }]}
+                valueHandler={() => handleDeleteRetroProblem(problemId)}
+              />
+            }
+          />
+        )}
       </PanelControl>
       {isLoading && <SkeletonSidePanelContent />}
       {!isLoading && !isSuccess && <Error title="서버 에러" description="문제를 찾을 수 없습니다." />}

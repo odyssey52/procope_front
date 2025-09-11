@@ -1,14 +1,7 @@
 'use client';
 
-import retroQueries from '@/features/team/query/retroQueries';
-import { createRetroProblem } from '@/features/team/services/retroService';
-import {
-  CreateRetroProblemPayload,
-  ProblemKanbanStatus,
-  RetroProblemListItem,
-} from '@/features/team/services/retroService.type';
+import { ProblemKanbanStatus, RetroProblemListItem } from '@/features/team/services/retroService.type';
 import { IconCheckMarkRectangle, IconPlus } from '@/shared/assets/icons/line';
-import useApiError from '@/shared/hooks/useApiError';
 import { useSidePanelStore } from '@/shared/store/sidePanel/sidePanel';
 import { theme } from '@/shared/styles/theme';
 import TaskCard from '@/shared/ui/card/TaskCard';
@@ -17,10 +10,8 @@ import Divider from '@/shared/ui/line/Divider';
 import Tag from '@/shared/ui/tag/Tag';
 import { JobType } from '@/shared/ui/tag/TagJob';
 import Text from '@/shared/ui/Text';
-import { Draggable, DraggableProvidedDraggableProps, DraggableStateSnapshot, Droppable } from '@hello-pangea/dnd';
+import { Draggable, Droppable } from '@hello-pangea/dnd';
 import { Client } from '@stomp/stompjs';
-import { useMutation, useQueryClient, useSuspenseQuery } from '@tanstack/react-query';
-import React, { useEffect, useRef } from 'react';
 import styled from 'styled-components';
 import CreateCardButton from './CreateCardButton';
 import ProblemSidePanelContent from './ProblemSidePanelContent';
@@ -51,36 +42,12 @@ export const KANBAN_STATUS = {
 const ProblemCardList = ({ retroId, kanbanStatus, client, problems, onCreateCard }: ProblemCardListProps) => {
   const handleSwitchCard = useSidePanelStore((state) => state.handleSwitchCard);
 
-  // 로컬 상태를 사용하므로 서버 쿼리 제거
-  // const { data, isSuccess } = useSuspenseQuery({
-  //   ...retroQueries.readRetroProblemList({ retroId, kanbanStatus }),
-  // });
-
   const onClickTaskCard = (item: RetroProblemListItem) => {
     handleSwitchCard({
       cardId: `${retroId}-PBM-${item.id}-${kanbanStatus}-TaskCard`,
       content: <ProblemSidePanelContent retroId={retroId} problemId={item.id} client={client} />,
     });
   };
-
-  // WebSocket 구독은 ProblemWrapper에서 처리
-  // useEffect(() => {
-  //   if (client && client.connected && kanbanStatus && retroId) {
-  //     subscriptionRef.current = client.subscribe(`/user/topic/retrospectives/${kanbanStatus}`, (message) => {
-  //       const data = JSON.parse(message.body);
-  //       if (data.code === 'UPDATE') {
-  //         queryClient.invalidateQueries({
-  //           queryKey: retroQueries.readRetroProblemList({ retroId, kanbanStatus }).queryKey,
-  //         });
-  //       }
-  //     });
-  //   }
-  //   return () => {
-  //     if (subscriptionRef.current) {
-  //       subscriptionRef.current.unsubscribe();
-  //     }
-  //   };
-  // }, [client, kanbanStatus, retroId]);
 
   return (
     <Wrapper>
@@ -130,6 +97,7 @@ const ProblemCardList = ({ retroId, kanbanStatus, client, problems, onCreateCard
                             tagJob={item.userRole as JobType}
                             title={item.title}
                             startDate={item.updatedAt}
+                            endDate={item.completedAt ?? undefined}
                             user={{
                               nickname: item.createUserInfo.name,
                               profileImage: item.createUserInfo.profileImageUrl,

@@ -12,15 +12,21 @@ import TaskCard from '@/shared/ui/card/TaskCard';
 import MoreIndicator from '@/shared/ui/indicator/MoreIndicator';
 import Tag from '@/shared/ui/tag/Tag';
 import PageSubTitle from '@/shared/ui/title/PageSubTitle';
+import { Client } from '@stomp/stompjs';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import styled from 'styled-components';
 import SkeletonSolutionList from './SkeletonSolutionList';
 import SolutionSidePanelContent from './SolutionSidePanelContent';
 
-const SolutionWrapper = ({ retroId, problemId }: { retroId: string | number; problemId: string | number }) => {
+interface SolutionWrapperProps {
+  retroId: string | number;
+  problemId: string | number;
+  client: Client | null;
+}
+
+const SolutionWrapper = ({ retroId, problemId, client }: SolutionWrapperProps) => {
   const open = useSidePanelStore((state) => state.open);
   const { handleError } = useApiError();
-
   const {
     data: solutions,
     isSuccess,
@@ -48,7 +54,9 @@ const SolutionWrapper = ({ retroId, problemId }: { retroId: string | number; pro
   const openSolution = (solutionId: string | number) => {
     open({
       cardId: `${retroId}-PBM-${problemId}-SOL-${solutionId}`,
-      content: <SolutionSidePanelContent retroId={retroId} problemId={problemId} solutionId={solutionId} />,
+      content: (
+        <SolutionSidePanelContent retroId={retroId} problemId={problemId} solutionId={solutionId} client={client} />
+      ),
     });
   };
 

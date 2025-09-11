@@ -251,9 +251,9 @@ const ProblemSidePanelContent = ({ retroId, problemId, client }: ProblemSidePane
         }
       });
       // solutions 도 구독
-      const solutionSubscription = client.subscribe(`/user/topic/retrospectives/solutions/${problemId}`, (message) => {
+      const solutionSubscription = client.subscribe(`/user/topic/retrospectives/${problemId}/solutions`, (message) => {
         const data = JSON.parse(message.body);
-        console.log('📨 실시간 데이터 수신:', message.body);
+        console.log('📨 개선방안 쪽:', message.body);
         if (data.code === 'UPDATE') {
           queryClient.refetchQueries({
             queryKey: retroQueries.readRetroSolutionList({ retroId, problemId }).queryKey,
@@ -362,7 +362,7 @@ const ProblemSidePanelContent = ({ retroId, problemId, client }: ProblemSidePane
             )}
           </ProblemInfo>
           <Divider color={theme.sementicColors.border.primary} />
-          <SolutionWrapper retroId={retroId} problemId={problemId} />
+          <SolutionWrapper retroId={retroId} problemId={problemId} client={client} />
           <Divider color={theme.sementicColors.border.primary} />
           {editor && <Tiptap editor={editor} editable={isEditable} />}
         </Wrapper>
