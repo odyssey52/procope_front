@@ -49,6 +49,19 @@ const ProblemCardList = ({ retroId, kanbanStatus, client, problems, onCreateCard
     });
   };
 
+  const tags = (item: RetroProblemListItem) => {
+    return [
+      <Tag
+        key={`${item.id}-${kanbanStatus}-TaskCard-Tag`}
+        $size="large"
+        $style="transparent"
+        $leftIcon={<IconCheckMarkRectangle color={theme.sementicColors.icon.brand} />}
+      >
+        PBM-{item.id}
+      </Tag>,
+    ];
+  };
+
   return (
     <Wrapper>
       <Head>
@@ -79,56 +92,21 @@ const ProblemCardList = ({ retroId, kanbanStatus, client, problems, onCreateCard
                 problems.map((item, index) => (
                   <Draggable draggableId={`${item.id}`} key={`${retroId}-PBM-${item.id}-${kanbanStatus}`} index={index}>
                     {(provided, draggableSnapshot) => (
-                      <>
-                        <div ref={provided.innerRef} {...provided.dragHandleProps} {...provided.draggableProps}>
-                          <TaskCard
-                            key={`${retroId}-PBM-${item.id}-${kanbanStatus}-TaskCard`}
-                            onClick={() => onClickTaskCard(item)}
-                            tags={[
-                              <Tag
-                                key={`${item.id}-${kanbanStatus}-TaskCard-Tag`}
-                                $size="large"
-                                $style="transparent"
-                                $leftIcon={<IconCheckMarkRectangle color={theme.sementicColors.icon.brand} />}
-                              >
-                                PBM-{item.id}
-                              </Tag>,
-                            ]}
-                            tagJob={item.userRole as JobType}
-                            title={item.title}
-                            startDate={item.updatedAt}
-                            endDate={item.completedAt ?? undefined}
-                            user={{
-                              nickname: item.createUserInfo.name,
-                              profileImage: item.createUserInfo.profileImageUrl,
-                            }}
-                          />
-                        </div>
-                        {/* {draggableSnapshot.isDragging && (
-                              <Clone className="task-card-clone">
-                                <TaskCard
-                                  key={`${retroId}-PBM-${item.id}-${kanbanStatus}-TaskCard-clone`}
-                                  tags={[
-                                    <Tag
-                                      key={`${item.id}-${kanbanStatus}-TaskCard-Tag`}
-                                      $size="large"
-                                      $style="transparent"
-                                      $leftIcon={<IconCheckMarkRectangle color={theme.sementicColors.icon.brand} />}
-                                    >
-                                      PBM-{item.id}
-                                    </Tag>,
-                                  ]}
-                                  tagJob={item.userRole as JobType}
-                                  title={item.title}
-                                  startDate={item.updatedAt}
-                                  user={{
-                                    nickname: item.createUserInfo.name,
-                                    profileImage: item.createUserInfo.profileImageUrl,
-                                  }}
-                                />
-                              </Clone>
-                            )} */}
-                      </>
+                      <div ref={provided.innerRef} {...provided.dragHandleProps} {...provided.draggableProps}>
+                        <TaskCard
+                          key={`${retroId}-PBM-${item.id}-${kanbanStatus}-TaskCard`}
+                          onClick={() => onClickTaskCard(item)}
+                          tags={tags(item)}
+                          tagJob={item.userRole as JobType}
+                          title={item.title}
+                          startDate={item.updatedAt}
+                          endDate={item.completedAt ?? undefined}
+                          user={{
+                            nickname: item.createUserInfo.name,
+                            profileImage: item.createUserInfo.profileImageUrl,
+                          }}
+                        />
+                      </div>
                     )}
                   </Draggable>
                 ))}
@@ -154,10 +132,6 @@ const Wrapper = styled.div`
   & .task-card-clone {
     transform: none !important;
   }
-`;
-
-const Clone = styled.div`
-  transform: none !important;
 `;
 
 const Head = styled.div`
