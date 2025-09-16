@@ -91,7 +91,7 @@ const SolutionWrapper = ({ retroId, problemId, client }: SolutionWrapperProps) =
                   </Tag>,
                 ]}
                 title={solution.title}
-                startDate={solution.updatedAt}
+                startedAt={solution.updatedAt}
                 user={{
                   nickname: solution.createUserInfo.name,
                   profileImage: solution.createUserInfo.profileImageUrl,

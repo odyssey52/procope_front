@@ -21,8 +21,8 @@ interface TaskCardProps {
   tags?: React.ReactNode[];
   tagJob?: JobType;
   title: string;
-  startDate: string;
-  endDate?: string;
+  startedAt: string;
+  completedAt?: string;
   totalComments?: number;
   user: {
     nickname: string;
@@ -38,8 +38,8 @@ const TaskCard = ({
   tags,
   tagJob,
   title,
-  startDate,
-  endDate,
+  startedAt,
+  completedAt,
   user,
   hasComments = false,
   totalComments = 0,
@@ -94,7 +94,7 @@ const TaskCard = ({
       <StartDateBox>
         <IconClockCircle size={20} color={theme.sementicColors.icon.disabled} />
         <Text variant="body_14_medium" color="disabled">
-          {formatDateToDot(startDate)}
+          {formatDateToDot(startedAt)}
         </Text>
       </StartDateBox>
       <Divider />
@@ -114,11 +114,11 @@ const TaskCard = ({
               </Text>
             </CommentBox>
           )}
-          {endDate && (
+          {completedAt && (
             <EndDateBox>
               <IconFlag size={24} color={theme.sementicColors.icon.tertiary} />
               <Text variant="body_14_medium" color="disabled">
-                {formatDateToDot(endDate)}
+                {formatDateToDot(completedAt)}
               </Text>
             </EndDateBox>
           )}

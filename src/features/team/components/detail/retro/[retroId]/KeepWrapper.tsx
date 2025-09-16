@@ -127,7 +127,7 @@ const KeepWrapper = ({ retroId, client }: KeepWrapperProps) => {
                     ]}
                     tagJob={item.userRole as JobType}
                     title={item.title}
-                    startDate={item.updatedAt}
+                    startedAt={item.updatedAt}
                     user={{
                       nickname: item.createUserInfo.name,
                       profileImage: item.createUserInfo.profileImageUrl,

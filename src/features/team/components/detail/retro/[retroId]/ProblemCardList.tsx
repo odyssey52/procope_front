@@ -91,23 +91,26 @@ const ProblemCardList = ({ retroId, kanbanStatus, client, problems, onCreateCard
                 problems.length > 0 &&
                 problems.map((item, index) => (
                   <Draggable draggableId={`${item.id}`} key={`${retroId}-PBM-${item.id}-${kanbanStatus}`} index={index}>
-                    {(provided, draggableSnapshot) => (
-                      <div ref={provided.innerRef} {...provided.dragHandleProps} {...provided.draggableProps}>
-                        <TaskCard
-                          key={`${retroId}-PBM-${item.id}-${kanbanStatus}-TaskCard`}
-                          onClick={() => onClickTaskCard(item)}
-                          tags={tags(item)}
-                          tagJob={item.userRole as JobType}
-                          title={item.title}
-                          startDate={item.updatedAt}
-                          endDate={item.completedAt ?? undefined}
-                          user={{
-                            nickname: item.createUserInfo.name,
-                            profileImage: item.createUserInfo.profileImageUrl,
-                          }}
-                        />
-                      </div>
-                    )}
+                    {(provided, draggableSnapshot) => {
+                      const completedAt = kanbanStatus === 'OK' ? (item.completedAt ?? undefined) : undefined;
+                      return (
+                        <div ref={provided.innerRef} {...provided.dragHandleProps} {...provided.draggableProps}>
+                          <TaskCard
+                            key={`${retroId}-PBM-${item.id}-${kanbanStatus}-TaskCard`}
+                            onClick={() => onClickTaskCard(item)}
+                            tags={tags(item)}
+                            tagJob={item.userRole as JobType}
+                            title={item.title}
+                            startedAt={item.updatedAt}
+                            completedAt={completedAt}
+                            user={{
+                              nickname: item.createUserInfo.name,
+                              profileImage: item.createUserInfo.profileImageUrl,
+                            }}
+                          />
+                        </div>
+                      );
+                    }}
                   </Draggable>
                 ))}
               {provided.placeholder}

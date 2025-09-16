@@ -126,7 +126,7 @@ const page = () => {
         <TaskCard
           tagJob="개발"
           title="타이틀"
-          startDate="2025-01-01"
+          startedAt="2025-01-01"
           user={mock.user}
           // totalComments={mock.totalComments}
           // hasComments
