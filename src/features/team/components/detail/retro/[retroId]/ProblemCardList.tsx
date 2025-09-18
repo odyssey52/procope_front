@@ -85,13 +85,13 @@ const ProblemCardList = ({ retroId, kanbanStatus, client, problems, onCreateCard
       </Head>
       <Content>
         <Droppable droppableId={`${kanbanStatus}`}>
-          {(provided, snapshot) => (
+          {(provided) => (
             <CardList ref={provided.innerRef} {...provided.droppableProps}>
               {problems &&
                 problems.length > 0 &&
                 problems.map((item, index) => (
                   <Draggable draggableId={`${item.id}`} key={`${retroId}-PBM-${item.id}-${kanbanStatus}`} index={index}>
-                    {(provided, draggableSnapshot) => {
+                    {(provided) => {
                       const completedAt = kanbanStatus === 'OK' ? (item.completedAt ?? undefined) : undefined;
                       return (
                         <div ref={provided.innerRef} {...provided.dragHandleProps} {...provided.draggableProps}>
