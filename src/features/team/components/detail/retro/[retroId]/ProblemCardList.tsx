@@ -8,7 +8,7 @@ import TaskCard from '@/shared/ui/card/TaskCard';
 import MoreIndicator from '@/shared/ui/indicator/MoreIndicator';
 import Divider from '@/shared/ui/line/Divider';
 import Tag from '@/shared/ui/tag/Tag';
-import { JobType } from '@/shared/ui/tag/TagJob';
+import TagJob, { JobType } from '@/shared/ui/tag/TagJob';
 import Text from '@/shared/ui/Text';
 import { Draggable, Droppable } from '@hello-pangea/dnd';
 import { Client } from '@stomp/stompjs';
@@ -49,6 +49,24 @@ const ProblemCardList = ({ retroId, kanbanStatus, client, problems, onCreateCard
     });
   };
 
+  const tags = (item: RetroProblemListItem) => {
+    const tagJobs = item.roles.map((role) => (
+      <TagJob key={role.id} type={role.role as JobType} bgColor={theme.sementicColors.bg.tertiary_hover_pressed} />
+    ));
+
+    return [
+      <Tag
+        key={`${item.id}-${kanbanStatus}-TaskCard-Tag`}
+        $size="large"
+        $style="transparent"
+        $leftIcon={<IconCheckMarkRectangle color={theme.sementicColors.icon.brand} />}
+      >
+        PBM-{item.problemId}
+      </Tag>,
+      ...tagJobs,
+    ];
+  };
+
   return (
     <Wrapper>
       <Head>
@@ -72,64 +90,31 @@ const ProblemCardList = ({ retroId, kanbanStatus, client, problems, onCreateCard
       </Head>
       <Content>
         <Droppable droppableId={`${kanbanStatus}`}>
-          {(provided, snapshot) => (
+          {(provided) => (
             <CardList ref={provided.innerRef} {...provided.droppableProps}>
               {problems &&
                 problems.length > 0 &&
                 problems.map((item, index) => (
                   <Draggable draggableId={`${item.id}`} key={`${retroId}-PBM-${item.id}-${kanbanStatus}`} index={index}>
-                    {(provided, draggableSnapshot) => (
-                      <>
+                    {(provided) => {
+                      const completedAt = kanbanStatus === 'OK' ? (item.completedAt ?? undefined) : undefined;
+                      return (
                         <div ref={provided.innerRef} {...provided.dragHandleProps} {...provided.draggableProps}>
                           <TaskCard
                             key={`${retroId}-PBM-${item.id}-${kanbanStatus}-TaskCard`}
                             onClick={() => onClickTaskCard(item)}
-                            tags={[
-                              <Tag
-                                key={`${item.id}-${kanbanStatus}-TaskCard-Tag`}
-                                $size="large"
-                                $style="transparent"
-                                $leftIcon={<IconCheckMarkRectangle color={theme.sementicColors.icon.brand} />}
-                              >
-                                PBM-{item.id}
-                              </Tag>,
-                            ]}
-                            tagJob={item.userRole as JobType}
+                            tags={tags(item)}
                             title={item.title}
-                            startDate={item.updatedAt}
-                            endDate={item.completedAt ?? undefined}
+                            startedAt={item.updatedAt}
+                            completedAt={completedAt}
                             user={{
                               nickname: item.createUserInfo.name,
                               profileImage: item.createUserInfo.profileImageUrl,
                             }}
                           />
                         </div>
-                        {/* {draggableSnapshot.isDragging && (
-                              <Clone className="task-card-clone">
-                                <TaskCard
-                                  key={`${retroId}-PBM-${item.id}-${kanbanStatus}-TaskCard-clone`}
-                                  tags={[
-                                    <Tag
-                                      key={`${item.id}-${kanbanStatus}-TaskCard-Tag`}
-                                      $size="large"
-                                      $style="transparent"
-                                      $leftIcon={<IconCheckMarkRectangle color={theme.sementicColors.icon.brand} />}
-                                    >
-                                      PBM-{item.id}
-                                    </Tag>,
-                                  ]}
-                                  tagJob={item.userRole as JobType}
-                                  title={item.title}
-                                  startDate={item.updatedAt}
-                                  user={{
-                                    nickname: item.createUserInfo.name,
-                                    profileImage: item.createUserInfo.profileImageUrl,
-                                  }}
-                                />
-                              </Clone>
-                            )} */}
-                      </>
-                    )}
+                      );
+                    }}
                   </Draggable>
                 ))}
               {provided.placeholder}
@@ -154,10 +139,6 @@ const Wrapper = styled.div`
   & .task-card-clone {
     transform: none !important;
   }
-`;
-
-const Clone = styled.div`
-  transform: none !important;
 `;
 
 const Head = styled.div`

@@ -1,3 +1,5 @@
+import { JobType } from '@/shared/ui/tag/TagJob';
+
 // Params
 export interface ReadRetroListParams {
   teamId: string;
@@ -114,6 +116,21 @@ export interface ReadOnlineMemberListParams {
   retroId: string | number;
 }
 
+export interface ReadRetroProblemRoleParams {
+  retroId: string | number;
+  problemId: string | number;
+}
+
+export interface AddRetroProblemRoleParams {
+  retroId: string | number;
+  problemId: string | number;
+}
+
+export interface DeleteRetroProblemRoleParams {
+  retroId: string | number;
+  problemId: string | number;
+}
+
 // Payload
 export interface CreateRetroPayload {
   title: string;
@@ -169,6 +186,14 @@ export interface CreateRetroSolutionPayload {
   content: string;
 }
 
+export interface CreateRetroProblemRolePayload {
+  id: number;
+}
+
+export interface DeleteRetroProblemRolePayload {
+  id: number;
+}
+
 export interface UpdateRetroSolutionPayload {
   title: string;
   content: string;
@@ -215,13 +240,11 @@ export type ReadRetroProblemListResponse = {
 };
 
 export type CreateRetroProblemResponse = {
-  problemId: string | number;
+  id: string | number;
 };
 export interface ReadRetroProblemDetailResponse {
-  roles: {
-    id: number;
-    role: string;
-  }[];
+  roles: RetroProblemRoleItem[];
+  problemId: string | number;
   createUserInfo: {
     id: string;
     name: string;
@@ -238,6 +261,7 @@ export type ReadRetroMemberListResponse = RetroMemberListItem[];
 
 export type ReadRetroSolutionListResponse = RetroProblemSolutionListItem[];
 export interface ReadRetroSolutionDetailResponse {
+  solutionId: string | number;
   createUserInfo: {
     id: string;
     name: string;
@@ -252,14 +276,19 @@ export type CreateRetroSolutionResponse = {
 };
 
 export type ReadOnlineMemberListResponse = ReadOnlineMember[];
+export type ReadRetroProblemRoleResponse = RetroProblemRoleItem[];
 
 // interface
 export type KanbanStatus = 'RCG' | 'PRG' | 'OK' | 'KEP';
 export type ProblemKanbanStatus = Omit<KanbanStatus, 'KEP'>;
-
+export type RetroProblemRoleItem = {
+  id: number;
+  role: JobType;
+};
 export interface RetroProblemListItem {
   id: number;
-  userRole: string;
+  problemId: string | number;
+  roles: RetroProblemRoleItem[];
   createUserInfo: {
     id: string;
     name: string;
@@ -281,6 +310,7 @@ export type RetroMemberListItem = {
 
 export type RetroProblemSolutionListItem = {
   id: number;
+  solutionId: string | number;
   title: string;
   updatedAt: string;
   createUserInfo: {

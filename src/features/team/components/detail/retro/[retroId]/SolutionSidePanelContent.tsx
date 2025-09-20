@@ -164,7 +164,6 @@ const SolutionSidePanelContent = ({ retroId, problemId, solutionId, client }: So
         `/user/topic/retrospectives/${problemId}/solutions/${solutionId}`,
         (message) => {
           const data = JSON.parse(message.body);
-          console.log('📨 실시간 데이터 수신:', message.body);
           if (data.code === 'UPDATE') {
             queryClient.refetchQueries({
               queryKey: retroQueries.readRetroSolutionDetail({ retroId, problemId, solutionId }).queryKey,
@@ -201,7 +200,7 @@ const SolutionSidePanelContent = ({ retroId, problemId, solutionId, client }: So
       {!isLoading && isSuccess && (
         <Wrapper>
           <TitleWrapper>
-            <Checkbox label={`SOL-${solutionId}`} id={`SOL-${solutionId}`} onClick={() => {}} checked />
+            <Checkbox label={`SOL-${data.solutionId}`} id={`SOL-${data.solutionId}`} onClick={() => {}} checked />
             <PageTitle
               title={currentTitle}
               setTitle={isEditable ? setCurrentTitle : undefined}

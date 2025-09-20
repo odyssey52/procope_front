@@ -87,11 +87,11 @@ const SolutionWrapper = ({ retroId, problemId, client }: SolutionWrapperProps) =
                     $style="transparent"
                     $leftIcon={<IconCheckMarkRectangle color={theme.sementicColors.icon.brand} />}
                   >
-                    SOL-{solution.id}
+                    SOL-{solution.solutionId}
                   </Tag>,
                 ]}
                 title={solution.title}
-                startDate={solution.updatedAt}
+                startedAt={solution.updatedAt}
                 user={{
                   nickname: solution.createUserInfo.name,
                   profileImage: solution.createUserInfo.profileImageUrl,

@@ -19,10 +19,9 @@ interface MenuItem {
 
 interface TaskCardProps {
   tags?: React.ReactNode[];
-  tagJob?: JobType;
   title: string;
-  startDate: string;
-  endDate?: string;
+  startedAt: string;
+  completedAt?: string;
   totalComments?: number;
   user: {
     nickname: string;
@@ -36,10 +35,9 @@ interface TaskCardProps {
 
 const TaskCard = ({
   tags,
-  tagJob,
   title,
-  startDate,
-  endDate,
+  startedAt,
+  completedAt,
   user,
   hasComments = false,
   totalComments = 0,
@@ -62,12 +60,7 @@ const TaskCard = ({
     <Wrapper onClick={onClick} className="task-card-for-useClickOutside-hook">
       <Top>
         <TagBox>
-          {((tags && tags.length > 0) || tagJob) && (
-            <TagList>
-              {tags?.map((tag) => tag)}
-              {tagJob && <TagJob type={tagJob} bgColor={theme.sementicColors.bg.tertiary_hover_pressed} />}
-            </TagList>
-          )}
+          {tags && tags.length > 0 && <TagList>{tags?.map((tag) => tag)}</TagList>}
           {showMenu && (
             <MenuContainer>
               <MenuIconButton onClick={handleMenuClick}>
@@ -94,7 +87,7 @@ const TaskCard = ({
       <StartDateBox>
         <IconClockCircle size={20} color={theme.sementicColors.icon.disabled} />
         <Text variant="body_14_medium" color="disabled">
-          {formatDateToDot(startDate)}
+          {formatDateToDot(startedAt)}
         </Text>
       </StartDateBox>
       <Divider />
@@ -114,11 +107,11 @@ const TaskCard = ({
               </Text>
             </CommentBox>
           )}
-          {endDate && (
+          {completedAt && (
             <EndDateBox>
               <IconFlag size={24} color={theme.sementicColors.icon.tertiary} />
               <Text variant="body_14_medium" color="disabled">
-                {formatDateToDot(endDate)}
+                {formatDateToDot(completedAt)}
               </Text>
             </EndDateBox>
           )}
@@ -160,6 +153,8 @@ const TagList = styled.div`
   display: flex;
   align-items: center;
   gap: 8px;
+  width: 100%;
+  overflow: hidden;
 `;
 
 const StartDateBox = styled.div`
