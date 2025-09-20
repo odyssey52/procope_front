@@ -3,12 +3,16 @@
 import { useTeamDetailQuery } from '@/features/team/hooks/useTeamDetailQuery';
 import retroQueries from '@/features/team/query/retroQueries';
 import {
+  createRetroProblemRole,
   deleteRetroProblem,
+  deleteRetroProblemRole,
   updateRetroProblem,
   updateRetroProblemCompletedAt,
   updateRetroProblemStatus,
 } from '@/features/team/services/retroService';
 import {
+  CreateRetroProblemRolePayload,
+  DeleteRetroProblemRolePayload,
   ProblemKanbanStatus,
   UpdateRetroProblemCompletedAtPayload,
   UpdateRetroProblemPayload,
@@ -33,7 +37,6 @@ import Checkbox from '@/shared/ui/checkbox/Checkbox';
 import Error from '@/shared/ui/error/Error';
 import Divider from '@/shared/ui/line/Divider';
 import ItemList from '@/shared/ui/select/ItemList';
-import TagJob, { JobType } from '@/shared/ui/tag/TagJob';
 import Text from '@/shared/ui/Text';
 import Tiptap from '@/shared/ui/tiptap/Tiptap';
 import PageTitle from '@/shared/ui/title/PageTitle';
@@ -48,6 +51,7 @@ import StarterKit from '@tiptap/starter-kit';
 import { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import CalendarArea from './CalendarArea';
+import ProblemCategorySelect from './ProblemCategorySelect';
 import ProblemStatusSelect from './ProblemStatusSelect';
 import SkeletonSidePanelContent from './SkeletonSidePanelContent';
 import SolutionWrapper from './SolutionWrapper';
@@ -75,6 +79,8 @@ const ProblemSidePanelContent = ({ retroId, problemId, client }: ProblemSidePane
   });
 
   const role = teamInfo?.myRole;
+  const categories = data?.roles || [];
+
   const isAdmin = role === 'ADMIN';
   const isEditable = data?.createUserInfo.id === id || isAdmin;
   const isLoading = isTeamInfoLoading || isProblemDetailLoading;
@@ -121,6 +127,16 @@ const ProblemSidePanelContent = ({ retroId, problemId, client }: ProblemSidePane
     mutationFn: (problemId: string | number) => deleteRetroProblem({ retroId, problemId }),
   });
 
+  const createRetroProblemRoleMutation = useMutation({
+    mutationFn: (payload: CreateRetroProblemRolePayload) =>
+      createRetroProblemRole({ retroId, problemId: problemId! }, payload),
+  });
+
+  const deleteRetroProblemRoleMutation = useMutation({
+    mutationFn: (payload: DeleteRetroProblemRolePayload) =>
+      deleteRetroProblemRole({ retroId, problemId: problemId! }, payload),
+  });
+
   const handleUpdateRetroProblem = async (title: string, content: string) => {
     try {
       await updateRetroProblemMutation.mutateAsync({
@@ -158,6 +174,23 @@ const ProblemSidePanelContent = ({ retroId, problemId, client }: ProblemSidePane
 
   const handleChangeCompletedAt = (completedAt: string) => {
     setCurrentCompletedAt(completedAt);
+  };
+
+  const handleToggleRetroProblemRole = async (roleId: number) => {
+    try {
+      // 현재 서버 상태의 roles에 해당 role이 포함되어 있는지 확인
+      const isRoleExists = categories.some((role) => role.id === roleId);
+
+      if (isRoleExists) {
+        // 포함되어 있으면 delete 요청
+        await deleteRetroProblemRoleMutation.mutateAsync({ id: roleId });
+      } else {
+        // 포함되어 있지 않으면 create 요청
+        await createRetroProblemRoleMutation.mutateAsync({ id: roleId });
+      }
+    } catch (error) {
+      handleError(error);
+    }
   };
 
   const handleUpdateRetroProblemCompletedAt = async (completedAt: string) => {
@@ -242,7 +275,6 @@ const ProblemSidePanelContent = ({ retroId, problemId, client }: ProblemSidePane
     if (client && client.connected && retroId) {
       const subscription = client.subscribe(`/user/topic/retrospectives/problems/${problemId}`, (message) => {
         const data = JSON.parse(message.body);
-        console.log('📨 실시간 데이터 수신:', message.body);
         if (data.code === 'UPDATE') {
           // 즉시 리페칭해서 로컬 상태 업데이트
           queryClient.refetchQueries({
@@ -251,12 +283,20 @@ const ProblemSidePanelContent = ({ retroId, problemId, client }: ProblemSidePane
         }
       });
       // solutions 도 구독
-      const solutionSubscription = client.subscribe(`/user/topic/retrospectives/solutions/${problemId}`, (message) => {
+      const solutionSubscription = client.subscribe(`/user/topic/retrospectives/${problemId}/solutions`, (message) => {
         const data = JSON.parse(message.body);
-        console.log('📨 실시간 데이터 수신:', message.body);
         if (data.code === 'UPDATE') {
           queryClient.refetchQueries({
             queryKey: retroQueries.readRetroSolutionList({ retroId, problemId }).queryKey,
+          });
+        }
+      });
+
+      const roleSubscription = client.subscribe(`/user/topic/retrospectives/categories/${problemId}`, (message) => {
+        const data = JSON.parse(message.body);
+        if (data.code === 'UPDATE') {
+          queryClient.refetchQueries({
+            queryKey: retroQueries.readRetroProblemDetail({ retroId, problemId }).queryKey,
           });
         }
       });
@@ -264,6 +304,7 @@ const ProblemSidePanelContent = ({ retroId, problemId, client }: ProblemSidePane
       return () => {
         subscription.unsubscribe();
         solutionSubscription.unsubscribe();
+        roleSubscription.unsubscribe();
       };
     }
   }, [client, retroId, queryClient]);
@@ -292,7 +333,7 @@ const ProblemSidePanelContent = ({ retroId, problemId, client }: ProblemSidePane
       {!isLoading && isSuccess && (
         <Wrapper>
           <TitleWrapper>
-            <Checkbox label={`PBM-${problemId}`} id={`PBM-${problemId}`} onClick={() => {}} checked />
+            <Checkbox label={`PBM-${data.problemId}`} id={`PBM-${data.problemId}`} onClick={() => {}} checked />
             <PageTitle
               title={currentTitle}
               setTitle={isEditable ? setCurrentTitle : undefined}
@@ -312,15 +353,7 @@ const ProblemSidePanelContent = ({ retroId, problemId, client }: ProblemSidePane
                 <IconApps size={20} color={theme.sementicColors.icon.disabled} />
                 카테고리
               </ProblemInfoItemTitle>
-              <ProblemInfoItemContent>
-                {data.roles.map((item) => (
-                  <TagJob
-                    key={item.role + item.id}
-                    type={item.role as JobType}
-                    bgColor={theme.sementicColors.bg.tertiary_hover_pressed}
-                  />
-                ))}
-              </ProblemInfoItemContent>
+              <ProblemCategorySelect roles={categories} onToggle={handleToggleRetroProblemRole} />
             </ProblemInfoItem>
             <ProblemInfoItem>
               <ProblemInfoItemTitle>
@@ -362,7 +395,7 @@ const ProblemSidePanelContent = ({ retroId, problemId, client }: ProblemSidePane
             )}
           </ProblemInfo>
           <Divider color={theme.sementicColors.border.primary} />
-          <SolutionWrapper retroId={retroId} problemId={problemId} />
+          <SolutionWrapper retroId={retroId} problemId={problemId} client={client} />
           <Divider color={theme.sementicColors.border.primary} />
           {editor && <Tiptap editor={editor} editable={isEditable} />}
         </Wrapper>

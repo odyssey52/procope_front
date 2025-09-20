@@ -20,7 +20,8 @@ import Text from '@/shared/ui/Text';
 import Tiptap from '@/shared/ui/tiptap/Tiptap';
 import PageTitle from '@/shared/ui/title/PageTitle';
 import { formatDateToDot } from '@/shared/utils/date';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { Client } from '@stomp/stompjs';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import BulletList from '@tiptap/extension-bullet-list';
 import ListItem from '@tiptap/extension-list-item';
 import Placeholder from '@tiptap/extension-placeholder';
@@ -34,11 +35,13 @@ interface SolutionSidePanelContentProps {
   retroId: string | number;
   problemId: string | number;
   solutionId: string | number;
+  client: Client | null;
 }
 
-const SolutionSidePanelContent = ({ retroId, problemId, solutionId }: SolutionSidePanelContentProps) => {
+const SolutionSidePanelContent = ({ retroId, problemId, solutionId, client }: SolutionSidePanelContentProps) => {
   const { id } = useUserStore();
   const { handleError } = useApiError();
+  const queryClient = useQueryClient();
   const close = useSidePanelStore((state) => state.close);
 
   const { data: teamInfo, isLoading: isTeamInfoLoading } = useTeamDetailQuery();
@@ -69,7 +72,7 @@ const SolutionSidePanelContent = ({ retroId, problemId, solutionId }: SolutionSi
       StarterKit,
       ListItem,
       Placeholder.configure({
-        placeholder: '솔루션 내용을 작성해 주세요',
+        placeholder: '본문을 작성해 주세요',
       }),
     ],
     content: currentContent,
@@ -155,6 +158,24 @@ const SolutionSidePanelContent = ({ retroId, problemId, solutionId }: SolutionSi
     };
   }, [isInitialized, data]);
 
+  useEffect(() => {
+    if (client && client.connected && retroId) {
+      const subscription = client.subscribe(
+        `/user/topic/retrospectives/${problemId}/solutions/${solutionId}`,
+        (message) => {
+          const data = JSON.parse(message.body);
+          if (data.code === 'UPDATE') {
+            queryClient.refetchQueries({
+              queryKey: retroQueries.readRetroSolutionDetail({ retroId, problemId, solutionId }).queryKey,
+            });
+          }
+        },
+      );
+      return () => {
+        subscription.unsubscribe();
+      };
+    }
+  }, [client, retroId, queryClient]);
   return (
     <PanelContainer>
       <PanelControl>
@@ -175,12 +196,16 @@ const SolutionSidePanelContent = ({ retroId, problemId, solutionId }: SolutionSi
         )}
       </PanelControl>
       {isLoading && <SkeletonSidePanelContent />}
-      {!isLoading && !isSuccess && <Error title="서버 에러" description="솔루션을 찾을 수 없습니다." />}
+      {!isLoading && !isSuccess && <Error title="서버 에러" description="개선 방안을 찾을 수 없습니다." />}
       {!isLoading && isSuccess && (
         <Wrapper>
           <TitleWrapper>
-            <Checkbox label={`SOL-${solutionId}`} id={`SOL-${solutionId}`} onClick={() => {}} checked />
-            <PageTitle title={currentTitle} setTitle={setCurrentTitle} placeholder="솔루션 제목을 작성해 주세요" />
+            <Checkbox label={`SOL-${data.solutionId}`} id={`SOL-${data.solutionId}`} onClick={() => {}} checked />
+            <PageTitle
+              title={currentTitle}
+              setTitle={isEditable ? setCurrentTitle : undefined}
+              placeholder={isEditable ? '제목을 작성해 주세요' : '새 카드'}
+            />
           </TitleWrapper>
           <SolutionInfo>
             <SolutionInfoItem>
@@ -211,7 +236,7 @@ const SolutionSidePanelContent = ({ retroId, problemId, solutionId }: SolutionSi
             </SolutionInfoItem>
           </SolutionInfo>
           <Divider color={theme.sementicColors.border.primary} />
-          {editor && <Tiptap editor={editor} editable />}
+          {editor && <Tiptap editor={editor} editable={isEditable} />}
         </Wrapper>
       )}
     </PanelContainer>

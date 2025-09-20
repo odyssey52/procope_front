@@ -74,15 +74,15 @@ const ProblemWrapper = ({ retroId, client }: ProblemWrapperProps) => {
   // 카드 생성 핸들러
   const handleCreateCard = async (kanbanStatus: ProblemKanbanStatus) => {
     try {
-      const { problemId } = await createRetroProblemMutation.mutateAsync({
+      const { id } = await createRetroProblemMutation.mutateAsync({
         title: '',
         content: '',
         kanbanStatus,
       });
-      if (problemId) {
+      if (id) {
         handleSwitchCard({
-          cardId: `${retroId}-PBM-${problemId}-${kanbanStatus}-TaskCard`,
-          content: <ProblemSidePanelContent retroId={retroId} problemId={problemId} client={client} />,
+          cardId: `${retroId}-PBM-${id}-${kanbanStatus}-TaskCard`,
+          content: <ProblemSidePanelContent retroId={retroId} problemId={id} client={client} />,
         });
       }
     } catch (error) {

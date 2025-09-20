@@ -2,7 +2,7 @@
 
 import retroQueries from '@/features/team/query/retroQueries';
 import { createRetroProblem } from '@/features/team/services/retroService';
-import { CreateRetroProblemPayload } from '@/features/team/services/retroService.type';
+import { CreateRetroProblemPayload, RetroProblemListItem } from '@/features/team/services/retroService.type';
 import { IconCheckMarkRectangle } from '@/shared/assets/icons/line';
 import useApiError from '@/shared/hooks/useApiError';
 import { useSidePanelStore } from '@/shared/store/sidePanel/sidePanel';
@@ -13,7 +13,7 @@ import Empty from '@/shared/ui/empty/Empty';
 import ErrorBoundary from '@/shared/ui/errorboundary/ErrorBoundary';
 import MoreIndicator from '@/shared/ui/indicator/MoreIndicator';
 import Tag from '@/shared/ui/tag/Tag';
-import { JobType } from '@/shared/ui/tag/TagJob';
+import TagJob from '@/shared/ui/tag/TagJob';
 import PageSubTitle from '@/shared/ui/title/PageSubTitle';
 import { Client } from '@stomp/stompjs';
 import { useMutation, useQueryClient, useSuspenseQuery } from '@tanstack/react-query';
@@ -46,17 +46,35 @@ const KeepWrapper = ({ retroId, client }: KeepWrapperProps) => {
     mutationFn: (payload: CreateRetroProblemPayload) => createRetroProblem({ retroId }, payload),
   });
 
+  const tags = (item: RetroProblemListItem) => {
+    const tagJobs = item.roles.map((role) => (
+      <TagJob key={role.id} type={role.role} bgColor={theme.sementicColors.bg.tertiary_hover_pressed} />
+    ));
+
+    return [
+      <Tag
+        key={`KeepTaskCard-${item.id}`}
+        $size="large"
+        $style="transparent"
+        $leftIcon={<IconCheckMarkRectangle color={theme.sementicColors.icon.brand} />}
+      >
+        KEP-{item.problemId}
+      </Tag>,
+      ...tagJobs,
+    ];
+  };
+
   const addKeep = async () => {
     try {
-      const { problemId } = await createRetroProblemMutation.mutateAsync({
+      const { id } = await createRetroProblemMutation.mutateAsync({
         title: '',
         content: '',
         kanbanStatus: 'KEP',
       });
-      if (problemId) {
+      if (id) {
         handleSwitchCard({
-          cardId: `${retroId}-KEP-${problemId}`,
-          content: <KeepSidePanelContent retroId={retroId} problemId={problemId} client={client} />,
+          cardId: `${retroId}-KEP-${id}`,
+          content: <KeepSidePanelContent retroId={retroId} problemId={id} client={client} />,
         });
       }
     } catch (error) {
@@ -115,19 +133,9 @@ const KeepWrapper = ({ retroId, client }: KeepWrapperProps) => {
                         content: <KeepSidePanelContent retroId={retroId} problemId={item.id} client={client} />,
                       });
                     }}
-                    tags={[
-                      <Tag
-                        key={`KeepTaskCard-${item.id}`}
-                        $size="large"
-                        $style="transparent"
-                        $leftIcon={<IconCheckMarkRectangle color={theme.sementicColors.icon.brand} />}
-                      >
-                        KEP-{item.id}
-                      </Tag>,
-                    ]}
-                    tagJob={item.userRole as JobType}
+                    tags={tags(item)}
                     title={item.title}
-                    startDate={item.updatedAt}
+                    startedAt={item.updatedAt}
                     user={{
                       nickname: item.createUserInfo.name,
                       profileImage: item.createUserInfo.profileImageUrl,

@@ -1,26 +1,17 @@
 'use client';
 
-import retroQueries from '@/features/team/query/retroQueries';
-import { createRetroProblem } from '@/features/team/services/retroService';
-import {
-  CreateRetroProblemPayload,
-  ProblemKanbanStatus,
-  RetroProblemListItem,
-} from '@/features/team/services/retroService.type';
+import { ProblemKanbanStatus, RetroProblemListItem } from '@/features/team/services/retroService.type';
 import { IconCheckMarkRectangle, IconPlus } from '@/shared/assets/icons/line';
-import useApiError from '@/shared/hooks/useApiError';
 import { useSidePanelStore } from '@/shared/store/sidePanel/sidePanel';
 import { theme } from '@/shared/styles/theme';
 import TaskCard from '@/shared/ui/card/TaskCard';
 import MoreIndicator from '@/shared/ui/indicator/MoreIndicator';
 import Divider from '@/shared/ui/line/Divider';
 import Tag from '@/shared/ui/tag/Tag';
-import { JobType } from '@/shared/ui/tag/TagJob';
+import TagJob, { JobType } from '@/shared/ui/tag/TagJob';
 import Text from '@/shared/ui/Text';
-import { Draggable, DraggableProvidedDraggableProps, DraggableStateSnapshot, Droppable } from '@hello-pangea/dnd';
+import { Draggable, Droppable } from '@hello-pangea/dnd';
 import { Client } from '@stomp/stompjs';
-import { useMutation, useQueryClient, useSuspenseQuery } from '@tanstack/react-query';
-import React, { useEffect, useRef } from 'react';
 import styled from 'styled-components';
 import CreateCardButton from './CreateCardButton';
 import ProblemSidePanelContent from './ProblemSidePanelContent';
@@ -51,11 +42,6 @@ export const KANBAN_STATUS = {
 const ProblemCardList = ({ retroId, kanbanStatus, client, problems, onCreateCard }: ProblemCardListProps) => {
   const handleSwitchCard = useSidePanelStore((state) => state.handleSwitchCard);
 
-  // 로컬 상태를 사용하므로 서버 쿼리 제거
-  // const { data, isSuccess } = useSuspenseQuery({
-  //   ...retroQueries.readRetroProblemList({ retroId, kanbanStatus }),
-  // });
-
   const onClickTaskCard = (item: RetroProblemListItem) => {
     handleSwitchCard({
       cardId: `${retroId}-PBM-${item.id}-${kanbanStatus}-TaskCard`,
@@ -63,24 +49,23 @@ const ProblemCardList = ({ retroId, kanbanStatus, client, problems, onCreateCard
     });
   };
 
-  // WebSocket 구독은 ProblemWrapper에서 처리
-  // useEffect(() => {
-  //   if (client && client.connected && kanbanStatus && retroId) {
-  //     subscriptionRef.current = client.subscribe(`/user/topic/retrospectives/${kanbanStatus}`, (message) => {
-  //       const data = JSON.parse(message.body);
-  //       if (data.code === 'UPDATE') {
-  //         queryClient.invalidateQueries({
-  //           queryKey: retroQueries.readRetroProblemList({ retroId, kanbanStatus }).queryKey,
-  //         });
-  //       }
-  //     });
-  //   }
-  //   return () => {
-  //     if (subscriptionRef.current) {
-  //       subscriptionRef.current.unsubscribe();
-  //     }
-  //   };
-  // }, [client, kanbanStatus, retroId]);
+  const tags = (item: RetroProblemListItem) => {
+    const tagJobs = item.roles.map((role) => (
+      <TagJob key={role.id} type={role.role as JobType} bgColor={theme.sementicColors.bg.tertiary_hover_pressed} />
+    ));
+
+    return [
+      <Tag
+        key={`${item.id}-${kanbanStatus}-TaskCard-Tag`}
+        $size="large"
+        $style="transparent"
+        $leftIcon={<IconCheckMarkRectangle color={theme.sementicColors.icon.brand} />}
+      >
+        PBM-{item.problemId}
+      </Tag>,
+      ...tagJobs,
+    ];
+  };
 
   return (
     <Wrapper>
@@ -105,63 +90,31 @@ const ProblemCardList = ({ retroId, kanbanStatus, client, problems, onCreateCard
       </Head>
       <Content>
         <Droppable droppableId={`${kanbanStatus}`}>
-          {(provided, snapshot) => (
+          {(provided) => (
             <CardList ref={provided.innerRef} {...provided.droppableProps}>
               {problems &&
                 problems.length > 0 &&
                 problems.map((item, index) => (
                   <Draggable draggableId={`${item.id}`} key={`${retroId}-PBM-${item.id}-${kanbanStatus}`} index={index}>
-                    {(provided, draggableSnapshot) => (
-                      <>
+                    {(provided) => {
+                      const completedAt = kanbanStatus === 'OK' ? (item.completedAt ?? undefined) : undefined;
+                      return (
                         <div ref={provided.innerRef} {...provided.dragHandleProps} {...provided.draggableProps}>
                           <TaskCard
                             key={`${retroId}-PBM-${item.id}-${kanbanStatus}-TaskCard`}
                             onClick={() => onClickTaskCard(item)}
-                            tags={[
-                              <Tag
-                                key={`${item.id}-${kanbanStatus}-TaskCard-Tag`}
-                                $size="large"
-                                $style="transparent"
-                                $leftIcon={<IconCheckMarkRectangle color={theme.sementicColors.icon.brand} />}
-                              >
-                                PBM-{item.id}
-                              </Tag>,
-                            ]}
-                            tagJob={item.userRole as JobType}
+                            tags={tags(item)}
                             title={item.title}
-                            startDate={item.updatedAt}
+                            startedAt={item.updatedAt}
+                            completedAt={completedAt}
                             user={{
                               nickname: item.createUserInfo.name,
                               profileImage: item.createUserInfo.profileImageUrl,
                             }}
                           />
                         </div>
-                        {/* {draggableSnapshot.isDragging && (
-                              <Clone className="task-card-clone">
-                                <TaskCard
-                                  key={`${retroId}-PBM-${item.id}-${kanbanStatus}-TaskCard-clone`}
-                                  tags={[
-                                    <Tag
-                                      key={`${item.id}-${kanbanStatus}-TaskCard-Tag`}
-                                      $size="large"
-                                      $style="transparent"
-                                      $leftIcon={<IconCheckMarkRectangle color={theme.sementicColors.icon.brand} />}
-                                    >
-                                      PBM-{item.id}
-                                    </Tag>,
-                                  ]}
-                                  tagJob={item.userRole as JobType}
-                                  title={item.title}
-                                  startDate={item.updatedAt}
-                                  user={{
-                                    nickname: item.createUserInfo.name,
-                                    profileImage: item.createUserInfo.profileImageUrl,
-                                  }}
-                                />
-                              </Clone>
-                            )} */}
-                      </>
-                    )}
+                      );
+                    }}
                   </Draggable>
                 ))}
               {provided.placeholder}
@@ -186,10 +139,6 @@ const Wrapper = styled.div`
   & .task-card-clone {
     transform: none !important;
   }
-`;
-
-const Clone = styled.div`
-  transform: none !important;
 `;
 
 const Head = styled.div`

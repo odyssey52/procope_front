@@ -2,8 +2,17 @@
 
 import { useTeamDetailQuery } from '@/features/team/hooks/useTeamDetailQuery';
 import retroQueries from '@/features/team/query/retroQueries';
-import { deleteRetroProblem, updateRetroProblem } from '@/features/team/services/retroService';
-import { UpdateRetroProblemPayload } from '@/features/team/services/retroService.type';
+import {
+  createRetroProblemRole,
+  deleteRetroProblem,
+  deleteRetroProblemRole,
+  updateRetroProblem,
+} from '@/features/team/services/retroService';
+import {
+  CreateRetroProblemRolePayload,
+  DeleteRetroProblemRolePayload,
+  UpdateRetroProblemPayload,
+} from '@/features/team/services/retroService.type';
 import { IconApps, IconDirectionRight1, IconUser } from '@/shared/assets/icons/line';
 import useApiError from '@/shared/hooks/useApiError';
 import useDebounce from '@/shared/hooks/useDebounce';
@@ -32,6 +41,7 @@ import StarterKit from '@tiptap/starter-kit';
 import { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import SkeletonSidePanelContent from './SkeletonSidePanelContent';
+import ProblemCategorySelect from './ProblemCategorySelect';
 
 interface KeepSidePanelContentProps {
   retroId: string | number;
@@ -64,6 +74,7 @@ const KeepSidePanelContent = ({ retroId, problemId, client }: KeepSidePanelConte
   const role = teamInfo?.myRole;
   const isAdmin = role === 'ADMIN';
   const isEditable = data?.createUserInfo.id === id || isAdmin;
+  const categories = data?.roles || [];
 
   const currentTitleRef = useRef('');
   const currentContentRef = useRef('');
@@ -87,6 +98,16 @@ const KeepSidePanelContent = ({ retroId, problemId, client }: KeepSidePanelConte
     mutationFn: (payload: UpdateRetroProblemPayload) => updateRetroProblem({ retroId, problemId: problemId! }, payload),
   });
 
+  const createRetroProblemRoleMutation = useMutation({
+    mutationFn: (payload: CreateRetroProblemRolePayload) =>
+      createRetroProblemRole({ retroId, problemId: problemId! }, payload),
+  });
+
+  const deleteRetroProblemRoleMutation = useMutation({
+    mutationFn: (payload: DeleteRetroProblemRolePayload) =>
+      deleteRetroProblemRole({ retroId, problemId: problemId! }, payload),
+  });
+
   const deleteRetroProblemMutation = useMutation({
     mutationFn: (problemId: string | number) => deleteRetroProblem({ retroId, problemId }),
   });
@@ -106,6 +127,23 @@ const KeepSidePanelContent = ({ retroId, problemId, client }: KeepSidePanelConte
     try {
       await deleteRetroProblemMutation.mutateAsync(problemId);
       close();
+    } catch (error) {
+      handleError(error);
+    }
+  };
+
+  const handleToggleRetroProblemRole = async (roleId: number) => {
+    try {
+      // 현재 서버 상태의 roles에 해당 role이 포함되어 있는지 확인
+      const isRoleExists = categories.some((role) => role.id === roleId);
+
+      if (isRoleExists) {
+        // 포함되어 있으면 delete 요청
+        await deleteRetroProblemRoleMutation.mutateAsync({ id: roleId });
+      } else {
+        // 포함되어 있지 않으면 create 요청
+        await createRetroProblemRoleMutation.mutateAsync({ id: roleId });
+      }
     } catch (error) {
       handleError(error);
     }
@@ -135,7 +173,6 @@ const KeepSidePanelContent = ({ retroId, problemId, client }: KeepSidePanelConte
 
   useEffect(() => {
     if (data) {
-      console.log('refetch');
       setCurrentTitle(data.title);
       setCurrentContent(data.content);
       currentTitleRef.current = data.title;
@@ -191,8 +228,19 @@ const KeepSidePanelContent = ({ retroId, problemId, client }: KeepSidePanelConte
           setIsEdit(false);
         }
       });
+
+      const roleSubscription = client.subscribe(`/user/topic/retrospectives/categories/${problemId}`, (message) => {
+        const data = JSON.parse(message.body);
+        if (data.code === 'UPDATE') {
+          queryClient.refetchQueries({
+            queryKey: retroQueries.readRetroProblemDetail({ retroId, problemId }).queryKey,
+          });
+        }
+      });
+
       return () => {
         subscription.unsubscribe();
+        roleSubscription.unsubscribe();
       };
     }
   }, [client, retroId, queryClient]);
@@ -203,23 +251,25 @@ const KeepSidePanelContent = ({ retroId, problemId, client }: KeepSidePanelConte
         <CloseButton onClick={close}>
           <IconDirectionRight1 />
         </CloseButton>
-        <MoreArea
-          size={24}
-          menuList={
-            <ItemList
-              width="112px"
-              selectOptionList={[{ value: '삭제', label: '삭제' }]}
-              valueHandler={() => handleDeleteRetroProblem(problemId)}
-            />
-          }
-        />
+        {isEditable && (
+          <MoreArea
+            size={24}
+            menuList={
+              <ItemList
+                width="112px"
+                selectOptionList={[{ value: '삭제', label: '삭제' }]}
+                valueHandler={() => handleDeleteRetroProblem(problemId)}
+              />
+            }
+          />
+        )}
       </PanelControl>
       {isLoading && <SkeletonSidePanelContent />}
       {!isLoading && !isSuccess && <Error title="서버 에러" description="문제를 찾을 수 없습니다." />}
       {!isLoading && isSuccess && (
         <Wrapper>
           <TitleWrapper>
-            <Checkbox label={`KEP-${problemId}`} id={`KEP-${problemId}`} onClick={() => {}} checked />
+            <Checkbox label={`KEP-${data.problemId}`} id={`KEP-${data.problemId}`} onClick={() => {}} checked />
             <PageTitle
               title={currentTitle}
               setTitle={isEditable ? setCurrentTitle : undefined}
@@ -232,15 +282,7 @@ const KeepSidePanelContent = ({ retroId, problemId, client }: KeepSidePanelConte
                 <IconApps size={20} color={theme.sementicColors.icon.disabled} />
                 카테고리
               </ProblemInfoItemTitle>
-              <ProblemInfoItemContent>
-                {data.roles.map((item) => (
-                  <TagJob
-                    key={item.role + item.id}
-                    type={item.role as JobType}
-                    bgColor={theme.sementicColors.bg.tertiary_hover_pressed}
-                  />
-                ))}
-              </ProblemInfoItemContent>
+              <ProblemCategorySelect roles={categories} onToggle={handleToggleRetroProblemRole} />
             </ProblemInfoItem>
             <ProblemInfoItem>
               <ProblemInfoItemTitle>
@@ -276,6 +318,9 @@ const KeepSidePanelContent = ({ retroId, problemId, client }: KeepSidePanelConte
 
 const RefContainer = styled.div`
   position: relative;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
 `;
 
 const Wrapper = styled.div`
