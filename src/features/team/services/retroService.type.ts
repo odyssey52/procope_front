@@ -283,6 +283,7 @@ export type ProblemKanbanStatus = Omit<KanbanStatus, 'KEP'>;
 
 export interface RetroProblemListItem {
   id: number;
+  problemId: string | number;
   userRole: string;
   createUserInfo: {
     id: string;

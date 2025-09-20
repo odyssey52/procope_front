@@ -79,14 +79,14 @@ const ProblemSidePanelContent = ({ retroId, problemId, client }: ProblemSidePane
   });
 
   const role = teamInfo?.myRole;
-  const isAdmin = role === 'ADMIN';
-  const isEditable = data?.createUserInfo.id === id || isAdmin;
-  const isLoading = isTeamInfoLoading || isProblemDetailLoading;
-  const roles =
+  const categories =
     data?.roles.map((item) => ({
       id: item.id,
       roleName: item.role,
     })) || [];
+  const isAdmin = role === 'ADMIN';
+  const isEditable = data?.createUserInfo.id === id || isAdmin;
+  const isLoading = isTeamInfoLoading || isProblemDetailLoading;
 
   const [isInitialized, setIsInitialized] = useState(false);
   const [currentTitle, setCurrentTitle] = useState('');
@@ -182,7 +182,7 @@ const ProblemSidePanelContent = ({ retroId, problemId, client }: ProblemSidePane
   const handleToggleRetroProblemRole = async (roleId: number) => {
     try {
       // 현재 서버 상태의 roles에 해당 role이 포함되어 있는지 확인
-      const isRoleExists = roles.some((role) => role.id === roleId);
+      const isRoleExists = categories.some((role) => role.id === roleId);
 
       if (isRoleExists) {
         // 포함되어 있으면 delete 요청
@@ -356,7 +356,7 @@ const ProblemSidePanelContent = ({ retroId, problemId, client }: ProblemSidePane
                 <IconApps size={20} color={theme.sementicColors.icon.disabled} />
                 카테고리
               </ProblemInfoItemTitle>
-              <ProblemCategorySelect roles={roles} onToggle={handleToggleRetroProblemRole} />
+              <ProblemCategorySelect roles={categories} onToggle={handleToggleRetroProblemRole} />
             </ProblemInfoItem>
             <ProblemInfoItem>
               <ProblemInfoItemTitle>

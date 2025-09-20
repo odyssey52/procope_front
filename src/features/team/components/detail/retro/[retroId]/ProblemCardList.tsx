@@ -57,7 +57,7 @@ const ProblemCardList = ({ retroId, kanbanStatus, client, problems, onCreateCard
         $style="transparent"
         $leftIcon={<IconCheckMarkRectangle color={theme.sementicColors.icon.brand} />}
       >
-        PBM-{item.id}
+        PBM-{item.problemId}
       </Tag>,
     ];
   };
