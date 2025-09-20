@@ -278,7 +278,6 @@ const ProblemSidePanelContent = ({ retroId, problemId, client }: ProblemSidePane
     if (client && client.connected && retroId) {
       const subscription = client.subscribe(`/user/topic/retrospectives/problems/${problemId}`, (message) => {
         const data = JSON.parse(message.body);
-        console.log('📨 실시간 데이터 수신:', message.body);
         if (data.code === 'UPDATE') {
           // 즉시 리페칭해서 로컬 상태 업데이트
           queryClient.refetchQueries({
@@ -289,10 +288,18 @@ const ProblemSidePanelContent = ({ retroId, problemId, client }: ProblemSidePane
       // solutions 도 구독
       const solutionSubscription = client.subscribe(`/user/topic/retrospectives/${problemId}/solutions`, (message) => {
         const data = JSON.parse(message.body);
-        console.log('📨 개선방안 쪽:', message.body);
         if (data.code === 'UPDATE') {
           queryClient.refetchQueries({
             queryKey: retroQueries.readRetroSolutionList({ retroId, problemId }).queryKey,
+          });
+        }
+      });
+
+      const roleSubscription = client.subscribe(`/user/topic/retrospectives/categories/${problemId}`, (message) => {
+        const data = JSON.parse(message.body);
+        if (data.code === 'UPDATE') {
+          queryClient.refetchQueries({
+            queryKey: retroQueries.readRetroProblemDetail({ retroId, problemId }).queryKey,
           });
         }
       });
@@ -300,6 +307,7 @@ const ProblemSidePanelContent = ({ retroId, problemId, client }: ProblemSidePane
       return () => {
         subscription.unsubscribe();
         solutionSubscription.unsubscribe();
+        roleSubscription.unsubscribe();
       };
     }
   }, [client, retroId, queryClient]);

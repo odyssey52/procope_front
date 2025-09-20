@@ -55,7 +55,7 @@ const ProblemCategorySelect = ({ roles, onToggle }: ProblemCategorySelectProps) 
                 <TagJob type={role.roleName as JobType} bgColor={theme.sementicColors.bg.tertiary_hover_pressed} />
               ),
             }))}
-            valueHandler={(value, id) => onToggle(value.id)}
+            valueHandler={(value) => onToggle(value.id)}
             value={roles[0]}
             width="100%"
           />
