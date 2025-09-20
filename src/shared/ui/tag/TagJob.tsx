@@ -17,10 +17,11 @@ export type JobType = '개발' | '기획' | '데이터' | '디자인' | '마케�
 interface TagJobProps {
   type: JobType;
   bgColor?: string;
+  onClick?: () => void;
 }
-const TagJob = ({ type, bgColor }: TagJobProps) => {
+const TagJob = ({ type, bgColor, onClick }: TagJobProps) => {
   return (
-    <Wrapper $bgColor={bgColor}>
+    <Wrapper $bgColor={bgColor} onClick={onClick}>
       <Image src={JOB_LIST[type].src} width={16} height={16} alt={`${type}태그아이콘 이미지`} />
       {type}
     </Wrapper>
