@@ -240,7 +240,7 @@ export type ReadRetroProblemListResponse = {
 };
 
 export type CreateRetroProblemResponse = {
-  problemId: string | number;
+  id: string | number;
 };
 export interface ReadRetroProblemDetailResponse {
   roles: RetroProblemRoleItem[];
