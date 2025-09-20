@@ -1,0 +1,99 @@
+'use client';
+
+import {
+  AddRetroProblemRolePayload,
+  DeleteRetroProblemRolePayload,
+  RetroProblemRoleItem,
+} from '@/features/team/services/retroService.type';
+import { useClickOutside } from '@/shared/hooks/useClickOutside';
+import React, { useState } from 'react';
+import styled from 'styled-components';
+import TagJob, { JobType } from '@/shared/ui/tag/TagJob';
+import { theme } from '@/shared/styles/theme';
+import { zIndex } from '@/shared/styles/mixin';
+import ItemList from '@/shared/ui/select/ItemList';
+import propertiesRolesQueries from '@/features/properties/query/roles/propertiesRolesQueries';
+import { useQuery } from '@tanstack/react-query';
+
+interface ProblemCategorySelectProps {
+  roles: RetroProblemRoleItem[];
+  onCreate: (role: AddRetroProblemRolePayload) => void;
+  onDelete: (role: DeleteRetroProblemRolePayload) => void;
+}
+
+const ProblemCategorySelect = ({ roles, onCreate, onDelete }: ProblemCategorySelectProps) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const ref = useClickOutside<HTMLDivElement>(() => setIsOpen(false));
+  const { data } = useQuery({
+    ...propertiesRolesQueries.readPropertiesRoles,
+    enabled: isOpen,
+  });
+
+  const roleList = data?.roles.map((role) => ({
+    id: role.id,
+    roleName: role.name,
+  }));
+
+  const handleDelete = (e: React.MouseEvent<SVGSVGElement>, role: DeleteRetroProblemRolePayload) => {
+    e.stopPropagation();
+    e.preventDefault();
+    onDelete(role);
+  };
+
+  return (
+    <Wrapper ref={ref} $isOpen={isOpen} onClick={() => setIsOpen(!isOpen)}>
+      {roles.map((role) => (
+        <TagJob
+          key={role.id}
+          type={role.roleName as JobType}
+          bgColor={theme.sementicColors.bg.tertiary_hover_pressed}
+          onClose={(e) => handleDelete(e, role)}
+        />
+      ))}
+      {isOpen && roleList && (
+        <ItemListWrapper>
+          <ItemList<RetroProblemRoleItem, string>
+            selectOptionList={roleList.map((role) => ({
+              id: role.id.toString(),
+              value: role,
+              label: (
+                <TagJob type={role.roleName as JobType} bgColor={theme.sementicColors.bg.tertiary_hover_pressed} />
+              ),
+            }))}
+            valueHandler={(value, id) => onCreate(value)}
+            value={roles[0]}
+            width="100%"
+          />
+        </ItemListWrapper>
+      )}
+    </Wrapper>
+  );
+};
+
+const Wrapper = styled.div<{ $isOpen: boolean }>`
+  position: relative;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  min-height: 40px;
+  gap: 8px;
+  flex-grow: 1;
+  padding: 7px;
+  border-radius: 8px;
+  border: 1px solid transparent;
+  &:hover {
+    background: ${({ theme }) => theme.sementicColors.bg.tertiary};
+  }
+`;
+
+const ItemListWrapper = styled.div`
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  width: 100%;
+  ${zIndex.layer1}
+`;
+
+ProblemCategorySelect.displayName = 'ProblemCategorySelect';
+
+export default ProblemCategorySelect;

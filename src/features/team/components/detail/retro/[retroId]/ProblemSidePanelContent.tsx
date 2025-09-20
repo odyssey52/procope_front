@@ -3,12 +3,16 @@
 import { useTeamDetailQuery } from '@/features/team/hooks/useTeamDetailQuery';
 import retroQueries from '@/features/team/query/retroQueries';
 import {
+  createRetroProblemRole,
   deleteRetroProblem,
+  deleteRetroProblemRole,
   updateRetroProblem,
   updateRetroProblemCompletedAt,
   updateRetroProblemStatus,
 } from '@/features/team/services/retroService';
 import {
+  AddRetroProblemRolePayload,
+  DeleteRetroProblemRolePayload,
   ProblemKanbanStatus,
   UpdateRetroProblemCompletedAtPayload,
   UpdateRetroProblemPayload,
@@ -33,7 +37,6 @@ import Checkbox from '@/shared/ui/checkbox/Checkbox';
 import Error from '@/shared/ui/error/Error';
 import Divider from '@/shared/ui/line/Divider';
 import ItemList from '@/shared/ui/select/ItemList';
-import TagJob, { JobType } from '@/shared/ui/tag/TagJob';
 import Text from '@/shared/ui/Text';
 import Tiptap from '@/shared/ui/tiptap/Tiptap';
 import PageTitle from '@/shared/ui/title/PageTitle';
@@ -48,6 +51,7 @@ import StarterKit from '@tiptap/starter-kit';
 import { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import CalendarArea from './CalendarArea';
+import ProblemCategorySelect from './ProblemCategorySelect';
 import ProblemStatusSelect from './ProblemStatusSelect';
 import SkeletonSidePanelContent from './SkeletonSidePanelContent';
 import SolutionWrapper from './SolutionWrapper';
@@ -78,6 +82,11 @@ const ProblemSidePanelContent = ({ retroId, problemId, client }: ProblemSidePane
   const isAdmin = role === 'ADMIN';
   const isEditable = data?.createUserInfo.id === id || isAdmin;
   const isLoading = isTeamInfoLoading || isProblemDetailLoading;
+  const roles =
+    data?.roles.map((item) => ({
+      id: item.id,
+      roleName: item.role,
+    })) || [];
 
   const [isInitialized, setIsInitialized] = useState(false);
   const [currentTitle, setCurrentTitle] = useState('');
@@ -121,6 +130,16 @@ const ProblemSidePanelContent = ({ retroId, problemId, client }: ProblemSidePane
     mutationFn: (problemId: string | number) => deleteRetroProblem({ retroId, problemId }),
   });
 
+  const createRetroProblemRoleMutation = useMutation({
+    mutationFn: (payload: AddRetroProblemRolePayload) =>
+      createRetroProblemRole({ retroId, problemId: problemId! }, payload),
+  });
+
+  const deleteRetroProblemRoleMutation = useMutation({
+    mutationFn: (payload: DeleteRetroProblemRolePayload) =>
+      deleteRetroProblemRole({ retroId, problemId: problemId! }, payload),
+  });
+
   const handleUpdateRetroProblem = async (title: string, content: string) => {
     try {
       await updateRetroProblemMutation.mutateAsync({
@@ -158,6 +177,22 @@ const ProblemSidePanelContent = ({ retroId, problemId, client }: ProblemSidePane
 
   const handleChangeCompletedAt = (completedAt: string) => {
     setCurrentCompletedAt(completedAt);
+  };
+
+  const handleCreateRetroProblemRole = async (role: AddRetroProblemRolePayload) => {
+    try {
+      await createRetroProblemRoleMutation.mutateAsync(role);
+    } catch (error) {
+      handleError(error);
+    }
+  };
+
+  const handleDeleteRetroProblemRole = async (role: DeleteRetroProblemRolePayload) => {
+    try {
+      await deleteRetroProblemRoleMutation.mutateAsync(role);
+    } catch (error) {
+      handleError(error);
+    }
   };
 
   const handleUpdateRetroProblemCompletedAt = async (completedAt: string) => {
@@ -312,15 +347,11 @@ const ProblemSidePanelContent = ({ retroId, problemId, client }: ProblemSidePane
                 <IconApps size={20} color={theme.sementicColors.icon.disabled} />
                 카테고리
               </ProblemInfoItemTitle>
-              <ProblemInfoItemContent>
-                {data.roles.map((item) => (
-                  <TagJob
-                    key={item.role + item.id}
-                    type={item.role as JobType}
-                    bgColor={theme.sementicColors.bg.tertiary_hover_pressed}
-                  />
-                ))}
-              </ProblemInfoItemContent>
+              <ProblemCategorySelect
+                roles={roles}
+                onCreate={handleCreateRetroProblemRole}
+                onDelete={handleDeleteRetroProblemRole}
+              />
             </ProblemInfoItem>
             <ProblemInfoItem>
               <ProblemInfoItemTitle>

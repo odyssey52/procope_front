@@ -25,7 +25,7 @@ const URLS = {
     `/retrospectives/problems/${retroId}/${problemId}`,
   READ_RETRO_PROBLEM_ROLE: (retroId: string | number, problemId: string | number) =>
     `/retrospectives/problems/${retroId}/${problemId}/role`,
-  ADD_RETRO_PROBLEM_ROLE: (retroId: string | number, problemId: string | number) =>
+  CREATE_RETRO_PROBLEM_ROLE: (retroId: string | number, problemId: string | number) =>
     `/retrospectives/problems/${retroId}/${problemId}/role`,
   DELETE_RETRO_PROBLEM_ROLE: (retroId: string | number, problemId: string | number) =>
     `/retrospectives/problems/${retroId}/${problemId}/role`,
@@ -222,14 +222,19 @@ export async function readRetroProblemRole(params: types.ReadRetroProblemRolePar
   return data;
 }
 
-export async function addRetroProblemRole(
+export async function createRetroProblemRole(
   params: types.AddRetroProblemRoleParams,
   payload: types.AddRetroProblemRolePayload,
 ) {
-  const { data } = await api.post(URLS.ADD_RETRO_PROBLEM_ROLE(params.retroId, params.problemId), payload);
+  const { data } = await api.post(URLS.CREATE_RETRO_PROBLEM_ROLE(params.retroId, params.problemId), payload);
   return data;
 }
-export async function deleteRetroProblemRole(params: types.DeleteRetroProblemRoleParams) {
-  const { data } = await api.delete(URLS.DELETE_RETRO_PROBLEM_ROLE(params.retroId, params.problemId));
+export async function deleteRetroProblemRole(
+  params: types.DeleteRetroProblemRoleParams,
+  payload: types.DeleteRetroProblemRolePayload,
+) {
+  const { data } = await api.delete(URLS.DELETE_RETRO_PROBLEM_ROLE(params.retroId, params.problemId), {
+    data: payload,
+  });
   return data;
 }

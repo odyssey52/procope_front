@@ -1,6 +1,8 @@
+import { IconRemove } from '@/shared/assets/icons/line';
+import { theme } from '@/shared/styles/theme';
 import Image from 'next/image';
+import React from 'react';
 import styled from 'styled-components';
-import Text from '../Text';
 
 const JOB_LIST = {
   개발: { src: '/assets/icons/graphic/job/development.svg' },
@@ -17,13 +19,14 @@ export type JobType = '개발' | '기획' | '데이터' | '디자인' | '마케�
 interface TagJobProps {
   type: JobType;
   bgColor?: string;
-  onClick?: () => void;
+  onClose?: (e: React.MouseEvent<SVGSVGElement>) => void;
 }
-const TagJob = ({ type, bgColor, onClick }: TagJobProps) => {
+const TagJob = ({ type, bgColor, onClose }: TagJobProps) => {
   return (
-    <Wrapper $bgColor={bgColor} onClick={onClick}>
+    <Wrapper $bgColor={bgColor}>
       <Image src={JOB_LIST[type].src} width={16} height={16} alt={`${type}태그아이콘 이미지`} />
       {type}
+      {onClose && <IconRemove size={16} color={theme.sementicColors.icon.disabled} onClick={onClose} />}
     </Wrapper>
   );
 };
@@ -40,6 +43,14 @@ const Wrapper = styled.div<{ $bgColor?: string }>`
   color: ${({ theme }) => theme.sementicColors.text.primary};
   white-space: nowrap;
   ${({ theme }) => theme.fontStyle.body_14_medium}
+  > svg {
+    display: none;
+  }
+  &:hover {
+    > svg {
+      display: block;
+    }
+  }
 `;
 
 TagJob.displayName = 'TagJob';
