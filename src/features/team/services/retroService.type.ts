@@ -184,7 +184,7 @@ export interface CreateRetroSolutionPayload {
   content: string;
 }
 
-export interface AddRetroProblemRolePayload {
+export interface CreateRetroProblemRolePayload {
   id: number;
 }
 

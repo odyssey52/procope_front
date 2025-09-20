@@ -1,10 +1,6 @@
 'use client';
 
-import {
-  AddRetroProblemRolePayload,
-  DeleteRetroProblemRolePayload,
-  RetroProblemRoleItem,
-} from '@/features/team/services/retroService.type';
+import { RetroProblemRoleItem } from '@/features/team/services/retroService.type';
 import { useClickOutside } from '@/shared/hooks/useClickOutside';
 import React, { useState } from 'react';
 import styled from 'styled-components';
@@ -17,11 +13,10 @@ import { useQuery } from '@tanstack/react-query';
 
 interface ProblemCategorySelectProps {
   roles: RetroProblemRoleItem[];
-  onCreate: (role: AddRetroProblemRolePayload) => void;
-  onDelete: (role: DeleteRetroProblemRolePayload) => void;
+  onToggle: (roleId: number) => void;
 }
 
-const ProblemCategorySelect = ({ roles, onCreate, onDelete }: ProblemCategorySelectProps) => {
+const ProblemCategorySelect = ({ roles, onToggle }: ProblemCategorySelectProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const ref = useClickOutside<HTMLDivElement>(() => setIsOpen(false));
   const { data } = useQuery({
@@ -34,10 +29,10 @@ const ProblemCategorySelect = ({ roles, onCreate, onDelete }: ProblemCategorySel
     roleName: role.name,
   }));
 
-  const handleDelete = (e: React.MouseEvent<SVGSVGElement>, role: DeleteRetroProblemRolePayload) => {
+  const handleToggle = (e: React.MouseEvent<SVGSVGElement>, roleId: number) => {
     e.stopPropagation();
     e.preventDefault();
-    onDelete(role);
+    onToggle(roleId);
   };
 
   return (
@@ -47,7 +42,7 @@ const ProblemCategorySelect = ({ roles, onCreate, onDelete }: ProblemCategorySel
           key={role.id}
           type={role.roleName as JobType}
           bgColor={theme.sementicColors.bg.tertiary_hover_pressed}
-          onClose={(e) => handleDelete(e, role)}
+          onClose={(e) => handleToggle(e, role.id)}
         />
       ))}
       {isOpen && roleList && (
@@ -60,7 +55,7 @@ const ProblemCategorySelect = ({ roles, onCreate, onDelete }: ProblemCategorySel
                 <TagJob type={role.roleName as JobType} bgColor={theme.sementicColors.bg.tertiary_hover_pressed} />
               ),
             }))}
-            valueHandler={(value, id) => onCreate(value)}
+            valueHandler={(value, id) => onToggle(value.id)}
             value={roles[0]}
             width="100%"
           />

@@ -224,7 +224,7 @@ export async function readRetroProblemRole(params: types.ReadRetroProblemRolePar
 
 export async function createRetroProblemRole(
   params: types.AddRetroProblemRoleParams,
-  payload: types.AddRetroProblemRolePayload,
+  payload: types.CreateRetroProblemRolePayload,
 ) {
   const { data } = await api.post(URLS.CREATE_RETRO_PROBLEM_ROLE(params.retroId, params.problemId), payload);
   return data;

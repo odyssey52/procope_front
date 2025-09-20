@@ -11,7 +11,7 @@ import {
   updateRetroProblemStatus,
 } from '@/features/team/services/retroService';
 import {
-  AddRetroProblemRolePayload,
+  CreateRetroProblemRolePayload,
   DeleteRetroProblemRolePayload,
   ProblemKanbanStatus,
   UpdateRetroProblemCompletedAtPayload,
@@ -131,7 +131,7 @@ const ProblemSidePanelContent = ({ retroId, problemId, client }: ProblemSidePane
   });
 
   const createRetroProblemRoleMutation = useMutation({
-    mutationFn: (payload: AddRetroProblemRolePayload) =>
+    mutationFn: (payload: CreateRetroProblemRolePayload) =>
       createRetroProblemRole({ retroId, problemId: problemId! }, payload),
   });
 
@@ -179,17 +179,18 @@ const ProblemSidePanelContent = ({ retroId, problemId, client }: ProblemSidePane
     setCurrentCompletedAt(completedAt);
   };
 
-  const handleCreateRetroProblemRole = async (role: AddRetroProblemRolePayload) => {
+  const handleToggleRetroProblemRole = async (roleId: number) => {
     try {
-      await createRetroProblemRoleMutation.mutateAsync(role);
-    } catch (error) {
-      handleError(error);
-    }
-  };
+      // 현재 서버 상태의 roles에 해당 role이 포함되어 있는지 확인
+      const isRoleExists = roles.some((role) => role.id === roleId);
 
-  const handleDeleteRetroProblemRole = async (role: DeleteRetroProblemRolePayload) => {
-    try {
-      await deleteRetroProblemRoleMutation.mutateAsync(role);
+      if (isRoleExists) {
+        // 포함되어 있으면 delete 요청
+        await deleteRetroProblemRoleMutation.mutateAsync({ id: roleId });
+      } else {
+        // 포함되어 있지 않으면 create 요청
+        await createRetroProblemRoleMutation.mutateAsync({ id: roleId });
+      }
     } catch (error) {
       handleError(error);
     }
@@ -347,11 +348,7 @@ const ProblemSidePanelContent = ({ retroId, problemId, client }: ProblemSidePane
                 <IconApps size={20} color={theme.sementicColors.icon.disabled} />
                 카테고리
               </ProblemInfoItemTitle>
-              <ProblemCategorySelect
-                roles={roles}
-                onCreate={handleCreateRetroProblemRole}
-                onDelete={handleDeleteRetroProblemRole}
-              />
+              <ProblemCategorySelect roles={roles} onToggle={handleToggleRetroProblemRole} />
             </ProblemInfoItem>
             <ProblemInfoItem>
               <ProblemInfoItemTitle>
