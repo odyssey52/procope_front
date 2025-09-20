@@ -77,7 +77,6 @@ const RetroInfoMemberWrapper = ({ teamId, retroId, client, isConnected }: RetroI
     if (client && client.connected) {
       const memberSubscription = client.subscribe('/user/topic/members', (message) => {
         const data = JSON.parse(message.body);
-        console.log('📨 실시간 데이터 수신:', data);
         if (data.code === 'UPDATE') {
           queryClient.invalidateQueries({ queryKey: retroQueries.readOnlineMemberList({ retroId }).queryKey });
         }
