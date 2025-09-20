@@ -8,7 +8,7 @@ import TaskCard from '@/shared/ui/card/TaskCard';
 import MoreIndicator from '@/shared/ui/indicator/MoreIndicator';
 import Divider from '@/shared/ui/line/Divider';
 import Tag from '@/shared/ui/tag/Tag';
-import { JobType } from '@/shared/ui/tag/TagJob';
+import TagJob, { JobType } from '@/shared/ui/tag/TagJob';
 import Text from '@/shared/ui/Text';
 import { Draggable, Droppable } from '@hello-pangea/dnd';
 import { Client } from '@stomp/stompjs';
@@ -50,6 +50,10 @@ const ProblemCardList = ({ retroId, kanbanStatus, client, problems, onCreateCard
   };
 
   const tags = (item: RetroProblemListItem) => {
+    const tagJobs = item.roles.map((role) => (
+      <TagJob key={role.id} type={role.role as JobType} bgColor={theme.sementicColors.bg.tertiary_hover_pressed} />
+    ));
+
     return [
       <Tag
         key={`${item.id}-${kanbanStatus}-TaskCard-Tag`}
@@ -59,6 +63,7 @@ const ProblemCardList = ({ retroId, kanbanStatus, client, problems, onCreateCard
       >
         PBM-{item.problemId}
       </Tag>,
+      ...tagJobs,
     ];
   };
 
@@ -99,7 +104,6 @@ const ProblemCardList = ({ retroId, kanbanStatus, client, problems, onCreateCard
                             key={`${retroId}-PBM-${item.id}-${kanbanStatus}-TaskCard`}
                             onClick={() => onClickTaskCard(item)}
                             tags={tags(item)}
-                            tagJob={item.userRole as JobType}
                             title={item.title}
                             startedAt={item.updatedAt}
                             completedAt={completedAt}

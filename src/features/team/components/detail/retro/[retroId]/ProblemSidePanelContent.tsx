@@ -79,11 +79,8 @@ const ProblemSidePanelContent = ({ retroId, problemId, client }: ProblemSidePane
   });
 
   const role = teamInfo?.myRole;
-  const categories =
-    data?.roles.map((item) => ({
-      id: item.id,
-      roleName: item.role,
-    })) || [];
+  const categories = data?.roles || [];
+
   const isAdmin = role === 'ADMIN';
   const isEditable = data?.createUserInfo.id === id || isAdmin;
   const isLoading = isTeamInfoLoading || isProblemDetailLoading;
@@ -336,7 +333,7 @@ const ProblemSidePanelContent = ({ retroId, problemId, client }: ProblemSidePane
       {!isLoading && isSuccess && (
         <Wrapper>
           <TitleWrapper>
-            <Checkbox label={`PBM-${problemId}`} id={`PBM-${problemId}`} onClick={() => {}} checked />
+            <Checkbox label={`PBM-${data.problemId}`} id={`PBM-${data.problemId}`} onClick={() => {}} checked />
             <PageTitle
               title={currentTitle}
               setTitle={isEditable ? setCurrentTitle : undefined}

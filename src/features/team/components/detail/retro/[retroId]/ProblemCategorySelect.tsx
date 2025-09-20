@@ -26,7 +26,7 @@ const ProblemCategorySelect = ({ roles, onToggle }: ProblemCategorySelectProps) 
 
   const roleList = data?.roles.map((role) => ({
     id: role.id,
-    roleName: role.name,
+    role: role.name as JobType,
   }));
 
   const handleToggle = (e: React.MouseEvent<SVGSVGElement>, roleId: number) => {
@@ -35,25 +35,25 @@ const ProblemCategorySelect = ({ roles, onToggle }: ProblemCategorySelectProps) 
     onToggle(roleId);
   };
 
+  console.log(roleList);
+  console.log(data);
   return (
     <Wrapper ref={ref} $isOpen={isOpen} onClick={() => setIsOpen(!isOpen)}>
       {roles.map((role) => (
         <TagJob
           key={role.id}
-          type={role.roleName as JobType}
+          type={role.role}
           bgColor={theme.sementicColors.bg.tertiary_hover_pressed}
           onClose={(e) => handleToggle(e, role.id)}
         />
       ))}
       {isOpen && roleList && (
         <ItemListWrapper>
-          <ItemList<RetroProblemRoleItem, string>
+          <ItemList<RetroProblemRoleItem, JobType>
             selectOptionList={roleList.map((role) => ({
-              id: role.id.toString(),
+              id: role.role,
               value: role,
-              label: (
-                <TagJob type={role.roleName as JobType} bgColor={theme.sementicColors.bg.tertiary_hover_pressed} />
-              ),
+              label: <TagJob type={role.role} bgColor={theme.sementicColors.bg.tertiary_hover_pressed} />,
             }))}
             valueHandler={(value) => onToggle(value.id)}
             value={roles[0]}

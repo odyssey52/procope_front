@@ -74,11 +74,7 @@ const KeepSidePanelContent = ({ retroId, problemId, client }: KeepSidePanelConte
   const role = teamInfo?.myRole;
   const isAdmin = role === 'ADMIN';
   const isEditable = data?.createUserInfo.id === id || isAdmin;
-  const categories =
-    data?.roles.map((item) => ({
-      id: item.id,
-      roleName: item.role,
-    })) || [];
+  const categories = data?.roles || [];
 
   const currentTitleRef = useRef('');
   const currentContentRef = useRef('');
@@ -177,7 +173,6 @@ const KeepSidePanelContent = ({ retroId, problemId, client }: KeepSidePanelConte
 
   useEffect(() => {
     if (data) {
-      console.log('refetch');
       setCurrentTitle(data.title);
       setCurrentContent(data.content);
       currentTitleRef.current = data.title;
@@ -274,7 +269,7 @@ const KeepSidePanelContent = ({ retroId, problemId, client }: KeepSidePanelConte
       {!isLoading && isSuccess && (
         <Wrapper>
           <TitleWrapper>
-            <Checkbox label={`KEP-${problemId}`} id={`KEP-${problemId}`} onClick={() => {}} checked />
+            <Checkbox label={`KEP-${data.problemId}`} id={`KEP-${data.problemId}`} onClick={() => {}} checked />
             <PageTitle
               title={currentTitle}
               setTitle={isEditable ? setCurrentTitle : undefined}

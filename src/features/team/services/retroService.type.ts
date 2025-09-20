@@ -1,3 +1,5 @@
+import { JobType } from '@/shared/ui/tag/TagJob';
+
 // Params
 export interface ReadRetroListParams {
   teamId: string;
@@ -241,10 +243,8 @@ export type CreateRetroProblemResponse = {
   problemId: string | number;
 };
 export interface ReadRetroProblemDetailResponse {
-  roles: {
-    id: number;
-    role: string;
-  }[];
+  roles: RetroProblemRoleItem[];
+  problemId: string | number;
   createUserInfo: {
     id: string;
     name: string;
@@ -261,6 +261,7 @@ export type ReadRetroMemberListResponse = RetroMemberListItem[];
 
 export type ReadRetroSolutionListResponse = RetroProblemSolutionListItem[];
 export interface ReadRetroSolutionDetailResponse {
+  solutionId: string | number;
   createUserInfo: {
     id: string;
     name: string;
@@ -280,11 +281,14 @@ export type ReadRetroProblemRoleResponse = RetroProblemRoleItem[];
 // interface
 export type KanbanStatus = 'RCG' | 'PRG' | 'OK' | 'KEP';
 export type ProblemKanbanStatus = Omit<KanbanStatus, 'KEP'>;
-
+export type RetroProblemRoleItem = {
+  id: number;
+  role: JobType;
+};
 export interface RetroProblemListItem {
   id: number;
   problemId: string | number;
-  userRole: string;
+  roles: RetroProblemRoleItem[];
   createUserInfo: {
     id: string;
     name: string;
@@ -306,6 +310,7 @@ export type RetroMemberListItem = {
 
 export type RetroProblemSolutionListItem = {
   id: number;
+  solutionId: string | number;
   title: string;
   updatedAt: string;
   createUserInfo: {
@@ -320,9 +325,4 @@ export type ReadOnlineMember = {
   name: string;
   email: string;
   picture: string;
-};
-
-export type RetroProblemRoleItem = {
-  id: number;
-  roleName: string;
 };

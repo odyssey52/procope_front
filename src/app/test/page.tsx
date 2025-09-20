@@ -124,7 +124,6 @@ const page = () => {
       </ButtonWrapper>
       <Content>
         <TaskCard
-          tagJob="개발"
           title="타이틀"
           startedAt="2025-01-01"
           user={mock.user}
