@@ -114,6 +114,21 @@ export interface ReadOnlineMemberListParams {
   retroId: string | number;
 }
 
+export interface ReadRetroProblemRoleParams {
+  retroId: string | number;
+  problemId: string | number;
+}
+
+export interface AddRetroProblemRoleParams {
+  retroId: string | number;
+  problemId: string | number;
+}
+
+export interface DeleteRetroProblemRoleParams {
+  retroId: string | number;
+  problemId: string | number;
+}
+
 // Payload
 export interface CreateRetroPayload {
   title: string;
@@ -167,6 +182,14 @@ export interface UpdateRetroDatePayload {
 export interface CreateRetroSolutionPayload {
   title: string;
   content: string;
+}
+
+export interface AddRetroProblemRolePayload {
+  id: number;
+}
+
+export interface DeleteRetroProblemRolePayload {
+  id: number;
 }
 
 export interface UpdateRetroSolutionPayload {
@@ -252,6 +275,7 @@ export type CreateRetroSolutionResponse = {
 };
 
 export type ReadOnlineMemberListResponse = ReadOnlineMember[];
+export type ReadRetroProblemRoleResponse = RetroProblemRoleItem[];
 
 // interface
 export type KanbanStatus = 'RCG' | 'PRG' | 'OK' | 'KEP';
@@ -295,4 +319,9 @@ export type ReadOnlineMember = {
   name: string;
   email: string;
   picture: string;
+};
+
+export type RetroProblemRoleItem = {
+  id: number;
+  roleName: string;
 };

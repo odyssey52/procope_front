@@ -23,6 +23,12 @@ const URLS = {
     `/retrospectives/problems/${retroId}/${problemId}`,
   UPDATE_RETRO_PROBLEM_STATUS: (retroId: string | number, problemId: string | number) =>
     `/retrospectives/problems/${retroId}/${problemId}`,
+  READ_RETRO_PROBLEM_ROLE: (retroId: string | number, problemId: string | number) =>
+    `/retrospectives/problems/${retroId}/${problemId}/role`,
+  ADD_RETRO_PROBLEM_ROLE: (retroId: string | number, problemId: string | number) =>
+    `/retrospectives/problems/${retroId}/${problemId}/role`,
+  DELETE_RETRO_PROBLEM_ROLE: (retroId: string | number, problemId: string | number) =>
+    `/retrospectives/problems/${retroId}/${problemId}/role`,
   UPDATE_RETRO_PROBLEM_COMPLETED_AT: (retroId: string | number, problemId: string | number) =>
     `/retrospectives/problems/${retroId}/${problemId}/completed`,
   UPDATE_RETRO_DATE: (teamId: string, retroId: string | number) => `/retrospectives/${teamId}/${retroId}/date`,
@@ -206,5 +212,24 @@ export async function readRetroSolutionDetail(params: types.ReadRetroSolutionDet
 
 export async function readOnlineMemberList(params: types.ReadOnlineMemberListParams) {
   const { data } = await api.get<types.ReadOnlineMemberListResponse>(URLS.READ_ONLINE_MEMBER_LIST(params.retroId));
+  return data;
+}
+
+export async function readRetroProblemRole(params: types.ReadRetroProblemRoleParams) {
+  const { data } = await api.get<types.ReadRetroProblemRoleResponse>(
+    URLS.READ_RETRO_PROBLEM_ROLE(params.retroId, params.problemId),
+  );
+  return data;
+}
+
+export async function addRetroProblemRole(
+  params: types.AddRetroProblemRoleParams,
+  payload: types.AddRetroProblemRolePayload,
+) {
+  const { data } = await api.post(URLS.ADD_RETRO_PROBLEM_ROLE(params.retroId, params.problemId), payload);
+  return data;
+}
+export async function deleteRetroProblemRole(params: types.DeleteRetroProblemRoleParams) {
+  const { data } = await api.delete(URLS.DELETE_RETRO_PROBLEM_ROLE(params.retroId, params.problemId));
   return data;
 }
