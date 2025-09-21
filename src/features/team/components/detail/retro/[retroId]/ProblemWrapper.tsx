@@ -218,7 +218,7 @@ const ProblemWrapper = ({ retroId, client }: ProblemWrapperProps) => {
         <PageSubTitle first="Q2. 개선할 점은 무엇이고 개선하기 위해 어떤 걸 시도할 수 있나요?" />
       </Head>
       <Content>
-        <DragDropContext onDragEnd={handleDragEnd}>
+        <DragDropContext key={`${retroId}-${JSON.stringify(problemsByStatus)}`} onDragEnd={handleDragEnd}>
           <ProblemCardList
             retroId={retroId}
             kanbanStatus="RCG"
@@ -263,10 +263,10 @@ const Head = styled.div`
 const Content = styled.div`
   display: flex;
   gap: 16px;
-  overflow-x: auto;
   padding: 0 48px;
   padding-bottom: 24px;
   flex-grow: 1;
+  overflow-x: auto;
 `;
 
 ProblemWrapper.displayName = 'ProblemWrapper';
