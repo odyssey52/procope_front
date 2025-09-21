@@ -2,7 +2,7 @@
 
 import styled from 'styled-components';
 
-export const PanelContainer = styled.div`
+const PanelContainer = styled.div`
   position: relative;
   display: flex;
   flex-direction: column;
@@ -10,20 +10,20 @@ export const PanelContainer = styled.div`
   min-height: 0; /* 내부 스크롤러 활성화 위해 필요 */
 `;
 
-export const PanelControl = styled.div`
+const PanelControl = styled.div`
   display: flex;
   padding: 0 24px;
   justify-content: space-between;
 `;
 
-export const CloseButton = styled.button`
+const CloseButton = styled.button`
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
 `;
 
-export const Content = styled.div`
+const Content = styled.div`
   display: flex;
   flex-direction: column;
   gap: 24px;
@@ -33,7 +33,7 @@ export const Content = styled.div`
   overflow-y: auto;
 `;
 
-export const CardDetailHeader = styled.div`
+const Header = styled.div`
   display: flex;
   flex-direction: column;
   gap: 24px;
@@ -41,26 +41,26 @@ export const CardDetailHeader = styled.div`
   padding: 0 24px;
 `;
 
-export const CardDetailTitle = styled.div`
+const Title = styled.div`
   display: flex;
   align-items: flex-start;
   flex-direction: column;
   gap: 8px;
 `;
 
-export const CardDetailInfo = styled.div`
+const Info = styled.div`
   display: flex;
   flex-direction: column;
   gap: 4px;
 `;
 
-export const CardDetailInfoItem = styled.div`
+const InfoItem = styled.div`
   display: flex;
   gap: 8px;
   padding: 2px 0;
 `;
 
-export const CardDetailInfoItemTitle = styled.div`
+const InfoItemTitle = styled.div`
   display: flex;
   gap: 4px;
   align-items: center;
@@ -69,7 +69,22 @@ export const CardDetailInfoItemTitle = styled.div`
   color: ${({ theme }) => theme.sementicColors.text.tertiary};
 `;
 
-export const CardDetailInfoItemContent = styled.div`
+const InfoItemContent = styled.div`
   color: ${({ theme }) => theme.sementicColors.text.secondary};
   padding: 8px;
 `;
+
+const CardDetail = {
+  PanelContainer,
+  PanelControl,
+  CloseButton,
+  Content,
+  Header,
+  Title,
+  Info,
+  InfoItem,
+  InfoItemTitle,
+  InfoItemContent,
+};
+
+export default CardDetail;

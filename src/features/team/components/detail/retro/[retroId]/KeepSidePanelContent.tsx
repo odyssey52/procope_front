@@ -26,16 +26,7 @@ import Checkbox from '@/shared/ui/checkbox/Checkbox';
 import Error from '@/shared/ui/error/Error';
 import Divider from '@/shared/ui/line/Divider';
 import ItemList from '@/shared/ui/select/ItemList';
-import {
-  CardDetailHeader,
-  CloseButton,
-  CardDetailInfo,
-  CardDetailInfoItem,
-  CardDetailInfoItemContent,
-  CardDetailInfoItemTitle,
-  CardDetailTitle,
-  PanelContainer,
-} from '@/shared/ui/sidePanel/CardDetail';
+import CardDetail from '@/shared/ui/sidePanel/CardDetail';
 import SidePanelScaffold from '@/shared/ui/sidePanel/SidePanelScaffold';
 import Text from '@/shared/ui/Text';
 import Tiptap from '@/shared/ui/tiptap/Tiptap';
@@ -256,15 +247,15 @@ const KeepSidePanelContent = ({ retroId, problemId, client }: KeepSidePanelConte
   }, [client, retroId, queryClient]);
 
   return (
-    <PanelContainer>
+    <CardDetail.PanelContainer>
       {isLoading && <SkeletonSidePanelContent />}
       {!isLoading && !isSuccess && <Error title="서버 에러" description="문제를 찾을 수 없습니다." />}
       {!isLoading && isSuccess && (
         <SidePanelScaffold
           title={
-            <CloseButton onClick={close}>
+            <CardDetail.CloseButton onClick={close}>
               <IconDirectionRight1 />
-            </CloseButton>
+            </CardDetail.CloseButton>
           }
           actions={
             isEditable ? (
@@ -281,29 +272,29 @@ const KeepSidePanelContent = ({ retroId, problemId, client }: KeepSidePanelConte
             ) : undefined
           }
           header={
-            <CardDetailHeader>
-              <CardDetailTitle>
+            <CardDetail.Header>
+              <CardDetail.Title>
                 <Checkbox label={`KEP-${data.problemId}`} id={`KEP-${data.problemId}`} onClick={() => {}} checked />
                 <PageTitle
                   title={currentTitle}
                   setTitle={isEditable ? setCurrentTitle : undefined}
                   placeholder={isEditable ? '제목을 작성해 주세요' : '새 카드'}
                 />
-              </CardDetailTitle>
-              <CardDetailInfo>
-                <CardDetailInfoItem>
-                  <CardDetailInfoItemTitle>
+              </CardDetail.Title>
+              <CardDetail.Info>
+                <CardDetail.InfoItem>
+                  <CardDetail.InfoItemTitle>
                     <IconApps size={20} color={theme.sementicColors.icon.disabled} />
                     카테고리
-                  </CardDetailInfoItemTitle>
+                  </CardDetail.InfoItemTitle>
                   <ProblemCategorySelect roles={categories} onToggle={handleToggleRetroProblemRole} />
-                </CardDetailInfoItem>
-                <CardDetailInfoItem>
-                  <CardDetailInfoItemTitle>
+                </CardDetail.InfoItem>
+                <CardDetail.InfoItem>
+                  <CardDetail.InfoItemTitle>
                     <IconUser size={20} color={theme.sementicColors.icon.disabled} />
                     만든사람
-                  </CardDetailInfoItemTitle>
-                  <CardDetailInfoItemContent>
+                  </CardDetail.InfoItemTitle>
+                  <CardDetail.InfoItemContent>
                     <TextButton
                       $type="24"
                       leftIcon={<Avatar size={24} image={data.createUserInfo.profileImageUrl} />}
@@ -311,26 +302,25 @@ const KeepSidePanelContent = ({ retroId, problemId, client }: KeepSidePanelConte
                     >
                       {data.createUserInfo.name}
                     </TextButton>
-                  </CardDetailInfoItemContent>
-                </CardDetailInfoItem>
-                <CardDetailInfoItem>
-                  <CardDetailInfoItemTitle>업데이트 날짜</CardDetailInfoItemTitle>
-                  <CardDetailInfoItemContent>
+                  </CardDetail.InfoItemContent>
+                </CardDetail.InfoItem>
+                <CardDetail.InfoItem>
+                  <CardDetail.InfoItemTitle>업데이트 날짜</CardDetail.InfoItemTitle>
+                  <CardDetail.InfoItemContent>
                     <Text variant="body_16_medium" color="tertiary">
                       {formatDateToDot(data.updatedAt)}
                     </Text>
-                  </CardDetailInfoItemContent>
-                </CardDetailInfoItem>
-              </CardDetailInfo>
+                  </CardDetail.InfoItemContent>
+                </CardDetail.InfoItem>
+              </CardDetail.Info>
               <Divider />
-            </CardDetailHeader>
+            </CardDetail.Header>
           }
-          contentPadding="24px 48px"
         >
           {editor && <Tiptap editor={editor} editable={isEditable} />}
         </SidePanelScaffold>
       )}
-    </PanelContainer>
+    </CardDetail.PanelContainer>
   );
 };
 
