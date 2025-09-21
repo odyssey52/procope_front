@@ -272,6 +272,7 @@ const Content = styled.div`
   padding: 0 48px;
   padding-bottom: 24px;
   flex-grow: 1;
+  overflow-x: auto;
 `;
 
 ProblemWrapper.displayName = 'ProblemWrapper';
