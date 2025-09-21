@@ -395,11 +395,11 @@ const ProblemSidePanelContent = ({ retroId, problemId, client }: ProblemSidePane
                 </ProblemInfoItem>
               )}
             </ProblemInfo>
-            <Divider color={theme.sementicColors.border.primary} />
+            <Divider />
           </HeaderWrapper>
           <Content>
             <SolutionWrapper retroId={retroId} problemId={problemId} client={client} />
-            <Divider color={theme.sementicColors.border.primary} />
+            <Divider />
             {editor && <Tiptap editor={editor} editable={isEditable} />}
           </Content>
         </Wrapper>

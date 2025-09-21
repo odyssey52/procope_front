@@ -199,44 +199,46 @@ const SolutionSidePanelContent = ({ retroId, problemId, solutionId, client }: So
       {!isLoading && !isSuccess && <Error title="서버 에러" description="개선 방안을 찾을 수 없습니다." />}
       {!isLoading && isSuccess && (
         <Wrapper>
-          <TitleWrapper>
-            <Checkbox label={`SOL-${data.solutionId}`} id={`SOL-${data.solutionId}`} onClick={() => {}} checked />
-            <PageTitle
-              title={currentTitle}
-              setTitle={isEditable ? setCurrentTitle : undefined}
-              placeholder={isEditable ? '제목을 작성해 주세요' : '새 카드'}
-            />
-          </TitleWrapper>
-          <SolutionInfo>
-            <SolutionInfoItem>
-              <SolutionInfoItemTitle>
-                <IconUser size={20} color={theme.sementicColors.icon.disabled} />
-                만든사람
-              </SolutionInfoItemTitle>
-              <SolutionInfoItemContent>
-                <TextButton
-                  $type="24"
-                  leftIcon={<Avatar size={24} image={data.createUserInfo.profileImageUrl} />}
-                  $clickable={false}
-                >
-                  {data.createUserInfo.name}
-                </TextButton>
-              </SolutionInfoItemContent>
-            </SolutionInfoItem>
-            <SolutionInfoItem>
-              <SolutionInfoItemTitle>
-                <IconLoading size={20} color={theme.sementicColors.icon.disabled} />
-                업데이트 날짜
-              </SolutionInfoItemTitle>
-              <SolutionInfoItemContent>
-                <Text variant="body_16_medium" color="tertiary">
-                  {formatDateToDot(data.updatedAt)}
-                </Text>
-              </SolutionInfoItemContent>
-            </SolutionInfoItem>
-          </SolutionInfo>
-          <Divider color={theme.sementicColors.border.primary} />
-          {editor && <Tiptap editor={editor} editable={isEditable} />}
+          <HeaderWrapper>
+            <TitleWrapper>
+              <Checkbox label={`SOL-${data.solutionId}`} id={`SOL-${data.solutionId}`} onClick={() => {}} checked />
+              <PageTitle
+                title={currentTitle}
+                setTitle={isEditable ? setCurrentTitle : undefined}
+                placeholder={isEditable ? '제목을 작성해 주세요' : '새 카드'}
+              />
+            </TitleWrapper>
+            <SolutionInfo>
+              <SolutionInfoItem>
+                <SolutionInfoItemTitle>
+                  <IconUser size={20} color={theme.sementicColors.icon.disabled} />
+                  만든사람
+                </SolutionInfoItemTitle>
+                <SolutionInfoItemContent>
+                  <TextButton
+                    $type="24"
+                    leftIcon={<Avatar size={24} image={data.createUserInfo.profileImageUrl} />}
+                    $clickable={false}
+                  >
+                    {data.createUserInfo.name}
+                  </TextButton>
+                </SolutionInfoItemContent>
+              </SolutionInfoItem>
+              <SolutionInfoItem>
+                <SolutionInfoItemTitle>
+                  <IconLoading size={20} color={theme.sementicColors.icon.disabled} />
+                  업데이트 날짜
+                </SolutionInfoItemTitle>
+                <SolutionInfoItemContent>
+                  <Text variant="body_16_medium" color="tertiary">
+                    {formatDateToDot(data.updatedAt)}
+                  </Text>
+                </SolutionInfoItemContent>
+              </SolutionInfoItem>
+            </SolutionInfo>
+            <Divider />
+          </HeaderWrapper>
+          <Content>{editor && <Tiptap editor={editor} editable={isEditable} />}</Content>
         </Wrapper>
       )}
     </PanelContainer>
@@ -248,16 +250,24 @@ const PanelContainer = styled.div`
   display: flex;
   flex-direction: column;
   flex-grow: 1;
+  min-height: 0;
 `;
 
 const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 24px;
-  padding: 48px;
   padding-top: 24px;
-  overflow-y: scroll;
+  overflow: hidden;
   flex-grow: 1;
+  min-height: 0;
+`;
+
+const HeaderWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  margin: 0 24px;
+  padding: 0 24px;
 `;
 
 const TitleWrapper = styled.div`
@@ -306,10 +316,14 @@ const CloseButton = styled.button`
   cursor: pointer;
 `;
 
-const ButtonWrapper = styled.div`
+const Content = styled.div`
   display: flex;
-  justify-content: flex-end;
-  gap: 16px;
+  flex-direction: column;
+  gap: 24px;
+  padding: 24px 48px;
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
 `;
 
 SolutionSidePanelContent.displayName = 'SolutionSidePanelContent';

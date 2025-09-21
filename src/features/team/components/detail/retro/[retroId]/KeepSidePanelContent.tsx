@@ -268,48 +268,50 @@ const KeepSidePanelContent = ({ retroId, problemId, client }: KeepSidePanelConte
       {!isLoading && !isSuccess && <Error title="서버 에러" description="문제를 찾을 수 없습니다." />}
       {!isLoading && isSuccess && (
         <Wrapper>
-          <TitleWrapper>
-            <Checkbox label={`KEP-${data.problemId}`} id={`KEP-${data.problemId}`} onClick={() => {}} checked />
-            <PageTitle
-              title={currentTitle}
-              setTitle={isEditable ? setCurrentTitle : undefined}
-              placeholder={isEditable ? '제목을 작성해 주세요' : '새 카드'}
-            />
-          </TitleWrapper>
-          <ProblemInfo>
-            <ProblemInfoItem>
-              <ProblemInfoItemTitle>
-                <IconApps size={20} color={theme.sementicColors.icon.disabled} />
-                카테고리
-              </ProblemInfoItemTitle>
-              <ProblemCategorySelect roles={categories} onToggle={handleToggleRetroProblemRole} />
-            </ProblemInfoItem>
-            <ProblemInfoItem>
-              <ProblemInfoItemTitle>
-                <IconUser size={20} color={theme.sementicColors.icon.disabled} />
-                만든사람
-              </ProblemInfoItemTitle>
-              <ProblemInfoItemContent>
-                <TextButton
-                  $type="24"
-                  leftIcon={<Avatar size={24} image={data.createUserInfo.profileImageUrl} />}
-                  $clickable={false}
-                >
-                  {data.createUserInfo.name}
-                </TextButton>
-              </ProblemInfoItemContent>
-            </ProblemInfoItem>
-            <ProblemInfoItem>
-              <ProblemInfoItemTitle>업데이트 날짜</ProblemInfoItemTitle>
-              <ProblemInfoItemContent>
-                <Text variant="body_16_medium" color="tertiary">
-                  {formatDateToDot(data.updatedAt)}
-                </Text>
-              </ProblemInfoItemContent>
-            </ProblemInfoItem>
-          </ProblemInfo>
-          <Divider />
-          {editor && <Tiptap editor={editor} editable={isEditable} />}
+          <HeaderWrapper>
+            <TitleWrapper>
+              <Checkbox label={`KEP-${data.problemId}`} id={`KEP-${data.problemId}`} onClick={() => {}} checked />
+              <PageTitle
+                title={currentTitle}
+                setTitle={isEditable ? setCurrentTitle : undefined}
+                placeholder={isEditable ? '제목을 작성해 주세요' : '새 카드'}
+              />
+            </TitleWrapper>
+            <ProblemInfo>
+              <ProblemInfoItem>
+                <ProblemInfoItemTitle>
+                  <IconApps size={20} color={theme.sementicColors.icon.disabled} />
+                  카테고리
+                </ProblemInfoItemTitle>
+                <ProblemCategorySelect roles={categories} onToggle={handleToggleRetroProblemRole} />
+              </ProblemInfoItem>
+              <ProblemInfoItem>
+                <ProblemInfoItemTitle>
+                  <IconUser size={20} color={theme.sementicColors.icon.disabled} />
+                  만든사람
+                </ProblemInfoItemTitle>
+                <ProblemInfoItemContent>
+                  <TextButton
+                    $type="24"
+                    leftIcon={<Avatar size={24} image={data.createUserInfo.profileImageUrl} />}
+                    $clickable={false}
+                  >
+                    {data.createUserInfo.name}
+                  </TextButton>
+                </ProblemInfoItemContent>
+              </ProblemInfoItem>
+              <ProblemInfoItem>
+                <ProblemInfoItemTitle>업데이트 날짜</ProblemInfoItemTitle>
+                <ProblemInfoItemContent>
+                  <Text variant="body_16_medium" color="tertiary">
+                    {formatDateToDot(data.updatedAt)}
+                  </Text>
+                </ProblemInfoItemContent>
+              </ProblemInfoItem>
+            </ProblemInfo>
+            <Divider />
+          </HeaderWrapper>
+          <Content>{editor && <Tiptap editor={editor} editable={isEditable} />}</Content>
         </Wrapper>
       )}
     </RefContainer>
@@ -321,16 +323,24 @@ const RefContainer = styled.div`
   display: flex;
   flex-direction: column;
   flex-grow: 1;
+  min-height: 0;
 `;
 
 const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 24px;
-  padding: 48px;
   padding-top: 24px;
-  overflow-y: scroll;
+  overflow: hidden;
   flex-grow: 1;
+  min-height: 0;
+`;
+
+const HeaderWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  margin: 0 24px;
+  padding: 0 24px;
 `;
 
 const TitleWrapper = styled.div`
@@ -377,6 +387,16 @@ const CloseButton = styled.button`
   align-items: center;
   justify-content: center;
   cursor: pointer;
+`;
+
+const Content = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding: 24px 48px;
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
 `;
 
 KeepSidePanelContent.displayName = 'KeepSidePanelContent';
