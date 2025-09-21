@@ -42,6 +42,8 @@ const Wrapper = styled(motion.div)<{ $isOpen: boolean; $stackIndex: number }>`
   gap: 24px;
 
   height: calc(100vh - 55px);
+  min-height: 0; /* 내부 스크롤 영역 활성화를 위해 필요 */
+  overflow: hidden; /* 내부 스크롤러로 스크롤 위임 */
   background-color: ${({ theme }) => theme.sementicColors.bg.inverse};
   border-left: 1px solid ${({ theme }) => theme.sementicColors.border.primary};
   box-shadow: 0 2px 20px 0 rgba(0, 0, 0, 0.05);
