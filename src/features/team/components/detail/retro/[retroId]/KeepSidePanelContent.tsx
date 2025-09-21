@@ -26,7 +26,17 @@ import Checkbox from '@/shared/ui/checkbox/Checkbox';
 import Error from '@/shared/ui/error/Error';
 import Divider from '@/shared/ui/line/Divider';
 import ItemList from '@/shared/ui/select/ItemList';
-import TagJob, { JobType } from '@/shared/ui/tag/TagJob';
+import {
+  CardDetailHeader,
+  CloseButton,
+  CardDetailInfo,
+  CardDetailInfoItem,
+  CardDetailInfoItemContent,
+  CardDetailInfoItemTitle,
+  CardDetailTitle,
+  PanelContainer,
+} from '@/shared/ui/sidePanel/CardDetail';
+import SidePanelScaffold from '@/shared/ui/sidePanel/SidePanelScaffold';
 import Text from '@/shared/ui/Text';
 import Tiptap from '@/shared/ui/tiptap/Tiptap';
 import PageTitle from '@/shared/ui/title/PageTitle';
@@ -40,8 +50,8 @@ import { useEditor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
-import SkeletonSidePanelContent from './SkeletonSidePanelContent';
 import ProblemCategorySelect from './ProblemCategorySelect';
+import SkeletonSidePanelContent from './SkeletonSidePanelContent';
 
 interface KeepSidePanelContentProps {
   retroId: string | number;
@@ -220,7 +230,7 @@ const KeepSidePanelContent = ({ retroId, problemId, client }: KeepSidePanelConte
     if (client && client.connected && retroId) {
       const subscription = client.subscribe(`/user/topic/retrospectives/problems/${problemId}`, (message) => {
         const data = JSON.parse(message.body);
-        console.log('📨 실시간 데이터 수신:', message.body);
+
         if (data.code === 'UPDATE') {
           queryClient.refetchQueries({
             queryKey: retroQueries.readRetroProblemDetail({ retroId, problemId }).queryKey,
@@ -246,158 +256,83 @@ const KeepSidePanelContent = ({ retroId, problemId, client }: KeepSidePanelConte
   }, [client, retroId, queryClient]);
 
   return (
-    <RefContainer>
-      <PanelControl>
-        <CloseButton onClick={close}>
-          <IconDirectionRight1 />
-        </CloseButton>
-        {isEditable && (
-          <MoreArea
-            size={24}
-            menuList={
-              <ItemList
-                width="112px"
-                selectOptionList={[{ value: '삭제', label: '삭제' }]}
-                valueHandler={() => handleDeleteRetroProblem(problemId)}
-              />
-            }
-          />
-        )}
-      </PanelControl>
+    <PanelContainer>
       {isLoading && <SkeletonSidePanelContent />}
       {!isLoading && !isSuccess && <Error title="서버 에러" description="문제를 찾을 수 없습니다." />}
       {!isLoading && isSuccess && (
-        <Wrapper>
-          <HeaderWrapper>
-            <TitleWrapper>
-              <Checkbox label={`KEP-${data.problemId}`} id={`KEP-${data.problemId}`} onClick={() => {}} checked />
-              <PageTitle
-                title={currentTitle}
-                setTitle={isEditable ? setCurrentTitle : undefined}
-                placeholder={isEditable ? '제목을 작성해 주세요' : '새 카드'}
+        <SidePanelScaffold
+          title={
+            <CloseButton onClick={close}>
+              <IconDirectionRight1 />
+            </CloseButton>
+          }
+          actions={
+            isEditable ? (
+              <MoreArea
+                size={24}
+                menuList={
+                  <ItemList
+                    width="112px"
+                    selectOptionList={[{ value: '삭제', label: '삭제' }]}
+                    valueHandler={() => handleDeleteRetroProblem(problemId)}
+                  />
+                }
               />
-            </TitleWrapper>
-            <ProblemInfo>
-              <ProblemInfoItem>
-                <ProblemInfoItemTitle>
-                  <IconApps size={20} color={theme.sementicColors.icon.disabled} />
-                  카테고리
-                </ProblemInfoItemTitle>
-                <ProblemCategorySelect roles={categories} onToggle={handleToggleRetroProblemRole} />
-              </ProblemInfoItem>
-              <ProblemInfoItem>
-                <ProblemInfoItemTitle>
-                  <IconUser size={20} color={theme.sementicColors.icon.disabled} />
-                  만든사람
-                </ProblemInfoItemTitle>
-                <ProblemInfoItemContent>
-                  <TextButton
-                    $type="24"
-                    leftIcon={<Avatar size={24} image={data.createUserInfo.profileImageUrl} />}
-                    $clickable={false}
-                  >
-                    {data.createUserInfo.name}
-                  </TextButton>
-                </ProblemInfoItemContent>
-              </ProblemInfoItem>
-              <ProblemInfoItem>
-                <ProblemInfoItemTitle>업데이트 날짜</ProblemInfoItemTitle>
-                <ProblemInfoItemContent>
-                  <Text variant="body_16_medium" color="tertiary">
-                    {formatDateToDot(data.updatedAt)}
-                  </Text>
-                </ProblemInfoItemContent>
-              </ProblemInfoItem>
-            </ProblemInfo>
-            <Divider />
-          </HeaderWrapper>
-          <Content>{editor && <Tiptap editor={editor} editable={isEditable} />}</Content>
-        </Wrapper>
+            ) : undefined
+          }
+          header={
+            <CardDetailHeader>
+              <CardDetailTitle>
+                <Checkbox label={`KEP-${data.problemId}`} id={`KEP-${data.problemId}`} onClick={() => {}} checked />
+                <PageTitle
+                  title={currentTitle}
+                  setTitle={isEditable ? setCurrentTitle : undefined}
+                  placeholder={isEditable ? '제목을 작성해 주세요' : '새 카드'}
+                />
+              </CardDetailTitle>
+              <CardDetailInfo>
+                <CardDetailInfoItem>
+                  <CardDetailInfoItemTitle>
+                    <IconApps size={20} color={theme.sementicColors.icon.disabled} />
+                    카테고리
+                  </CardDetailInfoItemTitle>
+                  <ProblemCategorySelect roles={categories} onToggle={handleToggleRetroProblemRole} />
+                </CardDetailInfoItem>
+                <CardDetailInfoItem>
+                  <CardDetailInfoItemTitle>
+                    <IconUser size={20} color={theme.sementicColors.icon.disabled} />
+                    만든사람
+                  </CardDetailInfoItemTitle>
+                  <CardDetailInfoItemContent>
+                    <TextButton
+                      $type="24"
+                      leftIcon={<Avatar size={24} image={data.createUserInfo.profileImageUrl} />}
+                      $clickable={false}
+                    >
+                      {data.createUserInfo.name}
+                    </TextButton>
+                  </CardDetailInfoItemContent>
+                </CardDetailInfoItem>
+                <CardDetailInfoItem>
+                  <CardDetailInfoItemTitle>업데이트 날짜</CardDetailInfoItemTitle>
+                  <CardDetailInfoItemContent>
+                    <Text variant="body_16_medium" color="tertiary">
+                      {formatDateToDot(data.updatedAt)}
+                    </Text>
+                  </CardDetailInfoItemContent>
+                </CardDetailInfoItem>
+              </CardDetailInfo>
+              <Divider />
+            </CardDetailHeader>
+          }
+          contentPadding="24px 48px"
+        >
+          {editor && <Tiptap editor={editor} editable={isEditable} />}
+        </SidePanelScaffold>
       )}
-    </RefContainer>
+    </PanelContainer>
   );
 };
-
-const RefContainer = styled.div`
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  flex-grow: 1;
-  min-height: 0;
-`;
-
-const Wrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  padding-top: 24px;
-  overflow: hidden;
-  flex-grow: 1;
-  min-height: 0;
-`;
-
-const HeaderWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
-  margin: 0 24px;
-  padding: 0 24px;
-`;
-
-const TitleWrapper = styled.div`
-  display: flex;
-  align-items: flex-start;
-  flex-direction: column;
-  gap: 8px;
-`;
-
-const ProblemInfo = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-`;
-
-const ProblemInfoItem = styled.div`
-  display: flex;
-  gap: 8px;
-  padding: 2px 0;
-`;
-
-const ProblemInfoItemTitle = styled.div`
-  display: flex;
-  gap: 4px;
-  align-items: center;
-  width: 140px;
-  ${({ theme }) => theme.fontStyle.body_16_medium};
-  color: ${({ theme }) => theme.sementicColors.text.tertiary};
-`;
-
-const ProblemInfoItemContent = styled.div`
-  color: ${({ theme }) => theme.sementicColors.text.secondary};
-  padding: 8px;
-`;
-
-const PanelControl = styled.div`
-  display: flex;
-  padding: 0 24px;
-  justify-content: space-between;
-`;
-
-const CloseButton = styled.button`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-`;
-
-const Content = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
-  padding: 24px 48px;
-  flex: 1 1 auto;
-  min-height: 0;
-  overflow-y: auto;
-`;
 
 KeepSidePanelContent.displayName = 'KeepSidePanelContent';
 
