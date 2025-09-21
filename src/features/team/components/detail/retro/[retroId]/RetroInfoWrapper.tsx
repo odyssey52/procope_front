@@ -86,7 +86,6 @@ const RetroInfoWrapper = ({ client, isConnected }: RetroInfoWrapperProps) => {
     if (client && client.connected) {
       const subscription = client.subscribe('/user/topic/retrospectives', (message) => {
         const data = JSON.parse(message.body);
-        console.log('📨 실시간 데이터 수신:', data);
         if (data.code === 'UPDATE') {
           queryClient.invalidateQueries({ queryKey: retroQueries.readRetro({ teamId, retroId }).queryKey });
         }

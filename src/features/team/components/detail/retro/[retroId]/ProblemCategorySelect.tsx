@@ -35,8 +35,6 @@ const ProblemCategorySelect = ({ roles, onToggle }: ProblemCategorySelectProps) 
     onToggle(roleId);
   };
 
-  console.log(roleList);
-  console.log(data);
   return (
     <Wrapper ref={ref} $isOpen={isOpen} onClick={() => setIsOpen(!isOpen)}>
       {roles.map((role) => (
