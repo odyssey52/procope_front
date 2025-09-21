@@ -3,6 +3,7 @@ import styled, { keyframes, DefaultTheme } from 'styled-components';
 interface LoadingSpinnerProps {
   size?: 'small' | 'medium' | 'large';
   variant?: 'primary' | 'brand' | 'info' | 'navy' | 'warning' | 'success' | 'danger';
+  minHeight?: string;
 }
 
 const sizeMap = {
@@ -32,9 +33,9 @@ const getSpinnerColor =
     }
   };
 
-export function LoadingSpinner({ size = 'medium', variant = 'brand' }: LoadingSpinnerProps) {
+export function LoadingSpinner({ size = 'medium', variant = 'brand', minHeight = '200px' }: LoadingSpinnerProps) {
   return (
-    <SpinnerWrapper>
+    <SpinnerWrapper $minHeight={minHeight}>
       <Spinner size={size} variant={variant} />
     </SpinnerWrapper>
   );
@@ -49,13 +50,13 @@ const spin = keyframes`
   }
 `;
 
-const SpinnerWrapper = styled.div`
+const SpinnerWrapper = styled.div<{ $minHeight: string }>`
   display: flex;
   justify-content: center;
   align-items: center;
   width: 100%;
   height: 100%;
-  min-height: 200px;
+  min-height: ${({ $minHeight }) => $minHeight};
 `;
 
 const Spinner = styled.div<{ size: 'small' | 'medium' | 'large'; variant: LoadingSpinnerProps['variant'] }>`

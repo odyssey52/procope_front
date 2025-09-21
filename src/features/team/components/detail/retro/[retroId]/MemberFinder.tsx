@@ -6,6 +6,7 @@ import { TeamMember } from '@/features/team/services/teamService.type';
 import { IconSearch } from '@/shared/assets/icons/line';
 import useDebounce from '@/shared/hooks/useDebounce';
 import { zIndex } from '@/shared/styles/mixin';
+import { LoadingSpinner } from '@/shared/ui/LoadingSpinner';
 import Placeholder from '@/shared/ui/placeholder/Placeholder';
 import { filterByHangulSearch } from '@/shared/utils/hangulSearch';
 import { useQuery } from '@tanstack/react-query';
@@ -22,12 +23,13 @@ export type MemberFinderUser = TeamMember[0] & {
   isRetroMember: boolean;
 };
 const MemberFinder = ({ teamId, retroId }: MemberFinderProps) => {
-  const { data: teamUserList } = useQuery({
+  const { data: teamUserList, isLoading: isTeamUserListLoading } = useQuery({
     ...teamQueries.readTeamUser({ teamId }),
   });
-  const { data: retroMemberList } = useQuery({
+  const { data: retroMemberList, isLoading: isRetroMemberListLoading } = useQuery({
     ...retroQueries.readRetroMemberList({ teamId, retroId }),
   });
+  const isLoading = isTeamUserListLoading || isRetroMemberListLoading;
 
   const [userList, setUserList] = useState<MemberFinderUser[]>([]);
   const [keyword, setKeyword] = useState('');
@@ -38,11 +40,9 @@ const MemberFinder = ({ teamId, retroId }: MemberFinderProps) => {
     () => filterByHangulSearch(userList, debouncedKeyword, (user) => user.user.name),
     [userList, debouncedKeyword],
   );
-  console.log(filteredUserList);
+
   useEffect(() => {
     if (!teamUserList || !retroMemberList) return;
-    console.log('teamUserList', teamUserList.teamMember);
-    console.log('retroMemberList', retroMemberList);
 
     const userList = teamUserList.teamMember.map((teamMember) => {
       const isRetroMember = retroMemberList?.some((retroMember) => {
@@ -54,7 +54,6 @@ const MemberFinder = ({ teamId, retroId }: MemberFinderProps) => {
         isRetroMember,
       };
     });
-    console.log('userList', userList);
     setUserList(userList);
   }, [teamUserList, retroMemberList]);
   return (
@@ -65,7 +64,8 @@ const MemberFinder = ({ teamId, retroId }: MemberFinderProps) => {
         placeholder="멤버 검색"
         leftIcon={<IconSearch size={20} />}
       />
-      {filteredUserList.length > 0 && (
+      {isLoading && <LoadingSpinner minHeight="48px" />}
+      {filteredUserList.length > 0 && !isLoading && (
         <Content>
           {filteredUserList.map((user) => (
             <MemberFinderItem key={`MemberFinderItem-${user.user.id}`} user={user} teamId={teamId} retroId={retroId} />
