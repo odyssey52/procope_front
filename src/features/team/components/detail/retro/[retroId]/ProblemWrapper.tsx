@@ -15,17 +15,12 @@ import PageSubTitle from '@/shared/ui/title/PageSubTitle';
 import { DragDropContext, DropResult } from '@hello-pangea/dnd';
 import { Client } from '@stomp/stompjs';
 import { useMutation, useQueryClient, useSuspenseQuery } from '@tanstack/react-query';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import styled from 'styled-components';
 import ProblemCardList from './ProblemCardList';
 import ProblemSidePanelContent from './ProblemSidePanelContent';
 
-// 로컬 상태 타입 정의
-type ProblemsByStatus = {
-  RCG: RetroProblemListItem[];
-  PRG: RetroProblemListItem[];
-  OK: RetroProblemListItem[];
-};
+// 로컬 상태 타입 정의 제거 (React Query 캐시만 사용)
 
 interface ProblemWrapperProps {
   retroId: string;
@@ -36,13 +31,6 @@ const ProblemWrapper = ({ retroId, client }: ProblemWrapperProps) => {
   const { handleError } = useApiError();
   const queryClient = useQueryClient();
   const handleSwitchCard = useSidePanelStore((state) => state.handleSwitchCard);
-
-  // 로컬 상태 추가
-  const [problemsByStatus, setProblemsByStatus] = useState<ProblemsByStatus>({
-    RCG: [],
-    PRG: [],
-    OK: [],
-  });
 
   // 각 칸반의 서버 데이터 조회
   const rcgData = useSuspenseQuery({
@@ -90,34 +78,33 @@ const ProblemWrapper = ({ retroId, client }: ProblemWrapperProps) => {
     }
   };
 
-  const updateProblemStatusLocal = (
-    sourceProblem: RetroProblemListItem,
-    source: { status: ProblemKanbanStatus; index: number },
-    destination: {
-      status: ProblemKanbanStatus;
-      index?: number;
-    },
-    problemsByStatus: ProblemsByStatus,
-  ): ProblemsByStatus => {
-    if (source.status === destination.status) {
-      // 같은 칸반 내에서 순서 변경
-      const column = [...problemsByStatus[source.status as keyof ProblemsByStatus]];
-      column.splice(source.index, 1);
-      column.splice(destination.index ?? column.length + 1, 0, sourceProblem);
-      return {
-        ...problemsByStatus,
-        [destination.status as keyof ProblemsByStatus]: column,
-      };
-    }
+  // 낙관적 업데이트: React Query 캐시만 업데이트
+  const reorderWithinList = (list: RetroProblemListItem[], startIndex: number, endIndex: number) => {
+    const result = [...list];
+    const [removed] = result.splice(startIndex, 1);
+    result.splice(endIndex, 0, removed);
+    return result.map((item, idx) => ({ ...item, orderIndex: idx }));
+  };
 
-    const sourceColumn = [...problemsByStatus[source.status as keyof ProblemsByStatus]];
-    const destinationColumn = [...problemsByStatus[destination.status as keyof ProblemsByStatus]];
-    sourceColumn.splice(source.index, 1);
-    destinationColumn.splice(destination.index ?? destinationColumn.length + 1, 0, sourceProblem);
+  const moveBetweenLists = (
+    sourceList: RetroProblemListItem[],
+    destList: RetroProblemListItem[],
+    sourceIndex: number,
+    destIndex: number,
+    destStatus: ProblemKanbanStatus,
+  ) => {
+    const newSource = [...sourceList];
+    const newDest = [...destList];
+    const [moved] = newSource.splice(sourceIndex, 1);
+    const movedUpdated: RetroProblemListItem = {
+      ...moved,
+      kanbanStatus: destStatus,
+      orderIndex: destIndex,
+    } as RetroProblemListItem;
+    newDest.splice(destIndex, 0, movedUpdated);
     return {
-      ...problemsByStatus,
-      [source.status as keyof ProblemsByStatus]: sourceColumn,
-      [destination.status as keyof ProblemsByStatus]: destinationColumn,
+      newSource: newSource.map((item, idx) => ({ ...item, orderIndex: idx })),
+      newDest: newDest.map((item, idx) => ({ ...item, orderIndex: idx })),
     };
   };
 
@@ -136,30 +123,45 @@ const ProblemWrapper = ({ retroId, client }: ProblemWrapperProps) => {
     const sourceStatus = source.droppableId as ProblemKanbanStatus;
     const destinationStatus = destination.droppableId as ProblemKanbanStatus;
 
-    // 드래그한 카드 정보 가져오기
-    const sourceProblem = problemsByStatus[sourceStatus as keyof ProblemsByStatus][source.index]!;
+    const sourceKey = retroQueries.readRetroProblemList({ retroId, kanbanStatus: sourceStatus }).queryKey;
+    const destKey = retroQueries.readRetroProblemList({ retroId, kanbanStatus: destinationStatus }).queryKey;
 
-    // 드롭한 위치의 카드 정보 가져오기 (샘플 코드 패턴)
-    const destinationProblem = problemsByStatus[destinationStatus as keyof ProblemsByStatus][destination.index] ?? {
-      status: destinationStatus,
-      orderIndex: undefined, // undefined if dropped after the last item
-    };
+    const prevSourceData = queryClient.getQueryData(sourceKey) as any;
+    const prevDestData = sourceStatus === destinationStatus ? null : (queryClient.getQueryData(destKey) as any);
 
-    // 원본 상태 백업 (롤백용)
-    const originalProblemsByStatus = problemsByStatus;
+    const sourceList: RetroProblemListItem[] = prevSourceData?.payload ? [...prevSourceData.payload] : [];
+    const destList: RetroProblemListItem[] =
+      sourceStatus === destinationStatus ? sourceList : prevDestData?.payload ? [...prevDestData.payload] : [];
 
-    // 1. 로컬 상태를 먼저 업데이트 (즉시 UI 반영)
-    setProblemsByStatus(
-      updateProblemStatusLocal(
-        sourceProblem,
-        { status: sourceStatus, index: source.index },
-        { status: destinationStatus, index: destination.index },
-        problemsByStatus,
-      ),
-    );
+    const sourceItem = sourceList[source.index];
+    if (!sourceItem) return;
 
-    // 2. 서버에 변경사항 전송
     try {
+      if (sourceStatus === destinationStatus) {
+        const reordered = reorderWithinList(sourceList, source.index, destination.index);
+        queryClient.setQueryData(sourceKey, { ...prevSourceData, payload: reordered, count: reordered.length });
+      } else {
+        const { newSource, newDest } = moveBetweenLists(
+          sourceList,
+          destList,
+          source.index,
+          destination.index,
+          destinationStatus,
+        );
+        queryClient.setQueryData(sourceKey, { ...prevSourceData, payload: newSource, count: newSource.length });
+        queryClient.setQueryData(destKey, { ...prevDestData, payload: newDest, count: newDest.length });
+      }
+
+      // 서버에 전달할 changeIndex는 "대상 위치의 실제 orderIndex"로 계산
+      const destOrderIndex = (() => {
+        if (sourceStatus === destinationStatus) {
+          const target = sourceList[destination.index];
+          return target ? target.orderIndex : null;
+        }
+        const target = destList[destination.index];
+        return target ? target.orderIndex : null;
+      })();
+
       await updateRetroProblemStatusMutation.mutateAsync({
         params: {
           retroId,
@@ -167,24 +169,28 @@ const ProblemWrapper = ({ retroId, client }: ProblemWrapperProps) => {
         },
         payload: {
           kanbanStatus: destinationStatus,
-          changeIndex: destinationProblem.orderIndex, // 실제 카드의 orderIndex
+          changeIndex: destOrderIndex,
         },
       });
     } catch (error) {
-      // 실패 시 로컬 상태 롤백
-      setProblemsByStatus(originalProblemsByStatus);
+      // 롤백
+      if (prevSourceData) {
+        queryClient.setQueryData(sourceKey, prevSourceData);
+      }
+      if (prevDestData) {
+        queryClient.setQueryData(destKey, prevDestData);
+      }
       handleError(error);
+    } finally {
+      // 서버 최신 상태로 동기화 (중복 방지 위해 해당 키만 invalidate)
+      queryClient.invalidateQueries({ queryKey: sourceKey });
+      if (sourceStatus !== destinationStatus) {
+        queryClient.invalidateQueries({ queryKey: destKey });
+      }
     }
   };
 
-  // 서버 데이터를 로컬 상태와 동기화
-  useEffect(() => {
-    setProblemsByStatus({
-      RCG: rcgData.data?.payload || [],
-      PRG: prgData.data?.payload || [],
-      OK: okData.data?.payload || [],
-    });
-  }, [rcgData.data, prgData.data, okData.data]);
+  // 캐시는 React Query가 관리하므로 별도 동기화 상태 불필요
 
   // WebSocket 구독으로 실시간 동기화
   useEffect(() => {
@@ -218,26 +224,26 @@ const ProblemWrapper = ({ retroId, client }: ProblemWrapperProps) => {
         <PageSubTitle first="Q2. 개선할 점은 무엇이고 개선하기 위해 어떤 걸 시도할 수 있나요?" />
       </Head>
       <Content>
-        <DragDropContext key={`${retroId}-${JSON.stringify(problemsByStatus)}`} onDragEnd={handleDragEnd}>
+        <DragDropContext onDragEnd={handleDragEnd}>
           <ProblemCardList
             retroId={retroId}
             kanbanStatus="RCG"
             client={client}
-            problems={problemsByStatus.RCG}
+            problems={rcgData.data?.payload || []}
             onCreateCard={() => handleCreateCard('RCG')}
           />
           <ProblemCardList
             retroId={retroId}
             kanbanStatus="PRG"
             client={client}
-            problems={problemsByStatus.PRG}
+            problems={prgData.data?.payload || []}
             onCreateCard={() => handleCreateCard('PRG')}
           />
           <ProblemCardList
             retroId={retroId}
             kanbanStatus="OK"
             client={client}
-            problems={problemsByStatus.OK}
+            problems={okData.data?.payload || []}
             onCreateCard={() => handleCreateCard('OK')}
           />
         </DragDropContext>
@@ -266,7 +272,6 @@ const Content = styled.div`
   padding: 0 48px;
   padding-bottom: 24px;
   flex-grow: 1;
-  overflow-x: auto;
 `;
 
 ProblemWrapper.displayName = 'ProblemWrapper';
