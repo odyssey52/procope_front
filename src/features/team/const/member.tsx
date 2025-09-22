@@ -2,7 +2,6 @@ import Tag from '@/shared/ui/tag/Tag';
 import { AuthorityTag } from '../types/member';
 
 export const MEMBERLIST_TABLE_TITLE = ['참여자', '이메일', '직무', '담당업무', '참여 일자', '활성 일자', '권한', ''];
-export const MEMBERLIST_TABLE_WIDTH = ['8', '18', '9', '23', '11', '11', '16'];
 
 export const AUTHORITY_TAG: AuthorityTag[] = [
   {

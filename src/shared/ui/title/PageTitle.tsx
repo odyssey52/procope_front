@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import styled from 'styled-components';
 import Back from '../Back';
 import Text from '../Text';
@@ -8,12 +8,32 @@ interface PageTitleProps {
   title: string;
   setTitle?: (title: string) => void;
   onBlur?: () => void;
+  onEnterBlur?: boolean;
   placeholder?: string;
   description?: string;
   children?: React.ReactNode;
 }
 
-const PageTitle = ({ hasBack, title, setTitle, onBlur, placeholder, description, children }: PageTitleProps) => {
+const PageTitle = ({
+  hasBack,
+  title,
+  setTitle,
+  onBlur,
+  onEnterBlur = true,
+  placeholder,
+  description,
+  children,
+}: PageTitleProps) => {
+  const onKeyDown = useCallback(
+    (e: React.KeyboardEvent<HTMLInputElement>) => {
+      if (e.key === 'Enter' && onEnterBlur && onBlur) {
+        onBlur?.();
+        e.currentTarget.blur();
+      }
+    },
+    [onBlur, onEnterBlur],
+  );
+
   return (
     <Wrapper>
       {hasBack && <Back />}
@@ -22,7 +42,8 @@ const PageTitle = ({ hasBack, title, setTitle, onBlur, placeholder, description,
           type="text"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
-          onBlur={onBlur}
+          onBlur={onBlur && onBlur}
+          onKeyDown={onKeyDown}
           placeholder={placeholder}
         />
       )}
