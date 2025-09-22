@@ -27,7 +27,7 @@ const EMPTY_TITLE = '등록된 회고록이 없습니다.';
 const EMPTY_DESCRIPTION = '회고록을 추가하여 회고를 진행해 주세요.';
 
 const renderTitle = (item: ReadRetroListItem, teamId: string) => (
-  <Link href={`/team/${teamId}/retro/${item.id}`}>
+  <Link href={`/team/${teamId}/retro/${item.id}`} style={{ width: '100%' }}>
     <Text variant="body_14_medium" color="primary" ellipsis lines={1}>
       {item.title}
     </Text>
@@ -106,29 +106,31 @@ const RetroListPage = () => {
     }
   };
 
+  // 멤버 리스트와 동일하게 퍼센트 기반 width 적용 (합계 96% + actions 60px)
+
   const columns: TableColumn<ReadRetroListItem>[] = [
     {
       key: 'title',
       title: '제목',
-      width: '700px',
+      flex: '50',
       render: (item) => renderTitle(item, teamId),
     },
     {
       key: 'creator',
       title: '생성자',
-      width: '240px',
+      flex: '16',
       render: renderCreator,
     },
     {
       key: 'memberCount',
       title: '참여자',
-      width: '140px',
+      flex: '8',
       render: renderMembers,
     },
     {
       key: 'retroDate',
       title: '회고 일자',
-      width: '184px',
+      flex: '11',
       sortable: true,
       icon: <IconSortArrow />,
       render: renderRetroDate,
@@ -136,7 +138,7 @@ const RetroListPage = () => {
     {
       key: 'updatedAt',
       title: '업데이트 일자',
-      width: '184px',
+      flex: '11',
       sortable: true,
       icon: <IconSortArrow />,
       render: renderUpdatedAt,
