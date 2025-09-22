@@ -30,7 +30,9 @@ const Wrapper = styled.div<{ $variant: keyof FontStyle; $color: keyof Colors['te
     ${({ theme, $variant }) => theme.fontStyle[$variant]};
     color: ${({ theme, $color }) => theme.sementicColors.text[$color]};
     line-height: 1.5;
-
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
     position: relative;
     &:first-child {
       margin-top: 0;
