@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import styled from 'styled-components';
 import Back from '../Back';
 import Text from '../Text';
@@ -8,7 +8,6 @@ interface PageTitleProps {
   title: string;
   setTitle?: (title: string) => void;
   onBlur?: () => void;
-  // 엔터 키 입력 시 onBlur 호출 여부, 기본값은 true
   onEnterBlur?: boolean;
   placeholder?: string;
   description?: string;
@@ -20,11 +19,21 @@ const PageTitle = ({
   title,
   setTitle,
   onBlur,
-  onEnterBlur,
+  onEnterBlur = true,
   placeholder,
   description,
   children,
 }: PageTitleProps) => {
+  const onKeyDown = useCallback(
+    (e: React.KeyboardEvent<HTMLInputElement>) => {
+      if (e.key === 'Enter' && onEnterBlur && onBlur) {
+        onBlur?.();
+        e.currentTarget.blur();
+      }
+    },
+    [onBlur, onEnterBlur],
+  );
+
   return (
     <Wrapper>
       {hasBack && <Back />}
@@ -33,14 +42,8 @@ const PageTitle = ({
           type="text"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
-          onBlur={onBlur}
-          onKeyDown={(e) => {
-            // 블러 처리 이후 포커스 아웃 시키기
-            if (e.key === 'Enter' && onEnterBlur !== false) {
-              onBlur?.();
-              e.currentTarget.blur();
-            }
-          }}
+          onBlur={onBlur && onBlur}
+          onKeyDown={onKeyDown}
           placeholder={placeholder}
         />
       )}
