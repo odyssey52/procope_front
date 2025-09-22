@@ -5,6 +5,7 @@ import { createRetro, deleteRetro } from '@/features/team/services/retroService'
 import { ReadRetroListItem } from '@/features/team/services/retroService.type';
 import { IconSortArrow } from '@/shared/assets/icons/line';
 import useApiError from '@/shared/hooks/useApiError';
+import { confirmModalActions } from '@/shared/store/modal/confirmModal';
 import Avatar from '@/shared/ui/avatar/Avatar';
 import Breadcrumbs from '@/shared/ui/breadcrumbs/Breadcrumbs';
 import Button from '@/shared/ui/button/Button';
@@ -80,6 +81,15 @@ const RetroListPage = () => {
     },
   });
 
+  const onClickDeleteRetro = (retroId: string | number) => {
+    confirmModalActions.open({
+      title: '회고를 삭제하시겠습니까?',
+      description: '삭제시 복구가 불가능합니다.',
+      type: 'error',
+      onConfirm: () => deleteRetroMutation.mutate(retroId),
+    });
+  };
+
   const paths = [
     {
       name: '회고 관리',
@@ -154,7 +164,7 @@ const RetroListPage = () => {
           menuList={
             <ItemList
               selectOptionList={[{ value: '삭제', label: '삭제' }]}
-              valueHandler={() => deleteRetroMutation.mutate(item.id)}
+              valueHandler={() => onClickDeleteRetro(item.id)}
               width="112px"
             />
           }

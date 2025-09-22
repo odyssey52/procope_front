@@ -3,6 +3,7 @@
 import retroQueries from '@/features/team/query/retroQueries';
 import { deleteRetro } from '@/features/team/services/retroService';
 import useApiError from '@/shared/hooks/useApiError';
+import { confirmModalActions } from '@/shared/store/modal/confirmModal';
 import { toastActions } from '@/shared/store/modal/toast';
 import AvatarGroup from '@/shared/ui/avatar/AvatarGroup';
 import MoreArea from '@/shared/ui/button/MoreArea';
@@ -10,7 +11,7 @@ import ItemList from '@/shared/ui/select/ItemList';
 import { Client } from '@stomp/stompjs';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo } from 'react';
 import styled from 'styled-components';
 import MemberArea from './MemberArea';
 
@@ -59,6 +60,14 @@ const RetroInfoMemberWrapper = ({ teamId, retroId, client, isConnected }: RetroI
     mutationFn: () => deleteRetro({ teamId, retroId }),
   });
 
+  const onClickDeleteRetro = () => {
+    confirmModalActions.open({
+      title: '회고를 삭제하시겠습니까?',
+      description: '삭제시 복구가 불가능합니다.',
+      type: 'error',
+      onConfirm: handleDeleteRetro,
+    });
+  };
   const handleDeleteRetro = async () => {
     try {
       await deleteRetroMutation.mutateAsync();
@@ -105,7 +114,7 @@ const RetroInfoMemberWrapper = ({ teamId, retroId, client, isConnected }: RetroI
         menuList={
           <ItemList
             selectOptionList={[{ value: '삭제', label: '삭제' }]}
-            valueHandler={handleDeleteRetro}
+            valueHandler={onClickDeleteRetro}
             width="112px"
           />
         }
