@@ -1,5 +1,6 @@
 'use client';
 
+import useRetroAutoSave from '@/features/team/hooks/useRetroAutoSave';
 import { useTeamDetailQuery } from '@/features/team/hooks/useTeamDetailQuery';
 import retroQueries from '@/features/team/query/retroQueries';
 import {
@@ -15,7 +16,6 @@ import {
 } from '@/features/team/services/retroService.type';
 import { IconApps, IconDirectionRight1, IconUser } from '@/shared/assets/icons/line';
 import useApiError from '@/shared/hooks/useApiError';
-import useDebounce from '@/shared/hooks/useDebounce';
 import { useSidePanelStore } from '@/shared/store/sidePanel/sidePanel';
 import useUserStore from '@/shared/store/user/user';
 import { theme } from '@/shared/styles/theme';
@@ -34,13 +34,7 @@ import PageTitle from '@/shared/ui/title/PageTitle';
 import { formatDateToDot } from '@/shared/utils/date';
 import { Client } from '@stomp/stompjs';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import BulletList from '@tiptap/extension-bullet-list';
-import ListItem from '@tiptap/extension-list-item';
-import Placeholder from '@tiptap/extension-placeholder';
-import { useEditor } from '@tiptap/react';
-import StarterKit from '@tiptap/starter-kit';
-import { useEffect, useRef, useState } from 'react';
-import styled from 'styled-components';
+import { useEffect } from 'react';
 import ProblemCategorySelect from './ProblemCategorySelect';
 import SkeletonSidePanelContent from './SkeletonSidePanelContent';
 
@@ -57,10 +51,6 @@ const KeepSidePanelContent = ({ retroId, problemId, client }: KeepSidePanelConte
   const close = useSidePanelStore((state) => state.close);
 
   const queryClient = useQueryClient();
-  const [currentTitle, setCurrentTitle] = useState('');
-  const [currentContent, setCurrentContent] = useState('');
-  const [isInitialized, setIsInitialized] = useState(false);
-  const [isEdit, setIsEdit] = useState(false); // 현재 수정 중인지 여부
 
   const { data: teamInfo, isLoading: isTeamInfoLoading } = useTeamDetailQuery();
   const {
@@ -77,22 +67,17 @@ const KeepSidePanelContent = ({ retroId, problemId, client }: KeepSidePanelConte
   const isEditable = data?.createUserInfo.id === id || isAdmin;
   const categories = data?.roles || [];
 
-  const currentTitleRef = useRef('');
-  const currentContentRef = useRef('');
-
-  const debouncedTitle = useDebounce(currentTitle, 3000);
-  const debouncedContent = useDebounce(currentContent, 3000);
-
-  const editor = useEditor({
-    extensions: [
-      BulletList,
-      StarterKit,
-      ListItem,
-      Placeholder.configure({
-        placeholder: '본문을 작성해 주세요',
-      }),
-    ],
-    content: currentContent,
+  // Auto-save 훅: 제목/본문 및 에디터 상태 관리 + 디바운스 저장
+  const { editor, currentTitle, setCurrentTitle, triggerSave } = useRetroAutoSave({
+    initialTitle: data?.title ?? '',
+    initialContent: data?.content ?? '',
+    save: (title, content) =>
+      updateRetroProblemMutation
+        .mutateAsync({
+          title,
+          content,
+        })
+        .then(() => undefined),
   });
 
   const updateRetroProblemMutation = useMutation({
@@ -112,17 +97,6 @@ const KeepSidePanelContent = ({ retroId, problemId, client }: KeepSidePanelConte
   const deleteRetroProblemMutation = useMutation({
     mutationFn: (problemId: string | number) => deleteRetroProblem({ retroId, problemId }),
   });
-
-  const handleUpdateRetroProblem = async (title?: string, content?: string) => {
-    try {
-      await updateRetroProblemMutation.mutateAsync({
-        title: title ?? currentTitle,
-        content: content ?? currentContent,
-      });
-    } catch (error) {
-      handleError(error);
-    }
-  };
 
   const handleDeleteRetroProblem = async (problemId: string | number) => {
     try {
@@ -151,73 +125,6 @@ const KeepSidePanelContent = ({ retroId, problemId, client }: KeepSidePanelConte
   };
 
   useEffect(() => {
-    if (editor) {
-      editor.on('update', ({ editor }) => {
-        const newContent = editor.getHTML();
-        setCurrentContent(newContent);
-        currentContentRef.current = newContent;
-        setIsEdit(true);
-      });
-    }
-  }, [editor]);
-
-  useEffect(() => {
-    currentTitleRef.current = currentTitle;
-    if (currentTitle !== data?.title) {
-      setIsEdit(true);
-    }
-  }, [currentTitle]);
-
-  useEffect(() => {
-    currentContentRef.current = currentContent;
-  }, [currentContent]);
-
-  useEffect(() => {
-    if (data) {
-      setCurrentTitle(data.title);
-      setCurrentContent(data.content);
-      currentTitleRef.current = data.title;
-      currentContentRef.current = data.content;
-      setIsInitialized(true);
-      setIsEdit(false);
-
-      if (editor) {
-        if (data.content && data.content.trim() !== '') {
-          editor.commands.setContent(data.content);
-        }
-      }
-    }
-  }, [data, editor]);
-
-  useEffect(() => {
-    if (
-      isInitialized &&
-      isEdit &&
-      data &&
-      ((debouncedTitle !== data.title && debouncedTitle !== '') ||
-        (debouncedContent !== data.content && debouncedContent !== ''))
-    ) {
-      handleUpdateRetroProblem(debouncedTitle, debouncedContent);
-    }
-  }, [debouncedTitle, debouncedContent, isInitialized, data, isEdit]);
-
-  useEffect(() => {
-    return () => {
-      if (isInitialized) {
-        const finalTitle = currentTitleRef.current;
-        const finalContent = currentContentRef.current;
-
-        if (data && (finalTitle !== data.title || finalContent !== data.content) && (finalTitle || finalContent)) {
-          updateRetroProblemMutation.mutate({
-            title: finalTitle,
-            content: finalContent,
-          });
-        }
-      }
-    };
-  }, [isInitialized, retroId, problemId]);
-
-  useEffect(() => {
     if (client && client.connected && retroId) {
       const subscription = client.subscribe(`/user/topic/retrospectives/problems/${problemId}`, (message) => {
         const data = JSON.parse(message.body);
@@ -226,7 +133,6 @@ const KeepSidePanelContent = ({ retroId, problemId, client }: KeepSidePanelConte
           queryClient.refetchQueries({
             queryKey: retroQueries.readRetroProblemDetail({ retroId, problemId }).queryKey,
           });
-          setIsEdit(false);
         }
       });
 
@@ -278,6 +184,9 @@ const KeepSidePanelContent = ({ retroId, problemId, client }: KeepSidePanelConte
                 <PageTitle
                   title={currentTitle}
                   setTitle={isEditable ? setCurrentTitle : undefined}
+                  onBlur={() => {
+                    triggerSave(true);
+                  }}
                   placeholder={isEditable ? '제목을 작성해 주세요' : '새 카드'}
                 />
               </CardDetail.Title>

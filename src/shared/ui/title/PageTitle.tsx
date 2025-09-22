@@ -26,12 +26,11 @@ const PageTitle = ({
 }: PageTitleProps) => {
   const onKeyDown = useCallback(
     (e: React.KeyboardEvent<HTMLInputElement>) => {
-      if (e.key === 'Enter' && onEnterBlur && onBlur) {
-        onBlur?.();
+      if (e.key === 'Enter' && onEnterBlur && !e.nativeEvent.isComposing) {
         e.currentTarget.blur();
       }
     },
-    [onBlur, onEnterBlur],
+    [onEnterBlur],
   );
 
   return (
@@ -42,7 +41,7 @@ const PageTitle = ({
           type="text"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
-          onBlur={onBlur && onBlur}
+          onBlur={onBlur}
           onKeyDown={onKeyDown}
           placeholder={placeholder}
         />
