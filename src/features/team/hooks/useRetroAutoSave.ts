@@ -32,10 +32,9 @@ export function useRetroAutoSave(options: UseRetroAutoSaveOptions): UseRetroAuto
     placeholder = '본문을 작성해 주세요',
     debounceMs = DEFAULT_DEBOUNCE_MS,
   } = options;
-  console.log('initialTitle', initialTitle);
-  console.log('initialContent', initialContent);
 
   const [isInitialized, setIsInitialized] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
   const [currentTitle, setCurrentTitle] = useState('');
   const [currentContent, setCurrentContent] = useState('');
 
@@ -62,7 +61,12 @@ export function useRetroAutoSave(options: UseRetroAutoSaveOptions): UseRetroAuto
   });
 
   const handleSave = async (title: string, content: string): Promise<void> => {
-    await Promise.resolve(save(title, content)).then(() => undefined);
+    setIsSaving(true);
+    try {
+      await Promise.resolve(save(title, content)).then(() => undefined);
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   const triggerSave = (immediate = false) => {
@@ -76,7 +80,6 @@ export function useRetroAutoSave(options: UseRetroAutoSaveOptions): UseRetroAuto
     }
   };
 
-  // Update content on editor change
   useEffect(() => {
     if (!editor) return;
     editor.on('update', ({ editor }) => {
@@ -84,7 +87,6 @@ export function useRetroAutoSave(options: UseRetroAutoSaveOptions): UseRetroAuto
     });
   }, [editor]);
 
-  // Initialize state when inbound data changes
   useEffect(() => {
     setCurrentTitle(initialTitle ?? '');
     setCurrentContent(initialContent ?? '');
@@ -99,7 +101,6 @@ export function useRetroAutoSave(options: UseRetroAutoSaveOptions): UseRetroAuto
     }
   }, [initialTitle, initialContent, editor]);
 
-  // Debounced save on title/content changes
   useEffect(() => {
     currentTitleRef.current = currentTitle;
     currentContentRef.current = currentContent;
@@ -116,7 +117,7 @@ export function useRetroAutoSave(options: UseRetroAutoSaveOptions): UseRetroAuto
   useEffect(() => {
     return () => {
       if (saveTimer.current) clearTimeout(saveTimer.current);
-      if (!isInitialized) return;
+      if (!isInitialized || isSaving) return;
 
       const finalTitle = currentTitleRef.current;
       const finalContent = currentContentRef.current;

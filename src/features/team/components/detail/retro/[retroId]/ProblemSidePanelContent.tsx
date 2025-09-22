@@ -89,7 +89,7 @@ const ProblemSidePanelContent = ({ retroId, problemId, client }: ProblemSidePane
   const currentKanbanStatusRef = useRef(currentKanbanStatus);
   const currentCompletedAtRef = useRef(currentCompletedAt);
 
-  const { currentTitle, setCurrentTitle, editor } = useRetroAutoSave({
+  const { currentTitle, setCurrentTitle, editor, triggerSave } = useRetroAutoSave({
     initialTitle: data?.title ?? '',
     initialContent: data?.content ?? '',
     save: (title, content) =>
@@ -292,6 +292,9 @@ const ProblemSidePanelContent = ({ retroId, problemId, client }: ProblemSidePane
                 <PageTitle
                   title={currentTitle}
                   setTitle={isEditable ? setCurrentTitle : undefined}
+                  onBlur={() => {
+                    triggerSave(true);
+                  }}
                   placeholder={isEditable ? '제목을 작성해 주세요' : '새 카드'}
                 />
               </CardDetail.Title>

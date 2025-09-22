@@ -55,7 +55,7 @@ const SolutionSidePanelContent = ({ retroId, problemId, solutionId, client }: So
   const isEditable = data?.createUserInfo.id === id || isAdmin;
   const isLoading = isTeamInfoLoading || isSolutionDetailLoading;
 
-  const { editor, currentTitle, setCurrentTitle } = useRetroAutoSave({
+  const { editor, currentTitle, setCurrentTitle, triggerSave } = useRetroAutoSave({
     initialTitle: data?.title ?? '',
     initialContent: data?.content ?? '',
     save: (title, content) =>
@@ -135,6 +135,9 @@ const SolutionSidePanelContent = ({ retroId, problemId, solutionId, client }: So
                 <PageTitle
                   title={currentTitle}
                   setTitle={isEditable ? setCurrentTitle : undefined}
+                  onBlur={() => {
+                    triggerSave(true);
+                  }}
                   placeholder={isEditable ? '제목을 작성해 주세요' : '새 카드'}
                 />
               </CardDetail.Title>

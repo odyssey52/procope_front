@@ -26,12 +26,12 @@ const PageTitle = ({
 }: PageTitleProps) => {
   const onKeyDown = useCallback(
     (e: React.KeyboardEvent<HTMLInputElement>) => {
-      if (e.key === 'Enter' && onEnterBlur && onBlur) {
-        onBlur?.();
+      if (e.key === 'Enter' && onEnterBlur) {
         e.currentTarget.blur();
+        e.preventDefault();
       }
     },
-    [onBlur, onEnterBlur],
+    [onEnterBlur],
   );
 
   return (

@@ -68,7 +68,7 @@ const KeepSidePanelContent = ({ retroId, problemId, client }: KeepSidePanelConte
   const categories = data?.roles || [];
 
   // Auto-save 훅: 제목/본문 및 에디터 상태 관리 + 디바운스 저장
-  const { editor, currentTitle, setCurrentTitle } = useRetroAutoSave({
+  const { editor, currentTitle, setCurrentTitle, triggerSave } = useRetroAutoSave({
     initialTitle: data?.title ?? '',
     initialContent: data?.content ?? '',
     save: (title, content) =>
@@ -184,6 +184,9 @@ const KeepSidePanelContent = ({ retroId, problemId, client }: KeepSidePanelConte
                 <PageTitle
                   title={currentTitle}
                   setTitle={isEditable ? setCurrentTitle : undefined}
+                  onBlur={() => {
+                    triggerSave(true);
+                  }}
                   placeholder={isEditable ? '제목을 작성해 주세요' : '새 카드'}
                 />
               </CardDetail.Title>
