@@ -1,6 +1,7 @@
 'use client';
 
 import { useTeamDetailQuery } from '@/features/team/hooks/useTeamDetailQuery';
+import useRetroAutoSave from '@/features/team/hooks/useRetroAutoSave';
 import retroQueries from '@/features/team/query/retroQueries';
 import {
   createRetroProblemRole,
@@ -45,13 +46,7 @@ import PageTitle from '@/shared/ui/title/PageTitle';
 import { formatDateToDot, formatDotToISO } from '@/shared/utils/date';
 import { Client } from '@stomp/stompjs';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import BulletList from '@tiptap/extension-bullet-list';
-import ListItem from '@tiptap/extension-list-item';
-import Placeholder from '@tiptap/extension-placeholder';
-import { useEditor } from '@tiptap/react';
-import StarterKit from '@tiptap/starter-kit';
 import { useEffect, useRef, useState } from 'react';
-import styled from 'styled-components';
 import CalendarArea from './CalendarArea';
 import ProblemCategorySelect from './ProblemCategorySelect';
 import ProblemStatusSelect from './ProblemStatusSelect';
@@ -88,27 +83,22 @@ const ProblemSidePanelContent = ({ retroId, problemId, client }: ProblemSidePane
   const isLoading = isTeamInfoLoading || isProblemDetailLoading;
 
   const [isInitialized, setIsInitialized] = useState(false);
-  const [currentTitle, setCurrentTitle] = useState('');
-  const [currentContent, setCurrentContent] = useState('');
   const [currentKanbanStatus, setCurrentKanbanStatus] = useState<ProblemKanbanStatus>('RCG');
   const [currentCompletedAt, setCurrentCompletedAt] = useState('');
 
-  const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const currentTitleRef = useRef(currentTitle);
-  const currentContentRef = useRef(currentContent);
   const currentKanbanStatusRef = useRef(currentKanbanStatus);
   const currentCompletedAtRef = useRef(currentCompletedAt);
 
-  const editor = useEditor({
-    extensions: [
-      BulletList,
-      StarterKit,
-      ListItem,
-      Placeholder.configure({
-        placeholder: '본문을 작성해 주세요',
-      }),
-    ],
-    content: currentContent,
+  const { currentTitle, setCurrentTitle, editor } = useRetroAutoSave({
+    initialTitle: data?.title ?? '',
+    initialContent: data?.content ?? '',
+    save: (title, content) =>
+      updateRetroProblemMutation
+        .mutateAsync({
+          title,
+          content,
+        })
+        .then(() => undefined),
   });
 
   const updateRetroProblemMutation = useMutation({
@@ -203,46 +193,14 @@ const ProblemSidePanelContent = ({ retroId, problemId, client }: ProblemSidePane
     }
   };
 
-  const triggerSave = (immediate = false) => {
-    if (saveTimer.current) clearTimeout(saveTimer.current);
-    if (immediate) {
-      handleUpdateRetroProblem(currentTitle, currentContent);
-    } else {
-      saveTimer.current = setTimeout(() => {
-        handleUpdateRetroProblem(currentTitle, currentContent);
-      }, 3000);
-    }
-  };
-
-  useEffect(() => {
-    if (!editor) return;
-    editor.on('update', ({ editor }) => {
-      setCurrentContent(editor.getHTML());
-    });
-  }, [editor]);
+  // title/content 저장은 공용 훅에서 처리
 
   useEffect(() => {
     if (!data) return;
-    setCurrentTitle(data.title);
-    setCurrentContent(data.content);
     setCurrentKanbanStatus(data.kanbanStatus);
     setCurrentCompletedAt(data.completedAt);
     setIsInitialized(true);
-
-    if (editor && data.content?.trim()) {
-      editor.commands.setContent(data.content);
-    }
   }, [data, editor]);
-
-  useEffect(() => {
-    currentTitleRef.current = currentTitle;
-    currentContentRef.current = currentContent;
-    if (!isInitialized) return;
-    if (!data) return;
-    if (currentTitle !== data.title || currentContent !== data.content) {
-      triggerSave(false);
-    }
-  }, [currentTitle, currentContent]);
 
   useEffect(() => {
     currentKanbanStatusRef.current = currentKanbanStatus;
@@ -262,16 +220,7 @@ const ProblemSidePanelContent = ({ retroId, problemId, client }: ProblemSidePane
     }
   }, [currentCompletedAt]);
 
-  useEffect(() => {
-    return () => {
-      if (!isInitialized) return;
-      if (saveTimer.current) clearTimeout(saveTimer.current);
-
-      if (currentTitleRef.current !== data?.title || currentContentRef.current !== data?.content) {
-        handleUpdateRetroProblem(currentTitleRef.current, currentContentRef.current);
-      }
-    };
-  }, [isInitialized, data]);
+  // 언마운트 시 제목/본문 저장은 공용 훅이 처리
 
   useEffect(() => {
     if (client && client.connected && retroId) {
