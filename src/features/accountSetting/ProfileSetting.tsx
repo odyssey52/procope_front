@@ -3,6 +3,7 @@ import propertiesRolesQueries from '@/features/properties/query/roles/properties
 import { updateUserInfo } from '@/features/user/services/info/userInfoService';
 import { ReadUserInfoResponse } from '@/features/user/services/info/userInfoService.type';
 import { MESSAGES } from '@/shared/constants/messages';
+import useApiError from '@/shared/hooks/useApiError';
 import useAuthStore from '@/shared/store/auth/auth';
 import { toastActions } from '@/shared/store/modal/toast';
 import Avatar, { AvatarProps } from '@/shared/ui/avatar/Avatar';
@@ -33,6 +34,7 @@ interface AvatarState {
 const ProfileSetting = ({ data }: Props) => {
   const queryClient = useQueryClient();
   const { accessToken } = useAuthStore();
+  const { handleError } = useApiError();
   const [avatar, setAvatar] = useState<AvatarState>(() => ({
     type: data.userContext.picture ? 'profile' : 'initial',
     image: data.userContext.picture,
@@ -79,10 +81,7 @@ const ProfileSetting = ({ data }: Props) => {
         title: MESSAGES.ACCOUNT_SAVE_SUCCESS,
       });
     } catch (err) {
-      toastActions.open({
-        state: 'error',
-        title: MESSAGES.ACCOUNT_SAVE_ERROR,
-      });
+      handleError(err);
     }
   };
 
