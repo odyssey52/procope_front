@@ -1,9 +1,4 @@
-import {
-  AUTHORITY_TAG,
-  MEMBERLIST_TABLE_TITLE,
-  MEMBERLIST_TABLE_WIDTH,
-  SELECT_AUTHORITY_TAG,
-} from '@/features/team/const/member';
+import { AUTHORITY_TAG, MEMBERLIST_TABLE_TITLE, SELECT_AUTHORITY_TAG } from '@/features/team/const/member';
 import teamQueries from '@/features/team/query/teamQueries';
 import { updateTeamUser } from '@/features/team/services/teamService';
 import {
@@ -106,7 +101,7 @@ const MemberList = ({ teamUser, teamData }: MemberListProps) => {
     {
       key: 'name',
       title: MEMBERLIST_TABLE_TITLE[0],
-      width: `${MEMBERLIST_TABLE_WIDTH[0]}%`,
+      flex: '8.3',
       render: (item: TeamMember[number]) => (
         <Text variant="body_14_medium" color="secondary" ellipsis>
           {item.user.name}
@@ -116,7 +111,7 @@ const MemberList = ({ teamUser, teamData }: MemberListProps) => {
     {
       key: 'email',
       title: MEMBERLIST_TABLE_TITLE[1],
-      width: `${MEMBERLIST_TABLE_WIDTH[1]}%`,
+      flex: '19.3',
       render: (item: TeamMember[number]) => (
         <Text variant="body_14_medium" color="secondary" ellipsis>
           {item.user.email}
@@ -126,13 +121,13 @@ const MemberList = ({ teamUser, teamData }: MemberListProps) => {
     {
       key: 'job',
       title: MEMBERLIST_TABLE_TITLE[2],
-      width: `${MEMBERLIST_TABLE_WIDTH[2]}%`,
+      flex: '9.7',
       render: (item: TeamMember[number]) => roleInfoName(item.user.roleInfo.name),
     },
     {
       key: 'tasks',
       title: MEMBERLIST_TABLE_TITLE[3],
-      width: `${MEMBERLIST_TABLE_WIDTH[3]}%`,
+      flex: '23.6',
       render: (item: TeamMember[number]) => (
         <>
           {task(item.user.roleInfo.fields).map((ele, idx) => (
@@ -146,7 +141,7 @@ const MemberList = ({ teamUser, teamData }: MemberListProps) => {
     {
       key: 'createdAt',
       title: MEMBERLIST_TABLE_TITLE[4],
-      width: `${MEMBERLIST_TABLE_WIDTH[4]}%`,
+      flex: '11',
       sortable: true,
       icon: <IconSortArrow onClick={() => setTooltipIndex((prev) => (prev === 4 ? null : 4))} />,
       render: (item: TeamMember[number]) => (
@@ -158,7 +153,7 @@ const MemberList = ({ teamUser, teamData }: MemberListProps) => {
     {
       key: 'lastActiveAt',
       title: MEMBERLIST_TABLE_TITLE[5],
-      width: `${MEMBERLIST_TABLE_WIDTH[5]}%`,
+      flex: '11',
       sortable: true,
       icon: <IconSortArrow onClick={() => setTooltipIndex((prev) => (prev === 5 ? null : 5))} />,
       render: (item: TeamMember[number]) => (
@@ -170,7 +165,7 @@ const MemberList = ({ teamUser, teamData }: MemberListProps) => {
     {
       key: 'role',
       title: MEMBERLIST_TABLE_TITLE[6],
-      width: `${MEMBERLIST_TABLE_WIDTH[6]}%`,
+      flex: '17.4',
       minWidth: '150px',
       render: (item: TeamMember[number]) =>
         isAdmin && item.teamRole !== 'ADMIN' ? (
