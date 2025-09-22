@@ -8,12 +8,23 @@ interface PageTitleProps {
   title: string;
   setTitle?: (title: string) => void;
   onBlur?: () => void;
+  // 엔터 키 입력 시 onBlur 호출 여부, 기본값은 true
+  onEnterBlur?: boolean;
   placeholder?: string;
   description?: string;
   children?: React.ReactNode;
 }
 
-const PageTitle = ({ hasBack, title, setTitle, onBlur, placeholder, description, children }: PageTitleProps) => {
+const PageTitle = ({
+  hasBack,
+  title,
+  setTitle,
+  onBlur,
+  onEnterBlur,
+  placeholder,
+  description,
+  children,
+}: PageTitleProps) => {
   return (
     <Wrapper>
       {hasBack && <Back />}
@@ -23,6 +34,13 @@ const PageTitle = ({ hasBack, title, setTitle, onBlur, placeholder, description,
           value={title}
           onChange={(e) => setTitle(e.target.value)}
           onBlur={onBlur}
+          onKeyDown={(e) => {
+            // 블러 처리 이후 포커스 아웃 시키기
+            if (e.key === 'Enter' && onEnterBlur !== false) {
+              onBlur?.();
+              e.currentTarget.blur();
+            }
+          }}
           placeholder={placeholder}
         />
       )}
