@@ -34,17 +34,14 @@ export function useRetroAutoSave(options: UseRetroAutoSaveOptions): UseRetroAuto
   } = options;
 
   const [isInitialized, setIsInitialized] = useState(false);
-  const [isSaving, setIsSaving] = useState(false);
   const [currentTitle, setCurrentTitle] = useState('');
   const [currentContent, setCurrentContent] = useState('');
 
   const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  // Baseline (server) values for comparison
   const baselineTitleRef = useRef('');
   const baselineContentRef = useRef('');
 
-  // Current values refs for cleanup flush
   const currentTitleRef = useRef('');
   const currentContentRef = useRef('');
 
@@ -61,12 +58,7 @@ export function useRetroAutoSave(options: UseRetroAutoSaveOptions): UseRetroAuto
   });
 
   const handleSave = async (title: string, content: string): Promise<void> => {
-    setIsSaving(true);
-    try {
-      await Promise.resolve(save(title, content)).then(() => undefined);
-    } finally {
-      setIsSaving(false);
-    }
+    await Promise.resolve(save(title, content)).then(() => undefined);
   };
 
   const triggerSave = (immediate = false) => {
@@ -113,11 +105,10 @@ export function useRetroAutoSave(options: UseRetroAutoSaveOptions): UseRetroAuto
     }
   }, [currentTitle, currentContent, isInitialized]);
 
-  // Flush on unmount
   useEffect(() => {
     return () => {
       if (saveTimer.current) clearTimeout(saveTimer.current);
-      if (!isInitialized || isSaving) return;
+      if (!isInitialized) return;
 
       const finalTitle = currentTitleRef.current;
       const finalContent = currentContentRef.current;
