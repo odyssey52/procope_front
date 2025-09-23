@@ -32,6 +32,7 @@ const MoreArea = ({ size = 24, menuList, ...props }: MoreAreaProps) => {
 
 const Wrapper = styled.div<{ $isOpen: boolean }>`
   position: relative;
+  display: flex;
   cursor: pointer;
   ${({ $isOpen }) => $isOpen && zIndex.layer1};
 `;
