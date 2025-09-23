@@ -16,6 +16,13 @@ const PanelControl = styled.div`
   justify-content: space-between;
 `;
 
+const TopBar = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 24px 24px;
+`;
+
 const CloseButton = styled.button`
   display: flex;
   align-items: center;
@@ -23,14 +30,20 @@ const CloseButton = styled.button`
   cursor: pointer;
 `;
 
+const ContentWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 24px 0;
+`;
 const Content = styled.div`
   display: flex;
   flex-direction: column;
   gap: 24px;
-  padding: 24px 48px;
-  flex: 1 1 auto;
-  min-height: 0;
-  overflow-y: auto;
+  padding: 0 48px;
 `;
 
 const Header = styled.div`
@@ -77,8 +90,10 @@ const InfoItemContent = styled.div`
 const CardDetail = {
   PanelContainer,
   PanelControl,
+  TopBar,
   CloseButton,
   Content,
+  ContentWrapper,
   Header,
   Title,
   Info,

@@ -39,7 +39,6 @@ import Error from '@/shared/ui/error/Error';
 import Divider from '@/shared/ui/line/Divider';
 import ItemList from '@/shared/ui/select/ItemList';
 import CardDetail from '@/shared/ui/sidePanel/CardDetail';
-import SidePanelScaffold from '@/shared/ui/sidePanel/SidePanelScaffold';
 import Text from '@/shared/ui/Text';
 import Tiptap from '@/shared/ui/tiptap/Tiptap';
 import PageTitle from '@/shared/ui/title/PageTitle';
@@ -262,110 +261,107 @@ const ProblemSidePanelContent = ({ retroId, problemId, client }: ProblemSidePane
 
   return (
     <CardDetail.PanelContainer>
+      <CardDetail.TopBar>
+        <CardDetail.CloseButton onClick={close}>
+          <IconDirectionRight1 />
+        </CardDetail.CloseButton>
+        {isEditable && (
+          <MoreArea
+            size={24}
+            menuList={
+              <ItemList
+                width="112px"
+                selectOptionList={[{ value: '삭제', label: '삭제' }]}
+                valueHandler={() => handleDeleteRetroProblem(problemId)}
+              />
+            }
+          />
+        )}
+      </CardDetail.TopBar>
       {isLoading && <SkeletonSidePanelContent />}
       {!isLoading && !isSuccess && <Error title="서버 에러" description="문제를 찾을 수 없습니다." />}
       {!isLoading && isSuccess && (
-        <SidePanelScaffold
-          title={
-            <CardDetail.CloseButton onClick={close}>
-              <IconDirectionRight1 />
-            </CardDetail.CloseButton>
-          }
-          actions={
-            isEditable ? (
-              <MoreArea
-                size={24}
-                menuList={
-                  <ItemList
-                    width="112px"
-                    selectOptionList={[{ value: '삭제', label: '삭제' }]}
-                    valueHandler={() => handleDeleteRetroProblem(problemId)}
-                  />
-                }
+        <>
+          <CardDetail.Header>
+            <CardDetail.Title>
+              <Checkbox label={`PBM-${data.problemId}`} id={`PBM-${data.problemId}`} onClick={() => {}} checked />
+              <PageTitle
+                title={currentTitle}
+                setTitle={isEditable ? setCurrentTitle : undefined}
+                onBlur={() => {
+                  triggerSave(true);
+                }}
+                placeholder={isEditable ? '제목을 작성해 주세요' : '새 카드'}
               />
-            ) : undefined
-          }
-          header={
-            <CardDetail.Header>
-              <CardDetail.Title>
-                <Checkbox label={`PBM-${data.problemId}`} id={`PBM-${data.problemId}`} onClick={() => {}} checked />
-                <PageTitle
-                  title={currentTitle}
-                  setTitle={isEditable ? setCurrentTitle : undefined}
-                  onBlur={() => {
-                    triggerSave(true);
-                  }}
-                  placeholder={isEditable ? '제목을 작성해 주세요' : '새 카드'}
-                />
-              </CardDetail.Title>
-              <CardDetail.Info>
+            </CardDetail.Title>
+            <CardDetail.Info>
+              <CardDetail.InfoItem>
+                <CardDetail.InfoItemTitle>
+                  <IconLoading size={20} color={theme.sementicColors.icon.disabled} />
+                  진행상태
+                </CardDetail.InfoItemTitle>
+                <ProblemStatusSelect status={currentKanbanStatus} onChange={handleChangeKanbanStatus} />
+              </CardDetail.InfoItem>
+              <CardDetail.InfoItem>
+                <CardDetail.InfoItemTitle>
+                  <IconApps size={20} color={theme.sementicColors.icon.disabled} />
+                  카테고리
+                </CardDetail.InfoItemTitle>
+                <ProblemCategorySelect roles={categories} onToggle={handleToggleRetroProblemRole} />
+              </CardDetail.InfoItem>
+              <CardDetail.InfoItem>
+                <CardDetail.InfoItemTitle>
+                  <IconUser size={20} color={theme.sementicColors.icon.disabled} />
+                  만든사람
+                </CardDetail.InfoItemTitle>
+                <CardDetail.InfoItemContent>
+                  <TextButton
+                    $type="24"
+                    leftIcon={<Avatar size={24} image={data.createUserInfo.profileImageUrl} />}
+                    $clickable={false}
+                  >
+                    {data.createUserInfo.name}
+                  </TextButton>
+                </CardDetail.InfoItemContent>
+              </CardDetail.InfoItem>
+              <CardDetail.InfoItem>
+                <CardDetail.InfoItemTitle>
+                  <IconClockCircle size={20} color={theme.sementicColors.icon.disabled} />
+                  업데이트 날짜
+                </CardDetail.InfoItemTitle>
+                <CardDetail.InfoItemContent>
+                  <Text variant="body_16_medium" color="tertiary">
+                    {formatDateToDot(data.updatedAt)}
+                  </Text>
+                </CardDetail.InfoItemContent>
+              </CardDetail.InfoItem>
+              {currentKanbanStatus === 'OK' && (
                 <CardDetail.InfoItem>
                   <CardDetail.InfoItemTitle>
-                    <IconLoading size={20} color={theme.sementicColors.icon.disabled} />
-                    진행상태
+                    <IconFlag size={20} color={theme.sementicColors.icon.disabled} />
+                    개선완료 날짜
                   </CardDetail.InfoItemTitle>
-                  <ProblemStatusSelect status={currentKanbanStatus} onChange={handleChangeKanbanStatus} />
+                  <CalendarArea
+                    selectedDate={formatDateToDot(currentCompletedAt)}
+                    onChange={(date) => handleChangeCompletedAt(formatDotToISO(date))}
+                  />
                 </CardDetail.InfoItem>
-                <CardDetail.InfoItem>
-                  <CardDetail.InfoItemTitle>
-                    <IconApps size={20} color={theme.sementicColors.icon.disabled} />
-                    카테고리
-                  </CardDetail.InfoItemTitle>
-                  <ProblemCategorySelect roles={categories} onToggle={handleToggleRetroProblemRole} />
-                </CardDetail.InfoItem>
-                <CardDetail.InfoItem>
-                  <CardDetail.InfoItemTitle>
-                    <IconUser size={20} color={theme.sementicColors.icon.disabled} />
-                    만든사람
-                  </CardDetail.InfoItemTitle>
-                  <CardDetail.InfoItemContent>
-                    <TextButton
-                      $type="24"
-                      leftIcon={<Avatar size={24} image={data.createUserInfo.profileImageUrl} />}
-                      $clickable={false}
-                    >
-                      {data.createUserInfo.name}
-                    </TextButton>
-                  </CardDetail.InfoItemContent>
-                </CardDetail.InfoItem>
-                <CardDetail.InfoItem>
-                  <CardDetail.InfoItemTitle>
-                    <IconClockCircle size={20} color={theme.sementicColors.icon.disabled} />
-                    업데이트 날짜
-                  </CardDetail.InfoItemTitle>
-                  <CardDetail.InfoItemContent>
-                    <Text variant="body_16_medium" color="tertiary">
-                      {formatDateToDot(data.updatedAt)}
-                    </Text>
-                  </CardDetail.InfoItemContent>
-                </CardDetail.InfoItem>
-                {currentKanbanStatus === 'OK' && (
-                  <CardDetail.InfoItem>
-                    <CardDetail.InfoItemTitle>
-                      <IconFlag size={20} color={theme.sementicColors.icon.disabled} />
-                      개선완료 날짜
-                    </CardDetail.InfoItemTitle>
-                    <CalendarArea
-                      selectedDate={formatDateToDot(currentCompletedAt)}
-                      onChange={(date) => handleChangeCompletedAt(formatDotToISO(date))}
-                    />
-                  </CardDetail.InfoItem>
-                )}
-              </CardDetail.Info>
+              )}
+            </CardDetail.Info>
+            <Divider />
+          </CardDetail.Header>
+          <CardDetail.ContentWrapper>
+            <SolutionWrapper retroId={retroId} problemId={problemId} client={client} />
+            <CardDetail.Content>
               <Divider />
-            </CardDetail.Header>
-          }
-        >
-          <SolutionWrapper retroId={retroId} problemId={problemId} client={client} />
-          <Divider />
-          {editor && <Tiptap editor={editor} editable={isEditable} />}
-        </SidePanelScaffold>
+              {editor && <Tiptap editor={editor} editable={isEditable} />}
+            </CardDetail.Content>
+          </CardDetail.ContentWrapper>
+        </>
       )}
     </CardDetail.PanelContainer>
   );
 };
-
-// Content 영역은 SidePanelScaffold가 제공하므로 별도 스타일 불필요
 
 ProblemSidePanelContent.displayName = 'ProblemSidePanelContent';
 

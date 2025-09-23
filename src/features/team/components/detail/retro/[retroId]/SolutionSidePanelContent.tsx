@@ -18,7 +18,6 @@ import Error from '@/shared/ui/error/Error';
 import Divider from '@/shared/ui/line/Divider';
 import ItemList from '@/shared/ui/select/ItemList';
 import CardDetail from '@/shared/ui/sidePanel/CardDetail';
-import SidePanelScaffold from '@/shared/ui/sidePanel/SidePanelScaffold';
 import Text from '@/shared/ui/Text';
 import Tiptap from '@/shared/ui/tiptap/Tiptap';
 import PageTitle from '@/shared/ui/title/PageTitle';
@@ -105,76 +104,73 @@ const SolutionSidePanelContent = ({ retroId, problemId, solutionId, client }: So
   }, [client, retroId, queryClient]);
   return (
     <CardDetail.PanelContainer>
+      <CardDetail.TopBar>
+        <CardDetail.CloseButton onClick={close}>
+          <IconDirectionRight1 />
+        </CardDetail.CloseButton>
+        {isEditable && (
+          <MoreArea
+            size={24}
+            menuList={
+              <ItemList
+                width="112px"
+                selectOptionList={[{ value: '삭제', label: '삭제' }]}
+                valueHandler={() => handleDeleteRetroSolution(solutionId)}
+              />
+            }
+          />
+        )}
+      </CardDetail.TopBar>
       {isLoading && <SkeletonSidePanelContent />}
       {!isLoading && !isSuccess && <Error title="서버 에러" description="개선 방안을 찾을 수 없습니다." />}
       {!isLoading && isSuccess && (
-        <SidePanelScaffold
-          title={
-            <CardDetail.CloseButton onClick={close}>
-              <IconDirectionRight1 />
-            </CardDetail.CloseButton>
-          }
-          actions={
-            isEditable ? (
-              <MoreArea
-                size={24}
-                menuList={
-                  <ItemList
-                    width="112px"
-                    selectOptionList={[{ value: '삭제', label: '삭제' }]}
-                    valueHandler={() => handleDeleteRetroSolution(solutionId)}
-                  />
-                }
+        <>
+          <CardDetail.Header>
+            <CardDetail.Title>
+              <Checkbox label={`SOL-${data.solutionId}`} id={`SOL-${data.solutionId}`} onClick={() => {}} checked />
+              <PageTitle
+                title={currentTitle}
+                setTitle={isEditable ? setCurrentTitle : undefined}
+                onBlur={() => {
+                  triggerSave(true);
+                }}
+                placeholder={isEditable ? '제목을 작성해 주세요' : '새 카드'}
               />
-            ) : undefined
-          }
-          header={
-            <CardDetail.Header>
-              <CardDetail.Title>
-                <Checkbox label={`SOL-${data.solutionId}`} id={`SOL-${data.solutionId}`} onClick={() => {}} checked />
-                <PageTitle
-                  title={currentTitle}
-                  setTitle={isEditable ? setCurrentTitle : undefined}
-                  onBlur={() => {
-                    triggerSave(true);
-                  }}
-                  placeholder={isEditable ? '제목을 작성해 주세요' : '새 카드'}
-                />
-              </CardDetail.Title>
-              <CardDetail.Info>
-                <CardDetail.InfoItem>
-                  <CardDetail.InfoItemTitle>
-                    <IconUser size={20} color={theme.sementicColors.icon.disabled} />
-                    만든사람
-                  </CardDetail.InfoItemTitle>
-                  <CardDetail.InfoItemContent>
-                    <TextButton
-                      $type="24"
-                      leftIcon={<Avatar size={24} image={data.createUserInfo.profileImageUrl} />}
-                      $clickable={false}
-                    >
-                      {data.createUserInfo.name}
-                    </TextButton>
-                  </CardDetail.InfoItemContent>
-                </CardDetail.InfoItem>
-                <CardDetail.InfoItem>
-                  <CardDetail.InfoItemTitle>
-                    <IconLoading size={20} color={theme.sementicColors.icon.disabled} />
-                    업데이트 날짜
-                  </CardDetail.InfoItemTitle>
-                  <CardDetail.InfoItemContent>
-                    <Text variant="body_16_medium" color="tertiary">
-                      {formatDateToDot(data.updatedAt)}
-                    </Text>
-                  </CardDetail.InfoItemContent>
-                </CardDetail.InfoItem>
-              </CardDetail.Info>
-              <Divider />
-            </CardDetail.Header>
-          }
-        >
-          {editor && <Tiptap editor={editor} editable={isEditable} />}
-        </SidePanelScaffold>
+            </CardDetail.Title>
+            <CardDetail.Info>
+              <CardDetail.InfoItem>
+                <CardDetail.InfoItemTitle>
+                  <IconUser size={20} color={theme.sementicColors.icon.disabled} />
+                  만든사람
+                </CardDetail.InfoItemTitle>
+                <CardDetail.InfoItemContent>
+                  <TextButton
+                    $type="24"
+                    leftIcon={<Avatar size={24} image={data.createUserInfo.profileImageUrl} />}
+                    $clickable={false}
+                  >
+                    {data.createUserInfo.name}
+                  </TextButton>
+                </CardDetail.InfoItemContent>
+              </CardDetail.InfoItem>
+              <CardDetail.InfoItem>
+                <CardDetail.InfoItemTitle>
+                  <IconLoading size={20} color={theme.sementicColors.icon.disabled} />
+                  업데이트 날짜
+                </CardDetail.InfoItemTitle>
+                <CardDetail.InfoItemContent>
+                  <Text variant="body_16_medium" color="tertiary">
+                    {formatDateToDot(data.updatedAt)}
+                  </Text>
+                </CardDetail.InfoItemContent>
+              </CardDetail.InfoItem>
+            </CardDetail.Info>
+            <Divider />
+          </CardDetail.Header>
+          <CardDetail.ContentWrapper>
+            <CardDetail.Content>{editor && <Tiptap editor={editor} editable={isEditable} />}</CardDetail.Content>
+          </CardDetail.ContentWrapper>
+        </>
       )}
     </CardDetail.PanelContainer>
   );

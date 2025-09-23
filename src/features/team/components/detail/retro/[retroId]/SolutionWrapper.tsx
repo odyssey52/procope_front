@@ -114,6 +114,8 @@ const Wrapper = styled.div`
 const Head = styled.div`
   display: flex;
   justify-content: space-between;
+  margin: 0 24px;
+  padding: 0 24px;
 `;
 
 const Content = styled.div`
@@ -129,6 +131,7 @@ const CardList = styled.div`
   flex-grow: 1;
   width: 100%;
   gap: 16px;
+  padding: 0 48px;
   &::-webkit-scrollbar {
     display: none;
   }
