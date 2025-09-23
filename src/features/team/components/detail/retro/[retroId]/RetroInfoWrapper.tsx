@@ -39,7 +39,6 @@ const RetroInfoWrapper = ({ client, isConnected }: RetroInfoWrapperProps) => {
   const { data, isSuccess } = useSuspenseQuery({
     ...retroQueries.readRetro({ teamId: teamId as string, retroId: retroId as string }),
   });
-
   const [currentTitle, setCurrentTitle] = useState<string>('');
   const [selectedDate, setSelectedDate] = useState<string>('');
 

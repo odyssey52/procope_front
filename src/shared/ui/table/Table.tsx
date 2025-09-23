@@ -11,6 +11,7 @@ export interface TableColumn<T> {
   key: string;
   title?: string;
   width?: string;
+  flex?: string;
   minWidth?: string;
   maxWidth?: string;
   render?: (item: T, index: number) => ReactNode;
@@ -48,17 +49,27 @@ const Table = <T extends Record<string, any>>({
   return (
     <Wrapper>
       {caption && <caption>{caption}</caption>}
-      <colgroup>
-        {columns.map((column, index) => (
-          <col
-            key={`col-${index}`}
-            style={{
-              width: column.width || 'auto',
-              minWidth: column.minWidth || 'auto',
-              maxWidth: column.maxWidth || 'none',
-            }}
-          />
-        ))}
+      <colgroup style={{ width: '100%' }}>
+        {columns.map((column, index) => {
+          // flex 값이 있으면 백분율로 변환
+          let width = column.width || 'auto';
+          if (column.flex) {
+            const totalFlex = columns.reduce((sum, col) => sum + (parseInt(col.flex || '0', 10) || 0), 0);
+            const flexValue = parseInt(column.flex, 10) || 0;
+            width = totalFlex > 0 ? `${(flexValue / totalFlex) * 100}%` : 'auto';
+          }
+
+          return (
+            <col
+              key={`col-${index}`}
+              style={{
+                width,
+                minWidth: column.minWidth || 'auto',
+                maxWidth: column.maxWidth || 'none',
+              }}
+            />
+          );
+        })}
       </colgroup>
       <thead>
         <tr>
@@ -113,7 +124,7 @@ const Wrapper = styled.table`
   display: block;
   width: 100%;
   border-collapse: collapse;
-  table-layout: fixed;
+  table-layout: auto;
 
   caption {
     position: absolute;

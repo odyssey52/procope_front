@@ -1,5 +1,6 @@
 'use client';
 
+import useRetroAutoSave from '@/features/team/hooks/useRetroAutoSave';
 import { useTeamDetailQuery } from '@/features/team/hooks/useTeamDetailQuery';
 import retroQueries from '@/features/team/query/retroQueries';
 import { deleteRetroSolution, updateRetroSolution } from '@/features/team/services/retroService';
@@ -17,20 +18,13 @@ import Error from '@/shared/ui/error/Error';
 import Divider from '@/shared/ui/line/Divider';
 import ItemList from '@/shared/ui/select/ItemList';
 import CardDetail from '@/shared/ui/sidePanel/CardDetail';
-import SidePanelScaffold from '@/shared/ui/sidePanel/SidePanelScaffold';
 import Text from '@/shared/ui/Text';
 import Tiptap from '@/shared/ui/tiptap/Tiptap';
 import PageTitle from '@/shared/ui/title/PageTitle';
 import { formatDateToDot } from '@/shared/utils/date';
 import { Client } from '@stomp/stompjs';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import BulletList from '@tiptap/extension-bullet-list';
-import ListItem from '@tiptap/extension-list-item';
-import Placeholder from '@tiptap/extension-placeholder';
-import { useEditor } from '@tiptap/react';
-import StarterKit from '@tiptap/starter-kit';
-import { useEffect, useRef, useState } from 'react';
-import styled from 'styled-components';
+import { useEffect } from 'react';
 import SkeletonSidePanelContent from './SkeletonSidePanelContent';
 
 interface SolutionSidePanelContentProps {
@@ -60,24 +54,16 @@ const SolutionSidePanelContent = ({ retroId, problemId, solutionId, client }: So
   const isEditable = data?.createUserInfo.id === id || isAdmin;
   const isLoading = isTeamInfoLoading || isSolutionDetailLoading;
 
-  const [isInitialized, setIsInitialized] = useState(false);
-  const [currentTitle, setCurrentTitle] = useState('');
-  const [currentContent, setCurrentContent] = useState('');
-
-  const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const currentTitleRef = useRef(currentTitle);
-  const currentContentRef = useRef(currentContent);
-
-  const editor = useEditor({
-    extensions: [
-      BulletList,
-      StarterKit,
-      ListItem,
-      Placeholder.configure({
-        placeholder: '본문을 작성해 주세요',
-      }),
-    ],
-    content: currentContent,
+  const { editor, currentTitle, setCurrentTitle, triggerSave } = useRetroAutoSave({
+    initialTitle: data?.title ?? '',
+    initialContent: data?.content ?? '',
+    save: (title, content) =>
+      updateRetroSolutionMutation
+        .mutateAsync({
+          title,
+          content,
+        })
+        .then(() => undefined),
   });
 
   const updateRetroSolutionMutation = useMutation({
@@ -89,17 +75,6 @@ const SolutionSidePanelContent = ({ retroId, problemId, solutionId, client }: So
     mutationFn: (solutionId: string | number) => deleteRetroSolution({ retroId, problemId, solutionId }),
   });
 
-  const handleUpdateRetroSolution = async (title: string, content: string) => {
-    try {
-      await updateRetroSolutionMutation.mutateAsync({
-        title,
-        content,
-      });
-    } catch (error) {
-      handleError(error);
-    }
-  };
-
   const handleDeleteRetroSolution = async (solutionId: string | number) => {
     try {
       await deleteRetroSolutionMutation.mutateAsync(solutionId);
@@ -108,57 +83,6 @@ const SolutionSidePanelContent = ({ retroId, problemId, solutionId, client }: So
       handleError(error);
     }
   };
-
-  const triggerSave = (immediate = false) => {
-    if (saveTimer.current) clearTimeout(saveTimer.current);
-    if (immediate) {
-      handleUpdateRetroSolution(currentTitle, currentContent);
-    } else {
-      saveTimer.current = setTimeout(() => {
-        handleUpdateRetroSolution(currentTitle, currentContent);
-      }, 3000);
-    }
-  };
-
-  useEffect(() => {
-    if (!editor) return;
-    editor.on('update', ({ editor }) => {
-      setCurrentContent(editor.getHTML());
-    });
-  }, [editor]);
-
-  useEffect(() => {
-    if (data) {
-      setCurrentTitle(data.title);
-      setCurrentContent(data.content);
-      setIsInitialized(true);
-
-      if (editor && data.content?.trim()) {
-        editor.commands.setContent(data.content);
-      }
-    }
-  }, [data, editor]);
-
-  useEffect(() => {
-    currentTitleRef.current = currentTitle;
-    currentContentRef.current = currentContent;
-    if (!isInitialized) return;
-
-    if (data && (currentTitle !== data.title || currentContent !== data.content)) {
-      triggerSave(false);
-    }
-  }, [currentTitle, currentContent]);
-
-  useEffect(() => {
-    return () => {
-      if (!isInitialized) return;
-      if (saveTimer.current) clearTimeout(saveTimer.current);
-
-      if (data && (currentTitleRef.current !== data.title || currentContentRef.current !== data.content)) {
-        handleUpdateRetroSolution(currentTitleRef.current, currentContentRef.current);
-      }
-    };
-  }, [isInitialized, data]);
 
   useEffect(() => {
     if (client && client.connected && retroId) {
@@ -180,97 +104,77 @@ const SolutionSidePanelContent = ({ retroId, problemId, solutionId, client }: So
   }, [client, retroId, queryClient]);
   return (
     <CardDetail.PanelContainer>
+      <CardDetail.TopBar>
+        <CardDetail.CloseButton onClick={close}>
+          <IconDirectionRight1 />
+        </CardDetail.CloseButton>
+        {isEditable && (
+          <MoreArea
+            size={24}
+            menuList={
+              <ItemList
+                width="112px"
+                selectOptionList={[{ value: '삭제', label: '삭제' }]}
+                valueHandler={() => handleDeleteRetroSolution(solutionId)}
+              />
+            }
+          />
+        )}
+      </CardDetail.TopBar>
       {isLoading && <SkeletonSidePanelContent />}
       {!isLoading && !isSuccess && <Error title="서버 에러" description="개선 방안을 찾을 수 없습니다." />}
       {!isLoading && isSuccess && (
-        <SidePanelScaffold
-          title={
-            <CardDetail.CloseButton onClick={close}>
-              <IconDirectionRight1 />
-            </CardDetail.CloseButton>
-          }
-          actions={
-            isEditable ? (
-              <MoreArea
-                size={24}
-                menuList={
-                  <ItemList
-                    width="112px"
-                    selectOptionList={[{ value: '삭제', label: '삭제' }]}
-                    valueHandler={() => handleDeleteRetroSolution(solutionId)}
-                  />
-                }
+        <>
+          <CardDetail.Header>
+            <CardDetail.Title>
+              <Checkbox label={`SOL-${data.solutionId}`} id={`SOL-${data.solutionId}`} onClick={() => {}} checked />
+              <PageTitle
+                title={currentTitle}
+                setTitle={isEditable ? setCurrentTitle : undefined}
+                onBlur={() => {
+                  triggerSave(true);
+                }}
+                placeholder={isEditable ? '제목을 작성해 주세요' : '새 카드'}
               />
-            ) : undefined
-          }
-          header={
-            <CardDetail.Header>
-              <CardDetail.Title>
-                <Checkbox label={`SOL-${data.solutionId}`} id={`SOL-${data.solutionId}`} onClick={() => {}} checked />
-                <PageTitle
-                  title={currentTitle}
-                  setTitle={isEditable ? setCurrentTitle : undefined}
-                  placeholder={isEditable ? '제목을 작성해 주세요' : '새 카드'}
-                />
-              </CardDetail.Title>
-              <CardDetail.Info>
-                <CardDetail.InfoItem>
-                  <CardDetail.InfoItemTitle>
-                    <IconUser size={20} color={theme.sementicColors.icon.disabled} />
-                    만든사람
-                  </CardDetail.InfoItemTitle>
-                  <CardDetail.InfoItemContent>
-                    <TextButton
-                      $type="24"
-                      leftIcon={<Avatar size={24} image={data.createUserInfo.profileImageUrl} />}
-                      $clickable={false}
-                    >
-                      {data.createUserInfo.name}
-                    </TextButton>
-                  </CardDetail.InfoItemContent>
-                </CardDetail.InfoItem>
-                <CardDetail.InfoItem>
-                  <CardDetail.InfoItemTitle>
-                    <IconLoading size={20} color={theme.sementicColors.icon.disabled} />
-                    업데이트 날짜
-                  </CardDetail.InfoItemTitle>
-                  <CardDetail.InfoItemContent>
-                    <Text variant="body_16_medium" color="tertiary">
-                      {formatDateToDot(data.updatedAt)}
-                    </Text>
-                  </CardDetail.InfoItemContent>
-                </CardDetail.InfoItem>
-              </CardDetail.Info>
-              <Divider />
-            </CardDetail.Header>
-          }
-        >
-          {editor && <Tiptap editor={editor} editable={isEditable} />}
-        </SidePanelScaffold>
+            </CardDetail.Title>
+            <CardDetail.Info>
+              <CardDetail.InfoItem>
+                <CardDetail.InfoItemTitle>
+                  <IconUser size={20} color={theme.sementicColors.icon.disabled} />
+                  만든사람
+                </CardDetail.InfoItemTitle>
+                <CardDetail.InfoItemContent>
+                  <TextButton
+                    $type="24"
+                    leftIcon={<Avatar size={24} image={data.createUserInfo.profileImageUrl} />}
+                    $clickable={false}
+                  >
+                    {data.createUserInfo.name}
+                  </TextButton>
+                </CardDetail.InfoItemContent>
+              </CardDetail.InfoItem>
+              <CardDetail.InfoItem>
+                <CardDetail.InfoItemTitle>
+                  <IconLoading size={20} color={theme.sementicColors.icon.disabled} />
+                  업데이트 날짜
+                </CardDetail.InfoItemTitle>
+                <CardDetail.InfoItemContent>
+                  <Text variant="body_16_medium" color="tertiary">
+                    {formatDateToDot(data.updatedAt)}
+                  </Text>
+                </CardDetail.InfoItemContent>
+              </CardDetail.InfoItem>
+            </CardDetail.Info>
+            <Divider />
+          </CardDetail.Header>
+          <CardDetail.ContentWrapper>
+            <CardDetail.Content>{editor && <Tiptap editor={editor} editable={isEditable} />}</CardDetail.Content>
+          </CardDetail.ContentWrapper>
+        </>
       )}
     </CardDetail.PanelContainer>
   );
 };
-
-const PanelContainer = styled.div`
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  flex-grow: 1;
-  min-height: 0;
-`;
-
-// CardDetail.Header를 사용하므로 로컬 정의 제거
-
-// CardDetail.Title를 사용하므로 로컬 정의 제거
-
-// CardDetail.Info를 사용하므로 로컬 정의 제거
-
-// CardDetail.InfoItem를 사용하므로 로컬 정의 제거
-
-// CardDetail.InfoItemTitle를 사용하므로 로컬 정의 제거
-
-// CardDetail.InfoItemContent를 사용하므로 로컬 정의 제거
 
 SolutionSidePanelContent.displayName = 'SolutionSidePanelContent';
 

@@ -46,19 +46,21 @@ const TeamCard = ({ tag, name, description, members, teamId, selected }: TeamCar
     image: member.picture,
   }));
 
+  const onClick = () => {
+    router.push(`/team/${teamId}/dashboard`);
+  };
+
   return (
-    <Wrapper $selected={selected} onClick={() => router.push(`/team/${teamId}/dashboard`)}>
+    <Wrapper $selected={selected} onClick={onClick}>
       <TeamInfo>
         <Tag $style="transparent" $status={TAG_LIST[tag].status}>
           {TAG_LIST[tag].label}
         </Tag>
         <TextBox>
-          <Text variant="heading_18" color="primary" ellipsis lines={1}>
+          <Text variant="heading_18" color="primary" ellipsis>
             {name}
           </Text>
-          <Text variant="body_14_regular" color="secondary" ellipsis lines={2}>
-            {description}
-          </Text>
+          <Description>{description}</Description>
         </TextBox>
       </TeamInfo>
       <AvatarGroup profileList={mappedMembers} />
@@ -103,10 +105,20 @@ const TeamInfo = styled.div`
   gap: 12px;
 `;
 const TextBox = styled.div`
-  height: 46px;
   display: flex;
   flex-direction: column;
   gap: 8px;
+`;
+
+const Description = styled.div`
+  height: 40px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  ${({ theme }) => theme.fontStyle.body_14_regular};
+  color: ${({ theme }) => theme.sementicColors.text.secondary};
 `;
 
 TeamCard.displayName = 'TeamCard';

@@ -44,6 +44,11 @@ export default class HTTPProvider {
       async (error) => {
         // 토큰이 없거나 토큰 만료 코드
         if (error.response?.data?.code === 'AUTH009' || error.response?.data?.code === 'AUTH002') {
+          const originalConfig = error.config as AxiosRequestConfig & { _retry?: boolean };
+          // 재시도 요청에서도 동일 에러가 나면 무한 루프 방지를 위해 중단
+          if (originalConfig && originalConfig._retry) {
+            return Promise.reject(error);
+          }
           const authStore = useAuthStore.getState();
 
           // 이미 토큰 갱신 중이면 대기
@@ -54,8 +59,9 @@ export default class HTTPProvider {
                 const currentState = useAuthStore.getState();
                 if (!currentState.isRefreshing) {
                   // 토큰 갱신 완료, 새로운 토큰으로 재요청
-                  const newConfig = { ...error.config };
+                  const newConfig: any = { ...error.config };
                   newConfig.headers.Authorization = `Bearer ${currentState.accessToken}`;
+                  newConfig._retry = true;
                   resolve(this.client.request(newConfig));
                 } else {
                   // 아직 갱신 중, 100ms 후 다시 확인
@@ -81,8 +87,9 @@ export default class HTTPProvider {
             authStore.setAccessToken(newAccessToken);
             authStore.setRefreshing(false);
 
-            const newConfig = { ...error.config };
+            const newConfig: any = { ...error.config };
             newConfig.headers.Authorization = `Bearer ${newAccessToken}`;
+            newConfig._retry = true;
             return this.client.request(newConfig);
           } catch (refreshError) {
             // 추주 리프레시토큰 에러처리 후 사용될 코드
