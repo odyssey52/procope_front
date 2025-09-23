@@ -39,7 +39,6 @@ import Error from '@/shared/ui/error/Error';
 import Divider from '@/shared/ui/line/Divider';
 import ItemList from '@/shared/ui/select/ItemList';
 import CardDetail from '@/shared/ui/sidePanel/CardDetail';
-import SidePanelScaffold from '@/shared/ui/sidePanel/SidePanelScaffold';
 import Text from '@/shared/ui/Text';
 import Tiptap from '@/shared/ui/tiptap/Tiptap';
 import PageTitle from '@/shared/ui/title/PageTitle';
@@ -262,30 +261,27 @@ const ProblemSidePanelContent = ({ retroId, problemId, client }: ProblemSidePane
 
   return (
     <CardDetail.PanelContainer>
+      <CardDetail.TopBar>
+        <CardDetail.CloseButton onClick={close}>
+          <IconDirectionRight1 />
+        </CardDetail.CloseButton>
+        {isEditable && (
+          <MoreArea
+            size={24}
+            menuList={
+              <ItemList
+                width="112px"
+                selectOptionList={[{ value: '삭제', label: '삭제' }]}
+                valueHandler={() => handleDeleteRetroProblem(problemId)}
+              />
+            }
+          />
+        )}
+      </CardDetail.TopBar>
       {isLoading && <SkeletonSidePanelContent />}
       {!isLoading && !isSuccess && <Error title="서버 에러" description="문제를 찾을 수 없습니다." />}
       {!isLoading && isSuccess && (
-        <SidePanelScaffold
-          title={
-            <CardDetail.CloseButton onClick={close}>
-              <IconDirectionRight1 />
-            </CardDetail.CloseButton>
-          }
-          actions={
-            isEditable ? (
-              <MoreArea
-                size={24}
-                menuList={
-                  <ItemList
-                    width="112px"
-                    selectOptionList={[{ value: '삭제', label: '삭제' }]}
-                    valueHandler={() => handleDeleteRetroProblem(problemId)}
-                  />
-                }
-              />
-            ) : undefined
-          }
-        >
+        <>
           <CardDetail.Header>
             <CardDetail.Title>
               <Checkbox label={`PBM-${data.problemId}`} id={`PBM-${data.problemId}`} onClick={() => {}} checked />
@@ -354,7 +350,6 @@ const ProblemSidePanelContent = ({ retroId, problemId, client }: ProblemSidePane
             </CardDetail.Info>
             <Divider />
           </CardDetail.Header>
-
           <CardDetail.ContentWrapper>
             <SolutionWrapper retroId={retroId} problemId={problemId} client={client} />
             <CardDetail.Content>
@@ -362,13 +357,11 @@ const ProblemSidePanelContent = ({ retroId, problemId, client }: ProblemSidePane
               {editor && <Tiptap editor={editor} editable={isEditable} />}
             </CardDetail.Content>
           </CardDetail.ContentWrapper>
-        </SidePanelScaffold>
+        </>
       )}
     </CardDetail.PanelContainer>
   );
 };
-
-// Content 영역은 SidePanelScaffold가 제공하므로 별도 스타일 불필요
 
 ProblemSidePanelContent.displayName = 'ProblemSidePanelContent';
 

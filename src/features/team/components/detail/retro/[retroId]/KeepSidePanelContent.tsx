@@ -27,7 +27,6 @@ import Error from '@/shared/ui/error/Error';
 import Divider from '@/shared/ui/line/Divider';
 import ItemList from '@/shared/ui/select/ItemList';
 import CardDetail from '@/shared/ui/sidePanel/CardDetail';
-import SidePanelScaffold from '@/shared/ui/sidePanel/SidePanelScaffold';
 import Text from '@/shared/ui/Text';
 import Tiptap from '@/shared/ui/tiptap/Tiptap';
 import PageTitle from '@/shared/ui/title/PageTitle';
@@ -35,6 +34,7 @@ import { formatDateToDot } from '@/shared/utils/date';
 import { Client } from '@stomp/stompjs';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useEffect } from 'react';
+import styled from 'styled-components';
 import ProblemCategorySelect from './ProblemCategorySelect';
 import SkeletonSidePanelContent from './SkeletonSidePanelContent';
 
@@ -57,6 +57,7 @@ const KeepSidePanelContent = ({ retroId, problemId, client }: KeepSidePanelConte
     data,
     isLoading: isProblemDetailLoading,
     isSuccess,
+    isError,
   } = useQuery({
     ...retroQueries.readRetroProblemDetail({ retroId, problemId }),
   });
@@ -154,33 +155,30 @@ const KeepSidePanelContent = ({ retroId, problemId, client }: KeepSidePanelConte
 
   return (
     <CardDetail.PanelContainer>
-      {isLoading && <SkeletonSidePanelContent />}
-      {!isLoading && !isSuccess && <Error title="서버 에러" description="문제를 찾을 수 없습니다." />}
-      {!isLoading && isSuccess && (
-        <SidePanelScaffold
-          title={
-            <CardDetail.CloseButton onClick={close}>
-              <IconDirectionRight1 />
-            </CardDetail.CloseButton>
-          }
-          actions={
-            isEditable ? (
-              <MoreArea
-                size={24}
-                menuList={
-                  <ItemList
-                    width="112px"
-                    selectOptionList={[{ value: '삭제', label: '삭제' }]}
-                    valueHandler={() => handleDeleteRetroProblem(problemId)}
-                  />
-                }
+      <CardDetail.TopBar>
+        <CardDetail.CloseButton onClick={close}>
+          <IconDirectionRight1 />
+        </CardDetail.CloseButton>
+        {isEditable && (
+          <MoreArea
+            size={24}
+            menuList={
+              <ItemList
+                width="112px"
+                selectOptionList={[{ value: '삭제', label: '삭제' }]}
+                valueHandler={() => handleDeleteRetroProblem(problemId)}
               />
-            ) : undefined
-          }
-        >
+            }
+          />
+        )}
+      </CardDetail.TopBar>
+      {isLoading && <SkeletonSidePanelContent />}
+      {isError && !isLoading && <Error title="서버 에러" description="데이터를 불러오는 중 문제가 발생했습니다." />}
+      {!isLoading && isSuccess && (
+        <>
           <CardDetail.Header>
             <CardDetail.Title>
-              <Checkbox label={`KEP-${data.problemId}`} id={`KEP-${data.problemId}`} onClick={() => {}} checked />
+              <Checkbox label={`KEP-${data?.problemId}`} id={`KEP-${data?.problemId}`} onClick={() => {}} checked />
               <PageTitle
                 title={currentTitle}
                 setTitle={isEditable ? setCurrentTitle : undefined}
@@ -227,7 +225,7 @@ const KeepSidePanelContent = ({ retroId, problemId, client }: KeepSidePanelConte
           <CardDetail.ContentWrapper>
             <CardDetail.Content>{editor && <Tiptap editor={editor} editable={isEditable} />}</CardDetail.Content>
           </CardDetail.ContentWrapper>
-        </SidePanelScaffold>
+        </>
       )}
     </CardDetail.PanelContainer>
   );

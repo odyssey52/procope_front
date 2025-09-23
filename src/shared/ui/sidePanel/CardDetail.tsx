@@ -16,6 +16,13 @@ const PanelControl = styled.div`
   justify-content: space-between;
 `;
 
+const TopBar = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 24px 24px;
+`;
+
 const CloseButton = styled.button`
   display: flex;
   align-items: center;
@@ -83,6 +90,7 @@ const InfoItemContent = styled.div`
 const CardDetail = {
   PanelContainer,
   PanelControl,
+  TopBar,
   CloseButton,
   Content,
   ContentWrapper,
