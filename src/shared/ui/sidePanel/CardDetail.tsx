@@ -23,14 +23,20 @@ const CloseButton = styled.button`
   cursor: pointer;
 `;
 
+const ContentWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 24px 0;
+`;
 const Content = styled.div`
   display: flex;
   flex-direction: column;
   gap: 24px;
-  padding: 24px 48px;
-  flex: 1 1 auto;
-  min-height: 0;
-  overflow-y: auto;
+  padding: 0 48px;
 `;
 
 const Header = styled.div`
@@ -79,6 +85,7 @@ const CardDetail = {
   PanelControl,
   CloseButton,
   Content,
+  ContentWrapper,
   Header,
   Title,
   Info,

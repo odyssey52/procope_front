@@ -128,52 +128,52 @@ const SolutionSidePanelContent = ({ retroId, problemId, solutionId, client }: So
               />
             ) : undefined
           }
-          header={
-            <CardDetail.Header>
-              <CardDetail.Title>
-                <Checkbox label={`SOL-${data.solutionId}`} id={`SOL-${data.solutionId}`} onClick={() => {}} checked />
-                <PageTitle
-                  title={currentTitle}
-                  setTitle={isEditable ? setCurrentTitle : undefined}
-                  onBlur={() => {
-                    triggerSave(true);
-                  }}
-                  placeholder={isEditable ? '제목을 작성해 주세요' : '새 카드'}
-                />
-              </CardDetail.Title>
-              <CardDetail.Info>
-                <CardDetail.InfoItem>
-                  <CardDetail.InfoItemTitle>
-                    <IconUser size={20} color={theme.sementicColors.icon.disabled} />
-                    만든사람
-                  </CardDetail.InfoItemTitle>
-                  <CardDetail.InfoItemContent>
-                    <TextButton
-                      $type="24"
-                      leftIcon={<Avatar size={24} image={data.createUserInfo.profileImageUrl} />}
-                      $clickable={false}
-                    >
-                      {data.createUserInfo.name}
-                    </TextButton>
-                  </CardDetail.InfoItemContent>
-                </CardDetail.InfoItem>
-                <CardDetail.InfoItem>
-                  <CardDetail.InfoItemTitle>
-                    <IconLoading size={20} color={theme.sementicColors.icon.disabled} />
-                    업데이트 날짜
-                  </CardDetail.InfoItemTitle>
-                  <CardDetail.InfoItemContent>
-                    <Text variant="body_16_medium" color="tertiary">
-                      {formatDateToDot(data.updatedAt)}
-                    </Text>
-                  </CardDetail.InfoItemContent>
-                </CardDetail.InfoItem>
-              </CardDetail.Info>
-              <Divider />
-            </CardDetail.Header>
-          }
         >
-          {editor && <Tiptap editor={editor} editable={isEditable} />}
+          <CardDetail.Header>
+            <CardDetail.Title>
+              <Checkbox label={`SOL-${data.solutionId}`} id={`SOL-${data.solutionId}`} onClick={() => {}} checked />
+              <PageTitle
+                title={currentTitle}
+                setTitle={isEditable ? setCurrentTitle : undefined}
+                onBlur={() => {
+                  triggerSave(true);
+                }}
+                placeholder={isEditable ? '제목을 작성해 주세요' : '새 카드'}
+              />
+            </CardDetail.Title>
+            <CardDetail.Info>
+              <CardDetail.InfoItem>
+                <CardDetail.InfoItemTitle>
+                  <IconUser size={20} color={theme.sementicColors.icon.disabled} />
+                  만든사람
+                </CardDetail.InfoItemTitle>
+                <CardDetail.InfoItemContent>
+                  <TextButton
+                    $type="24"
+                    leftIcon={<Avatar size={24} image={data.createUserInfo.profileImageUrl} />}
+                    $clickable={false}
+                  >
+                    {data.createUserInfo.name}
+                  </TextButton>
+                </CardDetail.InfoItemContent>
+              </CardDetail.InfoItem>
+              <CardDetail.InfoItem>
+                <CardDetail.InfoItemTitle>
+                  <IconLoading size={20} color={theme.sementicColors.icon.disabled} />
+                  업데이트 날짜
+                </CardDetail.InfoItemTitle>
+                <CardDetail.InfoItemContent>
+                  <Text variant="body_16_medium" color="tertiary">
+                    {formatDateToDot(data.updatedAt)}
+                  </Text>
+                </CardDetail.InfoItemContent>
+              </CardDetail.InfoItem>
+            </CardDetail.Info>
+            <Divider />
+          </CardDetail.Header>
+          <CardDetail.ContentWrapper>
+            <CardDetail.Content>{editor && <Tiptap editor={editor} editable={isEditable} />}</CardDetail.Content>
+          </CardDetail.ContentWrapper>
         </SidePanelScaffold>
       )}
     </CardDetail.PanelContainer>

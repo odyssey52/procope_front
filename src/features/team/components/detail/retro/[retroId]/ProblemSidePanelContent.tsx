@@ -285,80 +285,83 @@ const ProblemSidePanelContent = ({ retroId, problemId, client }: ProblemSidePane
               />
             ) : undefined
           }
-          header={
-            <CardDetail.Header>
-              <CardDetail.Title>
-                <Checkbox label={`PBM-${data.problemId}`} id={`PBM-${data.problemId}`} onClick={() => {}} checked />
-                <PageTitle
-                  title={currentTitle}
-                  setTitle={isEditable ? setCurrentTitle : undefined}
-                  onBlur={() => {
-                    triggerSave(true);
-                  }}
-                  placeholder={isEditable ? '제목을 작성해 주세요' : '새 카드'}
-                />
-              </CardDetail.Title>
-              <CardDetail.Info>
-                <CardDetail.InfoItem>
-                  <CardDetail.InfoItemTitle>
-                    <IconLoading size={20} color={theme.sementicColors.icon.disabled} />
-                    진행상태
-                  </CardDetail.InfoItemTitle>
-                  <ProblemStatusSelect status={currentKanbanStatus} onChange={handleChangeKanbanStatus} />
-                </CardDetail.InfoItem>
-                <CardDetail.InfoItem>
-                  <CardDetail.InfoItemTitle>
-                    <IconApps size={20} color={theme.sementicColors.icon.disabled} />
-                    카테고리
-                  </CardDetail.InfoItemTitle>
-                  <ProblemCategorySelect roles={categories} onToggle={handleToggleRetroProblemRole} />
-                </CardDetail.InfoItem>
-                <CardDetail.InfoItem>
-                  <CardDetail.InfoItemTitle>
-                    <IconUser size={20} color={theme.sementicColors.icon.disabled} />
-                    만든사람
-                  </CardDetail.InfoItemTitle>
-                  <CardDetail.InfoItemContent>
-                    <TextButton
-                      $type="24"
-                      leftIcon={<Avatar size={24} image={data.createUserInfo.profileImageUrl} />}
-                      $clickable={false}
-                    >
-                      {data.createUserInfo.name}
-                    </TextButton>
-                  </CardDetail.InfoItemContent>
-                </CardDetail.InfoItem>
-                <CardDetail.InfoItem>
-                  <CardDetail.InfoItemTitle>
-                    <IconClockCircle size={20} color={theme.sementicColors.icon.disabled} />
-                    업데이트 날짜
-                  </CardDetail.InfoItemTitle>
-                  <CardDetail.InfoItemContent>
-                    <Text variant="body_16_medium" color="tertiary">
-                      {formatDateToDot(data.updatedAt)}
-                    </Text>
-                  </CardDetail.InfoItemContent>
-                </CardDetail.InfoItem>
-                {currentKanbanStatus === 'OK' && (
-                  <CardDetail.InfoItem>
-                    <CardDetail.InfoItemTitle>
-                      <IconFlag size={20} color={theme.sementicColors.icon.disabled} />
-                      개선완료 날짜
-                    </CardDetail.InfoItemTitle>
-                    <CalendarArea
-                      selectedDate={formatDateToDot(currentCompletedAt)}
-                      onChange={(date) => handleChangeCompletedAt(formatDotToISO(date))}
-                    />
-                  </CardDetail.InfoItem>
-                )}
-              </CardDetail.Info>
-              <Divider />
-            </CardDetail.Header>
-          }
         >
-          <SolutionWrapper retroId={retroId} problemId={problemId} client={client} />
-          <Divider />
-          {editor && <Tiptap editor={editor} editable={isEditable} />}
+          <CardDetail.Header>
+            <CardDetail.Title>
+              <Checkbox label={`PBM-${data.problemId}`} id={`PBM-${data.problemId}`} onClick={() => {}} checked />
+              <PageTitle
+                title={currentTitle}
+                setTitle={isEditable ? setCurrentTitle : undefined}
+                onBlur={() => {
+                  triggerSave(true);
+                }}
+                placeholder={isEditable ? '제목을 작성해 주세요' : '새 카드'}
+              />
+            </CardDetail.Title>
+            <CardDetail.Info>
+              <CardDetail.InfoItem>
+                <CardDetail.InfoItemTitle>
+                  <IconLoading size={20} color={theme.sementicColors.icon.disabled} />
+                  진행상태
+                </CardDetail.InfoItemTitle>
+                <ProblemStatusSelect status={currentKanbanStatus} onChange={handleChangeKanbanStatus} />
+              </CardDetail.InfoItem>
+              <CardDetail.InfoItem>
+                <CardDetail.InfoItemTitle>
+                  <IconApps size={20} color={theme.sementicColors.icon.disabled} />
+                  카테고리
+                </CardDetail.InfoItemTitle>
+                <ProblemCategorySelect roles={categories} onToggle={handleToggleRetroProblemRole} />
+              </CardDetail.InfoItem>
+              <CardDetail.InfoItem>
+                <CardDetail.InfoItemTitle>
+                  <IconUser size={20} color={theme.sementicColors.icon.disabled} />
+                  만든사람
+                </CardDetail.InfoItemTitle>
+                <CardDetail.InfoItemContent>
+                  <TextButton
+                    $type="24"
+                    leftIcon={<Avatar size={24} image={data.createUserInfo.profileImageUrl} />}
+                    $clickable={false}
+                  >
+                    {data.createUserInfo.name}
+                  </TextButton>
+                </CardDetail.InfoItemContent>
+              </CardDetail.InfoItem>
+              <CardDetail.InfoItem>
+                <CardDetail.InfoItemTitle>
+                  <IconClockCircle size={20} color={theme.sementicColors.icon.disabled} />
+                  업데이트 날짜
+                </CardDetail.InfoItemTitle>
+                <CardDetail.InfoItemContent>
+                  <Text variant="body_16_medium" color="tertiary">
+                    {formatDateToDot(data.updatedAt)}
+                  </Text>
+                </CardDetail.InfoItemContent>
+              </CardDetail.InfoItem>
+              {currentKanbanStatus === 'OK' && (
+                <CardDetail.InfoItem>
+                  <CardDetail.InfoItemTitle>
+                    <IconFlag size={20} color={theme.sementicColors.icon.disabled} />
+                    개선완료 날짜
+                  </CardDetail.InfoItemTitle>
+                  <CalendarArea
+                    selectedDate={formatDateToDot(currentCompletedAt)}
+                    onChange={(date) => handleChangeCompletedAt(formatDotToISO(date))}
+                  />
+                </CardDetail.InfoItem>
+              )}
+            </CardDetail.Info>
+            <Divider />
+          </CardDetail.Header>
+
+          <CardDetail.ContentWrapper>
+            <SolutionWrapper retroId={retroId} problemId={problemId} client={client} />
+            <CardDetail.Content>
+              <Divider />
+              {editor && <Tiptap editor={editor} editable={isEditable} />}
+            </CardDetail.Content>
+          </CardDetail.ContentWrapper>
         </SidePanelScaffold>
       )}
     </CardDetail.PanelContainer>
