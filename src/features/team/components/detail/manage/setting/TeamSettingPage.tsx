@@ -28,6 +28,7 @@ const Wrapper = styled.div`
   width: 100%;
   background-color: ${({ theme }) => theme.sementicColors.bg.tertiary};
   overflow-y: auto;
+  outline: none;
 `;
 
 TeamSettingPage.displayName = 'TeamSettingPage';
