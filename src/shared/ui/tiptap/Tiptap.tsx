@@ -73,6 +73,15 @@ const Wrapper = styled.div<{ $variant: keyof FontStyle; $color: keyof Colors['te
     strong {
       font-weight: bold;
     }
+    h1 {
+      ${({ theme }) => theme.fontStyle.heading_24};
+    }
+    h2 {
+      ${({ theme }) => theme.fontStyle.heading_20};
+    }
+    h3 {
+      ${({ theme }) => theme.fontStyle.heading_18};
+    }
 
     [data-id] {
       border: 3px solid #0d0d0d;
