@@ -39,6 +39,7 @@ const ContentWrapper = styled.div`
   overflow-y: auto;
   padding: 24px 0;
 `;
+
 const Content = styled.div`
   display: flex;
   flex-direction: column;
