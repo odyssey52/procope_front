@@ -14,11 +14,10 @@ const SubTab = ({ name, path }: SubTabType) => {
   const { pending } = useLinkStatus();
 
   const isPathSelected = pathname === path;
-
   const selected = isPathSelected || pending;
 
   return (
-    <Link href={path} passHref legacyBehavior>
+    <Link href={path}>
       <Wrapper $selected={selected}>
         <span>{name}</span>
       </Wrapper>
