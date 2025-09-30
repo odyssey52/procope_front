@@ -28,7 +28,6 @@ const SubTab = ({ name, path }: SubTabType) => {
 const Wrapper = styled.div<{ $selected?: boolean }>`
   position: relative;
   display: flex;
-  min-width: 268px;
   align-items: center;
   gap: 12px;
   padding: 12px 24px 12px 36px;
@@ -36,6 +35,7 @@ const Wrapper = styled.div<{ $selected?: boolean }>`
   color: ${({ theme, $selected }) =>
     $selected ? theme.sementicColors.text.brand : theme.sementicColors.text.disabled};
   cursor: pointer;
+  user-select: none;
   &:hover,
   &:active {
     color: ${({ theme }) => theme.sementicColors.text.brand};
