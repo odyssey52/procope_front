@@ -15,16 +15,12 @@ const TeamListArea = ({ teamName }: { teamName: string }) => {
   };
 
   return (
-    <Wrapper ref={ref}>
+    <div ref={ref}>
       <Tab2 name={teamName} onClick={handleDropdownClick} />
       {isOpen && <TeamListDropdown />}
-    </Wrapper>
+    </div>
   );
 };
-
-const Wrapper = styled.div`
-  position: relative;
-`;
 
 TeamListArea.displayName = 'TeamListArea';
 
