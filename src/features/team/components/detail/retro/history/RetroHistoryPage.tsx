@@ -1,14 +1,13 @@
 'use client';
 
 import retroQueries from '@/features/team/query/retroQueries';
-import { createRetro, deleteRetro } from '@/features/team/services/retroService';
-import { ReadRetroListItem } from '@/features/team/services/retroService.type';
+import { deleteRetro } from '@/features/team/services/retroService';
+import { RetroProblemListItem } from '@/features/team/services/retroService.type';
 import { IconSortArrow } from '@/shared/assets/icons/line';
 import useApiError from '@/shared/hooks/useApiError';
 import { confirmModalActions } from '@/shared/store/modal/confirmModal';
 import Avatar from '@/shared/ui/avatar/Avatar';
 import Breadcrumbs from '@/shared/ui/breadcrumbs/Breadcrumbs';
-import Button from '@/shared/ui/button/Button';
 import MoreArea from '@/shared/ui/button/MoreArea';
 import Empty from '@/shared/ui/empty/Empty';
 import ItemList from '@/shared/ui/select/ItemList';
@@ -24,10 +23,16 @@ import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
 import styled from 'styled-components';
 
-const EMPTY_TITLE = '등록된 회고록이 없습니다.';
+const EMPTY_TITLE = '등록된 회고 히스토리가 없습니다.';
 const EMPTY_DESCRIPTION = '회고록을 추가하여 회고를 진행해 주세요.';
 
-const renderTitle = (item: ReadRetroListItem, teamId: string) => (
+const renderType = (item: RetroProblemListItem) => (
+  <Text variant="body_14_medium" color="primary">
+    {item.kanbanStatus}-{item.problemId}
+  </Text>
+);
+
+const renderTitle = (item: RetroProblemListItem, teamId: string) => (
   <Link href={`/team/${teamId}/retro/${item.id}`} style={{ width: '100%' }}>
     <Text variant="body_14_medium" color="primary" ellipsis lines={1}>
       {item.title}
@@ -35,19 +40,13 @@ const renderTitle = (item: ReadRetroListItem, teamId: string) => (
   </Link>
 );
 
-const renderCreator = (item: ReadRetroListItem) => (
+const renderCreator = (item: RetroProblemListItem) => (
   <CreatorWrapper>
-    <Avatar nickname={item.createUserName} image={item.picture} />
+    <Avatar nickname={item.createUserInfo.name} image={item.createUserInfo.profileImageUrl} />
     <Text variant="body_14_regular" color="secondary" ellipsis>
-      {item.createUserName}
+      {item.createUserInfo.name}
     </Text>
   </CreatorWrapper>
-);
-
-const renderMembers = (item: ReadRetroListItem) => (
-  <Text variant="body_14_underline" color="primary">
-    {item.joinedUserIds.length}명
-  </Text>
 );
 
 const renderDate = (date: string) => (
@@ -56,21 +55,20 @@ const renderDate = (date: string) => (
   </Text>
 );
 
-const renderRetroDate = (item: ReadRetroListItem) => renderDate(item.retroDate);
+const renderRetroDate = (item: RetroProblemListItem) => renderDate(item.updatedAt);
 
-const renderUpdatedAt = (item: ReadRetroListItem) => renderDate(item.updatedAt);
+const renderUpdatedAt = (item: RetroProblemListItem) => renderDate(item.updatedAt);
 
-const RetroListPage = () => {
+const RetroHistoryPage = () => {
   const router = useRouter();
   const params = useParams();
   const teamId = params.teamId as string;
   const queryClient = useQueryClient();
   const { handleError } = useApiError();
+
   const { data, isError, isLoading } = useQuery({
     ...retroQueries.readRetroList({ teamId }),
   });
-
-  const createRetroMutation = useMutation({ mutationFn: createRetro });
 
   const deleteRetroMutation = useMutation({
     mutationFn: (retroId: string | number) => deleteRetro({ teamId, retroId }),
@@ -97,26 +95,19 @@ const RetroListPage = () => {
       clickable: false,
     },
     {
-      name: '회고 목록',
-      path: `/team/${teamId}/retro`,
+      name: '회고 히스토리',
+      path: `/team/${teamId}/retro/history`,
       clickable: true,
     },
   ];
 
-  const addRetro = async () => {
-    try {
-      const payload = {
-        title: '새 회고',
-        teamId: teamId as string,
-      };
-      const { retroId } = await createRetroMutation.mutateAsync(payload);
-      router.push(`/team/${teamId}/retro/${retroId}`);
-    } catch (err) {
-      handleError(err);
-    }
-  };
-
-  const columns: TableColumn<ReadRetroListItem>[] = [
+  const columns: TableColumn<RetroProblemListItem>[] = [
+    {
+      key: 'type',
+      title: '구분',
+      flex: '10',
+      render: (item) => renderType(item),
+    },
     {
       key: 'title',
       title: '제목',
@@ -130,13 +121,7 @@ const RetroListPage = () => {
       render: renderCreator,
     },
     {
-      key: 'memberCount',
-      title: '참여자',
-      flex: '8',
-      render: renderMembers,
-    },
-    {
-      key: 'retroDate',
+      key: 'createdAt',
       title: '회고 일자',
       flex: '11',
       sortable: true,
@@ -175,28 +160,22 @@ const RetroListPage = () => {
       <Head>
         <TitleBox>
           <Breadcrumbs paths={paths} />
-          {isLoading ? <TextSkeleton /> : <PageTitle title="회고 목록" />}
+          {isLoading ? <TextSkeleton /> : <PageTitle title="회고 히스토리" />}
         </TitleBox>
       </Head>
       <Content>
-        {isLoading ? (
-          <PageSubTitleSkeleton />
-        ) : (
-          <PageSubTitle first="총" point={`${data?.length || 0}`} last="개">
-            <Button onClick={addRetro}>추가</Button>
-          </PageSubTitle>
-        )}
-        <TableWrapper>
+        {isLoading ? <PageSubTitleSkeleton /> : <PageSubTitle first="총" point={`${data?.length || 0}`} last="개" />}
+        {/* <TableWrapper>
           <Table
             data={data}
             columns={columns}
             keyExtractor={(item) => item.title}
-            caption="회고 목록"
+            caption="회고 히스토리"
             isError={isError}
             isLoading={isLoading}
             emptyNode={<Empty title={EMPTY_TITLE} description={EMPTY_DESCRIPTION} onClick={addRetro} />}
           />
-        </TableWrapper>
+        </TableWrapper> */}
       </Content>
     </Wrapper>
   );
@@ -244,6 +223,6 @@ const TableWrapper = styled.div`
   overflow-y: visible;
 `;
 
-RetroListPage.displayName = 'RetroListPage';
+RetroHistoryPage.displayName = 'RetroHistoryPage';
 
-export default RetroListPage;
+export default RetroHistoryPage;

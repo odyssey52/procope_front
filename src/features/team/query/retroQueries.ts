@@ -45,7 +45,6 @@ const retroQueries = createQueryKeys('retro', {
     queryKey: [params.retroId],
     queryFn: () => readOnlineMemberList(params),
   }),
-
   readRetroProblemRole: (params: types.ReadRetroProblemRoleParams) => ({
     queryKey: [params.retroId, params.problemId],
     queryFn: () => readRetroProblemRole(params),

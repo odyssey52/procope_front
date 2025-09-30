@@ -1,9 +1,9 @@
 'use client';
 
-import Error from '@/shared/ui/error/Error';
+import RetroHistoryPage from '@/features/team/components/detail/retro/history/RetroHistoryPage';
 
 const page = () => {
-  return <Error title="준비 중" description="추후 업데이트 예정입니다." />;
+  return <RetroHistoryPage />;
 };
 
 page.displayName = 'page';
