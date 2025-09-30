@@ -7,14 +7,24 @@ export const TEAM_SIDE_NAV_TABS = (teamId: string) => [
     icon: <IconHome />,
   },
   {
-    name: '목표관리',
+    name: '목표 관리',
     path: `/team/${teamId}/goal`,
     icon: <IconInteractive />,
   },
   {
-    name: '회고관리',
+    name: '회고 관리',
     path: `/team/${teamId}/retro`,
     icon: <IconFile />,
+    subTabs: [
+      {
+        name: '회고 목록',
+        path: `/team/${teamId}/retro`,
+      },
+      {
+        name: '히스토리',
+        path: `/team/${teamId}/retro/history`,
+      },
+    ],
   },
   {
     name: '팀 관리',
@@ -26,7 +36,7 @@ export const TEAM_SIDE_NAV_TABS = (teamId: string) => [
         path: `/team/${teamId}/manage/setting`,
       },
       {
-        name: '참여관리',
+        name: '참여 관리',
         path: `/team/${teamId}/manage/member`,
       },
     ],

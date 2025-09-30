@@ -1,87 +1,111 @@
-# 프로코프(procope)
+<div align="center">
 
-애자일 팀 원픽 회고 관리 서비스 **프로코프**의 프론트엔드 코드 저장소입니다.
-<br/>
-<br/>
-<br/>
-<br/>
-
-## notice
+# Procope (프로코프)
 
 <br/>
 
-### [2024-12-10] React.js 19.0.0 stable upgrade
+[![Next.js](https://img.shields.io/badge/Next.js-15.5.4-black?logo=next.js)](https://nextjs.org/)
+[![React](https://img.shields.io/badge/React-19.0.0-blue?logo=react)](https://react.dev/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-4.9.5-blue?logo=typescript)](https://www.typescriptlang.org/)
+[![License](https://img.shields.io/badge/License-Proprietary-red)](./LICENSE)
 
-React 19 안정화 버전으로 업그레이드 진행되었습니다.
+[Website](https://dev.procope.kr/)
 
-<br/>
+</div>
 
-### [2024-10-29] React.js -> Next.js 로 마이그레이션됩니다.
-
-15.0.1v을 채용하였습니다.
-Next.js + styled-components 조합에서 빈번하게 발생하는 hydration error 에 대한 개선이 이루어졌습니다.
-기존 env 파일의 prefix가 next 표준에 따라 변경이 필요할 수 있습니다.
-
-<br/>
-<br/>
-
-## getting started
+## Introduction
 
 <br/>
 
-- 사전 준비
+**Procope(프로코프)** 는 애자일 프로세스 기반 팀의 스프린트 회고를 실시간 협업과 AI 코칭을 통해 더욱 효율적으로 진행할 수 있도록 지원하는 웹 서비스입니다.
 
-  - Next.js 15 버전은 node.js 18.18v 이상을 요구합니다.
-    - 18.18 이하일 경우 아래 명령어를 통해 설치합니다.<br/>`nvm install 18.18`
-      - nvm 이 설치돼 있지 않은 경우 아래 명령어를 통해 설치 후 터미널을 재실행합니다.<br/>`curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.5/install.sh | bash`
-    - 설치가 완료되면 아래 명령어로 버전을 변경합니다. <br/>`nvm use 18.18`
-      - prefix 관련 에러가 발생한다면 아래 명령어를 통해 설정을 제거합니다.<br/>`nvm use --delete-prefix v18.18`
+**Key Features**
 
-- `npm install`
-- `npm run dev`
-
-<br/>
-<br/>
-
-## tech stack
+- AI 기반 회고 코칭 및 피드백
+- 실시간 협업 및 통신
+- 대시보드를 통한 팀 성과 시각화
+- 목표 관리 및 추적
+- 회고 히스토리 관리
 
 <br/>
 
-- Next.js (15.0.4)
-- React (19.0.0)
+## Tech Stack
+
+**Core**
+
 - TypeScript
-- Tanstack-query
-- Zustand
-- Styled-components
+- Next.js 15+
+- React 19+
+
+**State Management**
+
+- TanStack Query v5+ (Server state)
+- Zustand (Client state)
+
+**UI & Interaction**
+
+- Styled Components
+- Framer Motion
+- Tiptap
+- Hello Pangea DnD
+
+**Communication**
+
+- STOMP.js (WebSocket)
+- Axios (HTTP)
 
 <br/>
-<br/>
 
-## directory structure
+## Getting Started
 
-<br/>
+### Prerequisites
 
-```css
-src
- ├── app
- │     ├── login
- │     ├── ...
- ├── components
- │     ├── common
- │     ├── layout
- │     └── pages
- ├── constants
- ├── hooks
- ├── lib
- ├── query
- │     ├── auth
- ├── services
- │     ├── api
- │     ├── auth
- ├── store
- │     └── modal
- ├── styles
- │     └── theme
- ├── type
- └── utils
+- Node.js 18.x or higher
+- npm or yarn
+
+### Installation
+
+```bash
+# Install dependencies
+npm install
+
+# Run development server
+npm run dev
+
+# Build for production
+npm run build
+
+# Run production server
+npm start
 ```
+
+Development server runs at [http://localhost:3000](http://localhost:3000)
+
+<br/>
+
+## License
+
+```
+Copyright (c) 2025 Procope Team. All rights reserved.
+```
+
+이 프로젝트는 독점 소프트웨어입니다. 무단 복제, 수정, 배포 또는 사용을 금지합니다.
+
+⚠️ 본 소스코드는 참고 및 학습 목적으로만 열람 가능합니다.
+
+자세한 내용은 [LICENSE](./LICENSE) 파일을 참조하세요.
+
+<br/>
+
+## Contact
+
+- Email: jkr123086@gmail.com
+- Website: https://dev.procope.kr/
+
+---
+
+<div align="center">
+
+Made with ❤️ by Procope Team
+
+</div>

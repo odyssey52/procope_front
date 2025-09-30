@@ -2,16 +2,11 @@
 
 import HeaderLayout from '@/features/layout/HeaderLayout';
 import { useTeamDetailQuery } from '@/features/team/hooks/useTeamDetailQuery';
-import { TEAM_SIDE_NAV_TABS } from '@/shared/constants/sideNavTab';
 import useTeamStore from '@/shared/store/team/team';
-import SideNav from '@/shared/ui/tab/SideNav';
-import { useParams } from 'next/navigation';
 import { ReactNode, useEffect } from 'react';
 import styled from 'styled-components';
 
-const layout = ({ children }: { children: ReactNode }) => {
-  const params = useParams();
-  const teamId = params.teamId as string;
+const layout = ({ children, sidenav }: { children: ReactNode; sidenav: ReactNode }) => {
   const { setTeamInfo, resetTeamInfo } = useTeamStore();
 
   const { data: teamData } = useTeamDetailQuery();
@@ -26,13 +21,12 @@ const layout = ({ children }: { children: ReactNode }) => {
   return (
     <HeaderLayout>
       <ContentWrapper>
-        <SideNav tabList={TEAM_SIDE_NAV_TABS(teamId)} />
+        <aside>{sidenav}</aside>
         <Content>{children}</Content>
       </ContentWrapper>
     </HeaderLayout>
   );
 };
-
 const ContentWrapper = styled.div`
   display: flex;
   flex-grow: 1;
