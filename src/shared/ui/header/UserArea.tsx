@@ -78,7 +78,7 @@ const UserArea = ({ userData }: UserAreaProps) => {
     },
   ];
   return (
-    <Wrapper ref={ref}>
+    <div ref={ref}>
       <Avatar
         type={userData.picture ? 'profile' : 'initial'}
         image={userData.picture}
@@ -102,20 +102,16 @@ const UserArea = ({ userData }: UserAreaProps) => {
             ))}
         </SettingOption>
       )}
-    </Wrapper>
+    </div>
   );
 };
-
-const Wrapper = styled.div`
-  position: relative;
-`;
 
 const SettingOption = styled.div`
   position: absolute;
   display: flex;
   flex-direction: column;
   gap: 8px;
-  top: calc(100% + 4px);
+  top: 57px;
   right: 24px;
   width: 240px;
   background-color: white;

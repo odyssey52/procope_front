@@ -1,34 +1,33 @@
 'use client';
 
-import { usePathname, useRouter } from 'next/navigation';
-import { MouseEvent } from 'react';
+import Link, { useLinkStatus } from 'next/link';
+import { usePathname } from 'next/navigation';
 import styled from 'styled-components';
 
 export interface SubTabType {
   name: string;
   path: string;
 }
+
 const SubTab = ({ name, path }: SubTabType) => {
   const pathname = usePathname();
-  const router = useRouter();
-  const selected = pathname === path;
+  const { pending } = useLinkStatus();
 
-  const onClick = (e: MouseEvent) => {
-    router.push(path);
-    e.stopPropagation();
-  };
+  const isPathSelected = pathname === path;
+  const selected = isPathSelected || pending;
 
   return (
-    <Wrapper $selected={selected} onClick={(e: MouseEvent) => onClick(e)}>
-      <span>{name}</span>
-    </Wrapper>
+    <Link href={path}>
+      <Wrapper $selected={selected}>
+        <span>{name}</span>
+      </Wrapper>
+    </Link>
   );
 };
 
 const Wrapper = styled.div<{ $selected?: boolean }>`
   position: relative;
   display: flex;
-  min-width: 268px;
   align-items: center;
   gap: 12px;
   padding: 12px 24px 12px 36px;
@@ -36,6 +35,7 @@ const Wrapper = styled.div<{ $selected?: boolean }>`
   color: ${({ theme, $selected }) =>
     $selected ? theme.sementicColors.text.brand : theme.sementicColors.text.disabled};
   cursor: pointer;
+  user-select: none;
   &:hover,
   &:active {
     color: ${({ theme }) => theme.sementicColors.text.brand};
