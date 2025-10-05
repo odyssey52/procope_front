@@ -190,9 +190,6 @@ const ProblemWrapper = ({ retroId, client }: ProblemWrapperProps) => {
     }
   };
 
-  // 캐시는 React Query가 관리하므로 별도 동기화 상태 불필요
-
-  // WebSocket 구독으로 실시간 동기화
   useEffect(() => {
     if (client && client.connected && retroId) {
       const kanbanStatuses: ProblemKanbanStatus[] = ['RCG', 'PRG', 'OK'];
@@ -202,7 +199,6 @@ const ProblemWrapper = ({ retroId, client }: ProblemWrapperProps) => {
         const subscription = client.subscribe(`/user/topic/retrospectives/${status}`, (message) => {
           const data = JSON.parse(message.body);
           if (data.code === 'UPDATE') {
-            // 즉시 리페칭해서 로컬 상태 업데이트
             queryClient.refetchQueries({
               queryKey: retroQueries.readRetroProblemList({ retroId, kanbanStatus: status }).queryKey,
             });
@@ -212,7 +208,6 @@ const ProblemWrapper = ({ retroId, client }: ProblemWrapperProps) => {
         subscriptions.push(subscription);
       });
 
-      // 구독 정리
       return () => {
         subscriptions.forEach((subscription) => subscription.unsubscribe());
       };
