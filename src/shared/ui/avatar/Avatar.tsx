@@ -106,7 +106,7 @@ const Wrapper = styled.div<AvatarStyledProps>`
     $image &&
     $type === 'profile' &&
     css`
-      background-color: transparent;
+      background-color: ${({ theme }) => theme.sementicColors.bg.inverse};
       background-image: url(${$image});
     `};
   ${({ $image, $nickname }) =>
