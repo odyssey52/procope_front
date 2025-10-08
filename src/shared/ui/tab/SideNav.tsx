@@ -1,8 +1,9 @@
 'use client';
 
+import { down } from '@/shared/styles/media';
 import styled from 'styled-components';
-import TabStep from './TabStep';
 import { TabType } from './Tab';
+import TabStep from './TabStep';
 
 interface SideNavProps {
   tabList: TabType[];
@@ -23,9 +24,9 @@ const Wrapper = styled.div`
   min-width: 296px;
   background-color: ${({ theme }) => theme.sementicColors.bg.inverse};
   border-right: 1px solid ${({ theme }) => theme.sementicColors.border.primary};
-  @media (max-width: 768px) {
+  ${down('md')`
     display: none;
-  }
+  `}
 `;
 
 SideNav.displayName = 'SideNav';

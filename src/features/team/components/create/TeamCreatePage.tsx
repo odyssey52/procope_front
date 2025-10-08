@@ -3,6 +3,7 @@
 import HeaderLayout from '@/features/layout/HeaderLayout';
 import { createTeam } from '@/features/team/services/teamService';
 import { IconDirectionLeft } from '@/shared/assets/icons/line';
+import { down } from '@/shared/styles/media';
 import { TeamType } from '@/shared/types/team';
 import Breadcrumbs from '@/shared/ui/breadcrumbs/Breadcrumbs';
 import Button from '@/shared/ui/button/Button';
@@ -98,7 +99,9 @@ const TeamCreatePage = () => {
       <Container>
         <Content>
           <Head>
-            <Breadcrumbs paths={PATH} />
+            <BreadCrumbsWrapper>
+              <Breadcrumbs paths={PATH} />
+            </BreadCrumbsWrapper>
             <ProgressBox>
               <ProgressBar rate={100 * (step / TOTAL_STEP)} />
               <Stepper>
@@ -142,6 +145,15 @@ const Content = styled.div`
   align-self: center;
   align-items: normal;
   max-width: 608px;
+  ${down('sm')`
+    margin-top: 5vh;
+  `}
+`;
+
+const BreadCrumbsWrapper = styled.div`
+  ${down('sm')`
+    display: none;
+  `}
 `;
 
 const Head = styled.div`
