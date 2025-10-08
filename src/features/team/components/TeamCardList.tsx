@@ -1,5 +1,6 @@
 import { ReadTeamListResponse } from '@/features/team/services/teamService.type';
 import TeamCard from '@/shared/ui/card/TeamCard';
+import { Grid } from '@/shared/ui/Grid';
 import styled from 'styled-components';
 
 export interface TeamCardListProps {
@@ -8,7 +9,7 @@ export interface TeamCardListProps {
 
 const TeamCardList = ({ teamList }: TeamCardListProps) => {
   return (
-    <Wrapper>
+    <Grid gap={24} cols={{ sm: 2, md: 3 }}>
       {teamList.map((team, index) => (
         <TeamCard
           key={index}
@@ -19,16 +20,11 @@ const TeamCardList = ({ teamList }: TeamCardListProps) => {
           teamId={team.teamId}
         />
       ))}
-    </Wrapper>
+    </Grid>
   );
 };
 
-const Wrapper = styled.div`
-  position: relative;
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 24px;
-`;
+const Wrapper = styled.div``;
 
 TeamCardList.displayName = 'TeamCardList';
 
