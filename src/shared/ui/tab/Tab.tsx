@@ -39,21 +39,36 @@ const Tab = ({ name, path, icon, subTabs, openTabPath, setOpenTab }: TabProps) =
     }
   };
 
-  const renderTab = () => {
-    return (
-      <TabWrapper $selected={selected} onClick={handleToggleClick}>
-        {icon}
-        <span>{name}</span>
-        {subTabs && (isOpenSubTab ? <IconDirectionUp /> : <IconDirectionDown />)}
-      </TabWrapper>
-    );
-  };
+  const bestMatchSubTabPath = shouldRenderSubTabs
+    ? subTabs!.reduce<string | null>((best, st) => {
+        const p = st.path;
+        const matched = pathname === p || pathname.startsWith(`${p}/`);
+        if (!matched) return best;
+        if (!best) return p;
+        return p.length > best.length ? p : best;
+      }, null)
+    : null;
+
+  const renderTab = () => (
+    <TabWrapper $selected={selected} onClick={handleToggleClick}>
+      {icon}
+      <span>{name}</span>
+      {subTabs && (isOpenSubTab ? <IconDirectionUp /> : <IconDirectionDown />)}
+    </TabWrapper>
+  );
   return (
     <Wrapper>
       {shouldRenderSubTabs ? renderTab() : <Link href={path}>{renderTab()}</Link>}
       <SubTabWrapper>
         {isOpenSubTab &&
-          subTabs.map((subTab, i) => <SubTab key={`Tab-SubTab-${i}`} name={subTab.name} path={subTab.path} />)}
+          subTabs.map((subTab, i) => (
+            <SubTab
+              key={`Tab-SubTab-${i}`}
+              name={subTab.name}
+              path={subTab.path}
+              isSelected={bestMatchSubTabPath === subTab.path}
+            />
+          ))}
       </SubTabWrapper>
     </Wrapper>
   );
