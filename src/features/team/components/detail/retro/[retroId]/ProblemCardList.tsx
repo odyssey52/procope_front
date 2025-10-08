@@ -121,8 +121,8 @@ const ProblemCardList = ({ retroId, kanbanStatus, client, problems, onCreateCard
             </CardList>
           )}
         </Droppable>
-        <CreateCardButton onClick={onCreateCard} />
       </Content>
+      <CreateCardButton onClick={onCreateCard} />
     </Wrapper>
   );
 };
@@ -136,6 +136,8 @@ const Wrapper = styled.div`
   border-radius: 16px;
   background: ${({ theme }) => theme.sementicColors.bg.tertiary};
   height: fit-content;
+  max-height: calc(100vh - 100px);
+
   & .task-card-clone {
     transform: none !important;
   }
@@ -170,6 +172,7 @@ const Content = styled.div`
   display: flex;
   flex-direction: column;
   gap: 16px;
+  overflow-y: auto;
 `;
 
 const CardList = styled.div`

@@ -12,10 +12,10 @@ import {
 import useApiError from '@/shared/hooks/useApiError';
 import { useSidePanelStore } from '@/shared/store/sidePanel/sidePanel';
 import PageSubTitle from '@/shared/ui/title/PageSubTitle';
-import { DragDropContext, DropResult } from '@hello-pangea/dnd';
+import { DragDropContext, DragStart, DropResult } from '@hello-pangea/dnd';
 import { Client } from '@stomp/stompjs';
 import { useMutation, useQueryClient, useSuspenseQuery } from '@tanstack/react-query';
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import styled from 'styled-components';
 import ProblemCardList from './ProblemCardList';
 import ProblemSidePanelContent from './ProblemSidePanelContent';
@@ -31,6 +31,12 @@ const ProblemWrapper = ({ retroId, client }: ProblemWrapperProps) => {
   const { handleError } = useApiError();
   const queryClient = useQueryClient();
   const handleSwitchCard = useSidePanelStore((state) => state.handleSwitchCard);
+
+  // 자동 스크롤을 위한 ref
+  const contentRef = useRef<HTMLDivElement>(null);
+  const animationFrameRef = useRef<number | null>(null);
+  const isDraggingRef = useRef(false);
+  const mouseXRef = useRef(0);
 
   // 각 칸반의 서버 데이터 조회
   const rcgData = useSuspenseQuery({
@@ -59,7 +65,6 @@ const ProblemWrapper = ({ retroId, client }: ProblemWrapperProps) => {
     mutationFn: (payload: CreateRetroProblemPayload) => createRetroProblem({ retroId }, payload),
   });
 
-  // 카드 생성 핸들러
   const handleCreateCard = async (kanbanStatus: ProblemKanbanStatus) => {
     try {
       const { id } = await createRetroProblemMutation.mutateAsync({
@@ -108,7 +113,68 @@ const ProblemWrapper = ({ retroId, client }: ProblemWrapperProps) => {
     };
   };
 
+  const checkAndScroll = () => {
+    if (!contentRef.current || !isDraggingRef.current) return;
+
+    const container = contentRef.current;
+    const containerRect = container.getBoundingClientRect();
+    const mouseX = mouseXRef.current;
+
+    const scrollThreshold = 100;
+    const scrollSpeed = 30;
+
+    let shouldScroll = false;
+
+    // 왼쪽 경계에 가까운 경우
+    if (mouseX < containerRect.left + scrollThreshold && mouseX >= containerRect.left) {
+      const distance = containerRect.left + scrollThreshold - mouseX;
+      const speed = Math.min(scrollSpeed, (distance / scrollThreshold) * scrollSpeed);
+      if (container.scrollLeft > 0) {
+        container.scrollLeft -= speed;
+        shouldScroll = true;
+      }
+    } else if (mouseX > containerRect.right - scrollThreshold && mouseX <= containerRect.right) {
+      // 오른쪽 경계에 가까운 경우
+      const distance = mouseX - (containerRect.right - scrollThreshold);
+      const speed = Math.min(scrollSpeed, (distance / scrollThreshold) * scrollSpeed);
+      const maxScrollLeft = container.scrollWidth - container.clientWidth;
+      if (container.scrollLeft < maxScrollLeft) {
+        container.scrollLeft += speed;
+        shouldScroll = true;
+      }
+    }
+
+    // 계속 스크롤이 필요하면 다음 프레임도 실행
+    if (isDraggingRef.current && shouldScroll) {
+      animationFrameRef.current = requestAnimationFrame(checkAndScroll);
+    } else if (isDraggingRef.current) {
+      // 스크롤은 필요 없지만 드래그 중이면 계속 체크
+      animationFrameRef.current = requestAnimationFrame(checkAndScroll);
+    }
+  };
+
+  // 드래그 시작
+  const handleDragStart = (start: DragStart) => {
+    isDraggingRef.current = true;
+
+    // 자동 스크롤 시작
+    if (!animationFrameRef.current) {
+      animationFrameRef.current = requestAnimationFrame(checkAndScroll);
+    }
+  };
+
+  // 자동 스크롤 중지
+  const stopAutoScroll = () => {
+    isDraggingRef.current = false;
+    if (animationFrameRef.current) {
+      cancelAnimationFrame(animationFrameRef.current);
+      animationFrameRef.current = null;
+    }
+  };
+
   const handleDragEnd = async (result: DropResult) => {
+    stopAutoScroll();
+
     const { destination, source, draggableId } = result;
 
     if (!destination) {
@@ -213,13 +279,34 @@ const ProblemWrapper = ({ retroId, client }: ProblemWrapperProps) => {
       };
     }
   }, [client, retroId, queryClient]);
+
+  // 마우스 위치 추적
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      mouseXRef.current = e.clientX;
+    };
+
+    document.addEventListener('mousemove', handleMouseMove);
+
+    return () => {
+      document.removeEventListener('mousemove', handleMouseMove);
+    };
+  }, []);
+
+  // cleanup: 컴포넌트 언마운트 시 자동 스크롤 중지
+  useEffect(() => {
+    return () => {
+      stopAutoScroll();
+    };
+  }, []);
+
   return (
     <Wrapper>
       <Head>
         <PageSubTitle first="Q2. 개선할 점은 무엇이고 개선하기 위해 어떤 걸 시도할 수 있나요?" />
       </Head>
-      <Content>
-        <DragDropContext onDragEnd={handleDragEnd}>
+      <Content ref={contentRef}>
+        <DragDropContext onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
           <ProblemCardList
             retroId={retroId}
             kanbanStatus="RCG"
@@ -267,6 +354,8 @@ const Content = styled.div`
   padding: 0 48px;
   padding-bottom: 24px;
   flex-grow: 1;
+
+  overflow-y: auto;
   overflow-x: auto;
 `;
 
