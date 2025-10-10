@@ -1,5 +1,6 @@
 'use client';
 
+import { down } from '@/shared/styles/media';
 import TrafficLightCard from '@/shared/ui/card/TrafficLightCard';
 import Text from '@/shared/ui/Text';
 import styled from 'styled-components';
@@ -26,6 +27,9 @@ const HeroSection = () => {
 };
 
 const Wrapper = styled.div`
+  ${down('md')`
+    display: none;
+  `}
   position: relative;
   display: flex;
   flex-direction: column;

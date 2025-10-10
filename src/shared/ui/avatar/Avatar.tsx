@@ -11,7 +11,7 @@ export interface AvatarProps {
 
 interface AvatarStyledProps {
   $type?: 'initial' | 'profile';
-  $size?: number; // default 32
+  $size?: number;
   $nickname?: string;
   $image?: string;
   $isOnline?: boolean;
@@ -59,7 +59,7 @@ const getInitialFontSize = (size: AvatarProps['size']) => {
   return null;
 };
 
-const Avatar = ({ type = 'profile', size, nickname, image, onClick, isOnline = true }: AvatarProps) => {
+const Avatar = ({ type = 'profile', size = 32, nickname, image, onClick, isOnline = true }: AvatarProps) => {
   const showInitial = type === 'initial' || (!image && nickname);
   return (
     <Wrapper
@@ -81,8 +81,8 @@ const Wrapper = styled.div<AvatarStyledProps>`
   display: flex;
   justify-content: center;
   align-items: center;
-  width: ${({ $size }) => $size ?? 32}px;
-  height: ${({ $size }) => $size ?? 32}px;
+  width: ${({ $size }) => $size}px;
+  height: ${({ $size }) => $size}px;
   cursor: pointer;
   aspect-ratio: 1/1;
   border-radius: 50%;

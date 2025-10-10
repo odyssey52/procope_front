@@ -8,13 +8,17 @@ export interface SubTabType {
   name: string;
   path: string;
 }
+interface SubTabProps extends SubTabType {
+  isSelected?: boolean;
+}
 
-const SubTab = ({ name, path }: SubTabType) => {
+const SubTab = ({ name, path, isSelected }: SubTabProps) => {
   const pathname = usePathname();
   const { pending } = useLinkStatus();
 
   const isPathSelected = pathname === path;
-  const selected = isPathSelected || pending;
+
+  const selected = typeof isSelected === 'boolean' ? isSelected : isPathSelected || pending;
 
   return (
     <Link href={path}>

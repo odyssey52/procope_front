@@ -1,5 +1,6 @@
 'use client';
 
+import { down } from '@/shared/styles/media';
 import styled from 'styled-components';
 import HeroSection from './HeroSection';
 import LoginSection from './LoginSection';
@@ -27,6 +28,9 @@ const Content = styled.div`
   flex-grow: 1;
   height: 100%;
   padding: 24px 0 24px 24px;
+  ${down('md')`
+    padding: 0;
+  `}
 `;
 
 export default LoginPage;

@@ -12,10 +12,10 @@ import {
 import useApiError from '@/shared/hooks/useApiError';
 import { useSidePanelStore } from '@/shared/store/sidePanel/sidePanel';
 import PageSubTitle from '@/shared/ui/title/PageSubTitle';
-import { DragDropContext, DropResult } from '@hello-pangea/dnd';
+import { DragDropContext, DragStart, DropResult } from '@hello-pangea/dnd';
 import { Client } from '@stomp/stompjs';
 import { useMutation, useQueryClient, useSuspenseQuery } from '@tanstack/react-query';
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import styled from 'styled-components';
 import ProblemCardList from './ProblemCardList';
 import ProblemSidePanelContent from './ProblemSidePanelContent';
@@ -32,7 +32,6 @@ const ProblemWrapper = ({ retroId, client }: ProblemWrapperProps) => {
   const queryClient = useQueryClient();
   const handleSwitchCard = useSidePanelStore((state) => state.handleSwitchCard);
 
-  // 각 칸반의 서버 데이터 조회
   const rcgData = useSuspenseQuery({
     ...retroQueries.readRetroProblemList({ retroId, kanbanStatus: 'RCG' }),
   });
@@ -59,7 +58,6 @@ const ProblemWrapper = ({ retroId, client }: ProblemWrapperProps) => {
     mutationFn: (payload: CreateRetroProblemPayload) => createRetroProblem({ retroId }, payload),
   });
 
-  // 카드 생성 핸들러
   const handleCreateCard = async (kanbanStatus: ProblemKanbanStatus) => {
     try {
       const { id } = await createRetroProblemMutation.mutateAsync({
@@ -218,8 +216,8 @@ const ProblemWrapper = ({ retroId, client }: ProblemWrapperProps) => {
       <Head>
         <PageSubTitle first="Q2. 개선할 점은 무엇이고 개선하기 위해 어떤 걸 시도할 수 있나요?" />
       </Head>
-      <Content>
-        <DragDropContext onDragEnd={handleDragEnd}>
+      <DragDropContext onDragEnd={handleDragEnd}>
+        <Content className="problem-content">
           <ProblemCardList
             retroId={retroId}
             kanbanStatus="RCG"
@@ -241,8 +239,8 @@ const ProblemWrapper = ({ retroId, client }: ProblemWrapperProps) => {
             problems={okData.data?.payload || []}
             onCreateCard={() => handleCreateCard('OK')}
           />
-        </DragDropContext>
-      </Content>
+        </Content>
+      </DragDropContext>
     </Wrapper>
   );
 };
@@ -267,6 +265,8 @@ const Content = styled.div`
   padding: 0 48px;
   padding-bottom: 24px;
   flex-grow: 1;
+
+  overflow-y: auto;
   overflow-x: auto;
 `;
 
