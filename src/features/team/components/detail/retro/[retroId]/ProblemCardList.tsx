@@ -136,7 +136,6 @@ const Wrapper = styled.div`
   border-radius: 16px;
   background: ${({ theme }) => theme.sementicColors.bg.tertiary};
   height: fit-content;
-  max-height: calc(100vh - 100px);
 
   & .task-card-clone {
     transform: none !important;
