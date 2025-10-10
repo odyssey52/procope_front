@@ -80,6 +80,13 @@ const Input = styled.input`
   &::placeholder {
     color: ${({ theme }) => theme.sementicColors.text.disabled};
   }
+
+  /* focus 되지 않았을 때 말줄임 처리 */
+  &:not(:focus) {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
 `;
 PageTitle.displayName = 'PageTitle';
 
