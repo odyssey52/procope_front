@@ -12,15 +12,17 @@ import {
 import useApiError from '@/shared/hooks/useApiError';
 import { useSidePanelStore } from '@/shared/store/sidePanel/sidePanel';
 import PageSubTitle from '@/shared/ui/title/PageSubTitle';
-import { DragDropContext, DragStart, DropResult } from '@hello-pangea/dnd';
+import { monitorForElements } from '@atlaskit/pragmatic-drag-and-drop/element/adapter';
+import { autoScrollForElements } from '@atlaskit/pragmatic-drag-and-drop-auto-scroll/element';
+import { unsafeOverflowAutoScrollForElements } from '@atlaskit/pragmatic-drag-and-drop-auto-scroll/unsafe-overflow/element';
+import { extractClosestEdge } from '@atlaskit/pragmatic-drag-and-drop-hitbox/closest-edge';
+import { getReorderDestinationIndex } from '@atlaskit/pragmatic-drag-and-drop-hitbox/util/get-reorder-destination-index';
 import { Client } from '@stomp/stompjs';
 import { useMutation, useQueryClient, useSuspenseQuery } from '@tanstack/react-query';
 import { useEffect, useRef } from 'react';
 import styled from 'styled-components';
 import ProblemCardList from './ProblemCardList';
 import ProblemSidePanelContent from './ProblemSidePanelContent';
-
-// 로컬 상태 타입 정의 제거 (React Query 캐시만 사용)
 
 interface ProblemWrapperProps {
   retroId: string;
@@ -31,6 +33,7 @@ const ProblemWrapper = ({ retroId, client }: ProblemWrapperProps) => {
   const { handleError } = useApiError();
   const queryClient = useQueryClient();
   const handleSwitchCard = useSidePanelStore((state) => state.handleSwitchCard);
+  const contentRef = useRef<HTMLDivElement>(null);
 
   const rcgData = useSuspenseQuery({
     ...retroQueries.readRetroProblemList({ retroId, kanbanStatus: 'RCG' }),
@@ -106,87 +109,225 @@ const ProblemWrapper = ({ retroId, client }: ProblemWrapperProps) => {
     };
   };
 
-  const handleDragEnd = async (result: DropResult) => {
-    const { destination, source, draggableId } = result;
-
-    if (!destination) {
-      return;
-    }
-
-    const isSame = destination.droppableId === source.droppableId && destination.index === source.index;
-    if (isSame) {
-      return;
-    }
-
-    const sourceStatus = source.droppableId as ProblemKanbanStatus;
-    const destinationStatus = destination.droppableId as ProblemKanbanStatus;
-
-    const sourceKey = retroQueries.readRetroProblemList({ retroId, kanbanStatus: sourceStatus }).queryKey;
-    const destKey = retroQueries.readRetroProblemList({ retroId, kanbanStatus: destinationStatus }).queryKey;
-
-    const prevSourceData = queryClient.getQueryData(sourceKey) as any;
-    const prevDestData = sourceStatus === destinationStatus ? null : (queryClient.getQueryData(destKey) as any);
-
-    const sourceList: RetroProblemListItem[] = prevSourceData?.payload ? [...prevSourceData.payload] : [];
-    const destList: RetroProblemListItem[] =
-      sourceStatus === destinationStatus ? sourceList : prevDestData?.payload ? [...prevDestData.payload] : [];
-
-    const sourceItem = sourceList[source.index];
-    if (!sourceItem) return;
-
-    try {
-      if (sourceStatus === destinationStatus) {
-        const reordered = reorderWithinList(sourceList, source.index, destination.index);
-        queryClient.setQueryData(sourceKey, { ...prevSourceData, payload: reordered, count: reordered.length });
-      } else {
-        const { newSource, newDest } = moveBetweenLists(
-          sourceList,
-          destList,
-          source.index,
-          destination.index,
-          destinationStatus,
-        );
-        queryClient.setQueryData(sourceKey, { ...prevSourceData, payload: newSource, count: newSource.length });
-        queryClient.setQueryData(destKey, { ...prevDestData, payload: newDest, count: newDest.length });
-      }
-
-      // 서버에 전달할 changeIndex는 "대상 위치의 실제 orderIndex"로 계산
-      const destOrderIndex = (() => {
-        if (sourceStatus === destinationStatus) {
-          const target = sourceList[destination.index];
-          return target ? target.orderIndex : null;
+  // pragmatic-drag-and-drop 모니터링 설정
+  useEffect(() => {
+    return monitorForElements({
+      onDrop: async ({ source, location }) => {
+        const destination = location.current.dropTargets[0];
+        if (!destination) {
+          return;
         }
-        const target = destList[destination.index];
-        return target ? target.orderIndex : null;
-      })();
 
-      await updateRetroProblemStatusMutation.mutateAsync({
-        params: {
-          retroId,
-          problemId: draggableId,
-        },
-        payload: {
-          kanbanStatus: destinationStatus,
-          changeIndex: destOrderIndex,
-        },
-      });
-    } catch (error) {
-      // 롤백
-      if (prevSourceData) {
-        queryClient.setQueryData(sourceKey, prevSourceData);
-      }
-      if (prevDestData) {
-        queryClient.setQueryData(destKey, prevDestData);
-      }
-      handleError(error);
-    } finally {
-      // 서버 최신 상태로 동기화 (중복 방지 위해 해당 키만 invalidate)
-      queryClient.invalidateQueries({ queryKey: sourceKey });
-      if (sourceStatus !== destinationStatus) {
-        queryClient.invalidateQueries({ queryKey: destKey });
-      }
-    }
-  };
+        const sourceData = source.data;
+        const destinationData = destination.data;
+
+        if (sourceData.type !== 'problem-card') {
+          return;
+        }
+
+        const itemId = sourceData.itemId as string;
+        const sourceStatus = sourceData.sourceStatus as ProblemKanbanStatus;
+        const sourceIndex = sourceData.sourceIndex as number;
+
+        // 카드 위에 드롭한 경우
+        if (destinationData.type === 'problem-card') {
+          const targetIndex = destinationData.index as number;
+          const closestEdge = extractClosestEdge(destinationData);
+          const destinationStatus = destinationData.kanbanStatus as ProblemKanbanStatus;
+
+          const sourceKey = retroQueries.readRetroProblemList({ retroId, kanbanStatus: sourceStatus }).queryKey;
+          const destKey = retroQueries.readRetroProblemList({ retroId, kanbanStatus: destinationStatus }).queryKey;
+
+          const prevSourceData = queryClient.getQueryData(sourceKey) as any;
+          const prevDestData = sourceStatus === destinationStatus ? null : (queryClient.getQueryData(destKey) as any);
+
+          const sourceList: RetroProblemListItem[] = prevSourceData?.payload ? [...prevSourceData.payload] : [];
+          const destList: RetroProblemListItem[] =
+            sourceStatus === destinationStatus ? sourceList : prevDestData?.payload ? [...prevDestData.payload] : [];
+
+          const sourceItem = sourceList[sourceIndex];
+
+          if (!sourceItem) return;
+
+          // 자기 자신에게 드롭한 경우 무시
+          if (sourceStatus === destinationStatus && sourceIndex === targetIndex) {
+            return;
+          }
+
+          // edge에 따라 최종 인덱스 계산
+          let finalIndex = targetIndex;
+          if (closestEdge === 'bottom') {
+            finalIndex = targetIndex + 1;
+          }
+
+          // 같은 리스트 내에서 이동할 때, 원본이 대상보다 앞에 있으면 인덱스 조정
+          if (sourceStatus === destinationStatus && sourceIndex < finalIndex) {
+            finalIndex -= 1;
+          }
+
+          try {
+            if (sourceStatus === destinationStatus) {
+              // 같은 칸반 내에서 순서 변경
+              const reordered = reorderWithinList(sourceList, sourceIndex, finalIndex);
+              queryClient.setQueryData(sourceKey, { ...prevSourceData, payload: reordered, count: reordered.length });
+
+              const destOrderIndex = sourceList[finalIndex] ? sourceList[finalIndex].orderIndex : null;
+
+              await updateRetroProblemStatusMutation.mutateAsync({
+                params: {
+                  retroId,
+                  problemId: itemId,
+                },
+                payload: {
+                  kanbanStatus: destinationStatus,
+                  changeIndex: destOrderIndex,
+                },
+              });
+            } else {
+              // 다른 칸반으로 이동
+              const { newSource, newDest } = moveBetweenLists(
+                sourceList,
+                destList,
+                sourceIndex,
+                finalIndex,
+                destinationStatus,
+              );
+              queryClient.setQueryData(sourceKey, { ...prevSourceData, payload: newSource, count: newSource.length });
+              queryClient.setQueryData(destKey, { ...prevDestData, payload: newDest, count: newDest.length });
+
+              const destOrderIndex = destList[finalIndex] ? destList[finalIndex].orderIndex : null;
+
+              await updateRetroProblemStatusMutation.mutateAsync({
+                params: {
+                  retroId,
+                  problemId: itemId,
+                },
+                payload: {
+                  kanbanStatus: destinationStatus,
+                  changeIndex: destOrderIndex,
+                },
+              });
+            }
+          } catch (error) {
+            if (prevSourceData) {
+              queryClient.setQueryData(sourceKey, prevSourceData);
+            }
+            if (prevDestData) {
+              queryClient.setQueryData(destKey, prevDestData);
+            }
+            handleError(error);
+          } finally {
+            queryClient.invalidateQueries({ queryKey: sourceKey });
+            if (sourceStatus !== destinationStatus) {
+              queryClient.invalidateQueries({ queryKey: destKey });
+            }
+          }
+          return;
+        }
+
+        // 빈 drop-zone에 드롭한 경우
+        if (destinationData.type === 'drop-zone') {
+          const destinationStatus = destinationData.status as ProblemKanbanStatus;
+
+          const sourceKey = retroQueries.readRetroProblemList({ retroId, kanbanStatus: sourceStatus }).queryKey;
+          const destKey = retroQueries.readRetroProblemList({ retroId, kanbanStatus: destinationStatus }).queryKey;
+
+          const prevSourceData = queryClient.getQueryData(sourceKey) as any;
+          const prevDestData = sourceStatus === destinationStatus ? null : (queryClient.getQueryData(destKey) as any);
+
+          const sourceList: RetroProblemListItem[] = prevSourceData?.payload ? [...prevSourceData.payload] : [];
+          const destList: RetroProblemListItem[] =
+            sourceStatus === destinationStatus ? sourceList : prevDestData?.payload ? [...prevDestData.payload] : [];
+
+          const sourceItem = sourceList[sourceIndex];
+          if (!sourceItem) return;
+
+          // 대상 인덱스는 리스트 끝
+          const destinationIndex = destList.length;
+
+          try {
+            if (sourceStatus === destinationStatus) {
+              // 같은 칸반 내에서는 순서 변경 없음 (빈 공간이므로)
+              return;
+            }
+
+            const { newSource, newDest } = moveBetweenLists(
+              sourceList,
+              destList,
+              sourceIndex,
+              destinationIndex,
+              destinationStatus,
+            );
+            queryClient.setQueryData(sourceKey, { ...prevSourceData, payload: newSource, count: newSource.length });
+            queryClient.setQueryData(destKey, { ...prevDestData, payload: newDest, count: newDest.length });
+
+            const destOrderIndex = destList[destinationIndex] ? destList[destinationIndex].orderIndex : null;
+
+            await updateRetroProblemStatusMutation.mutateAsync({
+              params: {
+                retroId,
+                problemId: itemId,
+              },
+              payload: {
+                kanbanStatus: destinationStatus,
+                changeIndex: destOrderIndex,
+              },
+            });
+          } catch (error) {
+            if (prevSourceData) {
+              queryClient.setQueryData(sourceKey, prevSourceData);
+            }
+            if (prevDestData) {
+              queryClient.setQueryData(destKey, prevDestData);
+            }
+            handleError(error);
+          } finally {
+            queryClient.invalidateQueries({ queryKey: sourceKey });
+            if (sourceStatus !== destinationStatus) {
+              queryClient.invalidateQueries({ queryKey: destKey });
+            }
+          }
+        }
+      },
+    });
+  }, [retroId, queryClient, updateRetroProblemStatusMutation, handleError]);
+
+  // Content 영역 자동 스크롤 설정 (칸반 컨테이너)
+  // useEffect(() => {
+  //   const contentElement = contentRef.current;
+  //   if (!contentElement) return;
+
+  //   return unsafeOverflowAutoScrollForElements({
+  //     element: contentElement,
+  //     getConfiguration: () => ({ maxScrollSpeed: 'fast' }),
+  //     getOverflow: () => ({
+  //       forLeftEdge: { left: 50 }, // 왼쪽에서 150px 안쪽부터 스크롤 시작
+  //       forTopEdge: { top: 50 }, // 위에서 150px 안쪽부터 스크롤 시작
+  //       forBottomEdge: { bottom: 50 }, // 아래에서 150px 안쪽부터 스크롤 시작
+  //       forRightEdge: { right: 50 }, // 오른쪽에서 150px 안쪽부터 스크롤 시작
+  //     }),
+  //   });
+  // }, []);
+
+  useEffect(() => {
+    const contentElement = contentRef.current;
+    if (!contentElement) return;
+
+    return monitorForElements({
+      onDragStart() {
+        return unsafeOverflowAutoScrollForElements({
+          element: contentElement,
+          getConfiguration: () => ({ maxScrollSpeed: 'fast' }),
+          getOverflow: () => ({
+            forLeftEdge: { left: 5000 },
+            forRightEdge: { right: 5000 },
+            forTopEdge: { top: 5000 },
+            forBottomEdge: { bottom: 5000 },
+          }),
+        });
+      },
+    });
+  }, []);
 
   useEffect(() => {
     if (client && client.connected && retroId) {
@@ -211,13 +352,14 @@ const ProblemWrapper = ({ retroId, client }: ProblemWrapperProps) => {
       };
     }
   }, [client, retroId, queryClient]);
+
   return (
     <Wrapper>
       <Head>
         <PageSubTitle first="Q2. 개선할 점은 무엇이고 개선하기 위해 어떤 걸 시도할 수 있나요?" />
       </Head>
-      <DragDropContext onDragEnd={handleDragEnd}>
-        <Content className="problem-content">
+      <Content ref={contentRef}>
+        <ProblemCardListWrapper>
           <ProblemCardList
             retroId={retroId}
             kanbanStatus="RCG"
@@ -239,8 +381,8 @@ const ProblemWrapper = ({ retroId, client }: ProblemWrapperProps) => {
             problems={okData.data?.payload || []}
             onCreateCard={() => handleCreateCard('OK')}
           />
-        </Content>
-      </DragDropContext>
+        </ProblemCardListWrapper>
+      </Content>
     </Wrapper>
   );
 };
@@ -260,14 +402,21 @@ const Head = styled.div`
 `;
 
 const Content = styled.div`
-  display: flex;
   gap: 16px;
-  padding: 0 48px;
+  padding: 0 36px 0 48px;
+  margin-right: 12px;
   padding-bottom: 24px;
   flex-grow: 1;
-
+  max-height: calc(100vh - 126px);
   overflow-y: auto;
   overflow-x: auto;
+`;
+
+const ProblemCardListWrapper = styled.div`
+  display: flex;
+  gap: 16px;
+  width: fit-content;
+  height: fit-content;
 `;
 
 ProblemWrapper.displayName = 'ProblemWrapper';
