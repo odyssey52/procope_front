@@ -12,6 +12,7 @@ import TagJob, { JobType } from '@/shared/ui/tag/TagJob';
 import Text from '@/shared/ui/Text';
 import { draggable, dropTargetForElements } from '@atlaskit/pragmatic-drag-and-drop/element/adapter';
 import { combine } from '@atlaskit/pragmatic-drag-and-drop/combine';
+import { setCustomNativeDragPreview } from '@atlaskit/pragmatic-drag-and-drop/element/set-custom-native-drag-preview';
 import {
   attachClosestEdge,
   extractClosestEdge,
@@ -75,7 +76,19 @@ const DraggableCard = ({ retroId, item, kanbanStatus, index, onClickTaskCard, ta
         }),
         onDragStart: () => setIsDragging(true),
         onDrop: () => setIsDragging(false),
+        onGenerateDragPreview: ({ nativeSetDragImage }) => {
+          setCustomNativeDragPreview({
+            nativeSetDragImage,
+            render: ({ container }) => {
+              const preview = element.cloneNode(true) as HTMLElement;
+              preview.style.width = `${element.offsetWidth}px`;
+              preview.style.borderRadius = '12px';
+              container.appendChild(preview);
+            },
+          });
+        },
       }),
+
       dropTargetForElements({
         element,
         getData: ({ input }) => {
@@ -207,7 +220,7 @@ const ProblemCardList = ({ retroId, kanbanStatus, client, problems, onCreateCard
         />
       </Head>
       <Content>
-        <CardList ref={dropZoneRef} $isDraggedOver={isDraggedOver}>
+        <CardList ref={dropZoneRef} $isDraggedOver={isDraggedOver} $isEmpty={problems.length === 0}>
           {problems &&
             problems.length > 0 &&
             problems.map((item, index) => (
@@ -221,6 +234,7 @@ const ProblemCardList = ({ retroId, kanbanStatus, client, problems, onCreateCard
                 tags={tags(item)}
               />
             ))}
+          {problems.length === 0 && isDraggedOver && <EmptyDropIndicator />}
         </CardList>
         <CreateCardButton onClick={onCreateCard} />
       </Content>
@@ -278,20 +292,22 @@ const Content = styled.div`
   overflow-y: auto;
 `;
 
-const CardList = styled.div<{ $isDraggedOver: boolean }>`
+const CardList = styled.div<{ $isDraggedOver: boolean; $isEmpty: boolean }>`
+  position: relative;
   display: flex;
   flex-direction: column;
   width: 100%;
-  min-height: 100px;
   padding: 16px 0;
   gap: 16px;
   border-radius: 8px;
+  position: relative;
+  transition: min-height 0.2s;
 `;
 
 const CardWrapper = styled.div<{ $isDragging: boolean }>`
   position: relative;
   opacity: ${({ $isDragging }) => ($isDragging ? 0.5 : 1)};
-  border-radius: 8px;
+  border-radius: 12px;
   cursor: ${({ $isDragging }) => ($isDragging ? 'grabbing' : 'grab')};
   transition: opacity 0.2s;
 `;
@@ -311,6 +327,30 @@ const DropIndicator = styled.div<{ $position: 'top' | 'bottom' }>`
     }
     return 'bottom: -8px;'; // gap 16px의 절반인 8px 아래
   }}
+
+  &::before {
+    content: '';
+    position: absolute;
+    left: -4px;
+    top: -3px;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: ${({ theme }) => theme.sementicColors.bg.brand};
+  }
+`;
+
+const EmptyDropIndicator = styled.div`
+  position: absolute;
+
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100%;
+  height: 2px;
+  background: ${({ theme }) => theme.sementicColors.bg.brand};
+  border-radius: 1px;
+  z-index: 1;
 
   &::before {
     content: '';
