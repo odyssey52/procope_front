@@ -1,11 +1,28 @@
 'use client';
 
+import { MESSAGES } from '@/shared/constants/messages';
+import { toastActions } from '@/shared/store/modal/toast';
 import { down } from '@/shared/styles/media';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { useEffect } from 'react';
 import styled from 'styled-components';
 import HeroSection from './HeroSection';
 import LoginSection from './LoginSection';
 
 const LoginPage = () => {
+  const searchParams = useSearchParams();
+  const logout = searchParams.get('logout');
+  const router = useRouter();
+
+  useEffect(() => {
+    if (logout) {
+      toastActions.open({
+        title: MESSAGES.LOGOUT_SUCCESS,
+        state: 'success',
+      });
+      router.replace('/login');
+    }
+  }, [logout, router]);
   return (
     <Wrapper>
       <Content>

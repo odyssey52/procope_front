@@ -1,6 +1,7 @@
 'use client';
 
 import { LoginSection } from '@/features/login';
+import LogoPlace from '@/features/login/continue/LogoPlace';
 import useUserInfoQuery from '@/shared/hooks/useUserInfoQuery';
 import useAuthStore from '@/shared/store/auth/auth';
 import Modal from '@/shared/ui/modal/common/Modal';
@@ -33,7 +34,7 @@ function LoginModalContent() {
 // 메인 페이지 컴포넌트
 export default function LoginModal() {
   return (
-    <Suspense fallback={<div>Loading...</div>}>
+    <Suspense fallback={<LogoPlace />}>
       <LoginModalContent />
     </Suspense>
   );
