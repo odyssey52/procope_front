@@ -125,11 +125,11 @@ const Wrapper = styled.div`
   position: relative;
   display: flex;
   flex-direction: column;
-  min-width: 312px;
   gap: 8px;
   border-radius: 12px;
   padding: 16px;
-  max-width: 444px;
+  min-width: 312px;
+  max-width: 312px;
   width: 100%;
   background-color: ${({ theme }) => theme.sementicColors.bg.inverse};
   border: 1px solid ${({ theme }) => theme.sementicColors.border.primary};
