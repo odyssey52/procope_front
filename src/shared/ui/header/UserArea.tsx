@@ -35,11 +35,7 @@ const UserArea = ({ userData }: UserAreaProps) => {
   const handleLogoutClick = async () => {
     try {
       await invalidateRefreshTokenMutation.mutateAsync();
-      logout({ savePreviousPath: false });
-      toastActions.open({
-        state: 'success',
-        title: MESSAGES.LOGOUT_SUCCESS,
-      });
+      logout({ savePreviousPath: false, redirectPath: '/login?logout=true' });
     } catch (error) {
       handleError(error);
     } finally {
