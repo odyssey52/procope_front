@@ -300,7 +300,6 @@ const CardList = styled.div<{ $isDraggedOver: boolean; $isEmpty: boolean }>`
   padding: 16px 0;
   gap: 16px;
   border-radius: 8px;
-  position: relative;
   transition: min-height 0.2s;
 `;
 

@@ -79,22 +79,22 @@ const TaskCard = ({
           )}
         </TagBox>
         <TextWrapper>
-          <Text variant="heading_18" color="secondary" ellipsis>
+          <Text variant="body_16_semibold" color="secondary" ellipsis>
             {title || '새 카드'}
           </Text>
         </TextWrapper>
       </Top>
       <StartDateBox>
         <IconClockCircle size={20} color={theme.sementicColors.icon.disabled} />
-        <Text variant="body_14_medium" color="disabled">
+        <Text variant="caption_12_regular" color="disabled">
           {formatDateToDot(startedAt)}
         </Text>
       </StartDateBox>
       <Divider />
       <Bottom>
         <UserBox>
-          <Avatar image={user.profileImage} />
-          <Text variant="body_14_medium" color="tertiary">
+          <Avatar image={user.profileImage} size={24} />
+          <Text variant="caption_12_regular" color="tertiary">
             {user.nickname}
           </Text>
         </UserBox>
@@ -102,7 +102,7 @@ const TaskCard = ({
           {hasComments && (
             <CommentBox>
               <IconChat01 size={24} color={theme.sementicColors.icon.tertiary} />
-              <Text variant="body_14_medium" color="tertiary">
+              <Text variant="caption_12_regular" color="tertiary">
                 {totalComments}
               </Text>
             </CommentBox>
@@ -110,7 +110,7 @@ const TaskCard = ({
           {completedAt && (
             <EndDateBox>
               <IconFlag size={24} color={theme.sementicColors.icon.tertiary} />
-              <Text variant="body_14_medium" color="disabled">
+              <Text variant="caption_12_regular" color="disabled">
                 {formatDateToDot(completedAt)}
               </Text>
             </EndDateBox>
@@ -125,10 +125,10 @@ const Wrapper = styled.div`
   position: relative;
   display: flex;
   flex-direction: column;
-  min-width: 444px;
-  gap: 12px;
+  min-width: 312px;
+  gap: 8px;
   border-radius: 12px;
-  padding: 24px;
+  padding: 16px;
   max-width: 444px;
   width: 100%;
   background-color: ${({ theme }) => theme.sementicColors.bg.inverse};
@@ -140,7 +140,7 @@ const Top = styled.div`
   position: relative;
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 8px;
 `;
 
 const TagBox = styled.div`

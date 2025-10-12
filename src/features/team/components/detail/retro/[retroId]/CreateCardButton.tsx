@@ -13,7 +13,7 @@ const CreateCardButton = ({ onClick }: CreateCardButtonProps) => {
   return (
     <Wrapper onClick={onClick}>
       <IconPlus size={24} color={theme.sementicColors.icon.tertiary} />
-      <Text variant="heading_18" color="tertiary">
+      <Text variant="body_16_semibold" color="tertiary">
         추가하기
       </Text>
     </Wrapper>
@@ -24,7 +24,7 @@ const Wrapper = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  min-width: 444px;
+  min-width: 312px;
   gap: 8px;
   padding: 16px 24px;
   border-radius: 12px;
