@@ -248,7 +248,7 @@ const Wrapper = styled.div`
   width: fit-content;
   border-radius: 16px;
   background: ${({ theme }) => theme.sementicColors.bg.tertiary};
-  min-height: fit-content;
+  height: fit-content;
 `;
 
 const Head = styled.div`
