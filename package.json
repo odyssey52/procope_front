@@ -61,7 +61,9 @@
     "test:watch": "jest --watch",
     "dev:electron": "wait-on http://localhost:3000 && electron .",
     "build:web": "next build && next export",
-    "build:electron": "npm run build:web && electron-builder"
+    "build:electron": "npm run build:web && electron-builder",
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder"
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx}": [
