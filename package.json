@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "license": "UNLICENSED",
+  "main": "electron.js",
   "dependencies": {
     "@atlaskit/pragmatic-drag-and-drop": "^1.7.7",
     "@atlaskit/pragmatic-drag-and-drop-auto-scroll": "^2.1.2",
@@ -57,7 +58,10 @@
     "lint": "next lint",
     "icon": "npx @svgr/cli --out-dir src/shared/assets/icons/line --index-template svgr-index-template.js --template svgr-template.js  public/assets/icons/line",
     "test": "jest",
-    "test:watch": "jest --watch"
+    "test:watch": "jest --watch",
+    "dev:electron": "wait-on http://localhost:3000 && electron .",
+    "build:web": "next build && next export",
+    "build:electron": "npm run build:web && electron-builder"
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx}": [
@@ -80,6 +84,10 @@
     "@types/sockjs-client": "^1.5.4",
     "@typescript-eslint/eslint-plugin": "^8.13.0",
     "@typescript-eslint/parser": "^8.13.0",
+    "concurrently": "^9.2.1",
+    "cross-env": "^10.1.0",
+    "electron": "^38.2.2",
+    "electron-builder": "^26.0.12",
     "eslint": "^8.57.1",
     "eslint-config-airbnb": "19.0.4",
     "eslint-config-standard": "^17.1.0",
@@ -98,6 +106,7 @@
     "svgo": "^3.3.2",
     "ts-jest": "^29.2.6",
     "ts-node": "^10.9.2",
-    "typescript-eslint": "^8.13.0"
+    "typescript-eslint": "^8.13.0",
+    "wait-on": "^9.0.1"
   }
 }
