@@ -85,7 +85,7 @@ const TaskCard = ({
         </TextWrapper>
       </Top>
       <StartDateBox>
-        <IconClockCircle size={20} color={theme.sementicColors.icon.disabled} />
+        <IconClockCircle size={16} color={theme.sementicColors.icon.disabled} />
         <Text variant="caption_12_regular" color="disabled">
           {formatDateToDot(startedAt)}
         </Text>

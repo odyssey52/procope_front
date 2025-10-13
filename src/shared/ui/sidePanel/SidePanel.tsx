@@ -32,8 +32,8 @@ const SidePanel = () => {
 };
 
 const Wrapper = styled(motion.div)<{ $isOpen: boolean; $stackIndex: number }>`
-  width: 790px;
-  max-width: calc(100vw - 316px);
+  max-width: 790px;
+  width: 65vw;
   padding-top: 24px;
   position: fixed;
   top: 55px;
