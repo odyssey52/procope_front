@@ -63,11 +63,7 @@ export function AuthGuard({ children }: { children: React.ReactNode }) {
 
     if (isRefreshTokenExpired) {
       setIsRefreshTokenExpired(false);
-      toastActions.open({
-        state: 'error',
-        title: MESSAGES.ERROR.UNAUTHORIZED,
-      });
-      logout({ savePreviousPath: true });
+      logout({ savePreviousPath: true, redirectPath: '/login?refreshTokenExpired=true' });
     }
 
     if (!accessToken) {
