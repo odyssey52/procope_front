@@ -110,5 +110,24 @@
     "ts-node": "^10.9.2",
     "typescript-eslint": "^8.13.0",
     "wait-on": "^9.0.1"
+  },
+  "build": {
+    "appId": "kr.procope.app",
+    "productName": "procope",
+    "files": [
+      "**/*"
+    ],
+    "directories": {
+      "buildResources": "assets"
+    },
+    "win": {
+      "icon": "public/assets/icons/graphic/logo/win.ico"
+    },
+    "mac": {
+      "icon": "public/assets/icons/graphic/logo/mac.icns"
+    },
+    "linux": {
+      "icon": "public/assets/icons/graphic/logo/win.png"
+    }
   }
 }
