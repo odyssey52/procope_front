@@ -117,6 +117,8 @@ const Wrapper = styled.div`
   gap: 40px;
   overflow: scroll;
   background-color: ${({ theme }) => theme.sementicColors.bg.inverse};
+  user-select: none;
+  outline: none;
 `;
 
 const Head = styled.div`

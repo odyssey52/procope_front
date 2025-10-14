@@ -2,12 +2,15 @@
 
 import LoginModal from '@/features/login/LoginModal';
 import Modal from '@/shared/ui/modal/common/Modal';
+import { Suspense } from 'react';
 
 const page = () => {
   return (
-    <Modal portalId="confirm-dialog">
-      <LoginModal />
-    </Modal>
+    <Suspense fallback={<div>로딩 중...</div>}>
+      <Modal portalId="confirm-dialog">
+        <LoginModal />
+      </Modal>
+    </Suspense>
   );
 };
 
