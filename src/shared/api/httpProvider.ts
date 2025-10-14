@@ -78,29 +78,32 @@ export default class HTTPProvider {
           try {
             const refreshResponse = await axios.get(`${USER_URL}auth/refresh`, { withCredentials: true });
             const newAccessToken = refreshResponse.data;
-            // 리프레시토큰 자체 만료 시 추후 에러로 처리해야함
-            if (newAccessToken === 'TokenExpiredError') {
-              authStore.setRefreshing(false);
-              await axios.get(`${USER_URL}auth/invalidate`, { withCredentials: true });
+            if (newAccessToken === 'JsonWebTokenError') {
               authStore.setIsRefreshTokenExpired(true);
+              await axios.get(`${USER_URL}auth/invalidate`, { withCredentials: true });
             }
             authStore.setAccessToken(newAccessToken);
-            authStore.setRefreshing(false);
 
             const newConfig: any = { ...error.config };
             newConfig.headers.Authorization = `Bearer ${newAccessToken}`;
             newConfig._retry = true;
             return this.client.request(newConfig);
+            // 에러 시 응답
+            // {
+            //   "message": "Refresh token not found in cookies",
+            //   "error": "Unauthorized",
+            //   "statusCode": 401
+            // }
           } catch (refreshError) {
-            // 추주 리프레시토큰 에러처리 후 사용될 코드
             if (axios.isAxiosError(refreshError)) {
-              if (refreshError.response?.data?.code === 'AUTH003') {
-                await axios.get(`${USER_URL}auth/invalidate`, { withCredentials: true });
+              if (refreshError.response?.data.statusCode === 401) {
                 authStore.setIsRefreshTokenExpired(true);
+                await axios.get(`${USER_URL}auth/invalidate`, { withCredentials: true });
               }
             }
-
             return Promise.reject(refreshError);
+          } finally {
+            authStore.setRefreshing(false);
           }
         }
         return Promise.reject(error);

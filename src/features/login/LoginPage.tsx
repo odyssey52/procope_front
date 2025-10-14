@@ -12,6 +12,7 @@ import LoginSection from './LoginSection';
 const LoginPage = () => {
   const searchParams = useSearchParams();
   const logout = searchParams.get('logout');
+  const refreshTokenExpired = searchParams.get('refreshTokenExpired');
   const router = useRouter();
 
   useEffect(() => {
@@ -21,8 +22,14 @@ const LoginPage = () => {
         state: 'success',
       });
       router.replace('/login');
+    } else if (refreshTokenExpired) {
+      toastActions.open({
+        title: MESSAGES.ERROR.UNAUTHORIZED,
+        state: 'error',
+      });
+      router.replace('/login');
     }
-  }, [logout, router]);
+  }, [logout, router, refreshTokenExpired]);
   return (
     <Wrapper>
       <Content>

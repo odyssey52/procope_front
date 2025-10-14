@@ -1,14 +1,31 @@
 'use client';
 
+import { MESSAGES } from '@/shared/constants/messages';
+import { toastActions } from '@/shared/store/modal/toast';
 import Logo from '@/shared/ui/Logo';
 import Text from '@/shared/ui/Text';
 import { GoogleOAuthProvider } from '@react-oauth/google';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { useEffect } from 'react';
 import styled from 'styled-components';
 import GoogleLoginButton from './GoogleLoginButton';
 import NaverLoginButton from './NaverLoginButton';
 
 const LoginModal = () => {
+  const router = useRouter();
+  const searchParams = useSearchParams();
   const GOOGLE_CLIENT_ID = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID!;
+  const refreshTokenExpired = searchParams.get('refreshTokenExpired');
+
+  useEffect(() => {
+    if (refreshTokenExpired) {
+      toastActions.open({
+        title: MESSAGES.ERROR.UNAUTHORIZED,
+        state: 'error',
+      });
+      router.replace('/login');
+    }
+  }, [router, refreshTokenExpired]);
 
   return (
     <Wrapper>

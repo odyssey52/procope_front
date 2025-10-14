@@ -210,6 +210,8 @@ const Wrapper = styled.div`
   margin: 24px;
   padding: 24px;
   background-color: ${({ theme }) => theme.sementicColors.bg.inverse};
+  user-select: none;
+  outline: none;
 `;
 
 const Content = styled.div`
