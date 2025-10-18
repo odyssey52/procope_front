@@ -27,6 +27,7 @@ const SecondStep = ({ jobMain, jobSub, jobSubHandler, onBefore, onNext }: Props)
     select: (data) => data.fields.sort((a, b) => a.id - b.id),
   });
 
+  console.log('jobSub', jobSub);
   return (
     <Wrapper>
       <TextBox>
@@ -47,7 +48,7 @@ const SecondStep = ({ jobMain, jobSub, jobSubHandler, onBefore, onNext }: Props)
               <JobSubCard
                 key={`JobSubCard-${field.id}`}
                 text={field.name}
-                state={jobSub.includes(field) ? 'selected' : undefined}
+                state={jobSub.some((sub) => sub.id === field.id) ? 'selected' : undefined}
                 onClick={() => jobSubHandler(field)}
                 width="100%"
               />

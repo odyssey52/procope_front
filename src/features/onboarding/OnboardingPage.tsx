@@ -15,6 +15,7 @@ import CheckStep from './CheckStep';
 import FirstStep, { JobMain } from './FirstStep';
 import SecondStep, { JobSub } from './SecondStep';
 import ThirdStep, { Preference } from './ThirdStep';
+
 const ONBOARDING_CONSTANTS = {
   MAX_JOB_SUB: 3,
   TOAST_DELAY: 0,
@@ -205,7 +206,8 @@ const Content = styled.div<{ step: number }>`
   display: flex;
   max-width: 608px;
   width: 100%;
-  height: 100vh;
+  padding: 12vh 0;
+  min-height: 100vh;
   ${({ step }) =>
     step === 2 &&
     css`
