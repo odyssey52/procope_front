@@ -10,26 +10,42 @@ import HeroSection from './HeroSection';
 import LoginSection from './LoginSection';
 
 const LoginPage = () => {
-  const searchParams = useSearchParams();
-  const logout = searchParams.get('logout');
-  const refreshTokenExpired = searchParams.get('refreshTokenExpired');
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const logoutType = searchParams.get('logoutType');
+
+  const openLogoutToast = () => {
+    console.log('logoutType', logoutType);
+    switch (logoutType) {
+      case 'user':
+        toastActions.open({
+          title: MESSAGES.LOGOUT_SUCCESS,
+          state: 'success',
+        });
+        router.replace('/login');
+        break;
+      case 'refreshTokenExpired':
+        toastActions.open({
+          title: MESSAGES.ERROR.UNAUTHORIZED,
+          state: 'error',
+        });
+        router.replace('/login');
+        break;
+      case 'deleteAccount':
+        toastActions.open({
+          title: MESSAGES.TITLE_DELETE_ACCOUNT_SUCCESS,
+          state: 'success',
+        });
+        router.replace('/login');
+        break;
+      default:
+        router.replace('/login');
+    }
+  };
 
   useEffect(() => {
-    if (logout) {
-      toastActions.open({
-        title: MESSAGES.LOGOUT_SUCCESS,
-        state: 'success',
-      });
-      router.replace('/login');
-    } else if (refreshTokenExpired) {
-      toastActions.open({
-        title: MESSAGES.ERROR.UNAUTHORIZED,
-        state: 'error',
-      });
-      router.replace('/login');
-    }
-  }, [logout, router, refreshTokenExpired]);
+    openLogoutToast();
+  }, [logoutType, router]);
   return (
     <Wrapper>
       <Content>

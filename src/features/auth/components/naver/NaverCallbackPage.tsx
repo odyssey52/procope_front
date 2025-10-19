@@ -1,7 +1,7 @@
 'use client';
 
 import { createTokenWithNaver } from '@/features/auth/services/callback/socialAuthService';
-import LogoPlace from '@/features/login/continue/LogoPlace';
+import LogoPlace from '@/features/login/components/continue/LogoPlace';
 import userInfoQueries from '@/features/user/query/info/userInfoQueries';
 import { MESSAGES } from '@/shared/constants/messages';
 import useAuthStore from '@/shared/store/auth/auth';

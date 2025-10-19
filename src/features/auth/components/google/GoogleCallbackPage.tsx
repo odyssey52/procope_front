@@ -7,7 +7,7 @@ import useUserStore from '@/shared/store/user/user';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect } from 'react';
-import LogoPlace from '@/features/login/continue/LogoPlace';
+import LogoPlace from '@/features/login/components/continue/LogoPlace';
 import { toastActions } from '@/shared/store/modal/toast';
 import { MESSAGES } from '@/shared/constants/messages';
 

@@ -1,6 +1,6 @@
 'use client';
 
-import LoginContinuePage from '@/features/login/continue/LoginContinuePage';
+import LoginContinuePage from '@/features/login/components/continue/LoginContinuePage';
 
 const page = () => {
   return <LoginContinuePage />;

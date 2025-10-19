@@ -1,12 +1,13 @@
 'use client';
 
+import LOGOUT_TYPE from '@/features/login/constants/logout';
 import { MESSAGES } from '@/shared/constants/messages';
 import { useLogout } from '@/shared/hooks/useLogout';
 import useAuthStore from '@/shared/store/auth/auth';
 import { toastActions } from '@/shared/store/modal/toast';
 import { LoadingSpinner } from '@/shared/ui/LoadingSpinner';
 import { useQuery } from '@tanstack/react-query';
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { refreshTokenQueries } from '../../query/refresh/refreshTokenQueries';
 
 /**
@@ -63,7 +64,7 @@ export function AuthGuard({ children }: { children: React.ReactNode }) {
 
     if (isRefreshTokenExpired) {
       setIsRefreshTokenExpired(false);
-      logout({ savePreviousPath: true, redirectPath: '/login?refreshTokenExpired=true' });
+      logout({ savePreviousPath: true, redirectPath: `/login?logoutType=${LOGOUT_TYPE.REFRESH_TOKEN_EXPIRED}` });
     }
 
     if (!accessToken) {

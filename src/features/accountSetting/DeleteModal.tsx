@@ -14,6 +14,7 @@ import Image from 'next/image';
 import { useState } from 'react';
 import styled from 'styled-components';
 import { invalidateRefreshToken } from '../auth/services/refresh/refreshTokenService';
+import LOGOUT_TYPE from '../login/constants/logout';
 import teamQueries from '../team/query/teamQueries';
 import { deleteUser } from '../user/services/delete/userDeleteService';
 
@@ -40,13 +41,7 @@ const DeleteModal = ({ onClose }: DeleteModalProps) => {
     if (isEmailValid && id) {
       try {
         await deleteUserMutation.mutateAsync({ id });
-        toastActions.open({
-          state: 'success',
-          title: MESSAGES.TITLE_DELETE_ACCOUNT_SUCCESS,
-          description: MESSAGES.DELETE_ACCOUNT_SUCCESS,
-        });
-        // await invalidateRefreshTokenMutation.mutateAsync();
-        logout({ savePreviousPath: false });
+        logout({ savePreviousPath: false, redirectPath: `/login?logoutType=${LOGOUT_TYPE.DELETE_ACCOUNT}` });
       } catch (error) {
         toastActions.open({
           state: 'error',

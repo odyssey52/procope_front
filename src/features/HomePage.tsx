@@ -4,7 +4,7 @@ import useUserInfoQuery from '@/shared/hooks/useUserInfoQuery';
 import useAuthStore from '@/shared/store/auth/auth';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
-import LogoPlace from './login/continue/LogoPlace';
+import LogoPlace from './login/components/continue/LogoPlace';
 
 const HomePage = () => {
   const router = useRouter();

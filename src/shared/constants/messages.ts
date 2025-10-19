@@ -12,7 +12,7 @@ export const MESSAGES = {
   TEAM_JOIN_ALREADY_MEMBER: '이미 팀에 속해있습니다.',
   CODE_EXPIRED: '초대 링크가 유효하지 않거나 만료되었습니다.',
   UPDATE_SAVE_SUCCESS: '변경사항이 저장되었습니다.',
-  TITLE_DELETE_ACCOUNT_SUCCESS: '계정이 삭제되었습니다.',
+  TITLE_DELETE_ACCOUNT_SUCCESS: '회원 탈퇴가 완료되었습니다.',
   DELETE_ACCOUNT_SUCCESS: '로그인 페이지로 이동합니다.',
   DELETE_ACCOUNT_FAILED: '계정 삭제에 실패했습니다.',
   LOGIN_FAILED: '로그인에 실패했습니다.',

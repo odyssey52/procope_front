@@ -1,4 +1,5 @@
 /* eslint-disable no-param-reassign */
+import LOGOUT_TYPE from '@/features/login/constants/logout';
 import { MESSAGES } from '@/shared/constants/messages';
 import useAuthStore from '@/shared/store/auth/auth';
 import { toastActions } from '@/shared/store/modal/toast';
@@ -81,6 +82,9 @@ export default class HTTPProvider {
             if (newAccessToken === 'JsonWebTokenError') {
               authStore.setIsRefreshTokenExpired(true);
               await axios.get(`${USER_URL}auth/invalidate`, { withCredentials: true });
+              if (window !== undefined) {
+                window.location.href = `/login?logoutType=${LOGOUT_TYPE.REFRESH_TOKEN_EXPIRED}`;
+              }
             }
             authStore.setAccessToken(newAccessToken);
 
@@ -99,14 +103,15 @@ export default class HTTPProvider {
               if (refreshError.response?.data.statusCode === 401) {
                 authStore.setIsRefreshTokenExpired(true);
                 await axios.get(`${USER_URL}auth/invalidate`, { withCredentials: true });
+                if (window !== undefined) {
+                  window.location.href = `/login?logoutType=${LOGOUT_TYPE.REFRESH_TOKEN_EXPIRED}`;
+                }
               }
             }
-            return Promise.reject(refreshError);
           } finally {
             authStore.setRefreshing(false);
           }
         }
-        return Promise.reject(error);
       },
     );
   }

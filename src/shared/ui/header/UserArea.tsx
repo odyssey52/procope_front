@@ -1,18 +1,17 @@
 import { invalidateRefreshToken } from '@/features/auth/services/refresh/refreshTokenService';
+import LOGOUT_TYPE from '@/features/login/constants/logout';
 import { IconHome, IconOut, IconSetting } from '@/shared/assets/icons/line';
-import { MESSAGES } from '@/shared/constants/messages';
 import useApiError from '@/shared/hooks/useApiError';
 import { useClickOutside } from '@/shared/hooks/useClickOutside';
 import { useLogout } from '@/shared/hooks/useLogout';
-import { toastActions } from '@/shared/store/modal/toast';
 import { elevation, zIndex } from '@/shared/styles/mixin';
 import { useMutation } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import { ReactNode, useState } from 'react';
 import styled from 'styled-components';
 import Avatar from '../avatar/Avatar';
-import SelectOption from '../select/SelectOption';
 import { LoadingSpinner } from '../LoadingSpinner';
+import SelectOption from '../select/SelectOption';
 
 interface UserAreaProps {
   userData: {
@@ -35,7 +34,7 @@ const UserArea = ({ userData }: UserAreaProps) => {
   const handleLogoutClick = async () => {
     try {
       await invalidateRefreshTokenMutation.mutateAsync();
-      logout({ savePreviousPath: false, redirectPath: '/login?logout=true' });
+      logout({ savePreviousPath: false, redirectPath: `/login?logoutType=${LOGOUT_TYPE.USER}` });
     } catch (error) {
       handleError(error);
     } finally {
