@@ -67,15 +67,8 @@ export function AuthGuard({ children }: { children: React.ReactNode }) {
       logout({ savePreviousPath: true, redirectPath: `/login?logoutType=${LOGOUT_TYPE.REFRESH_TOKEN_EXPIRED}` });
     }
 
-    if (!accessToken) {
-      if (isError && !isSuccess) {
-        const savePreviousPath = logoutType !== 'manual';
-        toastActions.open({
-          state: 'error',
-          title: MESSAGES.ERROR.UNAUTHORIZED_TITLE,
-        });
-        logout({ savePreviousPath });
-      }
+    if (!accessToken && isError) {
+      logout({ savePreviousPath: true, redirectPath: `/login?logoutType=${LOGOUT_TYPE.UNAUTHORIZED}` });
     }
   }, [isSuccess, isError, newAccessToken, setAccessToken, accessToken, isRefreshTokenExpired]);
 

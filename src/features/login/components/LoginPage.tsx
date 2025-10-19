@@ -15,36 +15,43 @@ const LoginPage = () => {
   const logoutType = searchParams.get('logoutType');
 
   const openLogoutToast = () => {
-    console.log('logoutType', logoutType);
     switch (logoutType) {
       case 'user':
         toastActions.open({
           title: MESSAGES.LOGOUT_SUCCESS,
           state: 'success',
         });
-        router.replace('/login');
+
         break;
       case 'refreshTokenExpired':
         toastActions.open({
           title: MESSAGES.ERROR.UNAUTHORIZED,
           state: 'error',
         });
-        router.replace('/login');
+
         break;
       case 'deleteAccount':
         toastActions.open({
           title: MESSAGES.TITLE_DELETE_ACCOUNT_SUCCESS,
           state: 'success',
         });
-        router.replace('/login');
+
+        break;
+      case 'unauthorized':
+        toastActions.open({
+          title: MESSAGES.ERROR.UNAUTHORIZED_TITLE,
+          state: 'error',
+        });
+
         break;
       default:
-        router.replace('/login');
+        break;
     }
+    router.replace('/login');
   };
 
   useEffect(() => {
-    openLogoutToast();
+    if (logoutType) openLogoutToast();
   }, [logoutType, router]);
   return (
     <Wrapper>
