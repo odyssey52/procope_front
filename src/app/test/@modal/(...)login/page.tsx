@@ -1,7 +1,7 @@
 'use client';
 
-import { LoginSection } from '@/features/login';
-import LogoPlace from '@/features/login/continue/LogoPlace';
+import { LoginSection } from '@/features/login/components';
+import LogoPlace from '@/features/login/components/continue/LogoPlace';
 import useUserInfoQuery from '@/shared/hooks/useUserInfoQuery';
 import useAuthStore from '@/shared/store/auth/auth';
 import Modal from '@/shared/ui/modal/common/Modal';

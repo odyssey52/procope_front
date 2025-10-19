@@ -14,7 +14,7 @@ export const useLogout = () => {
   const { resetAccessToken } = useAuthStore();
   const router = useRouter();
 
-  const logout = async (options: LogoutOptions) => {
+  const logout = (options: LogoutOptions) => {
     const { savePreviousPath = false, redirectPath = '/login' } = options;
     try {
       if (savePreviousPath && typeof window !== 'undefined') {

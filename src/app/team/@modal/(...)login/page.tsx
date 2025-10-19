@@ -1,6 +1,6 @@
 'use client';
 
-import LoginModal from '@/features/login/LoginModal';
+import LoginModal from '@/features/login/components/LoginModal';
 import Modal from '@/shared/ui/modal/common/Modal';
 import { Suspense } from 'react';
 

@@ -1,7 +1,7 @@
 'use client';
 
-import LogoPlace from '@/features/login/continue/LogoPlace';
-import LoginPage from '@/features/login/LoginPage';
+import LogoPlace from '@/features/login/components/continue/LogoPlace';
+import LoginPage from '@/features/login/components/LoginPage';
 import { Suspense } from 'react';
 
 const page = () => {

@@ -1,6 +1,6 @@
 'use client';
 
-import LogoPlace from '@/features/login/continue/LogoPlace';
+import LogoPlace from '@/features/login/components/continue/LogoPlace';
 import { createInviteTeam } from '@/features/team/services/teamService';
 import { MESSAGES } from '@/shared/constants/messages';
 import useApiError from '@/shared/hooks/useApiError';
