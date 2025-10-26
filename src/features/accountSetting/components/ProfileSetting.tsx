@@ -16,9 +16,9 @@ import TextSkeleton from '@/shared/ui/skeleton/TextSkeleton';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { JobMain } from '../onboarding/FirstStep';
-import { JobSub } from '../onboarding/SecondStep';
-import userInfoQueries from '../user/query/info/userInfoQueries';
+import { JobMain } from '../../onboarding/FirstStep';
+import { JobSub } from '../../onboarding/SecondStep';
+import userInfoQueries from '../../user/query/info/userInfoQueries';
 import DeleteModal from './DeleteModal';
 
 interface Props {
