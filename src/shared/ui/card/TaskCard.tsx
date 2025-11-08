@@ -8,7 +8,6 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import Avatar from '../avatar/Avatar';
 import Divider from '../line/Divider';
-import TagJob, { JobType } from '../tag/TagJob';
 import Text from '../Text';
 
 interface MenuItem {
@@ -78,11 +77,9 @@ const TaskCard = ({
             </MenuContainer>
           )}
         </TagBox>
-        <TextWrapper>
-          <Text variant="body_16_semibold" color="secondary" ellipsis>
-            {title || '새 카드'}
-          </Text>
-        </TextWrapper>
+        <Text variant="body_14_semibold" color="secondary" ellipsis lines={2}>
+          {title || '새 카드'}
+        </Text>
       </Top>
       <StartDateBox>
         <IconClockCircle size={16} color={theme.sementicColors.icon.disabled} />
@@ -127,7 +124,7 @@ const Wrapper = styled.div`
   flex-direction: column;
   gap: 8px;
   border-radius: 12px;
-  padding: 16px;
+  padding: 12px;
   min-width: 312px;
   max-width: 312px;
   width: 100%;
@@ -236,10 +233,6 @@ const EndDateBox = styled.div`
   display: flex;
   align-items: center;
   gap: 4px;
-`;
-
-const TextWrapper = styled.div`
-  height: 26px;
 `;
 
 TaskCard.displayName = 'TaskCard';

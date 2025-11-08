@@ -397,19 +397,20 @@ const Wrapper = styled.div`
 const Head = styled.div`
   display: flex;
   flex-direction: column;
-  margin: 0 24px;
   padding: 7px 24px;
 `;
 
 const Content = styled.div`
   gap: 16px;
-  padding: 0 36px 0 48px;
-  margin-right: 12px;
+  padding: 0 24px;
   padding-bottom: 24px;
   flex-grow: 1;
   max-height: calc(100vh - 126px);
   overflow-y: auto;
   overflow-x: auto;
+  &::-webkit-scrollbar {
+    display: none;
+  }
 `;
 
 const ProblemCardListWrapper = styled.div`

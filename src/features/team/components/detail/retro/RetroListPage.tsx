@@ -207,11 +207,11 @@ const Wrapper = styled.div`
   flex-direction: column;
   width: 100%;
   gap: 40px;
-  margin: 24px;
-  padding: 24px;
   background-color: ${({ theme }) => theme.sementicColors.bg.inverse};
   user-select: none;
+  overflow-y: scroll;
   outline: none;
+  padding: 24px;
 `;
 
 const Content = styled.div`

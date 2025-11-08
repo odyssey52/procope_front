@@ -86,9 +86,9 @@ const Wrapper = styled.div`
 const TabWrapper = styled.div<{ $selected?: boolean }>`
   position: relative;
   display: flex;
-  ${({ theme, $selected }) => ($selected ? theme.fontStyle.body_16_semibold : theme.fontStyle.body_16_medium)}
-  padding: 16px 0;
-  gap: 12px;
+  ${({ theme, $selected }) => ($selected ? theme.fontStyle.body_14_semibold : theme.fontStyle.body_14_medium)}
+  padding: 12px 8px;
+  gap: 8px;
   user-select: none;
   color: ${({ theme, $selected }) =>
     $selected ? theme.sementicColors.text.brand : theme.sementicColors.text.disabled};

@@ -54,7 +54,6 @@ const KeepWrapper = ({ retroId, client }: KeepWrapperProps) => {
     return [
       <Tag
         key={`KeepTaskCard-${item.id}`}
-        $size="large"
         $style="transparent"
         $leftIcon={<IconCheckMarkRectangle color={theme.sementicColors.icon.brand} />}
       >
@@ -157,7 +156,6 @@ const Wrapper = styled.div`
 `;
 
 const Head = styled.div`
-  margin: 0 24px;
   padding: 0 24px;
 `;
 
@@ -182,7 +180,7 @@ const CardList = styled.div`
   flex-grow: 1;
   width: 100%;
   gap: 16px;
-  padding: 0 48px;
+  padding: 0 24px;
   &::-webkit-scrollbar {
     display: none;
   }

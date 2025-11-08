@@ -166,14 +166,12 @@ const SettingSection = ({ teamData, teamId }: Props) => {
   );
 };
 
-export default SettingSection;
 const Container = styled.div`
   max-width: 607px;
   width: 100%;
   display: flex;
   flex-direction: column;
   gap: 40px;
-  margin: 24px;
   padding: 24px;
 `;
 const Head = styled.div`
@@ -227,3 +225,7 @@ const Buttons = styled.div`
     flex-grow: 1;
   }
 `;
+
+SettingSection.displayName = 'SettingSection';
+
+export default SettingSection;

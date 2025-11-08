@@ -4,17 +4,17 @@ export const TEAM_SIDE_NAV_TABS = (teamId: string) => [
   {
     name: '대시보드',
     path: `/team/${teamId}/dashboard`,
-    icon: <IconHome />,
+    icon: <IconHome size={20} />,
   },
   {
     name: '목표 관리',
     path: `/team/${teamId}/goal`,
-    icon: <IconInteractive />,
+    icon: <IconInteractive size={20} />,
   },
   {
     name: '회고 관리',
     path: `/team/${teamId}/retro`,
-    icon: <IconFile />,
+    icon: <IconFile size={20} />,
     subTabs: [
       {
         name: '회고 목록',
@@ -29,7 +29,7 @@ export const TEAM_SIDE_NAV_TABS = (teamId: string) => [
   {
     name: '팀 관리',
     path: `/team/${teamId}/manage`,
-    icon: <IconUsers02 />,
+    icon: <IconUsers02 size={20} />,
     subTabs: [
       {
         name: '팀 설정',
@@ -44,6 +44,6 @@ export const TEAM_SIDE_NAV_TABS = (teamId: string) => [
   {
     name: '설정',
     path: `/team/${teamId}/setting`,
-    icon: <IconSetting />,
+    icon: <IconSetting size={20} />,
   },
 ];

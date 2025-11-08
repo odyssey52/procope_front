@@ -114,7 +114,7 @@ const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
-  gap: 40px;
+  gap: 24px;
   overflow: scroll;
   background-color: ${({ theme }) => theme.sementicColors.bg.inverse};
   user-select: none;
@@ -125,7 +125,6 @@ const Head = styled.div`
   position: relative;
   display: flex;
   flex-direction: column;
-  margin: 24px 24px 0;
   padding: 24px 24px 0;
   gap: 8px;
 `;

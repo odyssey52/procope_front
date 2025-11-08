@@ -23,7 +23,7 @@ const CalendarArea = ({ selectedDate, onChange }: { selectedDate: string; onChan
 
   return (
     <Wrapper ref={ref}>
-      <TextButton $type="24" rightIcon={<IconCalendar />} onClick={handleCalendarOpen}>
+      <TextButton $type="16" rightIcon={<IconCalendar />} onClick={handleCalendarOpen}>
         {selectedDate}
       </TextButton>
       {isOpen && <Calendar selectedDate={selectedDate} onChange={handleCalendarDateChange} format="YYYY.MM.DD" />}
