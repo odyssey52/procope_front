@@ -17,7 +17,7 @@ const SideNav = ({ tabList }: SideNavProps) => {
 };
 
 const Wrapper = styled.div`
-  padding: 24px;
+  padding: 16px;
   flex-shrink: 0;
   width: 16.46%;
   height: 100%;

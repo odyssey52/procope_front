@@ -1,5 +1,6 @@
 'use client';
 
+import { IconUsers01 } from '@/shared/assets/icons/line';
 import { useClickOutside } from '@/shared/hooks/useClickOutside';
 import Button from '@/shared/ui/button/Button';
 import { useState } from 'react';
@@ -14,7 +15,13 @@ const MemberArea = ({ teamId, retroId }: { teamId: string; retroId: string }) =>
 
   return (
     <div ref={ref}>
-      <Button $type="outline" pressed={isOpen} onClick={handleMemberListOpen}>
+      <Button
+        $type="outline"
+        pressed={isOpen}
+        onClick={handleMemberListOpen}
+        size="36"
+        leftIcon={<IconUsers01 size={24} />}
+      >
         Member
       </Button>
       {isOpen && <MemberFinder teamId={teamId} retroId={retroId} />}

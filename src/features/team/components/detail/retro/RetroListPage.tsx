@@ -211,7 +211,7 @@ const Wrapper = styled.div`
   user-select: none;
   overflow-y: scroll;
   outline: none;
-  padding: 48px;
+  padding: 24px;
 `;
 
 const Content = styled.div`

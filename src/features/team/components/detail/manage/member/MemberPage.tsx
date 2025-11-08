@@ -118,7 +118,6 @@ const Container = styled.div`
   gap: 40px;
   flex-grow: 1;
   padding: 24px;
-  margin: 24px;
 `;
 const TopSection = styled.div`
   display: flex;

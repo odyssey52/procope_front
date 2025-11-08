@@ -110,19 +110,19 @@ const RetroInfoWrapper = ({ client, isConnected }: RetroInfoWrapperProps) => {
       </TitleWrapper>
       <DetailInfoWrapper>
         <CreatorWrapper>
-          <Text variant="body_16_medium" color="tertiary">
-            만든 사람
+          <Text variant="body_14_regular" color="tertiary">
+            만든사람
           </Text>
           <TextButton
-            $type="24"
-            leftIcon={<Avatar size={24} image={data.createUserInfo?.profileImageUrl} />}
+            $type="16"
+            leftIcon={<Avatar size={16} image={data.createUserInfo?.profileImageUrl} />}
             $clickable={false}
           >
             {data.createUserInfo?.name}
           </TextButton>
         </CreatorWrapper>
         <DateWrapper>
-          <Text variant="body_16_medium" color="tertiary">
+          <Text variant="body_14_regular" color="tertiary">
             회고 날짜
           </Text>
           <CalendarArea selectedDate={selectedDate} onChange={handleUpdateRetroDate} />

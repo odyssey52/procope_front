@@ -12,8 +12,8 @@ interface CreateCardButtonProps {
 const CreateCardButton = ({ onClick }: CreateCardButtonProps) => {
   return (
     <Wrapper onClick={onClick}>
-      <IconPlus size={24} color={theme.sementicColors.icon.tertiary} />
-      <Text variant="body_16_semibold" color="tertiary">
+      <IconPlus size={20} color={theme.sementicColors.icon.tertiary} />
+      <Text variant="body_14_medium" color="tertiary">
         추가하기
       </Text>
     </Wrapper>
@@ -26,8 +26,9 @@ const Wrapper = styled.div`
   justify-content: center;
   min-width: 312px;
   gap: 8px;
-  padding: 16px 24px;
+  padding: 8px 24px;
   border-radius: 12px;
+  background-color: ${({ theme }) => theme.sementicColors.bg.inverse};
   border: 1px solid ${({ theme }) => theme.sementicColors.border.primary};
   cursor: pointer;
 `;

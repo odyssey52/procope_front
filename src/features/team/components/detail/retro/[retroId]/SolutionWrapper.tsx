@@ -83,7 +83,6 @@ const SolutionWrapper = ({ retroId, problemId, client }: SolutionWrapperProps) =
                 tags={[
                   <Tag
                     key={`SolutionTaskCard-${solution.id}`}
-                    $size="large"
                     $style="transparent"
                     $leftIcon={<IconCheckMarkRectangle color={theme.sementicColors.icon.brand} />}
                   >

@@ -169,7 +169,6 @@ const ProblemCardList = ({ retroId, kanbanStatus, client, problems, onCreateCard
     return [
       <Tag
         key={`${item.id}-${kanbanStatus}-TaskCard-Tag`}
-        $size="large"
         $style="transparent"
         $leftIcon={<IconCheckMarkRectangle color={theme.sementicColors.icon.brand} />}
       >
@@ -257,7 +256,7 @@ const Head = styled.div`
   display: flex;
   flex-direction: column;
   gap: 4px;
-  padding: 24px;
+  padding: 20px;
   border-radius: 16px;
 
   background: ${({ theme }) => theme.sementicColors.bg.tertiary};
@@ -287,7 +286,6 @@ const TextWrapper = styled.div`
 const Content = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 16px;
   padding: 0 24px 24px;
   overflow-y: auto;
 `;

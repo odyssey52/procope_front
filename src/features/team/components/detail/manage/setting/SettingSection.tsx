@@ -172,7 +172,6 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   gap: 40px;
-  margin: 24px;
   padding: 24px;
 `;
 const Head = styled.div`

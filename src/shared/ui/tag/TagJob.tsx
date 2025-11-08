@@ -36,13 +36,13 @@ const Wrapper = styled.div<{ $bgColor?: string }>`
   display: flex;
   align-items: center;
   border-radius: 4px;
-  padding: 2px 8px;
+  padding: 2px 4px;
   width: fit-content;
   gap: 2px;
   background-color: ${({ $bgColor, theme }) => $bgColor || theme.sementicColors.bg.tertiary_hover_pressed};
   color: ${({ theme }) => theme.sementicColors.text.primary};
   white-space: nowrap;
-  ${({ theme }) => theme.fontStyle.body_14_medium}
+  ${({ theme }) => theme.fontStyle.caption_12_regular}
   > svg {
     display: none;
   }
