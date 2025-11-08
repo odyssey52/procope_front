@@ -200,23 +200,25 @@ const ProblemCardList = ({ retroId, kanbanStatus, client, problems, onCreateCard
   return (
     <Wrapper>
       <Head>
-        <Title>
-          <TextWrapper>
-            <Text variant="body_16_semibold" color="primary">
-              {KANBAN_STATUS[kanbanStatus as keyof typeof KANBAN_STATUS].title}
-            </Text>
-            <MoreIndicator count={problems.length} type="transparent" />
-          </TextWrapper>
-          <PlusButton onClick={onCreateCard}>
-            <IconPlus size={24} />
-          </PlusButton>
-        </Title>
-        <Divider
-          color={KANBAN_STATUS[kanbanStatus as keyof typeof KANBAN_STATUS].color}
-          padding={0}
-          width={4}
-          radius={2}
-        />
+        <CardListTitle>
+          <Title>
+            <TextWrapper>
+              <Text variant="body_16_semibold" color="primary">
+                {KANBAN_STATUS[kanbanStatus as keyof typeof KANBAN_STATUS].title}
+              </Text>
+              <MoreIndicator count={problems.length} type="transparent" />
+            </TextWrapper>
+            <PlusButton onClick={onCreateCard}>
+              <IconPlus size={24} />
+            </PlusButton>
+          </Title>
+          <Divider
+            color={KANBAN_STATUS[kanbanStatus as keyof typeof KANBAN_STATUS].color}
+            padding={0}
+            width={4}
+            radius={2}
+          />
+        </CardListTitle>
       </Head>
       <Content>
         <CardList ref={dropZoneRef} $isDraggedOver={isDraggedOver} $isEmpty={problems.length === 0}>
@@ -246,22 +248,22 @@ const Wrapper = styled.div`
   flex-direction: column;
   width: fit-content;
   border-radius: 16px;
-  background: ${({ theme }) => theme.sementicColors.bg.tertiary};
-  height: fit-content;
 `;
 
 const Head = styled.div`
   position: sticky;
   top: 0;
+  background: ${({ theme }) => theme.sementicColors.bg.inverse};
+  z-index: 1;
+`;
+
+const CardListTitle = styled.div`
   display: flex;
   flex-direction: column;
   gap: 4px;
   padding: 20px;
-  border-radius: 16px;
-
+  border-radius: 16px 16px 0 0;
   background: ${({ theme }) => theme.sementicColors.bg.tertiary};
-
-  z-index: 1;
 `;
 
 const Title = styled.div`
@@ -284,10 +286,14 @@ const TextWrapper = styled.div`
 `;
 
 const Content = styled.div`
+  position: sticky;
+  top: 80px;
   display: flex;
   flex-direction: column;
   padding: 0 24px 24px;
   overflow-y: auto;
+  background: ${({ theme }) => theme.sementicColors.bg.tertiary};
+  border-radius: 0 0 16px 16px;
 `;
 
 const CardList = styled.div<{ $isDraggedOver: boolean; $isEmpty: boolean }>`

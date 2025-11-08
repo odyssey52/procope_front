@@ -402,13 +402,15 @@ const Head = styled.div`
 
 const Content = styled.div`
   gap: 16px;
-  padding: 0 12px 0 24px;
-  margin-right: 12px;
+  padding: 0 24px;
   padding-bottom: 24px;
   flex-grow: 1;
   max-height: calc(100vh - 126px);
   overflow-y: auto;
   overflow-x: auto;
+  &::-webkit-scrollbar {
+    display: none;
+  }
 `;
 
 const ProblemCardListWrapper = styled.div`
