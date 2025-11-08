@@ -13,10 +13,10 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 import Image from 'next/image';
 import { useState } from 'react';
 import styled from 'styled-components';
-import { invalidateRefreshToken } from '../auth/services/refresh/refreshTokenService';
-import LOGOUT_TYPE from '../login/constants/logout';
-import teamQueries from '../team/query/teamQueries';
-import { deleteUser } from '../user/services/delete/userDeleteService';
+import { invalidateRefreshToken } from '../../auth/services/refresh/refreshTokenService';
+import LOGOUT_TYPE from '../../login/constants/logout';
+import teamQueries from '../../team/query/teamQueries';
+import { deleteUser } from '../../user/services/delete/userDeleteService';
 
 interface DeleteModalProps {
   onClose: () => void;
