@@ -166,7 +166,6 @@ const SettingSection = ({ teamData, teamId }: Props) => {
   );
 };
 
-export default SettingSection;
 const Container = styled.div`
   max-width: 607px;
   width: 100%;
@@ -227,3 +226,7 @@ const Buttons = styled.div`
     flex-grow: 1;
   }
 `;
+
+SettingSection.displayName = 'SettingSection';
+
+export default SettingSection;

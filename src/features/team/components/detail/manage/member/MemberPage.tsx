@@ -106,15 +106,19 @@ const Wrapper = styled.div`
   display: flex;
   width: 100%;
   background-color: ${({ theme }) => theme.sementicColors.bg.inverse};
-  padding: 24px;
-  margin: 24px;
+  overflow-y: scroll;
+  outline: none;
 `;
 const Container = styled.div`
-  width: 100%;
   display: flex;
   flex-direction: column;
+  width: 100%;
+  overflow-x: hidden;
+  height: fit-content;
   gap: 40px;
   flex-grow: 1;
+  padding: 24px;
+  margin: 24px;
 `;
 const TopSection = styled.div`
   display: flex;
