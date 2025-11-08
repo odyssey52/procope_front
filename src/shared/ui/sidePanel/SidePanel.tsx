@@ -1,7 +1,6 @@
 'use client';
 
 import { useSidePanelStore } from '@/shared/store/sidePanel/sidePanel';
-import { elevation, zIndex } from '@/shared/styles/mixin';
 import { AnimatePresence, motion } from 'framer-motion';
 import styled from 'styled-components';
 
@@ -32,7 +31,7 @@ const SidePanel = () => {
 };
 
 const Wrapper = styled(motion.div)<{ $isOpen: boolean; $stackIndex: number }>`
-  max-width: 790px;
+  max-width: 588px;
   width: 65vw;
   padding-top: 24px;
   position: fixed;
