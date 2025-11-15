@@ -19,7 +19,7 @@ import styled from 'styled-components';
 import { JobMain } from '../../onboarding/FirstStep';
 import { JobSub } from '../../onboarding/SecondStep';
 import userInfoQueries from '../../user/query/info/userInfoQueries';
-import DeleteModal from './DeleteModal';
+import DeleteModal from '../modal/DeleteModal';
 
 interface Props {
   data: ReadUserInfoResponse;

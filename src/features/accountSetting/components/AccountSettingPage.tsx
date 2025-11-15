@@ -7,7 +7,7 @@ import SelectOption from '@/shared/ui/select/SelectOption';
 import styled from 'styled-components';
 import ProfileSetting from './ProfileSetting';
 import CommunicationSetting from './CommunicationSetting';
-import HeaderLayout from '../../layout/HeaderLayout';
+import HeaderLayout from '../../../shared/layout/HeaderLayout';
 
 const selectOptionList = [
   { value: '프로필 설정', label: '프로필 설정' },

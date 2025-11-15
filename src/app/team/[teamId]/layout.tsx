@@ -1,6 +1,6 @@
 'use client';
 
-import HeaderLayout from '@/features/layout/HeaderLayout';
+import HeaderLayout from '@/shared/layout/HeaderLayout';
 import { useTeamDetailQuery } from '@/features/team/hooks/useTeamDetailQuery';
 import useTeamStore from '@/shared/store/team/team';
 import { ReactNode, useEffect } from 'react';
