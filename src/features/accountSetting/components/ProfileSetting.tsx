@@ -16,10 +16,10 @@ import TextSkeleton from '@/shared/ui/skeleton/TextSkeleton';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { JobMain } from '../../onboarding/FirstStep';
-import { JobSub } from '../../onboarding/SecondStep';
+import { JobMain } from '../../onboarding/components/FirstStep';
+import { JobSub } from '../../onboarding/components/SecondStep';
 import userInfoQueries from '../../user/query/info/userInfoQueries';
-import DeleteModal from './DeleteModal';
+import DeleteModal from '../modal/DeleteModal';
 
 interface Props {
   data: ReadUserInfoResponse;

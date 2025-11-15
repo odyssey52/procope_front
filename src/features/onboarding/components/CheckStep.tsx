@@ -1,11 +1,11 @@
 import { IconDirectionLeft } from '@/shared/assets/icons/line';
+import { JOB_MAIN_LIST, PREFERENCE_LIST } from '@/shared/constants/stepper';
 import Button from '@/shared/ui/button/Button';
 import TextButton from '@/shared/ui/button/TextButton';
-import { JOB_MAIN_LIST, PREFERENCE_LIST } from '@/shared/constants/stepper';
 import styled from 'styled-components';
+import { JobMain } from './FirstStep';
 import { JobSub } from './SecondStep';
 import { Preference } from './ThirdStep';
-import { JobMain } from './FirstStep';
 
 interface Props {
   jobMain: JobMain;

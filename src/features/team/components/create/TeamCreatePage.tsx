@@ -1,6 +1,6 @@
 'use client';
 
-import HeaderLayout from '@/features/layout/HeaderLayout';
+import HeaderLayout from '@/shared/layout/HeaderLayout';
 import { createTeam } from '@/features/team/services/teamService';
 import { IconDirectionLeft } from '@/shared/assets/icons/line';
 import { down } from '@/shared/styles/media';

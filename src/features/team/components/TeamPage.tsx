@@ -1,4 +1,4 @@
-import HeaderLayout from '@/features/layout/HeaderLayout';
+import HeaderLayout from '@/shared/layout/HeaderLayout';
 import Container from '@/shared/ui/Container';
 import { Suspense } from 'react';
 import styled from 'styled-components';

@@ -4,7 +4,7 @@ import { IconLink } from '@/shared/assets/icons/line';
 import Button from '@/shared/ui/button/Button';
 import Container from '@/shared/ui/Container';
 import Placeholder from '@/shared/ui/placeholder/Placeholder';
-import HeaderLayout from '@/features/layout/HeaderLayout';
+import HeaderLayout from '@/shared/layout/HeaderLayout';
 import Text from '@/shared/ui/Text';
 import { toastActions } from '@/shared/store/modal/toast';
 import { useRouter } from 'next/navigation';
