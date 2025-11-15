@@ -1,4 +1,4 @@
-import { Preference } from '@/features/onboarding/ThirdStep';
+import { Preference } from '@/features/onboarding/components/ThirdStep';
 
 export type UserContext = {
   id: string;
