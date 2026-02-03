@@ -55,19 +55,19 @@ const RetroPage = () => {
           return new SockJS(`https://dev-core-api.procope.kr/websocket?token=Bearer ${accessToken}&retroId=${retroId}`);
         },
         onConnect: () => {
-          console.log('✅ STOMP 연결 성공');
+          // console.log('✅ STOMP 연결 성공');
           setIsConnected(true);
         },
         onStompError: (frame) => {
-          console.error('❌ STOMP 에러:', frame);
+          // console.error('❌ STOMP 에러:', frame);
           setIsConnected(false);
         },
         onWebSocketError: (event) => {
-          console.error('❌ WebSocket 에러:', event);
+          // console.error('❌ WebSocket 에러:', event);
           setIsConnected(false);
         },
         debug: (str) => {
-          console.log('STOMP Debug:', str);
+          // console.log('STOMP Debug:', str);
         },
       });
     }

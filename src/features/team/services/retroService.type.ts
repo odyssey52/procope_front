@@ -131,6 +131,11 @@ export interface DeleteRetroProblemRoleParams {
   problemId: string | number;
 }
 
+export interface CreateAiCoachAnalyzeParams {
+  retroId: string | number;
+  problemId: string | number;
+}
+
 // Payload
 export interface CreateRetroPayload {
   title: string;
@@ -277,6 +282,10 @@ export type CreateRetroSolutionResponse = {
 
 export type ReadOnlineMemberListResponse = ReadOnlineMember[];
 export type ReadRetroProblemRoleResponse = RetroProblemRoleItem[];
+export type CreateAiCoachAnalyzeResponse = {
+  id: string | number;
+  message: string;
+};
 
 // interface
 export type KanbanStatus = 'RCG' | 'PRG' | 'OK' | 'KEP';

@@ -1,6 +1,6 @@
 'use client';
 
-import { IconChat01, IconClockCircle, IconFlag, IconMenuCircleVertical } from '@/shared/assets/icons/line';
+import { IconChat01, IconClockCircle, IconFlag, IconLoading, IconMenuCircleVertical } from '@/shared/assets/icons/line';
 import { zIndex } from '@/shared/styles/mixin';
 import { theme } from '@/shared/styles/theme';
 import { formatDateToDot } from '@/shared/utils/date';
@@ -30,6 +30,7 @@ interface TaskCardProps {
   showMenu?: boolean;
   menuItems?: MenuItem[];
   onClick?: () => void;
+  isGenerating?: boolean;
 }
 
 const TaskCard = ({
@@ -43,6 +44,7 @@ const TaskCard = ({
   showMenu = false,
   menuItems = [],
   onClick,
+  isGenerating = false,
 }: TaskCardProps) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
@@ -56,69 +58,83 @@ const TaskCard = ({
   };
 
   return (
-    <Wrapper onClick={onClick} className="task-card-for-useClickOutside-hook">
-      <Top>
-        <TagBox>
-          {tags && tags.length > 0 && <TagList>{tags?.map((tag) => tag)}</TagList>}
-          {showMenu && (
-            <MenuContainer>
-              <MenuIconButton onClick={handleMenuClick}>
-                <IconMenuCircleVertical />
-              </MenuIconButton>
-              {isMenuOpen && (
-                <MenuDropdown>
-                  {menuItems.map((item) => (
-                    <Menu key={item.id} onClick={() => handleMenuItemClick(item.onClick)}>
-                      {item.label}
-                    </Menu>
-                  ))}
-                </MenuDropdown>
-              )}
-            </MenuContainer>
-          )}
-        </TagBox>
-        <Text variant="body_14_semibold" color="secondary" ellipsis lines={2}>
-          {title || '새 카드'}
-        </Text>
-      </Top>
-      <StartDateBox>
-        <IconClockCircle size={16} color={theme.sementicColors.icon.disabled} />
-        <Text variant="caption_12_regular" color="disabled">
-          {formatDateToDot(startedAt)}
-        </Text>
-      </StartDateBox>
-      <Divider />
-      <Bottom>
-        <UserBox>
-          <Avatar image={user.profileImage} size={24} />
-          <Text variant="caption_12_regular" color="tertiary">
-            {user.nickname}
+    <Wrapper onClick={onClick} className="task-card-for-useClickOutside-hook" $isGenerating={isGenerating}>
+      <CardContent $isBlurred={isGenerating}>
+        <Top>
+          <TagBox>
+            {tags && tags.length > 0 && <TagList>{tags?.map((tag) => tag)}</TagList>}
+            {showMenu && (
+              <MenuContainer>
+                <MenuIconButton onClick={handleMenuClick}>
+                  <IconMenuCircleVertical />
+                </MenuIconButton>
+                {isMenuOpen && (
+                  <MenuDropdown>
+                    {menuItems.map((item) => (
+                      <Menu key={item.id} onClick={() => handleMenuItemClick(item.onClick)}>
+                        {item.label}
+                      </Menu>
+                    ))}
+                  </MenuDropdown>
+                )}
+              </MenuContainer>
+            )}
+          </TagBox>
+          <TextBox>
+            <Text variant="body_14_semibold" color="secondary" ellipsis lines={2}>
+              {title || '새 카드'}
+            </Text>
+          </TextBox>
+        </Top>
+        <StartDateBox>
+          <IconClockCircle size={16} color={theme.sementicColors.icon.disabled} />
+          <Text variant="caption_12_regular" color="disabled">
+            {formatDateToDot(startedAt)}
           </Text>
-        </UserBox>
-        <BottomRight>
-          {hasComments && (
-            <CommentBox>
-              <IconChat01 size={24} color={theme.sementicColors.icon.tertiary} />
-              <Text variant="caption_12_regular" color="tertiary">
-                {totalComments}
-              </Text>
-            </CommentBox>
-          )}
-          {completedAt && (
-            <EndDateBox>
-              <IconFlag size={24} color={theme.sementicColors.icon.tertiary} />
-              <Text variant="caption_12_regular" color="disabled">
-                {formatDateToDot(completedAt)}
-              </Text>
-            </EndDateBox>
-          )}
-        </BottomRight>
-      </Bottom>
+        </StartDateBox>
+        <Divider />
+        <Bottom>
+          <UserBox>
+            <Avatar image={user.profileImage} size={24} />
+            <Text variant="caption_12_regular" color="tertiary">
+              {user.nickname}
+            </Text>
+          </UserBox>
+          <BottomRight>
+            {hasComments && (
+              <CommentBox>
+                <IconChat01 size={24} color={theme.sementicColors.icon.tertiary} />
+                <Text variant="caption_12_regular" color="tertiary">
+                  {totalComments}
+                </Text>
+              </CommentBox>
+            )}
+            {completedAt && (
+              <EndDateBox>
+                <IconFlag size={24} color={theme.sementicColors.icon.tertiary} />
+                <Text variant="caption_12_regular" color="disabled">
+                  {formatDateToDot(completedAt)}
+                </Text>
+              </EndDateBox>
+            )}
+          </BottomRight>
+        </Bottom>
+      </CardContent>
+      {isGenerating && (
+        <GeneratingOverlay>
+          <RotatingIcon>
+            <IconLoading />
+          </RotatingIcon>
+          <Text variant="body_14_medium" color="secondary">
+            AI가 답변을 생성중이에요
+          </Text>
+        </GeneratingOverlay>
+      )}
     </Wrapper>
   );
 };
 
-const Wrapper = styled.div`
+const Wrapper = styled.div<{ $isGenerating: boolean }>`
   position: relative;
   display: flex;
   flex-direction: column;
@@ -129,13 +145,68 @@ const Wrapper = styled.div`
   max-width: 312px;
   width: 100%;
   background-color: ${({ theme }) => theme.sementicColors.bg.inverse};
-  border: 1px solid ${({ theme }) => theme.sementicColors.border.primary};
+  border: 1px solid
+    ${({ theme, $isGenerating }) => ($isGenerating ? 'transparent' : theme.sementicColors.border.primary)};
   cursor: pointer;
+
+  ${({ $isGenerating }) =>
+    $isGenerating &&
+    `
+      &::before {
+        content: '';
+        position: absolute;
+        inset: -2px;
+        border-radius: 14px;
+        padding: 2px;
+        background: linear-gradient(
+          120deg,
+          #7c3aed,
+          #3b82f6,
+          #22d3ee,
+          #a855f7,
+          #7c3aed
+        );
+        background-size: 300% 300%;
+        -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+        -webkit-mask-composite: xor;
+        mask-composite: exclude;
+        animation: border-gradient 3.2s ease-in-out infinite;
+        pointer-events: none;
+        z-index: 0;
+      }
+    `}
+
+  @keyframes border-gradient {
+    0% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+    100% {
+      background-position: 0% 50%;
+    }
+  }
+`;
+
+const CardContent = styled.div<{ $isBlurred: boolean }>`
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  gap: 8px;
+  ${({ $isBlurred }) =>
+    $isBlurred &&
+    `
+      filter: blur(2px);
+    `}
 `;
 
 const Top = styled.div`
   position: relative;
   display: flex;
+  flex-grow: 1;
   flex-direction: column;
   gap: 8px;
 `;
@@ -235,6 +306,39 @@ const EndDateBox = styled.div`
   gap: 4px;
 `;
 
-TaskCard.displayName = 'TaskCard';
+const GeneratingOverlay = styled.div`
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(4px);
+  z-index: 2;
+`;
 
+const RotatingIcon = styled.span`
+  display: inline-flex;
+  animation: icon-spin 1.1s linear infinite;
+
+  @keyframes icon-spin {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+`;
+
+const TextBox = styled.div`
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  max-height: 40px;
+`;
+
+TaskCard.displayName = 'TaskCard';
 export default TaskCard;

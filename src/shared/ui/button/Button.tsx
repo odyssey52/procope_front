@@ -4,7 +4,7 @@ import React, { ReactNode } from 'react';
 import styled, { css } from 'styled-components';
 
 interface ButtonProps {
-  $type?: 'secondary' | 'outline' | 'error' | 'tertiary'; // default : primary
+  $type?: 'secondary' | 'outline' | 'error' | 'tertiary' | 'gradation'; // default : primary
   size?: '36' | '48'; // default : 40
   leftIcon?: ReactNode;
   rightIcon?: ReactNode;
@@ -92,6 +92,27 @@ const getButtonTypeStyles = (type: ButtonProps['$type'], pressed?: boolean) => {
         &:disabled {
           background-color: ${({ theme }) => theme.sementicColors.bg.tertiary_hover_pressed};
           color: ${({ theme }) => theme.sementicColors.text.primary};
+          opacity: 0.4;
+          box-shadow: none;
+        }
+      `;
+    case 'gradation':
+      return css`
+        background: linear-gradient(
+          90deg,
+          ${({ theme }) => theme.sementicColors.bg.brand} 0%,
+          ${({ theme }) => theme.sementicColors.bg.navy_bold} 100%
+        );
+        color: ${({ theme }) => theme.sementicColors.text.inverse};
+        ${pressed &&
+        css`
+          box-shadow: 0px 0px 0px 2px rgba(94, 164, 255, 0.4);
+        `}
+        &:hover,
+        &:active {
+          box-shadow: 0px 0px 0px 2px rgba(94, 164, 255, 0.4);
+        }
+        &:disabled {
           opacity: 0.4;
           box-shadow: none;
         }

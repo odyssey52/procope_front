@@ -1,10 +1,11 @@
 'use client';
 
 import retroQueries from '@/features/team/query/retroQueries';
-import { createRetroSolution } from '@/features/team/services/retroService';
+import { createRetroSolution, createAiCoachAnalyze } from '@/features/team/services/retroService';
 import { CreateRetroSolutionPayload } from '@/features/team/services/retroService.type';
-import { IconCheckMarkRectangle } from '@/shared/assets/icons/line';
+import { IconCheckMarkRectangle, IconLoading, IconStar } from '@/shared/assets/icons/line';
 import useApiError from '@/shared/hooks/useApiError';
+import useAiCoachStore from '@/shared/store/aiCoach/aiCoach';
 import { useSidePanelStore } from '@/shared/store/sidePanel/sidePanel';
 import { theme } from '@/shared/styles/theme';
 import Button from '@/shared/ui/button/Button';
@@ -34,9 +35,13 @@ const SolutionWrapper = ({ retroId, problemId, client }: SolutionWrapperProps) =
   } = useQuery({
     ...retroQueries.readRetroSolutionList({ retroId, problemId }),
   });
+  const generatingSolutionIds = useAiCoachStore((state) => state.generatingSolutionIds);
 
   const createRetroSolutionMutation = useMutation({
     mutationFn: (payload: CreateRetroSolutionPayload) => createRetroSolution({ retroId, problemId }, payload),
+  });
+  const aiCoachAnalyzeMutation = useMutation({
+    mutationFn: () => createAiCoachAnalyze({ retroId, problemId }),
   });
 
   const handleSolutionCard = async () => {
@@ -60,15 +65,33 @@ const SolutionWrapper = ({ retroId, problemId, client }: SolutionWrapperProps) =
     });
   };
 
+  const handleAiCoaching = async () => {
+    try {
+      const { id } = await aiCoachAnalyzeMutation.mutateAsync();
+      open({
+        cardId: `${retroId}-PBM-${problemId}-SOL-${id}`,
+        content: <SolutionSidePanelContent retroId={retroId} problemId={problemId} solutionId={id} client={client} />,
+      });
+    } catch (error) {
+      handleError(error);
+    }
+  };
+
   return (
     <Wrapper>
       <Head>
         <PageSubTitle first="개선방안">
           <SubTitleRightBox>
             <MoreIndicator count={solutions?.length} type="transparent" />
-            <Button $type="secondary" onClick={handleSolutionCard}>
-              추가
-            </Button>
+            <ButtonGroup>
+              <Button $type="gradation" onClick={handleAiCoaching}>
+                <IconLoading />
+                AI Coaching
+              </Button>
+              <Button $type="secondary" onClick={handleSolutionCard}>
+                추가
+              </Button>
+            </ButtonGroup>
           </SubTitleRightBox>
         </PageSubTitle>
       </Head>
@@ -80,6 +103,7 @@ const SolutionWrapper = ({ retroId, problemId, client }: SolutionWrapperProps) =
               <TaskCard
                 key={`SOL-${solution.id}`}
                 onClick={() => openSolution(solution.id)}
+                isGenerating={Boolean(generatingSolutionIds[String(solution.id)])}
                 tags={[
                   <Tag
                     key={`SolutionTaskCard-${solution.id}`}
@@ -130,7 +154,7 @@ const CardList = styled.div`
   flex-grow: 1;
   width: 100%;
   gap: 16px;
-  padding: 0 48px;
+  padding: 1px 48px;
   &::-webkit-scrollbar {
     display: none;
   }
@@ -159,6 +183,11 @@ const SubTitleRightBox = styled.div`
   justify-content: space-between;
   gap: 8px;
   flex-grow: 1;
+`;
+
+const ButtonGroup = styled.div`
+  display: flex;
+  gap: 8px;
 `;
 
 SolutionWrapper.displayName = 'SolutionWrapper';

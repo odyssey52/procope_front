@@ -49,6 +49,8 @@ const URLS = {
     `/retrospectives/problems/solutions/${retroId}/${problemId}`,
   READ_RETRO_SOLUTION_DETAIL: (retroId: string | number, problemId: string | number, solutionId: string | number) =>
     `/retrospectives/problems/solutions/${retroId}/${problemId}/${solutionId}`,
+  AI_COACH_ANALYZE: (retroId: string | number, problemId: string | number) =>
+    `/ai-coach/${retroId}/${problemId}/analyze`,
 };
 
 const api = new ApiClient({ isPublic: false });
@@ -205,6 +207,13 @@ export async function readRetroSolutionList(params: types.ReadRetroSolutionListP
 export async function readRetroSolutionDetail(params: types.ReadRetroSolutionDetailParams) {
   const { data } = await api.get<types.ReadRetroSolutionDetailResponse>(
     URLS.READ_RETRO_SOLUTION_DETAIL(params.retroId, params.problemId, params.solutionId),
+  );
+  return data;
+}
+
+export async function createAiCoachAnalyze(params: types.CreateAiCoachAnalyzeParams) {
+  const { data } = await api.post<types.CreateAiCoachAnalyzeResponse>(
+    URLS.AI_COACH_ANALYZE(params.retroId, params.problemId),
   );
   return data;
 }
