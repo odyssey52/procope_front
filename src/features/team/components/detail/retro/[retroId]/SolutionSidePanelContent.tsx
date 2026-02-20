@@ -7,7 +7,6 @@ import { deleteRetroSolution, updateRetroSolution } from '@/features/team/servic
 import { UpdateRetroSolutionPayload } from '@/features/team/services/retroService.type';
 import { IconDirectionRight1, IconLoading, IconUser } from '@/shared/assets/icons/line';
 import useApiError from '@/shared/hooks/useApiError';
-import useAiCoachStore from '@/shared/store/aiCoach/aiCoach';
 import { useSidePanelStore } from '@/shared/store/sidePanel/sidePanel';
 import useUserStore from '@/shared/store/user/user';
 import { theme } from '@/shared/styles/theme';
@@ -41,7 +40,6 @@ const SolutionSidePanelContent = ({ retroId, problemId, solutionId, client }: So
   const { handleError } = useApiError();
   const queryClient = useQueryClient();
   const close = useSidePanelStore((state) => state.close);
-  const isGenerating = useAiCoachStore((state) => Boolean(state.generatingSolutionIds[String(solutionId)]));
 
   const { data: teamInfo, isLoading: isTeamInfoLoading } = useTeamDetailQuery();
   const {
@@ -55,6 +53,7 @@ const SolutionSidePanelContent = ({ retroId, problemId, solutionId, client }: So
   const role = teamInfo?.myRole;
   const isAdmin = role === 'ADMIN';
   const isEditable = data?.createUserInfo.id === id || isAdmin;
+  const isGenerating = data?.status === 'PROCESSING';
   const isLoading = isTeamInfoLoading || isSolutionDetailLoading;
 
   const { editor, currentTitle, setCurrentTitle, triggerSave } = useRetroAutoSave({

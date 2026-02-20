@@ -4,7 +4,6 @@ import retroQueries from '@/features/team/query/retroQueries';
 import { deleteRetro, updateRetroDate, updateRetroTitle } from '@/features/team/services/retroService';
 import { UpdateRetroDatePayload, UpdateRetroTitlePayload } from '@/features/team/services/retroService.type';
 import useApiError from '@/shared/hooks/useApiError';
-import useAiCoachStore from '@/shared/store/aiCoach/aiCoach';
 import { toastActions } from '@/shared/store/modal/toast';
 import Avatar from '@/shared/ui/avatar/Avatar';
 import AvatarGroup from '@/shared/ui/avatar/AvatarGroup';
@@ -36,8 +35,6 @@ const RetroInfoWrapper = ({ client, isConnected }: RetroInfoWrapperProps) => {
 
   const queryClient = useQueryClient();
   const { handleError } = useApiError();
-  const setAiGenerating = useAiCoachStore((state) => state.setGenerating);
-  const clearAiGenerating = useAiCoachStore((state) => state.clearGenerating);
 
   const { data, isSuccess } = useSuspenseQuery({
     ...retroQueries.readRetro({ teamId: teamId as string, retroId: retroId as string }),
@@ -128,9 +125,6 @@ const RetroInfoWrapper = ({ client, isConnected }: RetroInfoWrapperProps) => {
         //     }
         // }
         if (data.type === 'AI_COACH_CREATING') {
-          if (data.solution?.id !== undefined) {
-            setAiGenerating(data.solution.id, true);
-          }
           queryClient.invalidateQueries({
             queryKey: retroQueries.readRetroSolutionList({
               retroId,
@@ -146,9 +140,6 @@ const RetroInfoWrapper = ({ client, isConnected }: RetroInfoWrapperProps) => {
           });
         }
         if (data.type === 'AI_COACH_RESULT') {
-          if (data.solution?.id !== undefined) {
-            clearAiGenerating(data.solution.id);
-          }
           queryClient.invalidateQueries({
             queryKey: retroQueries.readRetroSolutionList({
               retroId,

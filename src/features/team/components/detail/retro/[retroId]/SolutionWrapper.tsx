@@ -5,7 +5,6 @@ import { createRetroSolution, createAiCoachAnalyze } from '@/features/team/servi
 import { CreateRetroSolutionPayload } from '@/features/team/services/retroService.type';
 import { IconCheckMarkRectangle, IconLoading, IconStar } from '@/shared/assets/icons/line';
 import useApiError from '@/shared/hooks/useApiError';
-import useAiCoachStore from '@/shared/store/aiCoach/aiCoach';
 import { useSidePanelStore } from '@/shared/store/sidePanel/sidePanel';
 import { theme } from '@/shared/styles/theme';
 import Button from '@/shared/ui/button/Button';
@@ -35,8 +34,6 @@ const SolutionWrapper = ({ retroId, problemId, client }: SolutionWrapperProps) =
   } = useQuery({
     ...retroQueries.readRetroSolutionList({ retroId, problemId }),
   });
-  const generatingSolutionIds = useAiCoachStore((state) => state.generatingSolutionIds);
-
   const createRetroSolutionMutation = useMutation({
     mutationFn: (payload: CreateRetroSolutionPayload) => createRetroSolution({ retroId, problemId }, payload),
   });
@@ -103,7 +100,7 @@ const SolutionWrapper = ({ retroId, problemId, client }: SolutionWrapperProps) =
               <TaskCard
                 key={`SOL-${solution.id}`}
                 onClick={() => openSolution(solution.id)}
-                isGenerating={Boolean(generatingSolutionIds[String(solution.id)])}
+                isGenerating={solution.status === 'PROCESSING'}
                 tags={[
                   <Tag
                     key={`SolutionTaskCard-${solution.id}`}

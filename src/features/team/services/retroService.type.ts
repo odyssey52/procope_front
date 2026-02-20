@@ -267,6 +267,7 @@ export type ReadRetroMemberListResponse = RetroMemberListItem[];
 export type ReadRetroSolutionListResponse = RetroProblemSolutionListItem[];
 export interface ReadRetroSolutionDetailResponse {
   solutionId: string | number;
+  status: SolutionStatus;
   createUserInfo: {
     id: string;
     name: string;
@@ -317,11 +318,14 @@ export type RetroMemberListItem = {
   profileImage: string;
 };
 
+export type SolutionStatus = 'COMPLETED' | 'PROCESSING';
+
 export type RetroProblemSolutionListItem = {
   id: number;
   solutionId: string | number;
   title: string;
   updatedAt: string;
+  status: SolutionStatus;
   createUserInfo: {
     id: string;
     name: string;
